@@ -137,12 +137,10 @@ existing fallback: `houseSystem` reports `whole_sign`,
   exhaustive `switch` on it in consumer code gains cases. Release notes
   item, not a semver break at 0.x.
 
-## Open questions
+## Decisions (2026-06-12)
 
-1. `Position.dist` for the Moon: km today in `moonApparent*`, AU
-   everywhere else. Normalize to AU in the new field, or keep km for the
-   Moon and document it? Proposal: AU everywhere, `distKm` convenience on
-   the Moon only if someone asks.
-2. Should `engine.chart()` accept a Date-free `{ jdUt }` overload? The
-   MCP server converts repeatedly. Proposal: defer; `julianDay()` is
-   exported and one line.
+1. `Position.dist` is AU for every body, Moon included. The km value
+   stays internal to `moonApparent*`; a `distKm` convenience ships only
+   if someone asks.
+2. No `{ jdUt }` overload on `chart()` for now. `julianDay()` is
+   exported and one line; revisit if MCP call sites accumulate.
