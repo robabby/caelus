@@ -4,6 +4,7 @@ import {
   planetApparent, sunApparent, moonApparentSeries, moonApparentPrecise,
   plutoApparent, chironApparent, meanNode, trueNodeSeries, trueNodePrecise,
   equatorial, ayanamsa, AYANAMSA_J2000, meanLilith, topocentricEcl,
+  oscApogeePrecise, oscApogeeSeries,
   trueObliquity, nutation, plutoHeliocentric, vsopHeliocentric, precessEcliptic,
   J2000,
 } from "./core.js";
@@ -18,13 +19,15 @@ export const BODIES = [
 export type Body = (typeof BODIES)[number];
 
 /** Computable on request (not in the default chart set). */
-export const EXTRA_BODIES = ["mean_lilith"] as const;
+export const EXTRA_BODIES = ["mean_lilith", "true_lilith"] as const;
 
 /** Core names keep autocomplete; any string id is accepted (data packs). */
 export type BodyId = Body | (typeof EXTRA_BODIES)[number] | (string & {});
 
 /** Points: excluded from aspect search by default. */
-const NOT_ASPECTABLE = new Set(["mean_node", "true_node", "mean_lilith"]);
+const NOT_ASPECTABLE = new Set([
+  "mean_node", "true_node", "mean_lilith", "true_lilith",
+]);
 
 export const SIGNS = [
   "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",
@@ -123,8 +126,10 @@ export class Engine {
     );
   }
 
-  /** Apparent geocentric [lon rad, lat rad, dist AU | null]. */
-  private ecliptic(body: BodyId, jde: number): [number, number, number | null] {
+  /** Apparent geocentric [lon rad, lat rad, dist AU | null] at TT jde.
+   *  Building block for the events module; chart consumers want
+   *  position() instead. */
+  ecliptic(body: BodyId, jde: number): [number, number, number | null] {
     if (body === "sun") return sunApparent(this.data, jde);
     if (body === "moon") {
       const [lon, lat, km] = this.moonInRange(jde)
@@ -149,6 +154,12 @@ export class Engine {
     if (body === "mean_lilith") {
       const [lon, lat] = meanLilith(this.data, jde);
       return [lon, lat, null];
+    }
+    if (body === "true_lilith") {
+      const [lon, lat, km] = this.moonInRange(jde)
+        ? oscApogeePrecise(this.data, this.moonCheb!, jde)
+        : oscApogeeSeries(this.data, jde);
+      return [lon, lat, km / KM_PER_AU];
     }
     if (this.data.vsop[body]) return planetApparent(this.data, body, jde);
     throw new Error(`no data loaded for body '${body}'`);

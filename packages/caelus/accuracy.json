@@ -3,41 +3,218 @@
   "range": "1900-2099",
   "unit": "arcsec",
   "bodies": [
-    { "name": "Sun", "max": "0.4", "rms": "0.2", "note": "" },
-    { "name": "Moon (precise tier)", "max": "2.5", "rms": "0.9", "note": "JPL DE423 fit (2010); DE423 vs DE440 is <0.1″ over this span" },
-    { "name": "Moon (embedded series)", "max": "9.6", "rms": "2.8", "note": "60-term ELP abridged" },
-    { "name": "Mercury", "max": "0.5", "rms": "0.2", "note": "" },
-    { "name": "Venus", "max": "0.8", "rms": "0.2", "note": "" },
-    { "name": "Mars", "max": "0.7", "rms": "0.2", "note": "" },
-    { "name": "Jupiter", "max": "0.9", "rms": "0.3", "note": "" },
-    { "name": "Saturn", "max": "0.8", "rms": "0.4", "note": "" },
-    { "name": "Uranus", "max": "1.9", "rms": "0.7", "note": "series truncation; complete VSOP87 holds ≤1″" },
-    { "name": "Neptune", "max": "4.6", "rms": "2.2", "note": "series truncation; complete VSOP87 holds ≤1″" },
-    { "name": "Pluto", "max": "2.5", "rms": "1.0", "note": "series valid 1885-2099" },
-    { "name": "Chiron", "max": "1.0", "rms": "0.3", "note": "JPL Horizons fit, 1850-2150" },
-    { "name": "Mean node", "max": "0.1", "rms": "0.1", "note": "" },
-    { "name": "True node", "max": "0.8", "rms": "0.4", "note": "vs full DE431 files; Swiss’s built-in Moshier mode itself differs from DE431 by up to ~15″ here" },
-    { "name": "Ascendant / MC", "max": "3.2", "rms": "—", "note": "" },
-    { "name": "Placidus cusps (all 12)", "max": "3.2", "rms": "—", "note": "" },
-    { "name": "Mean Lilith", "max": "1.3", "rms": "0.5", "note": "mean lunar apogee on the inclined orbit; latitude ≤0.1″" },
-    { "name": "Sidereal longitudes", "max": "0.1", "rms": "—", "note": "ayanamsa model vs SE ≤0.30″ at the 1900/2099 edges (IAU 1976 vs Vondrák precession); Sun worst-case 0.08″ at 120 sampled epochs" },
-    { "name": "RA / Dec", "max": "2.1", "rms": "—", "note": "rotation is exact; bound tracks each body's ecliptic accuracy (Moon worst)" },
-    { "name": "Topocentric Moon", "max": "2.7", "rms": "—", "note": "parallax model adds ≤0.1″ over the geocentric bound" },
-    { "name": "House cusps, 8 new systems", "max": "0.0", "rms": "0.0", "note": "Koch, Regiomontanus, Campanus, Alcabitius, Morinus, Meridian, Polich-Page, Vehlow: exact vs swe_houses_armc (200 polar-inclusive cases each)" },
-    { "name": "Vertex / east point", "max": "0.0", "rms": "0.0", "note": "exact vs swe_houses_armc" },
-    { "name": "Magnitudes", "max": "0.045 mag", "rms": "—", "note": "Mallama 2018; Moon (Allen law) valid to phase angle 140°" }
+    {
+      "name": "Sun",
+      "max": "0.4",
+      "rms": "0.2",
+      "note": ""
+    },
+    {
+      "name": "Moon (precise tier)",
+      "max": "2.5",
+      "rms": "0.9",
+      "note": "JPL DE423 fit (2010); DE423 vs DE440 is <0.1″ over this span"
+    },
+    {
+      "name": "Moon (embedded series)",
+      "max": "9.6",
+      "rms": "2.8",
+      "note": "60-term ELP abridged"
+    },
+    {
+      "name": "Mercury",
+      "max": "0.5",
+      "rms": "0.2",
+      "note": ""
+    },
+    {
+      "name": "Venus",
+      "max": "0.8",
+      "rms": "0.2",
+      "note": ""
+    },
+    {
+      "name": "Mars",
+      "max": "0.7",
+      "rms": "0.2",
+      "note": ""
+    },
+    {
+      "name": "Jupiter",
+      "max": "0.9",
+      "rms": "0.3",
+      "note": ""
+    },
+    {
+      "name": "Saturn",
+      "max": "0.8",
+      "rms": "0.4",
+      "note": ""
+    },
+    {
+      "name": "Uranus",
+      "max": "1.9",
+      "rms": "0.7",
+      "note": "series truncation; complete VSOP87 holds ≤1″"
+    },
+    {
+      "name": "Neptune",
+      "max": "4.6",
+      "rms": "2.2",
+      "note": "series truncation; complete VSOP87 holds ≤1″"
+    },
+    {
+      "name": "Pluto",
+      "max": "2.5",
+      "rms": "1.0",
+      "note": "series valid 1885-2099"
+    },
+    {
+      "name": "Chiron",
+      "max": "1.0",
+      "rms": "0.3",
+      "note": "JPL Horizons fit, 1850-2150"
+    },
+    {
+      "name": "Mean node",
+      "max": "0.1",
+      "rms": "0.1",
+      "note": ""
+    },
+    {
+      "name": "True node",
+      "max": "0.8",
+      "rms": "0.4",
+      "note": "vs full DE431 files; Swiss’s built-in Moshier mode itself differs from DE431 by up to ~15″ here"
+    },
+    {
+      "name": "Ascendant / MC",
+      "max": "3.2",
+      "rms": "—",
+      "note": ""
+    },
+    {
+      "name": "Placidus cusps (all 12)",
+      "max": "3.2",
+      "rms": "—",
+      "note": ""
+    },
+    {
+      "name": "Mean Lilith",
+      "max": "1.3",
+      "rms": "0.5",
+      "note": "mean lunar apogee on the inclined orbit; latitude ≤0.1″"
+    },
+    {
+      "name": "Sidereal longitudes",
+      "max": "0.1",
+      "rms": "—",
+      "note": "ayanamsa model vs SE ≤0.30″ at the 1900/2099 edges (IAU 1976 vs Vondrák precession); Sun worst-case 0.08″ at 120 sampled epochs"
+    },
+    {
+      "name": "RA / Dec",
+      "max": "2.1",
+      "rms": "—",
+      "note": "rotation is exact; bound tracks each body's ecliptic accuracy (Moon worst)"
+    },
+    {
+      "name": "Topocentric Moon",
+      "max": "2.7",
+      "rms": "—",
+      "note": "parallax model adds ≤0.1″ over the geocentric bound"
+    },
+    {
+      "name": "House cusps, 8 new systems",
+      "max": "0.0",
+      "rms": "0.0",
+      "note": "Koch, Regiomontanus, Campanus, Alcabitius, Morinus, Meridian, Polich-Page, Vehlow: exact vs swe_houses_armc (200 polar-inclusive cases each)"
+    },
+    {
+      "name": "Vertex / east point",
+      "max": "0.0",
+      "rms": "0.0",
+      "note": "exact vs swe_houses_armc"
+    },
+    {
+      "name": "Magnitudes",
+      "max": "0.045 mag",
+      "rms": "—",
+      "note": "Mallama 2018; Moon (Allen law) valid to phase angle 140°"
+    },
+    {
+      "name": "Rise/set/meridian transit",
+      "max": "0.5 s",
+      "rms": "—",
+      "note": "vs swe_rise_trans, 48 polar-inclusive cases per body; Moon bound tracks its position accuracy"
+    },
+    {
+      "name": "Crossings / lunar phases",
+      "max": "4 s",
+      "rms": "—",
+      "note": "vs swe_solcross/swe_mooncross and elongation root-finds"
+    },
+    {
+      "name": "Stations",
+      "max": "55 s",
+      "rms": "—",
+      "note": "ill-conditioned by nature: speed-zero slope ~0.01°/day² turns sub-arcsecond model differences into minutes"
+    },
+    {
+      "name": "True Lilith (osc. apogee)",
+      "max": "187",
+      "rms": "—",
+      "note": "hypersensitive to the lunar theory (~1/e amplification); SE's own Moshier-vs-DE difference dominates. 'True Lilith' values disagree across software at this scale"
+    }
   ],
   "summary": [
-    { "label": "Sun–Saturn", "bound": "≤ 1″" },
-    { "label": "Uranus / Neptune", "bound": "≤ 1.9″ / ≤ 4.6″" },
-    { "label": "Moon (1920–2080 tier)", "bound": "≤ 2.5″" },
-    { "label": "Moon (series, embedded)", "bound": "≤ 10″" },
-    { "label": "Pluto / Chiron", "bound": "≤ 2.5″ / ≤ 1″" },
-    { "label": "Angles & Placidus cusps", "bound": "≤ 3.2″" },
-    { "label": "True node", "bound": "≤ 1″" },
-    { "label": "Mean Lilith", "bound": "≤ 1.3″" },
-    { "label": "Sidereal (5 ayanamsas)", "bound": "≤ 0.3″ added" },
-    { "label": "8 new house systems", "bound": "exact (0.0″)" }
+    {
+      "label": "Sun–Saturn",
+      "bound": "≤ 1″"
+    },
+    {
+      "label": "Uranus / Neptune",
+      "bound": "≤ 1.9″ / ≤ 4.6″"
+    },
+    {
+      "label": "Moon (1920–2080 tier)",
+      "bound": "≤ 2.5″"
+    },
+    {
+      "label": "Moon (series, embedded)",
+      "bound": "≤ 10″"
+    },
+    {
+      "label": "Pluto / Chiron",
+      "bound": "≤ 2.5″ / ≤ 1″"
+    },
+    {
+      "label": "Angles & Placidus cusps",
+      "bound": "≤ 3.2″"
+    },
+    {
+      "label": "True node",
+      "bound": "≤ 1″"
+    },
+    {
+      "label": "Mean Lilith",
+      "bound": "≤ 1.3″"
+    },
+    {
+      "label": "Sidereal (5 ayanamsas)",
+      "bound": "≤ 0.3″ added"
+    },
+    {
+      "label": "8 new house systems",
+      "bound": "exact (0.0″)"
+    },
+    {
+      "label": "Rise/set/transit",
+      "bound": "≤ 0.5 s"
+    },
+    {
+      "label": "Crossings & phases",
+      "bound": "≤ 4 s"
+    }
   ],
   "v03_harness": "python/validate_swiss.py regenerates every figure above the line against pyswisseph 2.10 (Moshier mode)"
 }

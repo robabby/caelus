@@ -12,6 +12,7 @@ import {
 } from "../src/core.js";
 import { Engine, BODIES, Body } from "../src/chart.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
+import { riseSet, crossings, lunarPhases, stations } from "../src/events.js";
 import * as H from "../src/houses.js";
 import { loadNodeData } from "../src/node-loader.js";
 
@@ -184,6 +185,62 @@ for (const g of G.houses) {
   }
 }
 
+// events: rise/set/transit, crossings, phases, stations, true lilith
+{
+  const g = G.events;
+  const jd0 = g.jd0;
+  const JTOL = 1e-8; // days; both ports bisect the same bracket
+  expect("ev.sun_rise", riseSet(eng, "sun", jd0, 27.95, -82.46, "rise")!,
+    g.sun_rise_tampa, JTOL);
+  expect("ev.moon_set", riseSet(eng, "moon", jd0, 51.5, -0.12, "set")!,
+    g.moon_set_london, JTOL);
+  expect("ev.mars_mtransit", riseSet(eng, "mars", jd0, -33.87, 151.21, "mtransit")!,
+    g.mars_mtransit_sydney, JTOL);
+  checks++;
+  if (riseSet(eng, "sun", jd0, 78.2, 15.6, "set") !== null) {
+    failures++;
+    console.error("FAIL ev.polar midnight sun: expected null");
+  }
+  const cs = crossings(eng, "sun", 0.0, jd0, jd0 + 400);
+  const cm = crossings(eng, "moon", 123.45, jd0, jd0 + 30);
+  checks++;
+  if (cs.length !== g.sun_cross_0.length || cm.length !== g.moon_cross_123.length) {
+    failures++;
+    console.error("FAIL ev.crossings count");
+  } else {
+    cs.forEach((t, i) => expect(`ev.sun_cross[${i}]`, t, g.sun_cross_0[i], JTOL));
+    cm.forEach((t, i) => expect(`ev.moon_cross[${i}]`, t, g.moon_cross_123[i], JTOL));
+  }
+  const ph = lunarPhases(eng, jd0, jd0 + 30);
+  const st = stations(eng, "mercury", jd0, jd0 + 200);
+  checks++;
+  if (ph.length !== g.phases_30d.length || st.length !== g.mercury_stations_200d.length) {
+    failures++;
+    console.error("FAIL ev.phases/stations count");
+  } else {
+    ph.forEach(([t, name], i) => {
+      expect(`ev.phase[${i}]`, t, g.phases_30d[i][0], JTOL);
+      checks++;
+      if (name !== g.phases_30d[i][1]) {
+        failures++;
+        console.error(`FAIL ev.phase[${i}] name ${name}`);
+      }
+    });
+    st.forEach(([t, dir], i) => {
+      expect(`ev.station[${i}]`, t, g.mercury_stations_200d[i][0], JTOL);
+      checks++;
+      if (dir !== g.mercury_stations_200d[i][1]) {
+        failures++;
+        console.error(`FAIL ev.station[${i}] dir ${dir}`);
+      }
+    });
+  }
+  const lil = eng.position("true_lilith", jd0);
+  expectAngleDeg("ev.true_lilith.lon", lil.lon, g.true_lilith.lon, TOL);
+  expect("ev.true_lilith.lat", lil.lat, g.true_lilith.lat, TOL);
+  expect("ev.true_lilith.dist", lil.dist!, g.true_lilith.dist, 1e-9);
+}
+
 // full chart: aspects count + every cusp/body + angles
 {
   const g = G.chart;
@@ -260,6 +317,7 @@ if (process.env.CAELUS_STATS_OUT) {
       houses: G.houses.length,
       sidereal: G.sidereal.length,
       extras: G.extras.length,
+      events: Object.keys(G.events).length,
     },
     generatedAt: new Date().toISOString(),
   }, null, 2) + "\n");

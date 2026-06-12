@@ -23,7 +23,7 @@ retrograde flags. ΔT from IERS 1955–2025 plus Espenak–Meeus polynomials.
 Placidus, Porphyry, Equal, and Whole Sign houses with an explicit polar
 fallback. Major aspects and transit search. Validated at ≤1″ vs Swiss
 Ephemeris 2.10 for Sun–Saturn and ≤2.5″ for the precise Moon tier;
-`accuracy.json` carries the per-body figures, and the suite holds 3,087
+`accuracy.json` carries the per-body figures, and the suite holds 3,112
 conformance checks.
 
 Swiss Ephemeris agrees with JPL to about 0.001″. Caelus does not chase
@@ -51,6 +51,18 @@ Estimated effort: 1–2 weeks, including the Python reference and golden
 fixtures for each item.
 
 ## Tier 2: new data through the existing fit pipeline
+
+**Status (2026-06-12): partially shipped.** Done: true/osculating Lilith
+(`true_lilith`; ≤3′ vs SE-Moshier — the quantity amplifies lunar-theory
+differences ~1/e, and SE's own Moshier-vs-DE spread dominates),
+rise/set/meridian transits (≤0.5 s), crossings as engine API (≤4 s),
+plus lunar phases and stations; all surfaced through the new `sky_events`
+MCP tool. Deferred: the interpolated apogee (`SE_INTP_APOG`) — SE's
+interpolation method is not reproducible from the documentation excerpt
+we could verify against; revisit with a better source. Blocked here:
+asteroid Chebyshev fits need `ssd.jpl.nasa.gov` (JPL Horizons) in the
+network egress allowlist. Remaining: fixed stars, Uranian bodies,
+Gauquelin sectors.
 
 The Chiron pattern (`python/fit_chiron.py`: JPL Horizons vectors →
 Chebyshev fit → ~10 KB JSON) generalizes to each of these.

@@ -8,8 +8,9 @@ composable with a separate KG/corpus server (see ARCHITECTURE.md).
 
 1. **Outcome-level tools, not API wrappers.** `transits` returns natal +
    transiting aspects in one call.
-2. **Six tools.** More tools cost context and hurt tool selection. If six
-   tools can compose it, it stays out.
+2. **Seven tools.** More tools cost context and hurt tool selection. If
+   seven tools can compose it, it stays out. (Six through v0.3;
+   `sky_events` joined when the engine grew event search.)
 3. **Token frugality.** Full natal chart ~2.5 KB: terse keys, 0.01° positions,
    compact aspect objects (`{"a":"moon","b":"venus","aspect":"trine","orb":2.09}`;
    transits add `t`/`n` and an `applying` flag).
@@ -46,6 +47,12 @@ direct passes. Used for electional timing and inverse transit queries.
 Sweeps a day or window: ASC/MC per step, ASC sign-change boundaries.
 Pairs with find_aspect_dates to check candidate times against dated events.
 
+### sky_events(start, end, kinds, body?, lat?, lon?, target_lon?, zodiac?)
+Event search in a date range (≤370 days): rise/set/meridian transits
+(body + place), lunar phases, stations (retrograde/direct), zodiac degree
+crossings. Times agree with Swiss Ephemeris to the second; stations to
+~1 minute (ill-conditioned by nature). Eclipses join this tool in Tier 3.
+
 ## Resources (phase 2)
 - `caelus://glossary` — machine-readable definitions (aspects, houses, dignities).
 - `caelus://accuracy` — validation table.
@@ -73,6 +80,8 @@ yukteshwar); `find_aspect_dates` searches in either zodiac. `house_system`
 widened to 12: placidus, whole_sign, equal, porphyry, koch, regiomontanus,
 campanus, alcabitius, morinus, meridian, polich_page, vehlow (Placidus and
 Koch fall back to whole_sign above the polar circles, reported as before).
-Payloads gain a `zodiac` key only when sidereal. Eclipses, rise/set,
-phases, and stations share one new `sky_events(range, kinds, lat?, lon?)`
-tool when Tier 2/3 lands: seven tools total, still outcome-level.
+Payloads gain a `zodiac` key only when sidereal.
+
+## v0.4 surface (shipped)
+`sky_events` (the seventh tool, above): rise/set/transits, phases,
+stations, crossings. Eclipses extend it in Tier 3 — no eighth tool.

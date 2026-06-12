@@ -540,6 +540,63 @@ def mean_lilith(jde):
     return lon, lat
 
 
+GM_EARTH_MOON = 403503.2356 * 86400.0**2  # km^3/day^2
+
+
+def _osc_apogee_from_state(x, y, z, vx, vy, vz, jde, frame_j2000):
+    """Osculating apogee point from a geocentric lunar state vector (km,
+    km/day): apparent ecliptic lon/lat of date (rad) + distance (km).
+    Hypersensitive to the lunar theory: the eccentricity vector amplifies
+    position/velocity differences ~1/e (~18x). Swiss Ephemeris in Moshier
+    mode differs from our DE423 fit by up to ~3 arcmin here; published
+    'True Lilith' values disagree across software at that scale."""
+    mu = GM_EARTH_MOON
+    r = math.sqrt(x * x + y * y + z * z)
+    v2 = vx * vx + vy * vy + vz * vz
+    rv = x * vx + y * vy + z * vz
+    ex = (v2 * x - rv * vx) / mu - x / r
+    ey = (v2 * y - rv * vy) / mu - y / r
+    ez = (v2 * z - rv * vz) / mu - z / r
+    e = math.sqrt(ex * ex + ey * ey + ez * ez)
+    a = 1.0 / (2.0 / r - v2 / mu)
+    s = a * (1 + e) / e
+    px, py, pz = -ex * s, -ey * s, -ez * s
+    if frame_j2000:
+        px, py, pz = _ecl_j2000_to_ecl_date((px, py, pz), jde)
+    lon = (math.atan2(py, px) + nutation(jde)[0]) % (2 * math.pi)
+    lat = math.atan2(pz, math.hypot(px, py))
+    return lon, lat, math.sqrt(px * px + py * py + pz * pz)
+
+
+def osc_apogee_precise(jde):
+    """Osculating lunar apogee (True Lilith) from the Chebyshev moon."""
+    cheb = _moon_cheb()
+    if not cheb:
+        raise FileNotFoundError("moon_cheb data not built")
+    (x, y, z), (vx, vy, vz) = cheb.xyz_vel(jde)
+    return _osc_apogee_from_state(x, y, z, vx, vy, vz, jde, frame_j2000=True)
+
+
+def osc_apogee_series(jde):
+    """Series fallback outside the Chebyshev range (same finite-difference
+    state as the true-node fallback)."""
+    h = 0.01
+
+    def xyz(t):
+        lon, lat, dist = moon_geometric(t)
+        return (dist * math.cos(lat) * math.cos(lon),
+                dist * math.cos(lat) * math.sin(lon),
+                dist * math.sin(lat))
+
+    x0, y0, z0 = xyz(jde - h)
+    x1, y1, z1 = xyz(jde + h)
+    x, y, z = xyz(jde)
+    return _osc_apogee_from_state(
+        x, y, z, (x1 - x0) / (2 * h), (y1 - y0) / (2 * h), (z1 - z0) / (2 * h),
+        jde, frame_j2000=False,
+    )
+
+
 EARTH_RADIUS_AU = 6378.14 / 149597870.7
 EARTH_FLAT = 0.99664719  # 1 - f, IAU 1976 figure
 

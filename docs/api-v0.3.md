@@ -5,7 +5,7 @@ the options object and the open body registry. This doc proposes exact
 signatures. Everything here is additive; 0.3.0 ships with zero breaking
 changes to the 0.2.0 surface.
 
-**Status: implemented.** The suite holds 3,087 conformance checks; the new
+**Status: implemented.** The suite holds 3,112 conformance checks; the new
 features measure against Swiss Ephemeris in `python/validate_swiss.py`.
 One scope change from the proposal: v0.3 ships five fixed-epoch ayanamsas
 (`lahiri`, `fagan_bradley`, `krishnamurti`, `raman`, `yukteshwar`). The two

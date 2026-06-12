@@ -11,10 +11,10 @@ BODIES = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
           "uranus", "neptune", "pluto", "chiron", "mean_node", "true_node"]
 
 # Computable on request (not in the default chart set).
-EXTRA_BODIES = ["mean_lilith"]
+EXTRA_BODIES = ["mean_lilith", "true_lilith"]
 
 # Points: excluded from aspect search by default.
-NOT_ASPECTABLE = {"mean_node", "true_node", "mean_lilith"}
+NOT_ASPECTABLE = {"mean_node", "true_node", "mean_lilith", "true_lilith"}
 
 SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",
          "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
@@ -76,6 +76,12 @@ class Engine:
         if body == "mean_lilith":
             lon, lat = mean_lilith(jde)
             return lon, lat, None
+        if body == "true_lilith":
+            if core.moon_in_precise_range(jde):
+                lon, lat, km = core.osc_apogee_precise(jde)
+            else:
+                lon, lat, km = core.osc_apogee_series(jde)
+            return lon, lat, km / KM_PER_AU
         return planet_apparent(self.vsop, body, jde)
 
     def _lon_only(self, body, jd_ut, mode, topo):

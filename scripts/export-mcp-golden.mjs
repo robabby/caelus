@@ -23,6 +23,12 @@ export const GOLDEN_CASES = [
   // --- happy path, one per tool ---
   { id: "natal-tampa", tool: "natal_chart",
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
+  { id: "sky-events-week", tool: "sky_events",
+    args: { start: "1990-06-10T00:00:00Z", end: "1990-06-17T00:00:00Z",
+      kinds: ["rise", "set", "phase"], body: "sun", lat: 27.95, lon: -82.46 } },
+  { id: "sky-events-station-crossing", tool: "sky_events",
+    args: { start: "1990-06-10T00:00:00Z", end: "1990-12-10T00:00:00Z",
+      kinds: ["station", "crossing"], body: "mercury", target_lon: 123.45 } },
   { id: "natal-sidereal-koch", tool: "natal_chart",
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46,
       house_system: "koch", zodiac: "sidereal:lahiri" } },

@@ -184,12 +184,110 @@ for alt in (-1.0, 0.0, 1.0, 5.0, 10.0, 25.0, 45.0, 80.0):
                            swe.refrac(alt, 1013.25, 15.0, swe.TRUE_TO_APP)) * 3600)
 report("refraction true->apparent", worst, n=8)
 
+# ---- events: rise/set/transit, crossings, phases, true lilith -------------
+from astroengine import events as EV
+
+random.seed(5)
+RKINDS = [("rise", swe.CALC_RISE), ("set", swe.CALC_SET),
+          ("mtransit", swe.CALC_MTRANSIT), ("itransit", swe.CALC_ITRANSIT)]
+for body, sb in [("sun", swe.SUN), ("moon", swe.MOON), ("mars", swe.MARS)]:
+    worst = 0.0
+    nn = 0
+    mismatch = 0
+    for glon, glat in [(-82.46, 27.95), (-0.12, 51.5), (151.21, -33.87), (-21.9, 64.1)]:
+        for _ in range(3):
+            jd0 = julian_day(1955, 1, 1) + random.random() * 23000
+            for kind, flag in RKINDS:
+                try:
+                    res = swe.rise_trans(jd0, sb, flag, (glon, glat, 0.0), 1013.25, 15.0, FLG)
+                    t_swe = res[1][0] if res[0] == 0 else None
+                except swe.Error:
+                    t_swe = None
+                t_us = EV.rise_set(eng, body, jd0, glat, glon, kind=kind)
+                if (t_swe is None) != (t_us is None):
+                    mismatch += 1
+                elif t_swe is not None:
+                    nn += 1
+                    worst = max(worst, abs(t_us - t_swe) * 86400)
+    report(f"{body} rise/set/transit", worst, unit=" s", n=nn)
+    if mismatch:
+        print(f"  !! polar no-event mismatch x{mismatch}")
+
+worst = 0.0
+for _ in range(8):
+    jd0 = jd_tt(julian_day(1950, 1, 1) + random.random() * 40000)
+    target = random.uniform(0, 360)
+    t_swe = swe.solcross(target, jd0, FLG)
+    hits = [jd_tt(h) for h in EV.crossings(eng, "sun", target, jd0 - 0.1, jd0 + 400)]
+    worst = max(worst, min(abs(h - t_swe) for h in hits) * 86400)
+    t_swe = swe.mooncross(target, jd0, FLG)
+    hits = [jd_tt(h) for h in EV.crossings(eng, "moon", target, jd0 - 0.1, jd0 + 40)]
+    worst = max(worst, min(abs(h - t_swe) for h in hits) * 86400)
+report("crossings (sun+moon)", worst, unit=" s", n=16)
+
+worst = 0.0
+jd0 = julian_day(1988, 2, 1)
+phases = EV.lunar_phases(eng, jd0, jd0 + 60)
+for t, name in phases:
+    angle = {"new": 0, "first_quarter": 90, "full": 180, "last_quarter": 270}[name]
+    jde = jd_tt(t)
+
+    def f(x):
+        m = swe.calc(x, swe.MOON, FLG)[0][0]
+        s = swe.calc(x, swe.SUN, FLG)[0][0]
+        return (m - s - angle + 180) % 360 - 180
+    a, b = jde - 0.2, jde + 0.2
+    for _ in range(50):
+        m_ = (a + b) / 2
+        if f(a) * f(m_) <= 0:
+            b = m_
+        else:
+            a = m_
+    worst = max(worst, abs(jde - (a + b) / 2) * 86400)
+report("lunar phases", worst, unit=" s", n=len(phases))
+
+# stations are ill-conditioned (speed-zero slope ~0.01 deg/day^2): minutes
+# of timing noise from sub-arcsecond model differences is expected
+worst = 0.0
+nst = 0
+for body, sb in [("mercury", swe.MERCURY), ("saturn", swe.SATURN)]:
+    jd0 = julian_day(1975, 1, 1)
+    for t, _d in EV.stations(eng, body, jd0, jd0 + 700):
+        nst += 1
+        jde = jd_tt(t)
+
+        def spd(x):
+            return swe.calc(x, sb, FLG | swe.FLG_SPEED)[0][3]
+        a, b = jde - 1.5, jde + 1.5
+        for _ in range(50):
+            m_ = (a + b) / 2
+            if spd(a) * spd(m_) <= 0:
+                b = m_
+            else:
+                a = m_
+        worst = max(worst, abs(jde - (a + b) / 2) * 86400)
+report("stations", worst, unit=" s", n=nst)
+
+# true lilith: hypersensitive to the lunar theory; SE-Moshier vs our DE423
+# fit dominates the difference (see core._osc_apogee_from_state)
+worst = 0.0
+for jd in JDS[:60]:
+    jde = jd_tt(jd)
+    p = eng.position("true_lilith", jd)
+    ref, _ = swe.calc(jde, swe.OSCU_APOG, FLG)
+    worst = max(worst, arc(p["lon"], ref[0]))
+report("true lilith (osc apogee)", worst, n=60)
+
 print()
 # az/alt and pheno phase angle carry ΔT-model and sun-moon-distance noise;
 # they get wider tolerances than positions.
 TOL = {"az/alt (mars)": 30.0, "pheno phase angle": 300.0,
-       "pheno elongation": 10.0}
+       "pheno elongation": 10.0, "true lilith (osc apogee)": 200.0}
+TOL_S = {"sun rise/set/transit": 1.0, "moon rise/set/transit": 2.0,
+         "mars rise/set/transit": 1.0, "crossings (sun+moon)": 10.0,
+         "lunar phases": 10.0, "stations": 180.0}
 fails = [r for r in rows if (r[2] == '"' and r[1] > TOL.get(r[0], 5.0))
+         or (r[2] == " s" and r[1] > TOL_S.get(r[0], 10.0))
          or (r[2] == " mag" and r[1] > 0.1)
          or (r[2] == " min" and r[1] > 0.05)
          or (r[2] == " " and r[1] > 0.001)]

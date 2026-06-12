@@ -17,7 +17,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { realpathSync } from "node:fs";
-import { Engine, BODIES, Body, julianDay, mod } from "caelus";
+import {
+  Engine, BODIES, Body, julianDay, mod,
+  riseSet, crossings, lunarPhases, stations, RiseKind,
+} from "caelus";
 import { loadNodeData } from "caelus/node";
 
 const require = createRequire(import.meta.url);
@@ -153,6 +156,15 @@ export const rectificationGridOut = z.object({
   asc_sign_changes: z.array(z.string()),
   grid: z.array(z.object({ utc: z.string(), asc: z.string(), mc: z.string() })),
 });
+export const skyEventsOut = z.object({
+  start: z.string(),
+  end: z.string(),
+  events: z.array(z.object({
+    t: z.string(),
+    kind: z.enum(["rise", "set", "mtransit", "itransit", "phase", "station", "crossing"]),
+    detail: z.string().optional(),
+  })),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -160,6 +172,7 @@ export const OUTPUT_SCHEMAS = {
   synastry: synastryOut,
   find_aspect_dates: findAspectDatesOut,
   rectification_grid: rectificationGridOut,
+  sky_events: skyEventsOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -366,6 +379,68 @@ export function buildServer(): McpServer {
       });
     }
     return text({ date: date.slice(0, 10), lat, lon, asc_sign_changes: boundaries, grid });
+  });
+
+  server.registerTool("sky_events", {
+    description:
+      "Sky events in a UTC date range: rise/set/meridian transits (need lat+lon+body), lunar phases (new/quarters/full), stations (body turns retrograde/direct; needs body), zodiac degree crossings (needs body + target_lon). Times to the second vs Swiss Ephemeris (stations to ~1 min: ill-conditioned by nature). Range <= 370 days.",
+    inputSchema: {
+      start: z.string().describe("UTC ISO start date (convert from local first)"),
+      end: z.string().describe("UTC ISO end date; range <= 370 days"),
+      kinds: z.array(z.enum(["rise", "set", "mtransit", "itransit", "phase", "station", "crossing"]))
+        .min(1).describe("Event kinds to include"),
+      body: z.enum(BODIES as unknown as [string, ...string[]]).optional()
+        .describe("Required for rise/set/transit/station/crossing"),
+      lat: latSchema.optional().describe("Required for rise/set/transit"),
+      lon: lonSchema.optional().describe("Required for rise/set/transit"),
+      target_lon: z.number().min(0).max(360).optional()
+        .describe("Zodiac longitude for 'crossing', degrees"),
+      zodiac: zodiacSchema.describe("Zodiac for 'crossing' longitudes"),
+    },
+  }, async ({ start, end, kinds, body, lat, lon, target_lon, zodiac }) => {
+    const jd0 = jdFromIso(start);
+    const jd1 = jdFromIso(end);
+    if (jd1 - jd0 > 370) throw new Error("Range too large (max 370 days)");
+    const iso = (jd: number) =>
+      new Date((jd - 2440587.5) * 86400000).toISOString().slice(0, 19) + "Z";
+    const events: Array<{ t: string; kind: string; detail?: string }> = [];
+    const riseKinds = kinds.filter((k) =>
+      k === "rise" || k === "set" || k === "mtransit" || k === "itransit");
+    if (riseKinds.length) {
+      if (body === undefined || lat === undefined || lon === undefined) {
+        throw new Error("rise/set/transit need body, lat, lon");
+      }
+      for (const k of riseKinds) {
+        let t = jd0;
+        while (t < jd1 && events.length < 200) {
+          const hit = riseSet(engine, body as Body, t, lat, lon, k as RiseKind);
+          if (hit === null || hit > jd1) break;
+          events.push({ t: iso(hit), kind: k });
+          t = hit + 1e-4;
+        }
+      }
+    }
+    if (kinds.includes("phase")) {
+      for (const [t, name] of lunarPhases(engine, jd0, jd1)) {
+        events.push({ t: iso(t), kind: "phase", detail: name });
+      }
+    }
+    if (kinds.includes("station")) {
+      if (body === undefined) throw new Error("station needs body");
+      for (const [t, dir] of stations(engine, body as Body, jd0, jd1)) {
+        events.push({ t: iso(t), kind: "station", detail: dir });
+      }
+    }
+    if (kinds.includes("crossing")) {
+      if (body === undefined || target_lon === undefined) {
+        throw new Error("crossing needs body and target_lon");
+      }
+      for (const t of crossings(engine, body as Body, target_lon, jd0, jd1, zodiac)) {
+        events.push({ t: iso(t), kind: "crossing", detail: `${target_lon}°` });
+      }
+    }
+    events.sort((a, b) => a.t.localeCompare(b.t));
+    return text({ start, end, events });
   });
 
   return server;

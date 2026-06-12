@@ -128,6 +128,7 @@ def regen_from_template(old):
 
     jds = [row["jd_ut"] for row in old["longitudes"]]
     out["sidereal"], out["extras"] = v03_sections(eng, jds)
+    out["events"] = events_section(eng)
 
     out["chart"] = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus")
     out["chart_sidereal"] = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46,
@@ -218,6 +219,26 @@ def create_fresh():
         "house_system_requested": cp["house_system_requested"],
     }
     return out
+
+
+def events_section(eng):
+    """v0.4 fixtures: rise/set/transit, crossings, phases, stations,
+    osculating lilith. Polar June sun has no set (midnight sun): the None
+    is part of the contract."""
+    from astroengine import events as EV
+    jd0 = julian_day(1990, 6, 10)
+    return {
+        "jd0": jd0,
+        "sun_rise_tampa": EV.rise_set(eng, "sun", jd0, 27.95, -82.46, kind="rise"),
+        "moon_set_london": EV.rise_set(eng, "moon", jd0, 51.5, -0.12, kind="set"),
+        "mars_mtransit_sydney": EV.rise_set(eng, "mars", jd0, -33.87, 151.21, kind="mtransit"),
+        "sun_set_svalbard_june": EV.rise_set(eng, "sun", jd0, 78.2, 15.6, kind="set"),
+        "sun_cross_0": EV.crossings(eng, "sun", 0.0, jd0, jd0 + 400),
+        "moon_cross_123": EV.crossings(eng, "moon", 123.45, jd0, jd0 + 30),
+        "phases_30d": EV.lunar_phases(eng, jd0, jd0 + 30),
+        "mercury_stations_200d": EV.stations(eng, "mercury", jd0, jd0 + 200),
+        "true_lilith": eng.position("true_lilith", jd0),
+    }
 
 
 def main():

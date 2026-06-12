@@ -263,6 +263,122 @@
       ]
     }
   },
+  "sky-events-week": {
+    "tool": "sky_events",
+    "args": {
+      "start": "1990-06-10T00:00:00Z",
+      "end": "1990-06-17T00:00:00Z",
+      "kinds": [
+        "rise",
+        "set",
+        "phase"
+      ],
+      "body": "sun",
+      "lat": 27.95,
+      "lon": -82.46
+    },
+    "payload": {
+      "start": "1990-06-10T00:00:00Z",
+      "end": "1990-06-17T00:00:00Z",
+      "events": [
+        {
+          "t": "1990-06-10T00:25:14Z",
+          "kind": "set"
+        },
+        {
+          "t": "1990-06-10T10:32:55Z",
+          "kind": "rise"
+        },
+        {
+          "t": "1990-06-11T00:25:38Z",
+          "kind": "set"
+        },
+        {
+          "t": "1990-06-11T10:32:56Z",
+          "kind": "rise"
+        },
+        {
+          "t": "1990-06-12T00:26:01Z",
+          "kind": "set"
+        },
+        {
+          "t": "1990-06-12T10:32:58Z",
+          "kind": "rise"
+        },
+        {
+          "t": "1990-06-13T00:26:23Z",
+          "kind": "set"
+        },
+        {
+          "t": "1990-06-13T10:33:01Z",
+          "kind": "rise"
+        },
+        {
+          "t": "1990-06-14T00:26:44Z",
+          "kind": "set"
+        },
+        {
+          "t": "1990-06-14T10:33:05Z",
+          "kind": "rise"
+        },
+        {
+          "t": "1990-06-15T00:27:05Z",
+          "kind": "set"
+        },
+        {
+          "t": "1990-06-15T10:33:10Z",
+          "kind": "rise"
+        },
+        {
+          "t": "1990-06-16T00:27:24Z",
+          "kind": "set"
+        },
+        {
+          "t": "1990-06-16T04:47:41Z",
+          "kind": "phase",
+          "detail": "last_quarter"
+        },
+        {
+          "t": "1990-06-16T10:33:17Z",
+          "kind": "rise"
+        }
+      ]
+    }
+  },
+  "sky-events-station-crossing": {
+    "tool": "sky_events",
+    "args": {
+      "start": "1990-06-10T00:00:00Z",
+      "end": "1990-12-10T00:00:00Z",
+      "kinds": [
+        "station",
+        "crossing"
+      ],
+      "body": "mercury",
+      "target_lon": 123.45
+    },
+    "payload": {
+      "start": "1990-06-10T00:00:00Z",
+      "end": "1990-12-10T00:00:00Z",
+      "events": [
+        {
+          "t": "1990-07-13T18:06:58Z",
+          "kind": "crossing",
+          "detail": "123.45°"
+        },
+        {
+          "t": "1990-08-25T14:07:33Z",
+          "kind": "station",
+          "detail": "retrograde"
+        },
+        {
+          "t": "1990-09-17T12:05:31Z",
+          "kind": "station",
+          "detail": "direct"
+        }
+      ]
+    }
+  },
   "natal-sidereal-koch": {
     "tool": "natal_chart",
     "args": {

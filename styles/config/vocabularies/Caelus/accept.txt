@@ -71,3 +71,4 @@ semver
 Citra
 Mallama
 Saemundsson
+allowlist

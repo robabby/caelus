@@ -491,6 +491,69 @@ export function meanLilith(data: EngineData, jde: number): [number, number] {
   return [lon, lat];
 }
 
+const GM_EARTH_MOON = 403503.2356 * 86400.0 ** 2; // km^3/day^2
+
+/** Osculating apogee point from a geocentric lunar state vector (km,
+ *  km/day): apparent ecliptic lon/lat of date (rad) + distance (km).
+ *  Hypersensitive to the lunar theory: the eccentricity vector amplifies
+ *  position/velocity differences ~1/e (~18x). Swiss Ephemeris in Moshier
+ *  mode differs from our DE423 fit by up to ~3 arcmin here; published
+ *  'True Lilith' values disagree across software at that scale. */
+function oscApogeeFromState(
+  data: EngineData, x: number, y: number, z: number,
+  vx: number, vy: number, vz: number, jde: number, frameJ2000: boolean,
+): [number, number, number] {
+  const mu = GM_EARTH_MOON;
+  const r = Math.sqrt(x * x + y * y + z * z);
+  const v2 = vx * vx + vy * vy + vz * vz;
+  const rv = x * vx + y * vy + z * vz;
+  const ex = (v2 * x - rv * vx) / mu - x / r;
+  const ey = (v2 * y - rv * vy) / mu - y / r;
+  const ez = (v2 * z - rv * vz) / mu - z / r;
+  const e = Math.sqrt(ex * ex + ey * ey + ez * ez);
+  const a = 1.0 / (2.0 / r - v2 / mu);
+  const s = (a * (1 + e)) / e;
+  let px = -ex * s;
+  let py = -ey * s;
+  let pz = -ez * s;
+  if (frameJ2000) [px, py, pz] = eclJ2000ToEclDate([px, py, pz], jde);
+  const lon = mod(Math.atan2(py, px) + nutation(data, jde)[0], TWO_PI);
+  const lat = Math.atan2(pz, Math.hypot(px, py));
+  return [lon, lat, Math.sqrt(px * px + py * py + pz * pz)];
+}
+
+/** Osculating lunar apogee (True Lilith) from the Chebyshev moon. */
+export function oscApogeePrecise(
+  data: EngineData, cheb: ChebSeries, jde: number,
+): [number, number, number] {
+  const [[x, y, z], [vx, vy, vz]] = cheb.xyzVel(jde);
+  return oscApogeeFromState(data, x, y, z, vx, vy, vz, jde, true);
+}
+
+/** Series fallback outside the Chebyshev range (same finite-difference
+ *  state as the true-node fallback). */
+export function oscApogeeSeries(
+  data: EngineData, jde: number,
+): [number, number, number] {
+  const h = 0.01;
+  const xyz = (t: number): [number, number, number] => {
+    const [lon, lat, dist] = moonGeometric(data, t);
+    return [
+      dist * Math.cos(lat) * Math.cos(lon),
+      dist * Math.cos(lat) * Math.sin(lon),
+      dist * Math.sin(lat),
+    ];
+  };
+  const [x0, y0, z0] = xyz(jde - h);
+  const [x1, y1, z1] = xyz(jde + h);
+  const [x, y, z] = xyz(jde);
+  return oscApogeeFromState(
+    data, x, y, z,
+    (x1 - x0) / (2 * h), (y1 - y0) / (2 * h), (z1 - z0) / (2 * h),
+    jde, false,
+  );
+}
+
 export const EARTH_RADIUS_AU = 6378.14 / 149597870.7;
 const EARTH_FLAT = 0.99664719; // 1 - f, IAU 1976 figure
 
