@@ -439,29 +439,120 @@ export function trueNodeSeries(data: EngineData, jde: number): number {
   return mod(node + nutation(data, jde)[0], TWO_PI);
 }
 
+// ---------------------------------------------------------------- frames+
+/** Ecliptic lon/lat -> right ascension, declination (all radians). */
+export function equatorial(
+  lon: number, lat: number, eps: number,
+): [number, number] {
+  const ra = mod(Math.atan2(
+    Math.sin(lon) * Math.cos(eps) - Math.tan(lat) * Math.sin(eps), Math.cos(lon),
+  ), TWO_PI);
+  const dec = Math.asin(
+    Math.sin(lat) * Math.cos(eps) + Math.cos(lat) * Math.sin(eps) * Math.sin(lon),
+  );
+  return [ra, dec];
+}
+
+/** Mean ayanamsa at J2000.0 (degrees) per mode. Standard epoch anchors
+ *  (matched to Swiss Ephemeris 2.10 to 1e-9 deg); propagation uses IAU 1976
+ *  ecliptic precession. Agreement with Swiss Ephemeris over 1900-2099 is
+ *  <=0.30 arcsec (precession-model difference: SE uses Vondrak 2011). */
+export const AYANAMSA_J2000: Record<string, number> = {
+  lahiri: 23.857092325,
+  fagan_bradley: 24.740299966,
+  krishnamurti: 23.760240012,
+  raman: 22.410791012,
+  yukteshwar: 22.478803000,
+};
+
+/** Mean ayanamsa in degrees. Sidereal longitude = (tropical true-equinox
+ *  longitude - nutation in longitude) - ayanamsa: the sidereal zodiac is
+ *  anchored to the mean equinox. */
+export function ayanamsa(jde: number, mode: string): number {
+  const a0 = AYANAMSA_J2000[mode];
+  if (a0 === undefined) throw new Error(`unknown ayanamsa ${mode}`);
+  const [lon] = precessEcliptic(a0 * DEG, 0.0, J2000, jde);
+  return lon / DEG;
+}
+
+/** Mean lunar apogee (Black Moon Lilith) on the inclined lunar orbit:
+ *  apparent lon (true equinox) and orbital latitude, radians. */
+export function meanLilith(data: EngineData, jde: number): [number, number] {
+  const T = (jde - J2000) / 36525.0;
+  const [Lp, , , Mp] = moonFundamental(T);
+  const apog = Lp - Mp + Math.PI; // mean perigee + 180
+  const om = (125.0445479 - 1934.1362891 * T + 0.0020754 * T * T
+    + T ** 3 / 467441 - T ** 4 / 60616000) * DEG;
+  const inc = 5.145396374 * DEG;
+  const u = apog - om;
+  const lat = Math.asin(Math.sin(inc) * Math.sin(u));
+  let lon = om + Math.atan2(Math.cos(inc) * Math.sin(u), Math.cos(u));
+  lon = mod(lon + nutation(data, jde)[0], TWO_PI);
+  return [lon, lat];
+}
+
+export const EARTH_RADIUS_AU = 6378.14 / 149597870.7;
+const EARTH_FLAT = 0.99664719; // 1 - f, IAU 1976 figure
+
+/** Diurnal parallax in ecliptic coordinates (Meeus ch. 11/40).
+ *  lst = local apparent sidereal time (rad). Returns [lon, lat, distAu]. */
+export function topocentricEcl(
+  lon: number, lat: number, distAu: number, lst: number,
+  obsLat: number, altM: number, eps: number,
+): [number, number, number] {
+  const u = Math.atan(EARTH_FLAT * Math.tan(obsLat));
+  const rs = EARTH_FLAT * Math.sin(u) + (altM / 6378140.0) * Math.sin(obsLat);
+  const rc = Math.cos(u) + (altM / 6378140.0) * Math.cos(obsLat);
+  const ox = EARTH_RADIUS_AU * rc * Math.cos(lst);
+  const oy = EARTH_RADIUS_AU * rc * Math.sin(lst);
+  const oz = EARTH_RADIUS_AU * rs;
+  const [ra, dec] = equatorial(lon, lat, eps);
+  const bx = distAu * Math.cos(dec) * Math.cos(ra);
+  const by = distAu * Math.cos(dec) * Math.sin(ra);
+  const bz = distAu * Math.sin(dec);
+  const tx = bx - ox;
+  const ty = by - oy;
+  const tz = bz - oz;
+  const ra2 = Math.atan2(ty, tx);
+  const dec2 = Math.atan2(tz, Math.hypot(tx, ty));
+  const lon2 = mod(Math.atan2(
+    Math.sin(ra2) * Math.cos(eps) + Math.tan(dec2) * Math.sin(eps), Math.cos(ra2),
+  ), TWO_PI);
+  const lat2 = Math.asin(
+    Math.sin(dec2) * Math.cos(eps) - Math.cos(dec2) * Math.sin(eps) * Math.sin(ra2),
+  );
+  return [lon2, lat2, Math.sqrt(tx * tx + ty * ty + tz * tz)];
+}
+
 // ---------------------------------------------------------------- pluto
+/** Meeus ch.37 heliocentric Pluto, ecliptic J2000: [l rad, b rad, r AU]. */
+export function plutoHeliocentric(
+  data: EngineData, jde: number,
+): [number, number, number] {
+  const T = (jde - J2000) / 36525.0;
+  const J = (34.35 + 3034.9057 * T) * DEG;
+  const S = (50.08 + 1222.1138 * T) * DEG;
+  const P = (238.96 + 144.96 * T) * DEG;
+  let l = 0.0; let b = 0.0; let r = 0.0;
+  for (const [i, j, k, lA, lB, bA, bB, rA, rB] of data.pluto) {
+    const a = i * J + j * S + k * P;
+    const sa = Math.sin(a); const ca = Math.cos(a);
+    l += lA * sa + lB * ca;
+    b += bA * sa + bB * ca;
+    r += rA * sa + rB * ca;
+  }
+  return [
+    (l + 238.958116 + 144.96 * T) * DEG,
+    (b - 3.908239) * DEG,
+    r + 40.7241346,
+  ];
+}
+
 export function plutoApparent(
   data: EngineData, jde: number,
 ): [number, number, number] {
-  const helioJ2000 = (tJde: number): [number, number, number] => {
-    const T = (tJde - J2000) / 36525.0;
-    const J = (34.35 + 3034.9057 * T) * DEG;
-    const S = (50.08 + 1222.1138 * T) * DEG;
-    const P = (238.96 + 144.96 * T) * DEG;
-    let l = 0.0; let b = 0.0; let r = 0.0;
-    for (const [i, j, k, lA, lB, bA, bB, rA, rB] of data.pluto) {
-      const a = i * J + j * S + k * P;
-      const sa = Math.sin(a); const ca = Math.cos(a);
-      l += lA * sa + lB * ca;
-      b += bA * sa + bB * ca;
-      r += rA * sa + rB * ca;
-    }
-    return [
-      (l + 238.958116 + 144.96 * T) * DEG,
-      (b - 3.908239) * DEG,
-      r + 40.7241346,
-    ];
-  };
+  const helioJ2000 = (tJde: number): [number, number, number] =>
+    plutoHeliocentric(data, tJde);
   const [L0d, B0d, R0d] = vsopHeliocentric(data.vsop.earth, jde);
   const [Lj, Bj] = precessEcliptic(L0d, B0d, jde, J2000);
   const ex = R0d * Math.cos(Bj) * Math.cos(Lj);

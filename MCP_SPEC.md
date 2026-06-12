@@ -65,8 +65,14 @@ Progressions/returns/solar-arc (compose from primitives; dedicated tools in
 a later version if needed), Vedic ayanamsas (`zodiac: tropical|sidereal(<ayanamsa>)`
 later), interpretation text (KG server's job).
 
-## v0.3 surface (decided, see docs/gap-analysis.md)
-New engine features do not become new tools. Sidereal modes and additional
-house systems arrive as parameters on the existing six. Eclipses, rise/set,
+## v0.3 surface (shipped)
+New engine features do not become new tools. `natal_chart`, `current_sky`,
+`transits`, and `synastry` take `zodiac` (`tropical` default, or
+`sidereal:<ayanamsa>`: lahiri, fagan_bradley, krishnamurti, raman,
+yukteshwar); `find_aspect_dates` searches in either zodiac. `house_system`
+widened to 12: placidus, whole_sign, equal, porphyry, koch, regiomontanus,
+campanus, alcabitius, morinus, meridian, polich_page, vehlow (Placidus and
+Koch fall back to whole_sign above the polar circles, reported as before).
+Payloads gain a `zodiac` key only when sidereal. Eclipses, rise/set,
 phases, and stations share one new `sky_events(range, kinds, lat?, lon?)`
 tool when Tier 2/3 lands: seven tools total, still outcome-level.

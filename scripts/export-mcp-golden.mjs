@@ -23,6 +23,9 @@ export const GOLDEN_CASES = [
   // --- happy path, one per tool ---
   { id: "natal-tampa", tool: "natal_chart",
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
+  { id: "natal-sidereal-koch", tool: "natal_chart",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46,
+      house_system: "koch", zodiac: "sidereal:lahiri" } },
   { id: "current-sky-j2000", tool: "current_sky",
     args: { date: "2000-01-01T12:00:00Z", lat: 51.48, lon: 0 } },
   { id: "transits-2026", tool: "transits",

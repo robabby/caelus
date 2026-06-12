@@ -4,7 +4,7 @@
     {
       "id": "golden-check-count",
       "source": "stats.checks",
-      "render": ["1,438", "1438"],
+      "render": ["3,087", "3087"],
       "competing": "\\b1,4\\d\\d\\b(?=[^\\n]{0,40}(golden|check|fixture))",
       "appearsIn": [
         "ARCHITECTURE.md",

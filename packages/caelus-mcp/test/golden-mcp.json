@@ -263,6 +263,273 @@
       ]
     }
   },
+  "natal-sidereal-koch": {
+    "tool": "natal_chart",
+    "args": {
+      "date": "1990-06-10T14:30:00Z",
+      "lat": 27.95,
+      "lon": -82.46,
+      "house_system": "koch",
+      "zodiac": "sidereal:lahiri"
+    },
+    "payload": {
+      "utc": "1990-06-10T14:30:00Z",
+      "houses": "koch",
+      "zodiac": "sidereal:lahiri",
+      "bodies": {
+        "sun": {
+          "lon": 55.72,
+          "pos": "25°43'Tau",
+          "house": 11,
+          "speed": 0.96
+        },
+        "moon": {
+          "lon": 259.56,
+          "pos": "19°33'Sgr",
+          "house": 6,
+          "speed": 12.19
+        },
+        "mercury": {
+          "lon": 34.12,
+          "pos": "4°07'Tau",
+          "house": 10,
+          "speed": 1.49
+        },
+        "venus": {
+          "lon": 19.3,
+          "pos": "19°18'Ari",
+          "house": 10,
+          "speed": 1.17
+        },
+        "mars": {
+          "lon": 343.78,
+          "pos": "13°46'Psc",
+          "house": 8,
+          "speed": 0.72
+        },
+        "jupiter": {
+          "lon": 81.11,
+          "pos": "21°06'Gem",
+          "house": 12,
+          "speed": 0.21
+        },
+        "saturn": {
+          "lon": 270.58,
+          "pos": "0°34'Cap",
+          "house": 6,
+          "rx": true,
+          "speed": -0.05
+        },
+        "uranus": {
+          "lon": 254.63,
+          "pos": "14°37'Sgr",
+          "house": 5,
+          "rx": true,
+          "speed": -0.04
+        },
+        "neptune": {
+          "lon": 260.11,
+          "pos": "20°06'Sgr",
+          "house": 6,
+          "rx": true,
+          "speed": -0.02
+        },
+        "pluto": {
+          "lon": 201.78,
+          "pos": "21°46'Lib",
+          "house": 4,
+          "rx": true,
+          "speed": -0.02
+        },
+        "chiron": {
+          "lon": 81.84,
+          "pos": "21°50'Gem",
+          "house": 12,
+          "speed": 0.1
+        },
+        "mean_node": {
+          "lon": 286.23,
+          "pos": "16°13'Cap",
+          "house": 6,
+          "rx": true,
+          "speed": -0.05
+        },
+        "true_node": {
+          "lon": 284.41,
+          "pos": "14°24'Cap",
+          "house": 6,
+          "rx": true,
+          "speed": -0.07
+        }
+      },
+      "angles": {
+        "asc": 107.17,
+        "ascPos": "17°10'Cnc",
+        "mc": 12.31,
+        "mcPos": "12°18'Ari"
+      },
+      "cusps": [
+        107.17,
+        135.23,
+        163.91,
+        192.31,
+        229.14,
+        259.31,
+        287.17,
+        315.23,
+        343.91,
+        12.31,
+        49.14,
+        79.31
+      ],
+      "aspects": [
+        {
+          "a": "moon",
+          "b": "venus",
+          "aspect": "trine",
+          "orb": 0.25
+        },
+        {
+          "a": "moon",
+          "b": "mars",
+          "aspect": "square",
+          "orb": 5.78
+        },
+        {
+          "a": "moon",
+          "b": "jupiter",
+          "aspect": "opposition",
+          "orb": 1.55
+        },
+        {
+          "a": "moon",
+          "b": "uranus",
+          "aspect": "conjunction",
+          "orb": 4.93
+        },
+        {
+          "a": "moon",
+          "b": "neptune",
+          "aspect": "conjunction",
+          "orb": 0.55
+        },
+        {
+          "a": "moon",
+          "b": "pluto",
+          "aspect": "sextile",
+          "orb": 2.22
+        },
+        {
+          "a": "moon",
+          "b": "chiron",
+          "aspect": "opposition",
+          "orb": 2.29
+        },
+        {
+          "a": "mercury",
+          "b": "saturn",
+          "aspect": "trine",
+          "orb": 3.54
+        },
+        {
+          "a": "venus",
+          "b": "jupiter",
+          "aspect": "sextile",
+          "orb": 1.8
+        },
+        {
+          "a": "venus",
+          "b": "uranus",
+          "aspect": "trine",
+          "orb": 4.68
+        },
+        {
+          "a": "venus",
+          "b": "neptune",
+          "aspect": "trine",
+          "orb": 0.81
+        },
+        {
+          "a": "venus",
+          "b": "pluto",
+          "aspect": "opposition",
+          "orb": 2.47
+        },
+        {
+          "a": "venus",
+          "b": "chiron",
+          "aspect": "sextile",
+          "orb": 2.54
+        },
+        {
+          "a": "mars",
+          "b": "uranus",
+          "aspect": "square",
+          "orb": 0.84
+        },
+        {
+          "a": "mars",
+          "b": "neptune",
+          "aspect": "square",
+          "orb": 6.33
+        },
+        {
+          "a": "jupiter",
+          "b": "uranus",
+          "aspect": "opposition",
+          "orb": 6.48
+        },
+        {
+          "a": "jupiter",
+          "b": "neptune",
+          "aspect": "opposition",
+          "orb": 1
+        },
+        {
+          "a": "jupiter",
+          "b": "pluto",
+          "aspect": "trine",
+          "orb": 0.67
+        },
+        {
+          "a": "jupiter",
+          "b": "chiron",
+          "aspect": "conjunction",
+          "orb": 0.73
+        },
+        {
+          "a": "uranus",
+          "b": "neptune",
+          "aspect": "conjunction",
+          "orb": 5.48
+        },
+        {
+          "a": "uranus",
+          "b": "chiron",
+          "aspect": "opposition",
+          "orb": 7.22
+        },
+        {
+          "a": "neptune",
+          "b": "pluto",
+          "aspect": "sextile",
+          "orb": 1.67
+        },
+        {
+          "a": "neptune",
+          "b": "chiron",
+          "aspect": "opposition",
+          "orb": 1.73
+        },
+        {
+          "a": "pluto",
+          "b": "chiron",
+          "aspect": "trine",
+          "orb": 0.07
+        }
+      ]
+    }
+  },
   "current-sky-j2000": {
     "tool": "current_sky",
     "args": {
@@ -1842,105 +2109,105 @@
         "sun": {
           "lon": 249.11,
           "pos": "9°06'Sgr",
-          "house": 2,
+          "house": 8,
           "speed": 1.01
         },
         "moon": {
           "lon": 111.71,
           "pos": "21°42'Cnc",
-          "house": 9,
+          "house": 3,
           "speed": 12.38
         },
         "mercury": {
           "lon": 243.36,
           "pos": "3°21'Sgr",
-          "house": 2,
+          "house": 8,
           "rx": true,
           "speed": -1.23
         },
         "venus": {
           "lon": 237.28,
           "pos": "27°16'Sco",
-          "house": 1,
+          "house": 7,
           "speed": 1.26
         },
         "mars": {
           "lon": 201.69,
           "pos": "21°41'Lib",
-          "house": 12,
+          "house": 6,
           "speed": 0.62
         },
         "jupiter": {
           "lon": 312.39,
           "pos": "12°23'Aqr",
-          "house": 4,
+          "house": 10,
           "speed": 0.17
         },
         "saturn": {
           "lon": 241.7,
           "pos": "1°41'Sgr",
-          "house": 2,
+          "house": 8,
           "speed": 0.12
         },
         "uranus": {
           "lon": 257.65,
           "pos": "17°39'Sgr",
-          "house": 2,
+          "house": 8,
           "speed": 0.06
         },
         "neptune": {
           "lon": 272.45,
           "pos": "2°26'Cap",
-          "house": 3,
+          "house": 9,
           "speed": 0.04
         },
         "pluto": {
           "lon": 216.01,
           "pos": "6°00'Sco",
-          "house": 1,
+          "house": 7,
           "speed": 0.04
         },
         "chiron": {
           "lon": 72.12,
           "pos": "12°07'Gem",
-          "house": 8,
+          "house": 2,
           "rx": true,
           "speed": -0.06
         },
         "mean_node": {
           "lon": 37.44,
           "pos": "7°26'Tau",
-          "house": 7,
+          "house": 1,
           "rx": true,
           "speed": -0.05
         },
         "true_node": {
           "lon": 38.83,
           "pos": "8°49'Tau",
-          "house": 7,
+          "house": 1,
           "rx": true,
           "speed": -0.09
         }
       },
       "angles": {
-        "asc": 210.12,
-        "ascPos": "0°07'Sco",
+        "asc": 30.12,
+        "ascPos": "0°07'Tau",
         "mc": 223.22,
         "mcPos": "13°13'Sco"
       },
       "cusps": [
-        210,
-        240,
-        270,
-        300,
-        330,
-        0,
         30,
         60,
         90,
         120,
         150,
-        180
+        180,
+        210,
+        240,
+        270,
+        300,
+        330,
+        0
       ],
       "aspects": [
         {

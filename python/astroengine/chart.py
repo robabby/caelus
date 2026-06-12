@@ -143,7 +143,7 @@ class Engine:
                 "ra": ra / DEG, "dec": dec / DEG}
 
     def chart(self, y, mo, d, h, mi, s, lat, lon_east, house_system="placidus",
-              zodiac="tropical", topocentric=False, extra_bodies=None):
+              zodiac="tropical", topocentric=False, extra_bodies=None, orbs=None):
         """Full natal chart. Time is UT. East longitude positive."""
         mode = _parse_zodiac(zodiac)
         jd_ut = julian_day(y, mo, d, h, mi, s)
@@ -199,7 +199,7 @@ class Engine:
             "angles": {"asc": out_deg(asc), "mc": out_deg(mc),
                        "vertex": out_deg(vtx), "east_point": out_deg(east)},
             "cusps": cusps_deg,
-            "aspects": find_aspects(bodies),
+            "aspects": find_aspects(bodies, orbs or DEFAULT_ORBS),
         }
 
 

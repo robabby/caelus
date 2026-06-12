@@ -41,7 +41,19 @@ const birth = {
   lat: latSchema,
   lon: lonSchema,
 };
-const houseSys = z.enum(["placidus", "whole_sign", "equal", "porphyry"]).default("placidus");
+const HOUSE_SYSTEMS = [
+  "placidus", "whole_sign", "equal", "porphyry", "koch", "regiomontanus",
+  "campanus", "alcabitius", "morinus", "meridian", "polich_page", "vehlow",
+] as const;
+const houseSys = z.enum(HOUSE_SYSTEMS).default("placidus");
+const ZODIACS = [
+  "tropical", "sidereal:lahiri", "sidereal:fagan_bradley",
+  "sidereal:krishnamurti", "sidereal:raman", "sidereal:yukteshwar",
+] as const;
+const zodiacSchema = z.enum(ZODIACS).default("tropical")
+  .describe("tropical (default) or sidereal:<ayanamsa>");
+type HouseSysT = (typeof HOUSE_SYSTEMS)[number];
+type ZodiacT = (typeof ZODIACS)[number];
 
 function jdFromIso(iso: string): number {
   const d = new Date(iso);
@@ -52,11 +64,15 @@ function jdFromIso(iso: string): number {
   );
 }
 
-function chartPayload(iso: string, lat: number, lon: number, hs: "placidus" | "whole_sign" | "equal" | "porphyry") {
+function chartPayload(
+  iso: string, lat: number, lon: number, hs: HouseSysT,
+  zodiac: ZodiacT = "tropical",
+) {
   const d = new Date(iso);
   const c = engine.chart(
     d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
-    d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), lat, lon, hs,
+    d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), lat, lon,
+    { houseSystem: hs, zodiac },
   );
   const cusps = c.cusps;
   const houseOf = (bl: number) => {
@@ -77,7 +93,8 @@ function chartPayload(iso: string, lat: number, lon: number, hs: "placidus" | "w
   }
   return {
     utc: iso, houses: c.houseSystem,
-    ...(c.houseSystem !== hs ? { houses_requested: hs, houses_fallback_reason: "placidus undefined above polar circles" } : {}),
+    ...(zodiac !== "tropical" ? { zodiac } : {}),
+    ...(c.houseSystem !== hs ? { houses_requested: hs, houses_fallback_reason: `${hs} undefined above polar circles` } : {}),
     bodies,
     angles: { asc: r2(c.angles.asc), ascPos: fmt(c.angles.asc), mc: r2(c.angles.mc), mcPos: fmt(c.angles.mc) },
     cusps: cusps.map(r2),
@@ -102,8 +119,9 @@ const aspectOut = z.object({
 });
 export const chartOut = z.object({
   utc: z.string(),
-  houses: z.enum(["placidus", "whole_sign", "equal", "porphyry"]),
-  houses_requested: z.enum(["placidus", "whole_sign", "equal", "porphyry"]).optional(),
+  houses: z.enum(HOUSE_SYSTEMS),
+  zodiac: z.enum(ZODIACS).optional(),
+  houses_requested: z.enum(HOUSE_SYSTEMS).optional(),
   houses_fallback_reason: z.string().optional(),
   bodies: z.record(z.string(), bodyOut),
   angles: z.object({ asc: z.number(), ascPos: z.string(), mc: z.number(), mcPos: z.string() }),
@@ -151,9 +169,9 @@ export function buildServer(): McpServer {
   server.registerTool("natal_chart", {
     description:
       "A person's birth chart. Requires their exact birth date+time and birthplace (all three: date, lat, lon). Use this — not current_sky — whenever the question is about someone's natal/birth chart. Returns 13 bodies (sun–pluto, chiron, nodes) with sign, house, retrograde, speed; ASC/MC; cusps; major aspects with orbs. Vs Swiss Ephemeris (1900–2099): Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤2.5″ (series valid 1885–2099), Chiron ≤1″, nodes ≤1″.",
-    inputSchema: { ...birth, house_system: houseSys },
-  }, async ({ date, lat, lon, house_system }) =>
-    text(chartPayload(date, lat, lon, house_system)));
+    inputSchema: { ...birth, house_system: houseSys, zodiac: zodiacSchema },
+  }, async ({ date, lat, lon, house_system, zodiac }) =>
+    text(chartPayload(date, lat, lon, house_system, zodiac)));
 
   server.registerTool("current_sky", {
     description:
@@ -163,9 +181,10 @@ export function buildServer(): McpServer {
       lat: latSchema.default(0).describe("Latitude, north positive; default 0 makes houses nominal"),
       lon: lonSchema.default(0).describe("Longitude, EAST positive (Americas are negative); default 0 makes houses nominal"),
       house_system: houseSys,
+      zodiac: zodiacSchema,
     },
-  }, async ({ date, lat, lon, house_system }) =>
-    text(chartPayload(date ?? new Date().toISOString(), lat, lon, house_system)));
+  }, async ({ date, lat, lon, house_system, zodiac }) =>
+    text(chartPayload(date ?? new Date().toISOString(), lat, lon, house_system, zodiac)));
 
   server.registerTool("transits", {
     description:
@@ -175,9 +194,10 @@ export function buildServer(): McpServer {
       transit_date: z.string().optional().describe("UTC ISO date-time of transit moment (convert from local first); omit for now"),
       orb: z.number().min(0.5).max(10).default(3).describe("Max orb in degrees"),
       house_system: houseSys,
+      zodiac: zodiacSchema,
     },
-  }, async ({ date, lat, lon, transit_date, orb, house_system }) => {
-    const natal = chartPayload(date, lat, lon, house_system);
+  }, async ({ date, lat, lon, transit_date, orb, house_system, zodiac }) => {
+    const natal = chartPayload(date, lat, lon, house_system, zodiac);
     const tIso = transit_date ?? new Date().toISOString();
     const jdT = jdFromIso(tIso);
     const ASP: Array<[string, number]> = [
@@ -193,7 +213,7 @@ export function buildServer(): McpServer {
     };
     const transiting: Record<string, unknown> = {};
     for (const tb of BODIES) {
-      const tp = engine.position(tb as Body, jdT);
+      const tp = engine.position(tb as Body, jdT, { zodiac });
       transiting[tb] = { pos: fmt(tp.lon), natal_house: houseOf(tp.lon), ...(tp.retrograde ? { rx: true } : {}) };
       for (const nb of BODIES) {
         const nLon = (natal.bodies as Record<string, { lon: number }>)[nb].lon;
@@ -218,10 +238,11 @@ export function buildServer(): McpServer {
       a: z.object(birth).describe("Person A birth data (UTC date, lat, lon)"),
       b: z.object(birth).describe("Person B birth data (UTC date, lat, lon)"),
       orb: z.number().min(0.5).max(10).default(4).describe("Max orb in degrees"),
+      zodiac: zodiacSchema,
     },
-  }, async ({ a, b, orb }) => {
-    const ca = chartPayload(a.date, a.lat, a.lon, "placidus");
-    const cb = chartPayload(b.date, b.lat, b.lon, "placidus");
+  }, async ({ a, b, orb, zodiac }) => {
+    const ca = chartPayload(a.date, a.lat, a.lon, "placidus", zodiac);
+    const cb = chartPayload(b.date, b.lat, b.lon, "placidus", zodiac);
     const ASP: Array<[string, number]> = [
       ["conjunction", 0], ["sextile", 60], ["square", 90], ["trine", 120], ["opposition", 180],
     ];
@@ -267,8 +288,9 @@ export function buildServer(): McpServer {
       target_body: z.enum(BODIES as unknown as [string, ...string[]]).optional().describe("Another transiting body. Provide this OR target_lon, not both."),
       start: z.string().describe("UTC ISO start date (convert from local first)"),
       end: z.string().describe("UTC ISO end date (convert from local first); range <= 50 years"),
+      zodiac: zodiacSchema.describe("Zodiac for body and target_lon longitudes; tropical (default) or sidereal:<ayanamsa>"),
     },
-  }, async ({ body, aspect, target_lon, target_body, start, end }) => {
+  }, async ({ body, aspect, target_lon, target_body, start, end, zodiac }) => {
     const angle = { conjunction: 0, sextile: 60, square: 90, trine: 120, opposition: 180 }[aspect];
     const jd0 = jdFromIso(start);
     const jd1 = jdFromIso(end);
@@ -281,9 +303,9 @@ export function buildServer(): McpServer {
     const offsets = angle === 0 || angle === 180 ? [angle] : [angle, -angle];
     const mkF = (off: number) => (jd: number) => {
       const tl = target_body !== undefined
-        ? engine.longitude(target_body as Body, jd)
+        ? engine.longitude(target_body as Body, jd, { zodiac })
         : (target_lon as number);
-      return mod(engine.longitude(body as Body, jd) - tl - off + 180, 360) - 180;
+      return mod(engine.longitude(body as Body, jd, { zodiac }) - tl - off + 180, 360) - 180;
     };
     const hitsJd: number[] = [];
     const step = 1.0;
