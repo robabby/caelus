@@ -1,0 +1,75 @@
+/**
+ * Mint committed MCP golden payloads. Spawns the real server over stdio, calls
+ * each tool with a fixed canonical input set, and records the exact payload to
+ * packages/caelus-mcp/test/golden-mcp.json. The integration test re-runs these
+ * calls and deep-equals the result, catching payload-FORMAT drift (key renames,
+ * rounding changes, the houses_fallback_reason string) that the engine-oracle
+ * checks in verify_tools.mjs cannot see.
+ *
+ * Regenerate deliberately, like the engine goldens:
+ *   npm run build -w caelus && npm run build -w caelus-mcp
+ *   node scripts/export-mcp-golden.mjs
+ * Review the diff before committing.
+ *
+ * Time-dependent tools (current_sky/transits defaulting to now) are always
+ * called with an explicit date so the golden is reproducible.
+ */
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { fileURLToPath } from "node:url";
+import { writeFileSync } from "node:fs";
+
+export const GOLDEN_CASES = [
+  // --- happy path, one per tool ---
+  { id: "natal-tampa", tool: "natal_chart",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
+  { id: "current-sky-j2000", tool: "current_sky",
+    args: { date: "2000-01-01T12:00:00Z", lat: 51.48, lon: 0 } },
+  { id: "transits-2026", tool: "transits",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46, transit_date: "2026-06-12T00:00:00Z" } },
+  { id: "synastry-pair", tool: "synastry",
+    args: { a: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 },
+            b: { date: "1988-03-21T06:00:00Z", lat: 40.71, lon: -74.01 } } },
+  { id: "find-saturn-sq-moon", tool: "find_aspect_dates",
+    args: { body: "saturn", aspect: "square", target_lon: 283.28,
+            start: "2026-01-01T00:00:00Z", end: "2027-01-01T00:00:00Z" } },
+  { id: "rectification-tampa", tool: "rectification_grid",
+    args: { date: "1990-06-10T00:00:00Z", lat: 27.95, lon: -82.46, step_minutes: 20 } },
+
+  // --- edge cases (format must stay stable across these too) ---
+  { id: "natal-polar-svalbard", tool: "natal_chart",
+    args: { date: "1985-12-01T09:00:00Z", lat: 78.2, lon: 15.6 } },
+  { id: "natal-historical-1855", tool: "natal_chart",
+    args: { date: "1855-07-04T12:00:00Z", lat: 48.85, lon: 2.35 } },
+  { id: "natal-southern", tool: "natal_chart",
+    args: { date: "1995-09-15T03:20:00Z", lat: -33.87, lon: 151.21 } },
+  { id: "natal-equator", tool: "natal_chart",
+    args: { date: "2010-03-20T17:32:00Z", lat: 0, lon: -78.45, house_system: "whole_sign" } },
+  { id: "find-mars-conj-jupiter", tool: "find_aspect_dates",
+    args: { body: "mars", aspect: "conjunction", target_body: "jupiter",
+            start: "2020-01-01T00:00:00Z", end: "2024-01-01T00:00:00Z" } },
+];
+
+async function run() {
+  const serverPath = fileURLToPath(new URL("../packages/caelus-mcp/dist/src/server.js", import.meta.url));
+  const transport = new StdioClientTransport({ command: "node", args: [serverPath] });
+  const client = new Client({ name: "mint", version: "0.0.1" });
+  await client.connect(transport);
+
+  const out = {};
+  for (const c of GOLDEN_CASES) {
+    const res = await client.callTool({ name: c.tool, arguments: c.args });
+    if (res.isError) throw new Error(`${c.id}: server returned error: ${res.content[0].text}`);
+    out[c.id] = { tool: c.tool, args: c.args, payload: JSON.parse(res.content[0].text) };
+  }
+  await client.close();
+  return out;
+}
+
+// When run directly, write the golden file. When imported, expose GOLDEN_CASES.
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const out = await run();
+  const path = fileURLToPath(new URL("../packages/caelus-mcp/test/golden-mcp.json", import.meta.url));
+  writeFileSync(path, JSON.stringify(out, null, 2) + "\n");
+  console.log(`wrote ${Object.keys(out).length} golden payloads to ${path}`);
+}

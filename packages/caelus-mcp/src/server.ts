@@ -32,10 +32,12 @@ const fmt = (lon: number) => {
   return `${Math.floor(d)}°${String(Math.floor(mod(d, 1) * 60)).padStart(2, "0")}'${SIGNS[Math.floor(lon / 30)]}`;
 };
 
+const latSchema = z.number().min(-90).max(90).describe("Latitude, north positive");
+const lonSchema = z.number().min(-180).max(180).describe("Longitude, EAST positive (Americas are negative)");
 const birth = {
   date: z.string().describe("UTC date-time, ISO 8601, e.g. 1990-06-10T14:30:00Z. Convert local birth time to UTC first."),
-  lat: z.number().min(-90).max(90).describe("Latitude, north positive"),
-  lon: z.number().min(-180).max(180).describe("Longitude, EAST positive (Americas are negative)"),
+  lat: latSchema,
+  lon: lonSchema,
 };
 const houseSys = z.enum(["placidus", "whole_sign", "equal", "porphyry"]).default("placidus");
 
@@ -83,6 +85,55 @@ function chartPayload(iso: string, lat: number, lon: number, hs: "placidus" | "w
 
 const text = (obj: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(obj) }] });
 
+// ---------------------------------------------------------------- output schemas
+// Exported so the integration test validates responses against the same shape
+// the server promises. Kept permissive on optional keys (rx, fallback fields).
+const bodyOut = z.object({
+  lon: z.number(), pos: z.string(), house: z.number().int().min(1).max(12),
+  speed: z.number(), rx: z.boolean().optional(),
+});
+export const chartOut = z.object({
+  utc: z.string(),
+  houses: z.enum(["placidus", "whole_sign", "equal", "porphyry"]),
+  houses_requested: z.enum(["placidus", "whole_sign", "equal", "porphyry"]).optional(),
+  houses_fallback_reason: z.string().optional(),
+  bodies: z.record(z.string(), bodyOut),
+  angles: z.object({ asc: z.number(), ascPos: z.string(), mc: z.number(), mcPos: z.string() }),
+  cusps: z.array(z.number()).length(12),
+  aspects: z.array(z.string()),
+});
+export const transitsOut = z.object({
+  transit_utc: z.string(),
+  transiting: z.record(z.string(), z.object({
+    pos: z.string(), natal_house: z.number().int().min(1).max(12), rx: z.boolean().optional(),
+  })),
+  aspects_to_natal: z.array(z.string()),
+});
+export const synastryOut = z.object({
+  a: chartOut, b: chartOut,
+  inter_aspects: z.array(z.string()),
+  a_planets_in_b_houses: z.record(z.string(), z.number().int().min(1).max(12)),
+  b_planets_in_a_houses: z.record(z.string(), z.number().int().min(1).max(12)),
+});
+export const findAspectDatesOut = z.object({
+  query: z.string(),
+  hits: z.array(z.string()),
+});
+export const rectificationGridOut = z.object({
+  date: z.string(),
+  lat: z.number(), lon: z.number(),
+  asc_sign_changes: z.array(z.string()),
+  grid: z.array(z.object({ utc: z.string(), asc: z.string(), mc: z.string() })),
+});
+export const OUTPUT_SCHEMAS = {
+  natal_chart: chartOut,
+  current_sky: chartOut,
+  transits: transitsOut,
+  synastry: synastryOut,
+  find_aspect_dates: findAspectDatesOut,
+  rectification_grid: rectificationGridOut,
+} as const;
+
 // ---------------------------------------------------------------- server
 export function buildServer(): McpServer {
   const server = new McpServer({ name: "caelus", version: "0.1.0" });
@@ -99,7 +150,7 @@ export function buildServer(): McpServer {
       "Sky at a date/time and location: positions, houses, retrogrades, aspects. Defaults to now.",
     inputSchema: {
       date: z.string().optional().describe("UTC ISO date-time; omit for now"),
-      lat: z.number().default(0), lon: z.number().default(0),
+      lat: latSchema.default(0), lon: lonSchema.default(0),
       house_system: houseSys,
     },
   }, async ({ date, lat, lon, house_system }) =>
@@ -250,7 +301,7 @@ export function buildServer(): McpServer {
       "Rectification sweep: ASC/MC at each step across a day or time window. Includes ASC sign-change times.",
     inputSchema: {
       date: z.string().describe("Birth DATE (UTC) as ISO, time portion ignored"),
-      lat: z.number(), lon: z.number(),
+      lat: latSchema, lon: lonSchema,
       window_start_hour: z.number().min(0).max(24).default(0),
       window_end_hour: z.number().min(0).max(24).default(24),
       step_minutes: z.number().min(5).max(120).default(20),

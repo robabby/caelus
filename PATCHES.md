@@ -211,3 +211,34 @@ cause of the 1.6-nano drift above). Zero new dependencies.
 - `package.json`: `lint:claims` script. `ci.yml` conformance job now
   emits stats from the golden run and runs `lint:claims` after the build.
 - `conformance-stats.json` is gitignored (regenerated, never committed).
+
+# Workstream 3: MCP integration suite + lat/lon guard — 2026-06-12
+
+## 1 Server now range-checks lat/lon (real bug)
+- `current_sky` and `rectification_grid` took `z.number()` for lat/lon
+  with no bounds, so `current_sky lat:999` silently *computed* a chart at
+  an impossible latitude (the web API route already rejected this). Both
+  now reuse the shared `latSchema`/`lonSchema` ([-90,90]/[-180,180] with
+  the east-positive describe text). Out-of-range input returns isError at
+  the MCP boundary. Verified: lat:999, lon:400, grid lat:200 all rejected;
+  valid coords still compute.
+
+## 2 Exported output schemas
+- `server.ts` now exports zod output schemas (`chartOut`, `transitsOut`,
+  `synastryOut`, `findAspectDatesOut`, `rectificationGridOut`) and an
+  `OUTPUT_SCHEMAS` map, so server and test share one definition of each
+  tool's response shape.
+
+## 3 Committed MCP golden payloads + integration suite
+- `scripts/export-mcp-golden.mjs` mints `packages/caelus-mcp/test/
+  golden-mcp.json` (11 canonical cases: one per tool plus polar, historical
+  1855, southern, equator, body-to-body). Regenerate deliberately, review
+  the diff.
+- `packages/caelus-mcp/integration.test.mjs` (41 checks): validates every
+  response against the exported output schema, deep-equals canonical inputs
+  against the frozen goldens (catches payload-FORMAT drift verify_tools
+  can't see), and exercises an edge-case matrix (polar fallback, historical,
+  southern/equator, default-time paths) plus an invalid-input matrix
+  (out-of-range lat/lon, bad ISO, >50yr range, missing target → isError).
+  Emits stats to CAELUS_STATS_OUT. Wired into the conformance job after
+  verify_tools. Mutation-tested: corrupting a golden fails exactly its case.
