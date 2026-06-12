@@ -58,7 +58,12 @@ def delta_t(jd_ut):
             if y0 <= y <= y1:
                 return d0 + (d1 - d0) * (y - y0) / (y1 - y0)
     if y > 2025:
-        return 69.2 + 0.29 * (y - 2025)  # tracks modern (post-speedup) models
+        # Continue the observed 2020-2025 slope (-0.04 s/yr: ΔT is currently
+        # flat-to-falling because Earth's spin sped up post-2016), plus the
+        # long-term tidal quadratic (+32 s/cy², same coefficient as the
+        # deep-time parabola below) so it rejoins the secular rise.
+        t = y - 2025
+        return 69.2 - 0.04 * t + 32 * (t / 100) ** 2
     if 1961 <= y < 1986:
         t = y - 1975
         return 45.45 + 1.067 * t - t**2 / 260 - t**3 / 718
