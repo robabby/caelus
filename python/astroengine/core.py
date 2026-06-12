@@ -58,7 +58,9 @@ def delta_t(jd_ut):
             if y0 <= y <= y1:
                 return d0 + (d1 - d0) * (y - y0) / (y1 - y0)
     if y > 2025:
-        return 69.2 + 0.29 * (y - 2025)  # tracks modern (post-speedup) models
+        # IERS-observed dT flat-to-declining since 2020; hold near the current
+        # value (Huber 2006: ~+/-37 s uncertainty on an 80-year forecast).
+        return max(69.2 - 0.05 * (y - 2025), 68.2)
     if 1961 <= y < 1986:
         t = y - 1975
         return 45.45 + 1.067 * t - t**2 / 260 - t**3 / 718

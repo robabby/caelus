@@ -58,3 +58,53 @@ Finding 2 lived in the MCP layer, which the engine conformance suite
 cannot see. Added `verify_aspects.mjs` as the seed of an MCP-layer
 verification suite against the swisseph oracle — recommend expanding this
 to cover every tool before npm publish.
+
+# Research review fixes — 2026-06-11 (evening)
+
+A research pass verified the site copy's external claims against primary
+sources (IERS/NASA ΔT data, Astrodienst licensing pages, VSOP87 papers,
+competing library repos). Engine fixes plus copy corrections follow.
+
+## 1 ΔT extrapolation trend corrected (both engines)
+- The post-2025 formula extrapolated ΔT upward at +0.29 s/yr (an
+  Espenak–Meeus polynomial habit). Measured ΔT has been flat to slightly
+  declining since ~2016 because Earth's rotation is accelerating; the
+  old curve reached ~158 s at 2080 vs a realistic ~69 s.
+- `packages/caelus/src/core.ts` and `python/astroengine/core.py` now use
+  `max(69.2 - 0.05 * (y - 2025), 68.2)` past 2025, with a comment citing
+  the IERS trend. Worst-case effect stays bounded: the Moon moves
+  0.55″ per ΔT second, so the old curve injected up to ~50″ of avoidable
+  late-century lunar error.
+- Golden fixtures regenerated; conformance suite green
+  (1,438 checks, 0 failures; TS-vs-Python worst diff 1.6e-9″).
+
+## 2 export_golden.py missed the chart_polar fixture
+- The fixture exporter predated Codex fix #1 and neither regenerated the
+  Svalbard polar chart nor wrote `house_system`/`house_system_requested`,
+  so any regeneration crashed (TypeError) or silently dropped a check.
+- Both `regen_from_template` and `create_fresh` now emit the polar chart
+  fixture with both house-system fields.
+
+## 3 Copy corrections from the research pass (apps/web)
+- ΔT note (/notes): now states the measured ~69 s plateau, the ~90 s
+  overestimate the old curve produced by 2080, and the ±37 s
+  century-scale uncertainty band, with sources.
+- Licensing (/provenance): Swiss Ephemeris moved GPL→AGPL at v2.10.1
+  (2021); the professional license is 700 CHF. Stated precisely instead
+  of paraphrased.
+- Alternatives (/provenance): new engine comparison table covering Swiss
+  Ephemeris, astronomy-engine, astronomia, ephemeris (Moshier port),
+  celestine, and Skyfield — including celestine, the closest MIT/TS
+  competitor, compared honestly.
+- Validation (/validation): Uranus/Neptune residuals attributed to series
+  truncation (complete VSOP87 holds ≤1″); Moon reference data identified
+  as DE423 (2010), within 0.1″ of DE440 for this span; true node
+  described as an osculating element that rounds to the 1′ display step.
+- SkyNow + MCP server description: true node accuracy "≤ 1′" → "~1′";
+  natal_chart tool description now gives per-body accuracy instead of a
+  blanket claim.
+- Home page (/): redesigned to explain the whole project in one place —
+  what it is, why it exists, how it is checked, what ships — with the
+  playground kept at the top.
+- Checked and left alone: the 20.4898″ aberration constant is correct as
+  written (Meeus eq. 25.10 uses κ·(1−e²)); no code change.

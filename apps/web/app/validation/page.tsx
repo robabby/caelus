@@ -7,19 +7,19 @@ export const metadata = {
 
 const BODY_TABLE: Array<[string, string, string, string]> = [
   ["Sun", "0.4″", "0.2″", ""],
-  ["Moon (precise tier)", "2.5″", "0.9″", "JPL DE423 fit; residual partly the oracle's own model noise"],
+  ["Moon (precise tier)", "2.5″", "0.9″", "JPL DE423 fit (2010); DE423 vs DE440 is <0.1″ over this span"],
   ["Moon (embedded series)", "9.6″", "2.8″", "60-term ELP abridged"],
   ["Mercury", "0.5″", "0.2″", ""],
   ["Venus", "0.8″", "0.2″", ""],
   ["Mars", "0.7″", "0.2″", ""],
   ["Jupiter", "0.9″", "0.3″", ""],
   ["Saturn", "0.8″", "0.4″", ""],
-  ["Uranus", "1.9″", "0.7″", "VSOP87 theory limit"],
-  ["Neptune", "4.6″", "2.2″", "VSOP87 theory limit"],
+  ["Uranus", "1.9″", "0.7″", "series truncation; complete VSOP87 holds ≤1″"],
+  ["Neptune", "4.6″", "2.2″", "series truncation; complete VSOP87 holds ≤1″"],
   ["Pluto", "2.5″", "1.0″", "series valid 1885–2099"],
   ["Chiron", "1.0″", "0.3″", "JPL Horizons fit, 1850–2150"],
   ["Mean node", "0.1″", "0.1″", ""],
-  ["True node", "61″", "12″", "osculating; < 1′ display precision"],
+  ["True node", "61″", "12″", "osculating element; rounds to the 1′ display step"],
   ["Ascendant / MC", "3.2″", "—", ""],
   ["Placidus cusps (all 12)", "3.2″", "—", ""],
 ];
@@ -58,7 +58,9 @@ export default function Validation() {
       </table>
       <P dim>
         Chart software usually displays to the arcminute (60″). Birth-time uncertainty
-        dominates these deltas.
+        dominates these deltas. Post-2025 instants also depend on each engine&apos;s
+        ΔT extrapolation, which no model can pin down:{" "}
+        <A href="/notes">build notes</A>.
       </P>
       <H2>TypeScript port vs reference</H2>
       <P>

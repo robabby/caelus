@@ -19,12 +19,24 @@ export default function Notes() {
       <H2>ΔT: textbook extrapolation vs Earth since 2016</H2>
       <P>
         Ephemerides use TT; civil time follows Earth rotation. ΔT bridges the two.
-        Espenak–Meeus (2006) polynomials, copied into decades of software, assume
-        Earth&apos;s spin keeps slowing. Since ~2016 it has sped up. By 2080 the
-        textbook extrapolation is 70+ seconds high. The Moon moves 0.55″ per second
-        of ΔT error, so a faithful implementation of the old formula can miss the
-        Moon by tens of arcseconds on ordinary dates. caelus uses IERS observations
-        through 2025 and a modern extrapolation afterward.
+        The{" "}
+        <A href="https://eclipse.gsfc.nasa.gov/SEcat5/deltatpoly.html">
+          Espenak–Meeus (2006) polynomials
+        </A>, copied into decades of software, assume Earth&apos;s spin keeps
+        slowing: they predict ΔT ≈ 158 s for 2080. Earth&apos;s rotation began{" "}
+        <A href="https://www.cbsnews.com/news/earth-spinning-faster-than-usual-shortest-day-ever/">
+          accelerating around 2016
+        </A>; observed ΔT has sat near 69 s since 2020 and is drifting down. The
+        textbook curve is already ~6 s high today and runs ~90 s high by 2080.
+        The Moon moves 0.55″ per second of ΔT error, so a faithful
+        implementation of the old formula misses the Moon by tens of arcseconds
+        within a lifetime. caelus interpolates IERS observations through 2025
+        and holds near the current value afterward: an 80-year ΔT forecast
+        carries roughly{" "}
+        <A href="https://www.ucolick.org/~sla/leapsecs/year2100.html">
+          ±37 s of uncertainty
+        </A>{" "}
+        (Huber 2006), so a steeper slope would be false precision.
       </P>
 
       <H2>Node longitude: 11× frame sensitivity</H2>

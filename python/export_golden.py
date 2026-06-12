@@ -88,6 +88,11 @@ def regen_from_template(old):
         "cusps": c["cusps"],
         "aspects": c["aspects"],
     }
+    cp = eng.chart(1985, 12, 1, 9, 0, 0, 78.2, 15.6, "placidus")
+    out["chart_polar"] = {
+        "house_system": cp["house_system"],
+        "house_system_requested": cp["house_system_requested"],
+    }
     return out
 
 
@@ -165,6 +170,11 @@ def create_fresh():
         "angles": c["angles"],
         "cusps": c["cusps"],
         "aspects": c["aspects"],
+    }
+    cp = eng.chart(1985, 12, 1, 9, 0, 0, 78.2, 15.6, "placidus")
+    out["chart_polar"] = {
+        "house_system": cp["house_system"],
+        "house_system_requested": cp["house_system_requested"],
     }
     return out
 
