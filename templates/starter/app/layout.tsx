@@ -1,6 +1,6 @@
 export const metadata = {
   title: "caelus starter",
-  description: "Natal charts in the browser — caelus + @caelus/birth + @caelus/wheel.",
+  description: "Natal charts in the browser — caelus + caelus-birth + caelus-wheel.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

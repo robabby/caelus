@@ -13,8 +13,8 @@ if (root !== served) {
 const PKGS = [
   ["caelus", "packages/caelus/package.json"],
   ["caelus-mcp", "packages/caelus-mcp/package.json"],
-  ["@caelus/birth", "packages/birth/package.json"],
-  ["@caelus/wheel", "packages/wheel/package.json"],
+  ["caelus-birth", "packages/birth/package.json"],
+  ["caelus-wheel", "packages/wheel/package.json"],
 ];
 for (const [name, path] of PKGS) {
   const version = JSON.parse(readFileSync(path, "utf8")).version;

@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Engine, BODIES, fmtLon, mod, type Chart, type HouseSystem } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
-import { ChartWheel } from "@caelus/wheel";
+import { ChartWheel } from "caelus-wheel";
 
 const SYSTEMS: HouseSystem[] = ["placidus", "whole_sign", "equal", "porphyry"];
 const ACCURACY: Array<[string, string]> = [

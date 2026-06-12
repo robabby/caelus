@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { openMeteoGeocoder, type GeocodeResult } from "@caelus/birth/geocode";
+import { openMeteoGeocoder, type GeocodeResult } from "caelus-birth/geocode";
 
 const inp = {
   background: "#1a1626", color: "#e8e4f0", border: "1px solid #3a3450",

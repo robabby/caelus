@@ -1,4 +1,4 @@
-# @caelus/birth
+# caelus-birth
 
 Local birth time + place → UT, correctly. The timezone layer for
 [caelus](https://github.com/heavyblotto/caelus) charts.
@@ -16,7 +16,7 @@ engine.chart(d.getUTCFullYear(), /* ... */);
 // Tampa birth computed on a UTC server: Asc 10°54' Leo  ← wrong by ~2 signs
 
 // RIGHT — resolve the zone from the birthplace, apply historical tzdb rules
-import { toUT } from "@caelus/birth";
+import { toUT } from "caelus-birth";
 const t = toUT({ year: 1990, month: 6, day: 10, hour: 14, minute: 30,
                  lat: 27.95, lon: -82.46 });
 // zone "America/New_York", EDT, 18:30 UT → Asc 3°26' Libra  ← correct
@@ -28,7 +28,7 @@ and (here) the Moon by 2°.
 ## Usage
 
 ```ts
-import { toUT, localToChart } from "@caelus/birth";
+import { toUT, localToChart } from "caelus-birth";
 
 const t = toUT({
   year: 1955, month: 6, day: 10, hour: 12, minute: 0,
@@ -65,10 +65,10 @@ resolve correctly — see the golden tests.
 ## Geocoding (optional, separate entry point)
 
 Place-name search needs a network service, so the core stays offline-pure
-and adapters live behind `@caelus/birth/geocode`:
+and adapters live behind `caelus-birth/geocode`:
 
 ```ts
-import { openMeteoGeocoder } from "@caelus/birth/geocode";
+import { openMeteoGeocoder } from "caelus-birth/geocode";
 const places = await openMeteoGeocoder.search("Tampa");
 // [{ name: "Tampa, Florida, United States", lat: 27.95, lon: -82.46, ... }]
 ```

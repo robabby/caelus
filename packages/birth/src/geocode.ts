@@ -1,5 +1,5 @@
 /**
- * Optional geocoding entry point — `@caelus/birth/geocode`.
+ * Optional geocoding entry point — `caelus-birth/geocode`.
  *
  * The core package is offline-pure; place-name search needs a network
  * service, so it lives behind this separate entry point. One adapter ships

@@ -2,8 +2,8 @@
 
 Birth form → natal chart wheel, in an afternoon. Next.js 15 +
 [caelus](https://github.com/heavyblotto/caelus) (MIT ephemeris engine,
-charts compute client-side) + `@caelus/birth` (timezone resolution) +
-`@caelus/wheel` (SVG chart wheel).
+charts compute client-side) + `caelus-birth` (timezone resolution) +
+`caelus-wheel` (SVG chart wheel).
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fheavyblotto%2Fcaelus-starter)
 
@@ -25,7 +25,7 @@ The #1 wrong-chart bug in astrology software: converting the user's local
 birth time with `new Date(localString)`, which silently uses the *server's*
 timezone. A Tampa 2:30 PM birth computed on a UTC server gets an Ascendant
 of 10° Leo instead of the correct 3° Libra — two signs off, every house
-wrong. This template converts through `@caelus/birth`, which resolves the
+wrong. This template converts through `caelus-birth`, which resolves the
 IANA zone from the birthplace and applies historical tzdb rules (DST,
 half-hour zones, wartime offsets). DST edge cases surface to the user in
 plain language ("clocks changed that night — we used the earlier 1:30;

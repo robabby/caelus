@@ -19,10 +19,10 @@ jobs:
       # MCP-layer oracle suite: golden checks can't see server.ts (PATCHES #2)
       - run: node packages/caelus-mcp/verify_tools.mjs
       # timezone resolution: tzdb golden cases + 200-case round-trip property
-      - run: npm run build -w @caelus/birth
+      - run: npm run build -w caelus-birth
       - run: node packages/birth/dist/test/golden.test.js
       # chart wheel: SSR render of real charts + collision-fan unit checks
-      - run: npm run build -w @caelus/wheel
+      - run: npm run build -w caelus-wheel
       - run: node packages/wheel/dist/test/render.test.js
       - run: npm run build -w web
       # llms.txt must track package versions and stay in sync with the site

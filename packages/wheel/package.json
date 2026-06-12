@@ -1,5 +1,5 @@
 {
-  "name": "@caelus/wheel",
+  "name": "caelus-wheel",
   "version": "0.1.0",
   "description": "React SVG chart wheel for caelus: zodiac, houses, planets with collision avoidance, aspect lines. SSR-safe, zero runtime dependencies.",
   "type": "module",
@@ -44,8 +44,5 @@
     "react",
     "svg",
     "natal-chart"
-  ],
-  "publishConfig": {
-    "access": "public"
-  }
+  ]
 }

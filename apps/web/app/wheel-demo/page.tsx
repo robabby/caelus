@@ -1,13 +1,13 @@
 "use client";
 /**
- * Visual check page for @caelus/wheel (unlinked from nav, used in review).
+ * Visual check page for caelus-wheel (unlinked from nav, used in review).
  * Four charts chosen to stress the renderer: the canonical fixture, a polar
  * whole-sign fallback, the 1962-02-05 Aquarius stellium (5 bodies within 3°
  * plus the node pair — collision avoidance), and an equal-house chart.
  */
 import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
-import { ChartWheel } from "@caelus/wheel";
+import { ChartWheel } from "caelus-wheel";
 
 const engine = new Engine(embeddedData);
 

@@ -1,13 +1,13 @@
 /**
- * Integration check: the cursed-timezone golden cases from @caelus/birth,
+ * Integration check: the cursed-timezone golden cases from caelus-birth,
  * run through the exact inputs the birth form submits. Expected values are
- * tzdb-verified in the @caelus/birth test suite.
+ * tzdb-verified in the caelus-birth test suite.
  *
  * TODO: a Playwright run that drives the actual form is the fuller version
  * of this check; scripted toUT assertions were chosen to keep the template
  * dependency-light (smaller scope per the work order's guardrails).
  */
-import { toUT } from "@caelus/birth";
+import { toUT } from "caelus-birth";
 
 const CASES = [
   // [label, form input, expected UTC ISO, expected status]

@@ -1,5 +1,5 @@
 /**
- * Golden cases for @caelus/birth.
+ * Golden cases for caelus-birth.
  *
  * Every expected value below was verified against the IANA tzdb (via the
  * runtime Intl database through Luxon) in a scratch script before being

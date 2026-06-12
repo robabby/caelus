@@ -6,16 +6,15 @@ steps (they need npm account auth no CI runner should hold interactively).
 ## One-time setup
 
 1. On npmjs.com: create/log into the publishing account.
-2. Claim the @caelus org: npmjs.com → Add Organization → name `caelus`
-   (free plan is fine for public packages).
-3. Create an **automation** access token (Settings → Access Tokens →
+2. Create an **automation** access token (Settings → Access Tokens →
    Generate → Automation; bypasses 2FA for CI).
-4. Add it to the repo: GitHub → Settings → Secrets and variables →
+3. Add it to the repo: GitHub → Settings → Secrets and variables →
    Actions → new secret `NPM_TOKEN`.
 
-The unscoped names `caelus` and `caelus-mcp` are claimed by the first
-publish itself (verified free 2026-06-10; re-check before tagging:
-`npm view caelus` should still 404).
+All four names are unscoped (`caelus`, `caelus-mcp`, `caelus-birth`,
+`caelus-wheel` — the `@caelus` scope is claimed/reserved on npm) and are
+registered by the first publish itself. Re-check before tagging:
+`npm view caelus` should still 404.
 
 ## Each release
 

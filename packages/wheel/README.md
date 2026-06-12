@@ -1,10 +1,10 @@
-# @caelus/wheel
+# caelus-wheel
 
 React SVG chart wheel for [caelus](https://github.com/heavyblotto/caelus).
 SSR-safe, zero runtime dependencies (react is a peer), ~3.4 KB gzipped.
 
 ```tsx
-import { ChartWheel } from "@caelus/wheel";
+import { ChartWheel } from "caelus-wheel";
 
 <ChartWheel
   chart={chart}            // the Chart object from caelus, as-is

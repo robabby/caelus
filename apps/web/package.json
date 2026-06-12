@@ -9,7 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@caelus/wheel": "*",
+    "caelus-wheel": "*",
     "caelus": "*",
     "next": "^15.3.0",
     "react": "^19.0.0",

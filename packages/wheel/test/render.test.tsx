@@ -1,5 +1,5 @@
 /**
- * @caelus/wheel render checks: real charts from the engine through
+ * caelus-wheel render checks: real charts from the engine through
  * renderToStaticMarkup (also proves SSR safety — this is Node, no DOM),
  * plus unit checks on the collision-avoidance fan.
  */

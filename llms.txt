@@ -13,8 +13,8 @@ pinned to a Python reference by 1,438 golden checks (worst diff
 ## Install
 
 - caelus@0.1.0 — the engine
-- @caelus/birth@0.1.0 — local birth time + place -> UT (use this; see below)
-- @caelus/wheel@0.1.0 — React SVG chart wheel
+- caelus-birth@0.1.0 — local birth time + place -> UT (use this; see below)
+- caelus-wheel@0.1.0 — React SVG chart wheel
 - caelus-mcp@0.1.0 — MCP server, 6 chart tools over stdio
 
 ## Entry points
@@ -34,10 +34,10 @@ const chart = engine.chart(1990, 6, 10, 18, 30, 0, 27.95, -82.46, "placidus");
 
 `engine.chart(...)` takes UT date/time components. Converting a user's
 local birth time with `new Date(localString)` uses the RUNTIME's timezone
-and silently produces charts wrong by hours. Use @caelus/birth:
+and silently produces charts wrong by hours. Use caelus-birth:
 
 ```ts
-import { toUT } from "@caelus/birth";
+import { toUT } from "caelus-birth";
 const t = toUT({ year: 1990, month: 6, day: 10, hour: 14, minute: 30,
                  lat: 27.95, lon: -82.46 });   // local clock time + place
 // t.utc -> UT components for engine.chart(); t.status flags DST edge cases

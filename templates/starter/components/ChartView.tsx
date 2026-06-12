@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { BODIES, fmtLon, mod, type Chart } from "caelus";
-import { ChartWheel } from "@caelus/wheel";
+import { ChartWheel } from "caelus-wheel";
 
 function houseOf(cusps: number[], lon: number) {
   for (let i = 0; i < 12; i++) {

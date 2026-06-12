@@ -15,8 +15,8 @@ The engine takes UT. `new Date("1990-06-10T14:30:00")` parses in the
 const d = new Date("1990-06-10T14:30:00");
 engine.chart(d.getUTCFullYear(), d.getUTCMonth() + 1, /* ... */);
 
-// RIGHT — @caelus/birth resolves the zone from the birthplace
-import { toUT } from "@caelus/birth";
+// RIGHT — caelus-birth resolves the zone from the birthplace
+import { toUT } from "caelus-birth";
 const t = toUT({ year: 1990, month: 6, day: 10, hour: 14, minute: 30,
                  lat: 27.95, lon: -82.46 });
 const { year, month, day, hour, minute, second } = t.utc;
@@ -59,7 +59,7 @@ const engine = new Engine(embeddedData);
 
 ## 4. Longitude sign convention
 
-caelus is EAST-positive everywhere (engine, @caelus/birth, caelus-mcp).
+caelus is EAST-positive everywhere (engine, caelus-birth, caelus-mcp).
 Tampa is `lon: -82.46`. Astrology sources that quote "82W46" mean
 `-82.77` here. There is no `lonWest` parameter; if a chart's houses look
 mirrored, this is the first thing to check.

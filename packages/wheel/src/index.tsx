@@ -1,5 +1,5 @@
 /**
- * @caelus/wheel — React SVG chart wheel.
+ * caelus-wheel — React SVG chart wheel.
  *
  * Pure render, SSR-safe (no client-only APIs, no hooks, no effects).
  * Zero runtime dependencies; react is a peer.

@@ -3,7 +3,7 @@ import { Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
-import { toUT } from "@caelus/birth";
+import { toUT } from "caelus-birth";
 import ChartView from "../../components/ChartView";
 
 const engine = new Engine(embeddedData);

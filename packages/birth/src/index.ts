@@ -1,5 +1,5 @@
 /**
- * @caelus/birth — local birth time + place -> UT, correctly.
+ * caelus-birth — local birth time + place -> UT, correctly.
  *
  * caelus core takes UT. Real users enter local wall-clock time. The naive
  * conversion (`new Date(localString)`) uses the RUNTIME's timezone and
