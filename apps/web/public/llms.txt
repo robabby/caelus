@@ -1,0 +1,67 @@
+# caelus
+
+MIT astrological ephemeris engine in TypeScript. Zero dependencies, zero
+I/O in core (data injected). Computes apparent geocentric positions for
+sun, moon, mercury..pluto, chiron, mean_node, true_node; speeds and
+retrograde flags; ASC/MC; placidus/porphyry/equal/whole_sign houses;
+major aspects. Supported range 1800-2149 (1850-2150 Chebyshev tiers).
+Verified per-body vs Swiss Ephemeris (DE431): planets <=3", Moon <=0.5"
+(1920-2080 tier), nodes <=1"; Pluto series valid 1885-2099. TS engine
+pinned to a Python reference by 1,438 golden checks (worst diff
+1.6e-9 arcsec). Repo: https://github.com/heavyblotto/caelus
+
+## Install
+
+- caelus@0.1.0 — the engine
+- @caelus/birth@0.1.0 — local birth time + place -> UT (use this; see below)
+- @caelus/wheel@0.1.0 — React SVG chart wheel
+- caelus-mcp@0.1.0 — MCP server, 6 chart tools over stdio
+
+## Entry points
+
+- `caelus` — Engine, BODIES, julianDay, mod, fmtLon, types
+- `caelus/data-embedded` — bundled coefficient data (~85 KB gz), browser/edge
+- `caelus/node` — loadNodeData(dir, vsopTier, moonTier) fs loader, Node only
+
+```ts
+import { Engine } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+const engine = new Engine(embeddedData);
+const chart = engine.chart(1990, 6, 10, 18, 30, 0, 27.95, -82.46, "placidus");
+```
+
+## THE INPUT IS UT — not local time
+
+`engine.chart(...)` takes UT date/time components. Converting a user's
+local birth time with `new Date(localString)` uses the RUNTIME's timezone
+and silently produces charts wrong by hours. Use @caelus/birth:
+
+```ts
+import { toUT } from "@caelus/birth";
+const t = toUT({ year: 1990, month: 6, day: 10, hour: 14, minute: 30,
+                 lat: 27.95, lon: -82.46 });   // local clock time + place
+// t.utc -> UT components for engine.chart(); t.status flags DST edge cases
+```
+
+Longitude is EAST-positive everywhere (Americas are negative).
+
+## Chart object shape
+
+```ts
+{
+  jdUt: number,
+  houseSystem, houseSystemRequested,  // differ when Placidus falls back
+                                      // to whole_sign above polar circles
+  bodies: { [body]: { lon, speed, retrograde, sign, signDeg } },  // degrees
+  angles: { asc, mc },
+  cusps: number[12],
+  aspects: [{ a, b, aspect, orb }],
+}
+```
+
+## More
+
+- Validation tables: https://ephemengine.com/validation
+- Data provenance:   https://ephemengine.com/provenance
+- Pitfalls for coding agents: docs/agents.md in the repo
+- MCP spec: MCP_SPEC.md in the repo

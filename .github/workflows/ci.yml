@@ -25,6 +25,8 @@ jobs:
       - run: npm run build -w @caelus/wheel
       - run: node packages/wheel/dist/test/render.test.js
       - run: npm run build -w web
+      # llms.txt must track package versions and stay in sync with the site
+      - run: node scripts/check-llms.mjs
 
   prose:
     runs-on: ubuntu-latest
