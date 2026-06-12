@@ -21,6 +21,7 @@ import { Engine, BODIES, Body, julianDay, mod } from "caelus";
 import { loadNodeData } from "caelus/node";
 
 const require = createRequire(import.meta.url);
+const VERSION: string = require("caelus-mcp/package.json").version;
 const DATA_DIR = process.env.CAELUS_DATA
   ?? join(dirname(require.resolve("caelus/package.json")), "data");
 const engine = new Engine(loadNodeData(DATA_DIR, "embedded", "full"));
@@ -137,7 +138,7 @@ export const OUTPUT_SCHEMAS = {
 
 // ---------------------------------------------------------------- server
 export function buildServer(): McpServer {
-  const server = new McpServer({ name: "caelus", version: "0.1.0" });
+  const server = new McpServer({ name: "caelus", version: VERSION });
 
   server.registerTool("natal_chart", {
     description:
