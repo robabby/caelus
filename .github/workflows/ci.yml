@@ -16,6 +16,8 @@ jobs:
       - run: node packages/caelus/dist/test/golden.test.js
       - run: npm run build -w caelus-mcp
       - run: node packages/caelus-mcp/smoke.mjs
+      # MCP-layer oracle suite: golden checks can't see server.ts (PATCHES #2)
+      - run: node packages/caelus-mcp/verify_tools.mjs
       - run: npm run build -w web
 
   prose:
