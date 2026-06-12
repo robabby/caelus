@@ -1,0 +1,33 @@
+---
+description: User-facing copy — dry technical voice, no AI slop
+globs: apps/web/**/*.{tsx,ts},docs/**/*.md,*.md
+alwaysApply: false
+---
+
+# Copy and prose (caelus)
+
+Before editing user-facing text, read `docs/editorial-voice.md` and `docs/ai-slop-style-sheet.md`.
+
+## Voice
+
+- Dry engineer, not pitch deck. Facts and measurements over adjectives.
+- Short sentences. Name sources and numbers.
+- No manifesto lines, mic-drops, or performed wit ("full stop", "mail to Zurich", "every layer needs its own referee").
+
+## Banned patterns
+
+- AI filler: delve, unpack, landscape, tapestry, testament, resonates, pivotal, holistic, "it's important to note"
+- Meta: "the lesson generalizes", "what this buys you", "cannot hide inside it", "the actual asset"
+- Em-dash chains — prefer comma, colon, or a new sentence
+
+## Workflow
+
+1. Edit copy in `apps/web/` or `docs/`.
+2. Run `npm run lint:prose` and fix warnings.
+3. Do not rewrite package API docs or golden test commentary unless asked.
+
+## Terminology
+
+- `caelus` (lowercase) for the engine/package
+- `Swiss Ephemeris` as oracle/referee, never as source code
+- `clean-room` sparingly; prefer "written from published sources"

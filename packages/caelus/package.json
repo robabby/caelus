@@ -1,0 +1,36 @@
+{
+  "name": "caelus",
+  "version": "0.1.0",
+  "description": "Astrological ephemeris engine. MIT, no AGPL, no ephemeris files. Checked against Swiss Ephemeris.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist",
+    "data"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node dist/test/golden.test.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "typescript": "^6.0.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./data-embedded": {
+      "types": "./dist/src/data-embedded.d.ts",
+      "default": "./dist/src/data-embedded.js"
+    },
+    "./node": {
+      "types": "./dist/src/node-loader.d.ts",
+      "default": "./dist/src/node-loader.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

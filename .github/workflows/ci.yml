@@ -1,0 +1,31 @@
+name: ci
+on:
+  push: { branches: [main, dev] }
+  pull_request:
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build -w caelus
+      # The conformance suite is the contract: 1,438 golden checks ported
+      # from the Python reference. A red suite blocks merge.
+      - run: node packages/caelus/dist/test/golden.test.js
+      - run: npm run build -w caelus-mcp
+      - run: node packages/caelus-mcp/smoke.mjs
+      - run: npm run build -w web
+
+  prose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Install Vale
+        run: |
+          curl -sfL https://install.vale.sh | sh -s -- -v 3.13.0
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: npm run lint:prose

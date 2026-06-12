@@ -1,0 +1,23 @@
+extends: existence
+message: "AI filler phrase — see docs/editorial-voice.md and docs/ai-slop-style-sheet.md"
+level: warning
+tokens:
+  - rich tapestry
+  - delve into
+  - unpack
+  - game-changing
+  - game changer
+  - a testament to
+  - stands as a testament
+  - the landscape of
+  - in the realm of
+  - resonates deeply
+  - a pivotal
+  - multifaceted
+  - holistic understanding
+  - comprehensive overview
+  - it is important to note
+  - it's important to note
+  - cannot be overstated
+  - offers valuable insights
+  - a profound impact

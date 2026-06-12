@@ -1,0 +1,47 @@
+VSOP87
+VSOP87D
+Placidus
+Porphyry
+Swiss Ephemeris
+Espenak
+Meeus
+Bretagnon
+Francou
+Chapront
+Horizons
+IERS
+IAU
+JPL
+DE423
+ELP2000
+Chebyshev
+caelus
+AGPL
+MIT
+MCP
+ΔT
+arcsecond
+arcseconds
+nano-arcsecond
+geocentric
+heliocentric
+ecliptic
+nutation
+precession
+Chiron
+Svalbard
+Dan Luu
+Luu
+READMEs
+Tricolon
+npm
+git clone
+ephemerides
+Ephemerides
+sextile
+sextiles
+arcminute
+topocentric
+gzipped
+find_aspect_dates
+Lieske

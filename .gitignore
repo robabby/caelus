@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+
+# build outputs
+dist/
+apps/web/.next/
+apps/web/out/
+
+# env
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# archives and extracted copies (monorepo is the source of truth)
+*.zip
+extracted/
+
+# python fitting caches (raw Horizons samples; fitted JSON is committed)
+python/chiron_horizons_cache.json
+python/__pycache__/
+.web-prose-extract.md
+python/astroengine/__pycache__/
+
+# logs
+*.log
+npm-debug.log*

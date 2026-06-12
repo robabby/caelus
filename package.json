@@ -1,0 +1,12 @@
+{
+  "name": "caelus-monorepo",
+  "private": true,
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build": "npm run build -w caelus && npm run build -w caelus-mcp && npm run build -w web",
+    "test": "npm run test -w caelus",
+    "lint:prose": "bash scripts/lint-prose.sh",
+    "dev:web": "npm run dev -w web",
+    "dev:web:clean": "npm run dev:clean -w web"
+  }
+}
