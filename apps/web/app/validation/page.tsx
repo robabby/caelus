@@ -1,7 +1,7 @@
 import { A, H2, P, Code, Nav } from "../../components/Prose";
 
 export const metadata = {
-  title: "caelus — validation",
+  title: "Caelus — Validation",
   description: "Reference engine vs Swiss Ephemeris; TypeScript port vs 1,438 golden checks. CI on every commit.",
 };
 
@@ -29,7 +29,7 @@ export default function Validation() {
   return (
     <main>
       <Nav current="/validation" />
-      <h1 style={{ letterSpacing: "0.05em" }}>validation</h1>
+      <h1 style={{ letterSpacing: "0.05em" }}>Validation</h1>
       <P>
         Reference engine checked against Swiss Ephemeris; TypeScript port checked
         against golden fixtures. CI runs both on every commit.
@@ -44,7 +44,7 @@ export default function Validation() {
       <table style={{ fontSize: "0.85em", lineHeight: 1.55, borderSpacing: 0 }}>
         <thead>
           <tr style={{ opacity: 0.5, textAlign: "left" }}>
-            <th style={td}>body</th><th style={td}>max</th><th style={td}>rms</th><th style={td}>note</th>
+            <th style={td}>Body</th><th style={td}>Max</th><th style={td}>RMS</th><th style={td}>Note</th>
           </tr>
         </thead>
         <tbody>
@@ -60,9 +60,9 @@ export default function Validation() {
         Chart software usually displays to the arcminute (60″). Birth-time uncertainty
         dominates these deltas. Post-2025 instants also depend on each engine&apos;s
         ΔT extrapolation, which no model can pin down:{" "}
-        <A href="/notes">build notes</A>.
+        <A href="/notes">Build Notes</A>.
       </P>
-      <H2>TypeScript port vs reference</H2>
+      <H2>TypeScript Port vs Reference</H2>
       <P>
         <strong>1,438 golden checks</strong> (bodies, timescales, nutation, four house
         systems, speeds, retrograde flags, polar Placidus fallback). Worst deviation

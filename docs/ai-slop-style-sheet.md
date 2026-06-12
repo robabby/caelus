@@ -1,4 +1,4 @@
-# AI slop style sheet — caelus
+# AI slop style sheet — Caelus
 
 Mechanical rules for prose under `docs/` and extracted web copy. Companion to `editorial-voice.md`.
 

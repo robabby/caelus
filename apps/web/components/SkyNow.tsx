@@ -76,7 +76,9 @@ export default function SkyNow() {
           </p>
           <div style={{ display: "flex", gap: "0.5rem", margin: "0.5rem 0" }}>
             {(["positions", "aspects", "json"] as const).map((t) => (
-              <button key={t} type="button" style={tabBtn(t)} onClick={() => setTab(t)}>{t}</button>
+              <button key={t} type="button" style={tabBtn(t)} onClick={() => setTab(t)}>
+                {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
+              </button>
             ))}
           </div>
           <div style={{ maxWidth: 460, margin: "0.8rem 0" }}>
@@ -109,7 +111,7 @@ export default function SkyNow() {
           )}
         </>
       )}
-      <h3 style={{ marginTop: "2.5rem", opacity: 0.8 }}>accuracy <span style={{ opacity: 0.5, fontWeight: "normal" }}>(vs Swiss Ephemeris, 1900–2099)</span></h3>
+      <h3 style={{ marginTop: "2.5rem", opacity: 0.8 }}>Accuracy <span style={{ opacity: 0.5, fontWeight: "normal" }}>(vs Swiss Ephemeris, 1900–2099)</span></h3>
       <table style={{ borderSpacing: "0.8rem 0.1rem", fontSize: "0.9em" }}>
         <tbody>{ACCURACY.map(([k, v]) => <tr key={k}><td style={{ opacity: 0.6 }}>{k}</td><td>{v}</td></tr>)}</tbody>
       </table>

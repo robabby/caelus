@@ -18,7 +18,7 @@ export const Code = ({ children }: { children: React.ReactNode }) => (
 );
 
 export function Nav({ current }: { current: string }) {
-  const pages = [["/", "playground"], ["/validation", "validation"], ["/provenance", "provenance"], ["/notes", "build notes"]];
+  const pages = [["/", "Playground"], ["/validation", "Validation"], ["/provenance", "Provenance"], ["/notes", "Build Notes"]];
   return (
     <nav style={{ display: "flex", gap: "1.1rem", marginBottom: "2rem", fontSize: "0.85em" }}>
       {pages.map(([href, label]) => (

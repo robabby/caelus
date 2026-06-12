@@ -21,8 +21,7 @@ apps/web/out/
 *.zip
 extracted/
 
-# python fitting caches (raw Horizons samples; fitted JSON is committed)
-python/chiron_horizons_cache.json
+# python fitting caches (Horizons samples committed for Chiron reproducibility)
 python/__pycache__/
 .web-prose-extract.md
 python/astroengine/__pycache__/

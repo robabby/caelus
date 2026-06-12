@@ -1,4 +1,4 @@
-# Editorial voice — caelus
+# Editorial voice — Caelus
 
 Technical writing for docs, web copy, and package READMEs. Adapted from the Mystery Schools editorial export; tuned for an ephemeris engine, not a podcast.
 
@@ -13,7 +13,7 @@ Dry engineer explaining a hard problem to a peer who builds software. State what
 ## Sentence mechanics
 
 - Prefer 12–22 words. One idea per sentence.
-- Active voice. Name the subject: `caelus`, `the suite`, `Swiss Ephemeris`, not `the project` or `this approach`.
+- Active voice. Name the subject: **Caelus** in prose, `caelus` for the npm package and import paths, `the suite`, `Swiss Ephemeris` — not `the project` or `this approach`.
 - Concrete before abstract. Lead with the bug, the measurement, or the source.
 - Technical terms: define once, then reuse (`ΔT`, `VSOP87D`, `golden fixture`).
 
@@ -21,7 +21,7 @@ Dry engineer explaining a hard problem to a peer who builds software. State what
 
 - Filler: "it's important to note," "it's worth considering," "one might argue."
 - Intensifiers without data: "remarkable," "extraordinary," "flawless," "game-changing."
-- Meta-commentary: "this is what makes caelus unique," "the lesson generalizes," "what this buys you."
+- Meta-commentary: "this is what makes Caelus unique," "the lesson generalizes," "what this buys you."
 - Punchy closers: "Every layer needs its own referee," "full stop," "mail to Zurich."
 - AI vocabulary: `landscape`, `delve`, `unpack`, `multifaceted`, `testament`, `beacon`, `tapestry`, `resonates`, `pivotal`, `holistic`, `comprehensive overview`.
 - Em-dash chains. Use commas, colons, or a second sentence.
@@ -39,10 +39,11 @@ Never dress conviction as measurement. Never dress marketing as engineering.
 
 ## Web pages
 
+- Headings and nav: normal title case (`Build Notes`, `What This Is`). **Caelus** capitalized as a proper noun in prose; **`caelus`** lowercase only for npm package names, CLI commands, and code.
 - **Playground (`/`)**: one sentence on what it does; links to proof, not adjectives.
 - **Provenance (`/provenance`)**: table of sources; AGPL facts without sermonizing.
 - **Validation (`/validation`)**: tables and commands; CI is a fact, not a slogan.
-- **Build notes (`/notes`)**: postmortems with symptoms → cause → fix → test that caught it.
+- **Build Notes (`/notes`)**: postmortems with symptoms → cause → fix → test that caught it.
 
 ## For agents
 

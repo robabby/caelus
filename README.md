@@ -1,4 +1,4 @@
-# caelus
+# Caelus
 
 Astrological ephemeris monorepo. MIT, no Swiss Ephemeris code, no AGPL, no
 ephemeris files.

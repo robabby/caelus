@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "caelus",
+  title: "Caelus",
   description: "Astrological ephemeris. ~85 KB, client-side, checked body-by-body against Swiss Ephemeris.",
 };
 

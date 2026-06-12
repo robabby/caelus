@@ -4,7 +4,7 @@ globs: apps/web/**/*.{tsx,ts},docs/**/*.md,*.md
 alwaysApply: false
 ---
 
-# Copy and prose (caelus)
+# Copy and prose (Caelus)
 
 Before editing user-facing text, read `docs/editorial-voice.md` and `docs/ai-slop-style-sheet.md`.
 
@@ -28,6 +28,8 @@ Before editing user-facing text, read `docs/editorial-voice.md` and `docs/ai-slo
 
 ## Terminology
 
-- `caelus` (lowercase) for the engine/package
+- **Caelus** (capitalized) for the project/engine in prose
+- **`caelus`** (lowercase) for the npm package name, imports (`from "caelus"`), and `npm install caelus`
+- Title case for page headings and nav labels
 - `Swiss Ephemeris` as oracle/referee, never as source code
 - `clean-room` sparingly; prefer "written from published sources"

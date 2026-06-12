@@ -15,6 +15,7 @@ JPL
 DE423
 ELP2000
 Chebyshev
+Caelus
 caelus
 AGPL
 MIT

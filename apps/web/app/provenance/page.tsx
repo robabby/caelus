@@ -1,7 +1,7 @@
 import { A, H2, P, Nav } from "../../components/Prose";
 
 export const metadata = {
-  title: "caelus — provenance",
+  title: "Caelus — Provenance",
   description:
     "Coefficients from published sources. Swiss Ephemeris is a test oracle only. Engine-by-engine comparison.",
 };
@@ -34,7 +34,7 @@ export default function Provenance() {
   return (
     <main>
       <Nav current="/provenance" />
-      <h1 style={{ letterSpacing: "0.05em" }}>sources</h1>
+      <h1 style={{ letterSpacing: "0.05em" }}>Sources</h1>
       <P>
         Most astrology software computes positions with{" "}
         <A href="https://www.astro.com/swisseph/swephinfo_e.htm">Swiss Ephemeris</A>.
@@ -50,7 +50,7 @@ export default function Provenance() {
         terms. Most commercial astrology APIs do not say what engine they run.
       </P>
       <P>
-        caelus is written from the published record. Coefficients trace to
+        Caelus is written from the published record. Coefficients trace to
         public literature or public-domain ephemerides:
       </P>
       <table style={{ fontSize: "0.85em", lineHeight: 1.6, borderSpacing: 0 }}>
@@ -59,23 +59,23 @@ export default function Provenance() {
           <tr><td style={td}>Moon</td><td style={td}>Chebyshev fit of JPL DE423 (2010)</td><td style={dim}>NASA JPL (public domain); differs from DE440 by &lt;0.1″ here; re-fit planned</td></tr>
           <tr><td style={td}>Moon (embedded)</td><td style={td}>ELP2000-82 abridged series</td><td style={dim}>Chapront-Touzé &amp; Chapront, as published in Meeus ch. 47</td></tr>
           <tr><td style={td}>Pluto</td><td style={td}>Published periodic series</td><td style={dim}>Meeus, Astronomical Algorithms, ch. 37</td></tr>
-          <tr><td style={td}>Chiron</td><td style={td}>Chebyshev fit of JPL Horizons</td><td style={dim}>NASA JPL small-body system (public domain)</td></tr>
+          <tr><td style={td}>Chiron</td><td style={td}>Chebyshev fit of JPL Horizons</td><td style={dim}>NASA JPL small-body system (public domain); raw Horizons samples committed in-repo</td></tr>
           <tr><td style={td}>Nutation</td><td style={td}>IAU 1980 theory, 63-term abridged table</td><td style={dim}>Meeus ch. 22; terms ≥ 0.0003″ of the 106-term series</td></tr>
           <tr><td style={td}>Precession</td><td style={td}>IAU 1976 / Meeus formulations</td><td style={dim}>Lieske et al.</td></tr>
-          <tr><td style={td}>ΔT</td><td style={td}>IERS observed values; near-flat then slow tidal rise afterward</td><td style={dim}>International Earth Rotation Service; see build notes</td></tr>
+          <tr><td style={td}>ΔT</td><td style={td}>IERS observed values; near-flat then slow tidal rise afterward</td><td style={dim}>International Earth Rotation Service; see <A href="/notes">Build Notes</A></td></tr>
           <tr><td style={td}>Houses</td><td style={td}>Spherical trigonometry from first principles</td><td style={dim}>semi-arc definitions, closed-form angles</td></tr>
         </tbody>
       </table>
 
-      <H2>Other engines</H2>
+      <H2>Other Engines</H2>
       <P>
-        Where caelus sits, checked February–June 2026. Sizes are gzipped where
+        Where Caelus sits, checked February–June 2026. Sizes are gzipped where
         published:
       </P>
       <table style={{ fontSize: "0.85em", lineHeight: 1.6, borderSpacing: 0 }}>
         <thead>
           <tr style={{ opacity: 0.5, textAlign: "left" }}>
-            <th style={td}>engine</th><th style={td}>license</th><th style={td}>accuracy</th><th style={td}>coverage and runtime</th>
+            <th style={td}>Engine</th><th style={td}>License</th><th style={td}>Accuracy</th><th style={td}>Coverage and Runtime</th>
           </tr>
         </thead>
         <tbody>
@@ -91,15 +91,15 @@ export default function Provenance() {
       </table>
       <P dim>
         celestine (MIT, January 2026) is the closest project: houses, Chiron,
-        and nodes with no data files. Differences as of its v0.2.1: caelus
-        publishes per-body oracle deltas (<A href="/validation">validation</A>)
+        and nodes with no data files. Differences as of its v0.2.1: Caelus
+        publishes per-body oracle deltas (<A href="/validation">Validation</A>)
         and ships an MCP server and edge API; celestine ships Koch,
-        Regiomontanus, and Campanus houses, which caelus does not.
+        Regiomontanus, and Campanus houses, which Caelus does not.
       </P>
 
-      <H2>Swiss Ephemeris as oracle</H2>
+      <H2>Swiss Ephemeris as Oracle</H2>
       <P>
-        During development, caelus positions were compared to Swiss Ephemeris
+        During development, Caelus positions were compared to Swiss Ephemeris
         2.10 at random instants across 1900–2099. No Swiss Ephemeris code or
         coefficient ships here. An early Chiron fit sampled its asteroid file
         offline; release uses JPL Horizons instead. The two Chiron integrations
@@ -110,7 +110,7 @@ export default function Provenance() {
         MIT. Ship in closed source, SaaS, mobile, or edge bundles without AGPL
         obligations or ephemeris file deployment. Engine plus embedded data is
         ~85 KB gzipped; same code in browser, edge API, and the{" "}
-        <A href="https://www.npmjs.com/package/caelus-mcp">MCP server</A>.
+        <A href="https://www.npmjs.com/package/caelus-mcp">MCP Server</A>.
       </P>
       <P dim>
         <A href="/validation">Validation tables →</A>
