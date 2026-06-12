@@ -43,11 +43,11 @@ def _parse_vector_block(text):
     return jds, xs, ys, zs
 
 
-def _fetch_range(jd0, jd1, step_days=1.0):
+def _fetch_range(jd0, jd1, step_days=1.0, command=CHIRON):
     """Download a JD range via START_TIME/STOP_TIME (one API call)."""
     params = {
         "format": "text",
-        "COMMAND": f"'{CHIRON}'",
+        "COMMAND": f"'{command}'",
         "OBJ_DATA": "NO",
         "MAKE_EPHEM": "YES",
         "EPHEM_TYPE": "VECTOR",
@@ -67,7 +67,7 @@ def _fetch_range(jd0, jd1, step_days=1.0):
     return _parse_vector_block(text)
 
 
-def _fetch_vectors(jds):
+def _fetch_vectors(jds, command=CHIRON):
     """Return (x, y, z) AU arrays for specific JDs (small batches via TLIST)."""
     import numpy as np
 
@@ -75,7 +75,7 @@ def _fetch_vectors(jds):
     tlist = ",".join(f"{jd:.9f}" for jd in jds)
     params = {
         "format": "text",
-        "COMMAND": f"'{CHIRON}'",
+        "COMMAND": f"'{command}'",
         "OBJ_DATA": "NO",
         "MAKE_EPHEM": "YES",
         "EPHEM_TYPE": "VECTOR",
@@ -98,11 +98,15 @@ def _fetch_vectors(jds):
     return np.array(xs), np.array(ys), np.array(zs)
 
 
-class ChironHorizonsCache:
-    """Daily heliocentric Chiron cache with linear interpolation."""
+class HorizonsCache:
+    """Daily heliocentric small-body cache with linear interpolation.
+    command: Horizons COMMAND (e.g. "2060" Chiron, "1;" Ceres -- the
+    semicolon marks a small-body record number); label: provenance name."""
 
-    def __init__(self, path):
+    def __init__(self, path, command=CHIRON, label="2060 Chiron"):
         self.path = path
+        self.command = command
+        self.label = label
         self._jds = None
         self._xs = None
         self._ys = None
@@ -131,7 +135,7 @@ class ChironHorizonsCache:
             pass
 
         hi = jd1 + pad_days
-        print(f"downloading Chiron from JPL Horizons: JD {jd0} .. {hi} (step {step}d)")
+        print(f"downloading {self.label} from JPL Horizons: JD {jd0} .. {hi} (step {step}d)")
         jds_all, xs_all, ys_all, zs_all = [], [], [], []
         chunk = RANGE_CHUNK * step
         nchunks = int(math.ceil((hi - jd0) / chunk))
@@ -139,7 +143,7 @@ class ChironHorizonsCache:
         for i in range(nchunks):
             t1 = min(t + chunk, hi)
             print(f"  range {i + 1}/{nchunks}: JD {t:.1f} .. {t1:.1f}")
-            jds, xs, ys, zs = _fetch_range(t, t1, step)
+            jds, xs, ys, zs = _fetch_range(t, t1, step, command=self.command)
             jds_all.extend(jds)
             xs_all.extend(xs)
             ys_all.extend(ys)
@@ -149,7 +153,7 @@ class ChironHorizonsCache:
 
         data = {
             "source": "JPL Horizons",
-            "body": "2060 Chiron",
+            "body": self.label,
             "center": "@sun",
             "frame": "heliocentric ecliptic J2000",
             "correction": "geometric (VEC_CORR=NONE)",
@@ -200,3 +204,10 @@ class ChironHorizonsCache:
             np.interp(jds, self._jds, self._ys),
             np.interp(jds, self._jds, self._zs),
         )
+
+
+class ChironHorizonsCache(HorizonsCache):
+    """Backward-compatible alias used by fit_chiron.py."""
+
+    def __init__(self, path):
+        super().__init__(path, command=CHIRON, label="2060 Chiron")
