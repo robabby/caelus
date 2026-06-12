@@ -23,4 +23,8 @@ echo ""
 echo "→ Vale on package READMEs + agent docs"
 vale packages/caelus/README.md packages/birth/README.md packages/wheel/README.md docs/agents.md templates/starter/README.md || FAIL=1
 
+echo ""
+echo "→ Vale on repo design docs"
+vale README.md docs/gap-analysis.md docs/releasing.md || FAIL=1
+
 exit "$FAIL"

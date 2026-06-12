@@ -64,3 +64,9 @@ Pairs with find_aspect_dates to check candidate times against dated events.
 Progressions/returns/solar-arc (compose from primitives; dedicated tools in
 a later version if needed), Vedic ayanamsas (`zodiac: tropical|sidereal(<ayanamsa>)`
 later), interpretation text (KG server's job).
+
+## v0.3 surface (decided, see docs/gap-analysis.md)
+New engine features do not become new tools. Sidereal modes and additional
+house systems arrive as parameters on the existing six. Eclipses, rise/set,
+phases, and stations share one new `sky_events(range, kinds, lat?, lon?)`
+tool when Tier 2/3 lands: seven tools total, still outcome-level.
