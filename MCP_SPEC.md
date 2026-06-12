@@ -13,7 +13,8 @@ composable with a separate KG/corpus server (see ARCHITECTURE.md).
 3. **Token frugality.** Full natal chart ~1.9 KB: terse keys, 0.01°
    positions, compact aspect strings (`t.saturn sq n.moon (0.4° applying)`).
 4. **Determinism + provenance.** Same input → same output. Tool descriptions
-   state accuracy (~1″ vs Swiss Ephemeris).
+   state per-body accuracy vs Swiss Ephemeris — never a blanket figure
+   (planets ≤3″, Moon ≤0.5″ in 1920–2080, nodes ≤1″, Pluto valid 1885–2099).
 
 ## Tools
 

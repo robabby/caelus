@@ -79,15 +79,9 @@ def regen_from_template(old):
         }
         out["houses"].append(entry)
 
-    g = old["chart"]
-    c = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus")
-    out["chart"] = {
-        "jd_ut": c["jd_ut"],
-        "bodies": c["bodies"],
-        "angles": c["angles"],
-        "cusps": c["cusps"],
-        "aspects": c["aspects"],
-    }
+    out["chart"] = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus")
+
+    # polar Placidus fallback contract (golden.test.ts checks both fields)
     cp = eng.chart(1985, 12, 1, 9, 0, 0, 78.2, 15.6, "placidus")
     out["chart_polar"] = {
         "house_system": cp["house_system"],
@@ -163,14 +157,9 @@ def create_fresh():
             "whole_sign": [c / DEG for c in H.houses_whole_sign(asc)],
         })
 
-    c = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus")
-    out["chart"] = {
-        "jd_ut": c["jd_ut"],
-        "bodies": c["bodies"],
-        "angles": c["angles"],
-        "cusps": c["cusps"],
-        "aspects": c["aspects"],
-    }
+    out["chart"] = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus")
+
+    # polar Placidus fallback contract (golden.test.ts checks both fields)
     cp = eng.chart(1985, 12, 1, 9, 0, 0, 78.2, 15.6, "placidus")
     out["chart_polar"] = {
         "house_system": cp["house_system"],

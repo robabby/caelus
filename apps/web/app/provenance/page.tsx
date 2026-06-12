@@ -62,7 +62,7 @@ export default function Provenance() {
           <tr><td style={td}>Chiron</td><td style={td}>Chebyshev fit of JPL Horizons</td><td style={dim}>NASA JPL small-body system (public domain)</td></tr>
           <tr><td style={td}>Nutation</td><td style={td}>IAU 1980 theory, 63-term abridged table</td><td style={dim}>Meeus ch. 22; terms ≥ 0.0003″ of the 106-term series</td></tr>
           <tr><td style={td}>Precession</td><td style={td}>IAU 1976 / Meeus formulations</td><td style={dim}>Lieske et al.</td></tr>
-          <tr><td style={td}>ΔT</td><td style={td}>IERS observed values, held near current afterward</td><td style={dim}>International Earth Rotation Service; see build notes</td></tr>
+          <tr><td style={td}>ΔT</td><td style={td}>IERS observed values; near-flat then slow tidal rise afterward</td><td style={dim}>International Earth Rotation Service; see build notes</td></tr>
           <tr><td style={td}>Houses</td><td style={td}>Spherical trigonometry from first principles</td><td style={dim}>semi-arc definitions, closed-form angles</td></tr>
         </tbody>
       </table>

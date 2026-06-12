@@ -1,6 +1,6 @@
 export const metadata = {
   title: "caelus",
-  description: "Astrological ephemeris. ~85 KB, client-side, checked to ~1″ vs Swiss Ephemeris.",
+  description: "Astrological ephemeris. ~85 KB, client-side, checked body-by-body against Swiss Ephemeris.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

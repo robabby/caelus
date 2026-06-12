@@ -19,7 +19,7 @@ const BODY_TABLE: Array<[string, string, string, string]> = [
   ["Pluto", "2.5″", "1.0″", "series valid 1885–2099"],
   ["Chiron", "1.0″", "0.3″", "JPL Horizons fit, 1850–2150"],
   ["Mean node", "0.1″", "0.1″", ""],
-  ["True node", "61″", "12″", "osculating element; rounds to the 1′ display step"],
+  ["True node", "0.8″", "0.4″", "vs full DE431 files; Swiss&rsquo;s built-in Moshier mode itself differs from DE431 by up to ~15″ here"],
   ["Ascendant / MC", "3.2″", "—", ""],
   ["Placidus cusps (all 12)", "3.2″", "—", ""],
 ];

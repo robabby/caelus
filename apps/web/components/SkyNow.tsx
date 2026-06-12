@@ -8,7 +8,7 @@ const ACCURACY: Array<[string, string]> = [
   ["Sun–Saturn", "≤ 1″"], ["Uranus / Neptune", "≤ 2″ / ≤ 5″"],
   ["Moon (1920–2080 tier)", "≤ 2.5″"], ["Moon (series, embedded)", "≤ 10″"],
   ["Pluto / Chiron", "≤ 2.5″ / ≤ 1″"], ["Angles & Placidus cusps", "≤ 3.2″"],
-  ["True node", "~1′"],
+  ["True node", "≤ 1″"],
 ];
 
 function houseOf(cusps: number[], lon: number) {

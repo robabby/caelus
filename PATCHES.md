@@ -108,3 +108,48 @@ competing library repos). Engine fixes plus copy corrections follow.
   playground kept at the top.
 - Checked and left alone: the 20.4898″ aberration constant is correct as
   written (Meeus eq. 25.10 uses κ·(1−e²)); no code change.
+
+# Branch merge: measured accuracy + ΔT unification — 2026-06-12
+
+Two parallel sessions addressed the same research review. The merge to
+dev unified them, with disagreements resolved by measurement.
+
+## 1 ΔT post-2025 model unified (both engines)
+- The two fixes disagreed: hold-with-floor `max(69.2 - 0.05·t, 68.2)`
+  vs decline-plus-tidal-rise. Merged to the latter:
+  `69.2 - 0.04·t + 32·(t/100)²` — the observed 2020–2025 slope plus the
+  long-term tidal quadratic (+32 s/cy², the same coefficient as the
+  deep-time parabola), so ΔT rejoins the secular rise instead of
+  flat-lining at 68.2 s through 2150. Huber's ±37 s/80 yr uncertainty
+  citation kept. Goldens regenerated; suite green (1,438 checks).
+
+## 2 True node re-measured against FULL Swiss files (DE431)
+- The "61″ / ~1′" true-node figures came from Swiss's built-in Moshier
+  mode. Against the DE431 data files the node is sub-arcsecond:
+  max 0.76″, RMS 0.37″ over 1900–2099 (n=400); ≤0.9″ across 1850–2149.
+  Moshier mode itself differs from DE431 by up to ~15″ here.
+- Validation table, SkyNow, and the MCP natal_chart description now
+  carry the measured numbers. Swiss files used as oracle only, from a
+  temp dir, never entering the repo.
+
+## 3 Moon precise-tier: post-2025 deltas are ΔT divergence, not error
+- At identical TT instants the 1920–2080 tier agrees with DE431 to
+  0.28″ worst-case. UT-based comparisons after 2025 drift apart because
+  Swiss 2.10 extrapolates ΔT ~8 s higher by 2079 — unknowable for any
+  engine, documented on /validation.
+
+## 4 MCP layer gets its per-tool oracle suite
+- `verify_tools.mjs` (grown from `verify_aspects.mjs`, now removed):
+  166 checks across all 6 tools against the engine in-process — polar
+  fallback reporting, retrograde triple-pass, both ±60° sextile
+  geometries, contract errors, grid cross-checks. Mutation-tested:
+  reintroducing the finding-#2 bug fails exactly the two relevant
+  checks. Runs in CI after the smoke test.
+
+## 5 Housekeeping
+- `export_golden.py`: both parallel fixes converged on emitting
+  `chart_polar`; deduplicated, and the chart fixture now carries the
+  full engine dict including house-system fields.
+- Doc drift: check counts 1,437 → 1,438; Python reference located in
+  `python/`; Chiron re-fit marked done. Chiron Horizons cache commit
+  handed off (`docs/handoff-chiron-cache.md`) pending network access.

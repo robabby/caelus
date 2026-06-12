@@ -66,11 +66,16 @@ export function deltaT(jdUt: number): number {
       if (y >= y0 && y <= y1) return d0 + ((d1 - d0) * (y - y0)) / (y1 - y0);
     }
   }
-  // IERS-observed dT has been flat-to-declining since 2020 (69.4 -> ~69.2 s);
-  // Earth's rotation sped up post-2016. Hold near the current value with the
-  // observed slight decline; an 80-year dT forecast carries ~+/-37 s
-  // uncertainty (Huber 2006), so any steeper slope is false precision.
-  if (y > 2025) return Math.max(69.2 - 0.05 * (y - 2025), 68.2);
+  if (y > 2025) {
+    // ΔT is flat-to-falling (69.4 -> 69.2 s over 2020-2025; Earth's spin
+    // sped up post-2016). Continue the observed slope (-0.04 s/yr) plus the
+    // long-term tidal quadratic (+32 s/cy², same coefficient as the
+    // deep-time parabola below) so it rejoins the secular rise. An 80-year
+    // ΔT forecast carries ~±37 s uncertainty (Huber 2006); anything steeper
+    // is false precision.
+    const dy = y - 2025;
+    return 69.2 - 0.04 * dy + 32 * (dy / 100) ** 2;
+  }
   let t: number;
   if (y >= 1941 && y < 1955) {
     t = y - 1950;

@@ -6,10 +6,10 @@ ephemeris files. 1:1 port of the Python reference, checked by golden fixtures.
 ## Verification chain
 
 1. Python engine checked against Swiss Ephemeris 2.10 across 1900–2099:
-   every planet ≤ 1″ (Sun–Saturn), Moon ≤ 2.5″, Chiron ≤ 1″, angles and
-   Placidus cusps ≤ 3.2″ — all invisible at the arcminute display precision
-   chart software uses.
-2. TypeScript port verified against Python golden fixtures: **1,437 checks,
+   every planet ≤ 1″ (Sun–Saturn), Moon ≤ 2.5″, Chiron ≤ 1″, nodes ≤ 1″
+   (vs full DE431 files, 1850–2149), angles and Placidus cusps ≤ 3.2″ — all
+   invisible at the arcminute display precision chart software uses.
+2. TypeScript port verified against Python golden fixtures: **1,438 checks,
    0 failures, worst deviation 1.6 nano-arcseconds.** The two implementations
    are numerically identical.
 
