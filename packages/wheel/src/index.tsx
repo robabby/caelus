@@ -169,6 +169,9 @@ export function ChartWheel({
   const asc = chart.angles.asc;
   const c = size / 2;
   const R = (size / 2) * 0.96;
+  // AC/MC/DC/IC labels sit at r=1.05 outside the outer ring; pad the viewBox
+  // so they are not clipped when the SVG is rendered at exactly `size` px.
+  const pad = size * 0.07;
 
   // ASC at 9 o'clock, longitudes counterclockwise
   const pt = (lon: number, r: number): [number, number] => {
@@ -275,9 +278,10 @@ export function ChartWheel({
   });
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}
+    <svg width={size} height={size}
+      viewBox={`${-pad} ${-pad} ${size + 2 * pad} ${size + 2 * pad}`}
       role="img" aria-label="astrological chart wheel"
-      style={{ background: T.background }}>
+      style={{ background: T.background, display: "block" }}>
       {el}
     </svg>
   );

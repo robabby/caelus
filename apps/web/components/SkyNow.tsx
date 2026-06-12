@@ -18,7 +18,7 @@ function houseOf(cusps: number[], lon: number) {
 export default function SkyNow() {
   const engineRef = useRef<Engine | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [iso, setIso] = useState("2000-01-01T12:00");
+  const [iso, setIso] = useState("");
   const [lat, setLat] = useState("27.94");
   const [lon, setLon] = useState("-82.46");
   const [sys, setSys] = useState<HouseSystem>("placidus");
@@ -30,6 +30,7 @@ export default function SkyNow() {
   }, []);
 
   const { chart, ms, error } = useMemo(() => {
+    if (!mounted || !iso) return { chart: null, ms: 0, error: null };
     const la = Number(lat);
     const lo = Number(lon);
     const d = new Date(iso + ":00Z");
@@ -43,7 +44,7 @@ export default function SkyNow() {
       d.getUTCHours(), d.getUTCMinutes(), 0, la, lo, sys,
     );
     return { chart: c as Chart, ms: performance.now() - t0, error: null };
-  }, [iso, lat, lon, sys]);
+  }, [mounted, iso, lat, lon, sys]);
 
   const inp = { background: "#1a1626", color: "#e8e4f0", border: "1px solid #3a3450", borderRadius: 4, padding: "0.3rem 0.5rem", fontFamily: "inherit" };
   const tabBtn = (t: typeof tab) => ({
@@ -53,57 +54,62 @@ export default function SkyNow() {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", margin: "1rem 0" }}>
-        <label>UTC <input style={inp} type="datetime-local" value={iso} onChange={(e) => setIso(e.target.value)} /></label>
-        <label>lat <input style={{ ...inp, width: "5.5rem" }} value={lat} onChange={(e) => setLat(e.target.value)} /></label>
-        <label>lon <input style={{ ...inp, width: "5.5rem" }} value={lon} onChange={(e) => setLon(e.target.value)} /></label>
-        <select style={inp} value={sys} onChange={(e) => setSys(e.target.value as HouseSystem)}>
-          {SYSTEMS.map((s) => <option key={s}>{s}</option>)}
-        </select>
-      </div>
-      {error && <p style={{ color: "#e08a8a" }}>{error}</p>}
-      {!mounted && <p style={{ opacity: 0.55, fontSize: "0.85em" }}>computing…</p>}
-      {mounted && chart && (
+      {!mounted ? (
+        <p style={{ opacity: 0.55, fontSize: "0.85em", margin: "1rem 0" }}>loading playground…</p>
+      ) : (
         <>
-          <p style={{ opacity: 0.55, fontSize: "0.85em" }}>
-            {iso}Z · {lat}°, {lon}° (east+) · {chart.houseSystem}
-            {chart.houseSystem !== chart.houseSystemRequested && " (placidus undefined at this latitude)"}
-            {" "}· computed client-side in {ms.toFixed(1)} ms
-          </p>
-          <div style={{ display: "flex", gap: "0.5rem", margin: "0.5rem 0" }}>
-            {(["positions", "aspects", "json"] as const).map((t) => (
-              <button key={t} type="button" style={tabBtn(t)} onClick={() => setTab(t)}>
-                {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
-              </button>
-            ))}
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", margin: "1rem 0" }}>
+            <label>UTC <input style={inp} type="datetime-local" value={iso} onChange={(e) => setIso(e.target.value)} /></label>
+            <label>lat <input style={{ ...inp, width: "5.5rem" }} value={lat} onChange={(e) => setLat(e.target.value)} /></label>
+            <label>lon <input style={{ ...inp, width: "5.5rem" }} value={lon} onChange={(e) => setLon(e.target.value)} /></label>
+            <select style={inp} value={sys} onChange={(e) => setSys(e.target.value as HouseSystem)}>
+              {SYSTEMS.map((s) => <option key={s}>{s}</option>)}
+            </select>
           </div>
-          <div style={{ maxWidth: 460, margin: "0.8rem 0" }}>
-            <ChartWheel chart={chart} size={460} />
-          </div>
-          {tab === "positions" && (
-            <table style={{ borderSpacing: "0.8rem 0.15rem" }}>
-              <tbody>
-                {BODIES.map((b) => (
-                  <tr key={b}>
-                    <td style={{ opacity: 0.6 }}>{b}</td>
-                    <td>{fmtLon(chart.bodies[b].lon)}{chart.bodies[b].retrograde ? " ℞" : ""}</td>
-                    <td style={{ opacity: 0.6 }}>house {houseOf(chart.cusps, chart.bodies[b].lon)}</td>
-                  </tr>
+          {error && <p style={{ color: "#e08a8a" }}>{error}</p>}
+          {chart && (
+            <>
+              <p style={{ opacity: 0.55, fontSize: "0.85em" }}>
+                {iso}Z · {lat}°, {lon}° (east+) · {chart.houseSystem}
+                {chart.houseSystem !== chart.houseSystemRequested && " (placidus undefined at this latitude)"}
+                {" "}· computed client-side in {ms.toFixed(1)} ms
+              </p>
+              <div style={{ display: "flex", gap: "0.5rem", margin: "0.5rem 0" }}>
+                {(["positions", "aspects", "json"] as const).map((t) => (
+                  <button key={t} type="button" style={tabBtn(t)} onClick={() => setTab(t)}>
+                    {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
+                  </button>
                 ))}
-                <tr><td style={{ opacity: 0.6 }}>ASC</td><td>{fmtLon(chart.angles.asc)}</td><td /></tr>
-                <tr><td style={{ opacity: 0.6 }}>MC</td><td>{fmtLon(chart.angles.mc)}</td><td /></tr>
-              </tbody>
-            </table>
-          )}
-          {tab === "aspects" && (
-            <ul style={{ lineHeight: 1.7, paddingLeft: "1.2rem" }}>
-              {chart.aspects.map((a, i) => <li key={i}>{a.a} {a.aspect} {a.b} <span style={{ opacity: 0.5 }}>(orb {a.orb}°)</span></li>)}
-            </ul>
-          )}
-          {tab === "json" && (
-            <pre style={{ background: "#13101e", padding: "1rem", borderRadius: 6, overflow: "auto", fontSize: "0.75em", maxHeight: "24rem" }}>
-              {JSON.stringify(chart, null, 2)}
-            </pre>
+              </div>
+              <div style={{ maxWidth: 460, margin: "0.8rem 0", overflow: "visible" }}>
+                <ChartWheel chart={chart} size={460} />
+              </div>
+              {tab === "positions" && (
+                <table style={{ borderSpacing: "0.8rem 0.15rem" }}>
+                  <tbody>
+                    {BODIES.map((b) => (
+                      <tr key={b}>
+                        <td style={{ opacity: 0.6 }}>{b}</td>
+                        <td>{fmtLon(chart.bodies[b].lon)}{chart.bodies[b].retrograde ? " ℞" : ""}</td>
+                        <td style={{ opacity: 0.6 }}>house {houseOf(chart.cusps, chart.bodies[b].lon)}</td>
+                      </tr>
+                    ))}
+                    <tr><td style={{ opacity: 0.6 }}>ASC</td><td>{fmtLon(chart.angles.asc)}</td><td /></tr>
+                    <tr><td style={{ opacity: 0.6 }}>MC</td><td>{fmtLon(chart.angles.mc)}</td><td /></tr>
+                  </tbody>
+                </table>
+              )}
+              {tab === "aspects" && (
+                <ul style={{ lineHeight: 1.7, paddingLeft: "1.2rem" }}>
+                  {chart.aspects.map((a, i) => <li key={i}>{a.a} {a.aspect} {a.b} <span style={{ opacity: 0.5 }}>(orb {a.orb}°)</span></li>)}
+                </ul>
+              )}
+              {tab === "json" && (
+                <pre style={{ background: "#13101e", padding: "1rem", borderRadius: 6, overflow: "auto", fontSize: "0.75em", maxHeight: "24rem" }}>
+                  {JSON.stringify(chart, null, 2)}
+                </pre>
+              )}
+            </>
           )}
         </>
       )}
