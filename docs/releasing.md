@@ -26,6 +26,10 @@ registered by the first publish itself. Re-check before tagging:
    ```
    git tag v0.1.0 && git push origin v0.1.0
    ```
+   Remote-execution sessions cannot push tags (the git proxy rejects tag
+   refs); from those, dispatch the `release` workflow on `main` instead
+   (Actions → release → Run workflow) and push the tag afterward from a
+   local clone. The published versions come from package.json either way.
 4. The release workflow runs the full verification chain (golden suite,
    MCP oracle suite, birth tzdb suite, wheel render suite, llms.txt sync)
    and publishes all four packages with `--provenance`. A red suite

@@ -1,11 +1,13 @@
 name: release
 # Publish all four packages to npm with provenance attestation.
-# Trigger: push a tag like v0.1.0. Requires the NPM_TOKEN secret
-# (automation token for the npm account that owns the caelus* package
-# names) — see docs/releasing.md.
+# Trigger: push a tag like v0.1.0, or dispatch manually from main (the
+# published versions come from the package.json files either way).
+# Requires the NPM_TOKEN secret (automation token for the npm account
+# that owns the caelus* package names) — see docs/releasing.md.
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 permissions:
   contents: read
   id-token: write   # npm --provenance
