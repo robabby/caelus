@@ -1,0 +1,30 @@
+name: live-smoke
+# The conformance suite guards the code; this guards the deployment.
+# Curls the production endpoints and asserts status + known positions
+# (scripts/smoke-live.mjs). Runs after pushes to main (with retries while
+# Vercel deploys), on manual dispatch, and daily — a WAF rule or stale
+# deploy fails here even when every repo suite is green.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 9 * * *"
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # pushes race the Vercel deploy: retry up to 10 minutes before failing
+      - run: |
+          for i in $(seq 1 10); do
+            if node scripts/smoke-live.mjs; then exit 0; fi
+            echo "attempt $i failed; retrying in 60s"
+            sleep 60
+          done
+          exit 1

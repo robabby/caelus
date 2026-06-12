@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-const DEMO_PATH = "/api/chart?lat=27.94&lon=-82.46";
+const DEMO_PATH = "/api/chart?date=1990-06-10T14:30:00Z&lat=27.94&lon=-82.46";
+const CANONICAL = "https://www.ephemengine.com";
 
 const button: React.CSSProperties = {
   fontFamily: "inherit",
@@ -29,8 +30,12 @@ const secondary: React.CSSProperties = {
 
 export default function Cta() {
   const [copied, setCopied] = useState(false);
-  const [origin, setOrigin] = useState("");
-  useEffect(() => setOrigin(window.location.origin), []);
+  // canonical by default so the SSR HTML (and any copy-paste before
+  // hydration) carries a full, runnable URL; previews override client-side
+  const [origin, setOrigin] = useState(CANONICAL);
+  useEffect(() => {
+    if (window.location.origin !== CANONICAL) setOrigin(window.location.origin);
+  }, []);
 
   const copy = () => {
     navigator.clipboard.writeText("npm install caelus");

@@ -73,7 +73,9 @@ First release of all four packages, published with npm provenance.
   explicit polar fallback; major aspects. Apparent geocentric positions,
   1800–2149. Per-body accuracy vs Swiss Ephemeris 2.10 (1900–2099):
   Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″ (precise tier),
-  Pluto ≤2.5″, Chiron ≤1″, nodes ≤1″. TypeScript port pinned to the
+  Pluto ≤2.5″, Chiron ≤1″, mean node ≤1″; true node ≤ 1′ vs SE's
+  built-in ephemeris (corrected 2026-06-12 — originally misstated as
+  ≤1″; the ≤1″ figure holds only vs full JPL DE431). TypeScript port pinned to the
   Python reference by 1,438 golden checks (worst deviation 0.82
   nano-arcseconds at release).
 - `caelus-mcp`: six outcome-level tools over stdio (`natal_chart`,

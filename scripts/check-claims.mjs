@@ -34,10 +34,12 @@ function loadStats() {
   return JSON.parse(readFileSync(STATS_PATH, "utf8"));
 }
 
+const accuracy = JSON.parse(readFileSync(rel("packages/caelus/accuracy.json"), "utf8"));
+
 function resolveSource(spec, stats) {
-  // spec like "stats.worst.nano_arcsec" or "stats.checks"
+  // spec like "stats.worst.nano_arcsec", "stats.checks", or "accuracy.<key>"
   const [root, ...path] = spec.split(".");
-  let cur = root === "stats" ? stats : null;
+  let cur = root === "stats" ? stats : root === "accuracy" ? accuracy : null;
   if (cur === null) throw new Error(`unknown source root: ${root}`);
   for (const k of path) cur = cur?.[k];
   return cur;

@@ -85,7 +85,7 @@
       "name": "True node",
       "max": "0.8",
       "rms": "0.4",
-      "note": "vs full DE431 files; Swiss’s built-in Moshier mode itself differs from DE431 by up to ~15″ here"
+      "note": "vs full JPL DE431 files; vs Swiss Ephemeris's BUILT-IN (Moshier) ephemeris expect up to ~1′ (measured: 50″ max, 8″ median, 300 epochs) — that is the built-in lunar theory's own node error, not ours"
     },
     {
       "name": "Ascendant / MC",
@@ -193,7 +193,7 @@
     },
     {
       "label": "True node",
-      "bound": "≤ 1″"
+      "bound": "≤ 1′ vs SE built-in (≤ 1″ vs JPL DE431)"
     },
     {
       "label": "Mean Lilith",
@@ -216,5 +216,6 @@
       "bound": "≤ 4 s"
     }
   ],
-  "v03_harness": "python/validate_swiss.py regenerates every figure above the line against pyswisseph 2.10 (Moshier mode)"
+  "v03_harness": "python/validate_swiss.py regenerates every figure above the line against pyswisseph 2.10 (Moshier mode)",
+  "true_node_vs_builtin": "1′"
 }

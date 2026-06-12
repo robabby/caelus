@@ -20,7 +20,8 @@ composable with a separate KG/corpus server (see ARCHITECTURE.md).
 5. **Determinism + provenance.** Same input → same output. Tool descriptions
    state per-body accuracy vs Swiss Ephemeris — never a blanket figure
    (1900–2099: Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″,
-   Pluto ≤2.5″ with series valid 1885–2099, Chiron ≤1″, nodes ≤1″).
+   Pluto ≤2.5″ with series valid 1885–2099, Chiron ≤1″, mean node ≤1″,
+   true node ≤ 1′ vs SE's built-in ephemeris).
 
 ## Tools
 

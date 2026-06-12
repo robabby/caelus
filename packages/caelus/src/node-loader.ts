@@ -15,7 +15,20 @@ export function loadNodeData(
 ): EngineData {
   const j = (name: string) => JSON.parse(readFileSync(join(dir, name), "utf8"));
   const vsop: Record<string, VsopSeries> = {};
-  for (const p of PLANETS) vsop[p] = j(`vsop87d_${p}.${level}.json`);
+  // The npm package ships the embedded and micro VSOP tiers; full/high live
+  // in the repo. Fall back per planet so "full" against the published
+  // tarball loads instead of throwing ENOENT.
+  for (const p of PLANETS) {
+    const tiers = level === "embedded" || level === "micro" ? [level] : [level, "embedded"];
+    const found = tiers.find((t) => existsSync(join(dir, `vsop87d_${p}.${t}.json`)));
+    if (!found) {
+      throw new Error(
+        `no VSOP87D data for ${p} in ${dir} (tried ${tiers.join(", ")}); `
+        + "the full/high tiers live in the caelus repo, not the npm package",
+      );
+    }
+    vsop[p] = j(`vsop87d_${p}.${found}.json`);
+  }
   const data: EngineData = {
     vsop,
     nutation: j("nutation_iau1980.json"),

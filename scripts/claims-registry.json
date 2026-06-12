@@ -4,7 +4,10 @@
     {
       "id": "golden-check-count",
       "source": "stats.checks",
-      "render": ["3,112", "3112"],
+      "render": [
+        "3,112",
+        "3112"
+      ],
       "competing": "\\b1,4\\d\\d\\b(?=[^\\n]{0,40}(golden|check|fixture))",
       "appearsIn": [
         "ARCHITECTURE.md",
@@ -20,7 +23,9 @@
       "id": "worst-diff-nano-prose",
       "source": "stats.worst.nano_arcsec",
       "round": 2,
-      "render": ["{value} nano-arcsecond"],
+      "render": [
+        "{value} nano-arcsecond"
+      ],
       "competing": "(\\d+\\.\\d+)\\s*nano-arcsecond",
       "appearsIn": [
         "packages/caelus/README.md",
@@ -33,11 +38,29 @@
       "id": "worst-diff-nano-llms",
       "source": "stats.worst.nano_arcsec",
       "round": 2,
-      "render": ["{value}e-9 arcsec"],
+      "render": [
+        "{value}e-9 arcsec"
+      ],
       "competing": "(\\d+\\.\\d+)e-9 arcsec",
       "appearsIn": [
         "apps/web/public/llms.txt",
         "llms.txt"
+      ]
+    },
+    {
+      "id": "true-node-bound",
+      "source": "accuracy.true_node_vs_builtin",
+      "render": [
+        "true node ≤ {value}",
+        "true node <= 1'"
+      ],
+      "competing": "true node [≤<=]+ ?1[″\\\"]",
+      "appearsIn": [
+        "packages/caelus/README.md",
+        "MCP_SPEC.md",
+        "packages/caelus-mcp/src/server.ts",
+        "llms.txt",
+        "apps/web/public/llms.txt"
       ]
     }
   ]

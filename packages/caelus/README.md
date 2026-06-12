@@ -6,7 +6,8 @@ ephemeris files. 1:1 port of the Python reference, checked by golden fixtures.
 ## Verification chain
 
 1. Python engine checked against Swiss Ephemeris 2.10 across 1900–2099:
-   every planet ≤ 1″ (Sun–Saturn), Moon ≤ 2.5″, Chiron ≤ 1″, nodes ≤ 1″
+   every planet ≤ 1″ (Sun–Saturn), Moon ≤ 2.5″, Chiron ≤ 1″, mean node ≤ 1″,
+   true node ≤ 1′ vs SE's built-in ephemeris (≤ 1″ vs JPL DE431)
    (vs full DE431 files, 1850–2149), angles and Placidus cusps ≤ 3.2″ — all
    invisible at the arcminute display precision chart software uses.
 2. TypeScript port verified against Python golden fixtures: **3,112 checks,
