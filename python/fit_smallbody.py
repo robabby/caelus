@@ -44,7 +44,7 @@ def fit_body(name):
     print(f"--- {label}: scan seg_days, degree -> residual AU, size")
     best = None
     for seg in (1461, 2922, 5844):  # 4, 8, 16 years
-        for deg in (8, 10, 12, 14, 16, 20):
+        for deg in (8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32):
             data, resid = fit(cache.sample, jd0, jd1, seg, deg, scale=1.0, sig=10)
             size = len(json.dumps(data, separators=(",", ":")))
             ok = "OK" if resid < RESID_TARGET else "  "
