@@ -44,7 +44,16 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - name: Install Vale
+        # Pull the pinned release binary directly from GitHub. The old
+        # `curl … install.vale.sh | sh` pipe swallowed a failed download
+        # (the pipe masked the script's exit code), so Vale silently never
+        # installed and the prose job failed with "vale not found".
+        # set -euo pipefail makes any future install regression fail loudly.
         run: |
-          curl -sfL https://install.vale.sh | sh -s -- -v 3.13.0
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          set -euo pipefail
+          curl -sSfL -o vale.tar.gz \
+            https://github.com/errata-ai/vale/releases/download/v3.13.0/vale_3.13.0_Linux_64-bit.tar.gz
+          tar -xzf vale.tar.gz vale
+          sudo mv vale /usr/local/bin/
+          vale --version
       - run: npm run lint:prose
