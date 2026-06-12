@@ -13,10 +13,10 @@ Repo: https://github.com/heavyblotto/caelus
 
 ## Install
 
-- caelus@0.2.0 — the engine
-- caelus-birth@0.2.0 — local birth time + place -> UT (use this; see below)
-- caelus-wheel@0.2.0 — React SVG chart wheel
-- caelus-mcp@0.2.0 — MCP server, 6 chart tools over stdio
+- caelus@0.2.1 — the engine
+- caelus-birth@0.2.1 — local birth time + place -> UT (use this; see below)
+- caelus-wheel@0.2.1 — React SVG chart wheel
+- caelus-mcp@0.2.1 — MCP server, 6 chart tools over stdio
 
 ## Entry points
 
