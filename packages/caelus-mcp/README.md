@@ -1,9 +1,10 @@
 # caelus-mcp
 
 MCP server for the [caelus](https://github.com/heavyblotto/caelus) ephemeris
-engine: six chart tools over stdio. Computation only — positions, houses,
-aspects with orbs — the model does the interpreting. No API keys, no
-ephemeris files, no network calls; the engine data ships inside the package.
+engine: seven chart tools over stdio. Computation only — positions, houses,
+aspects with orbs, event search — the model does the interpreting. No API
+keys, no ephemeris files, no network calls; the engine data ships inside the
+package.
 
 ## Setup
 
@@ -31,10 +32,15 @@ Any MCP client that speaks stdio:
 | `synastry` | Two charts compared: inter-chart aspects, house overlays both ways |
 | `find_aspect_dates` | Exact dates a transiting body aspects a longitude or another body, retrograde re-hits included |
 | `rectification_grid` | ASC/MC sweep across a window of hours for birth-time rectification |
+| `sky_events` | Rise/set/meridian transits, lunar phases, stations, zodiac crossings in a date range (≤370 days) |
 
-Bodies: sun through pluto, chiron, mean and true node. House systems:
-placidus (default), whole_sign, equal, porphyry. Placidus falls back to
-whole_sign above the polar circles and says so in the payload.
+Bodies (core chart): sun through pluto, chiron, mean and true node. Optional
+bodies (mean/true Lilith, asteroids, Uranians) follow engine data on the Node
+loader path. House systems: twelve total — placidus (default), whole_sign,
+equal, porphyry, koch, regiomontanus, campanus, alcabitius, morinus,
+meridian, polich_page, vehlow. Placidus and Koch fall back to whole_sign
+above the polar circles and say so in the payload. `zodiac` supports tropical
+(default) and five sidereal ayanamsas on chart tools.
 
 ## Output
 
@@ -66,7 +72,8 @@ east-positive everywhere; the Americas are negative.
 
 Checked against Swiss Ephemeris across 1900–2099: Sun–Saturn ≤1″,
 Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤2.5″ (series valid
-1885–2099), Chiron ≤1″, nodes ≤1″. Tables:
+1885–2099), Chiron ≤1″, mean node ≤1″, true node ≤1′ vs SE's built-in
+ephemeris, asteroids ≤1″ (Horizons fits), Uranians ≤2.3″. Tables:
 [ephemengine.com/validation](https://ephemengine.com/validation).
 
 ## The caelus packages

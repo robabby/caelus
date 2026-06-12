@@ -12,7 +12,7 @@ const PACKAGES: Array<[string, string, string]> = [
   ["caelus", "https://www.npmjs.com/package/caelus",
     "The engine: positions, houses, aspects. Zero dependencies, ~85 KB gzipped"],
   ["caelus-mcp", "https://www.npmjs.com/package/caelus-mcp",
-    "Six chart tools for AI agents over MCP. Runs with npx, no install"],
+    "Seven chart tools for AI agents over MCP. Runs with npx, no install"],
   ["caelus-birth", "https://www.npmjs.com/package/caelus-birth",
     "Local birth time + place to UT: DST, historical timezones, edge cases flagged"],
   ["caelus-wheel", "https://www.npmjs.com/package/caelus-wheel",
@@ -30,7 +30,7 @@ export default function Home() {
         The ephemeris is now just code.
       </p>
       <ul style={{ listStyle: "none", padding: 0, margin: "0.8rem 0", lineHeight: 2, opacity: 0.85 }}>
-        <li>🪐 Full natal charts: 13 bodies, four house systems, aspects, in ~85 KB</li>
+        <li>🪐 Full natal charts: 13 bodies, twelve house systems, aspects, in ~85 KB</li>
         <li>🆓 Free and MIT, commercial use included</li>
         <li>⚖️ No AGPL, no 700 CHF license</li>
         <li>📦 No ephemeris files: the data ships inside the bundle</li>
@@ -76,7 +76,7 @@ chart.angles, chart.cusps, chart.aspects;`}</Pre>
       <H2 id="mcp">Get Started: Ask Your AI About the Sky</H2>
       <P>
         No code required. <Code>caelus-mcp</Code> gives Claude, Cursor, or any
-        MCP client six chart tools. Add this to{" "}
+        MCP client seven chart tools. Add this to{" "}
         <Code>claude_desktop_config.json</Code> or <Code>.cursor/mcp.json</Code>:
       </P>
       <Pre>{`{
@@ -93,7 +93,8 @@ chart.angles, chart.cusps, chart.aspects;`}</Pre>
       <P>
         Tools: <Code>natal_chart</Code>, <Code>current_sky</Code>,{" "}
         <Code>transits</Code>, <Code>synastry</Code>,{" "}
-        <Code>find_aspect_dates</Code>, <Code>rectification_grid</Code>.
+        <Code>find_aspect_dates</Code>, <Code>rectification_grid</Code>,{" "}
+        <Code>sky_events</Code>.
         Positions are computed by the engine, never recalled from training
         data, and every answer is deterministic.
       </P>
@@ -119,7 +120,9 @@ const chart = engine.chart(/* t.utc fields */);
       <P>
         Caelus computes apparent geocentric positions for the Sun, Moon, eight
         planets, Pluto, Chiron, and both lunar nodes, with speeds, retrograde
-        flags, ASC/MC, four house systems, and major aspects. Valid 1800–2149.
+        flags, ASC/MC, twelve house systems, and major aspects. Optional
+        bodies (Lilith, asteroids, Uranians) load from data packs. Valid
+        1800–2149.
         The coefficient data ships inside the bundle: VSOP87D planets, an
         abridged ELP-2000/82 Moon, Meeus&apos;s Pluto series, and Chebyshev fits
         of JPL data for Chiron and the precise-Moon tier.
@@ -128,7 +131,7 @@ const chart = engine.chart(/* t.utc fields */);
         The engine takes injected data and does no I/O, so one codebase serves
         three runtimes: this page (charts compute client-side in ~2 ms), the
         demo endpoint <Code>GET /api/chart</Code>, and Node, where{" "}
-        <Code>caelus-mcp</Code> exposes six chart tools to AI agents over MCP.
+        <Code>caelus-mcp</Code> exposes seven chart tools to AI agents over MCP.
       </P>
 
       <H2>Why It Exists</H2>

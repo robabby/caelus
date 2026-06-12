@@ -1,4 +1,4 @@
-# caelus-mcp — MCP Specification v0.2
+# caelus-mcp — MCP Specification v0.4
 
 Chart computation only. The server returns positions and aspects; the model
 interprets. No interpretive text — smaller payloads, tradition-neutral,

@@ -63,8 +63,15 @@ engine.longitude("chiron", 2451545.0);
 engine.position("mars", 2451545.0); // { lon, speed, retrograde, sign, signDeg }
 ```
 
-Bodies: sun, moon, mercury…pluto, chiron, mean_node, true_node.
-House systems: placidus, porphyry, equal, whole_sign.
+Bodies: sun, moon, mercury…pluto, chiron, mean_node, true_node; on request:
+mean_lilith, true_lilith, ceres, pallas, juno, vesta, pholus, and the eight
+Hamburg-school Uranian bodies (cupido…poseidon) when their data packs are
+loaded.
+House systems: placidus, porphyry, equal, whole_sign, koch, regiomontanus,
+campanus, alcabitius, morinus, meridian, polich_page, vehlow (Placidus and
+Koch fall back to whole_sign above the polar circles).
+Event search: rise/set/meridian transits, zodiac crossings, lunar phases,
+stations (`events.ts`).
 Performance: ~2.4 ms per full chart (13 bodies × 3 evaluations + houses +
 aspects) single-threaded in Node 22 — ~420 charts/sec, faster in hot loops.
 
@@ -93,4 +100,4 @@ test/golden.test.ts  conformance suite vs Python fixtures
 - caelus — this package
 - [caelus-birth](https://www.npmjs.com/package/caelus-birth) — local birth time + place → UT (charts take UT; use this)
 - [caelus-wheel](https://www.npmjs.com/package/caelus-wheel) — React SVG chart wheel
-- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, six chart tools over stdio
+- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, seven chart tools over stdio

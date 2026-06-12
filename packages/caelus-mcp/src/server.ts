@@ -3,7 +3,7 @@
  * caelus-mcp -- MCP server for the caelus ephemeris engine.
  *
  * Design (per 2026 MCP practice): one bounded context (chart computation),
- * a small curated tool surface (6 outcome-level tools, not API wrappers),
+ * a small curated tool surface (7 outcome-level tools, not API wrappers),
  * and token-frugal outputs (positions to 0.01 deg, terse keys, no prose --
  * the model does the interpreting, the server does the math).
  *

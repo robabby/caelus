@@ -5,6 +5,38 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.4.0 — 2026-06-12
+
+Swiss Ephemeris gap analysis Tier 2, partial (see `docs/gap-analysis.md`).
+No breaking changes to the 0.3.x surface; the conformance suite grew from
+3,087 to 3,177 checks.
+
+### Engine (`caelus`)
+
+- Event search API (`events.ts`): rise/set/meridian transits (≤0.5 s vs
+  `swe_rise_trans`), zodiac degree crossings and lunar phases (≤4 s),
+  retrograde stations (~1 minute — ill-conditioned by nature). Topocentric
+  and sidereal modes follow chart options.
+- True/osculating Lilith (`true_lilith` on request; hypersensitive to the
+  lunar theory — see `accuracy.json` for the SE-oracle caveat).
+- Five main-belt asteroids + Pholus: `ceres`, `pallas`, `juno`, `vesta`,
+  `pholus` from JPL Horizons Chebyshev fits (1850–2150, ≤1″ geocentric;
+  same pipeline as Chiron). Loaded via `loadNodeData` / optional data packs.
+- Eight Hamburg-school Uranian bodies: `cupido`, `hades`, `zeus`, `kronos`,
+  `apollon`, `admetos`, `vulkanus`, `poseidon` from a Kepler element pack
+  calibrated to Swiss Ephemeris 2.10 (≤2.3″ geocentric).
+- Open body registry: `BodyId` accepts string ids; `engine.bodies()` reports
+  what the injected data can compute.
+
+### MCP server (`caelus-mcp`)
+
+- **`sky_events`** — seventh outcome-level tool: event search in a date
+  range (≤370 days) for rise/set/meridian transits, lunar phases, stations,
+  and zodiac crossings. Times agree with Swiss Ephemeris to the second
+  where the oracle applies.
+- Chart tools unchanged in shape; optional bodies arrive through engine data
+  on the Node loader path.
+
 ## 0.3.0 — 2026-06-12
 
 Swiss Ephemeris gap analysis Tier 1 (see `docs/gap-analysis.md`). No

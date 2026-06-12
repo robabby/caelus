@@ -5,7 +5,11 @@ import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel } from "caelus-wheel";
 import accuracy from "caelus/accuracy.json";
 
-const SYSTEMS: HouseSystem[] = ["placidus", "whole_sign", "equal", "porphyry"];
+const SYSTEMS: HouseSystem[] = [
+  "placidus", "whole_sign", "equal", "porphyry",
+  "koch", "regiomontanus", "campanus", "alcabitius",
+  "morinus", "meridian", "polich_page", "vehlow",
+];
 const ACCURACY: Array<[string, string]> = accuracy.summary.map((s) => [s.label, s.bound]);
 
 function houseOf(cusps: number[], lon: number) {
