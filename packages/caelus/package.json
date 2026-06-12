@@ -6,8 +6,13 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
-    "dist",
-    "data"
+    "dist/src",
+    "data/vsop87d_*.embedded.json",
+    "data/nutation_iau1980.json",
+    "data/moon_meeus47.json",
+    "data/pluto_meeus37.json",
+    "data/chiron_cheb.json",
+    "data/moon_cheb.embedded.json"
   ],
   "scripts": {
     "build": "tsc",
@@ -32,5 +37,21 @@
       "default": "./dist/src/node-loader.js"
     },
     "./package.json": "./package.json"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heavyblotto/caelus.git",
+    "directory": "packages/caelus"
+  },
+  "homepage": "https://ephemengine.com",
+  "keywords": [
+    "astrology",
+    "ephemeris",
+    "astronomy",
+    "natal-chart",
+    "horoscope",
+    "vsop87",
+    "swiss-ephemeris-alternative"
+  ],
+  "sideEffects": false
 }

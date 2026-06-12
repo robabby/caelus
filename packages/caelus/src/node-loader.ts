@@ -25,8 +25,14 @@ export function loadNodeData(
   const chironPath = join(dir, "chiron_cheb.json");
   if (existsSync(chironPath)) data.chiron = j("chiron_cheb.json");
   if (moonTier !== "none") {
-    const p = join(dir, `moon_cheb.${moonTier}.json`);
-    if (existsSync(p)) data.moonCheb = j(`moon_cheb.${moonTier}.json`);
+    // The npm package ships only the embedded tier (1920-2080); the full
+    // tier (1850-2150, 3.1 MB, same precision) lives in the repo. Fall back
+    // so "full" requests still get the precise Moon where it exists.
+    const tiers = moonTier === "full" ? ["full", "embedded"] : [moonTier];
+    for (const t of tiers) {
+      const p = join(dir, `moon_cheb.${t}.json`);
+      if (existsSync(p)) { data.moonCheb = j(`moon_cheb.${t}.json`); break; }
+    }
   }
   return data;
 }

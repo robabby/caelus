@@ -1,0 +1,42 @@
+name: release
+# Publish all four packages to npm with provenance attestation.
+# Trigger: push a tag like v0.1.0. Requires the NPM_TOKEN secret
+# (automation token for an npm account that owns `caelus`, `caelus-mcp`,
+# and the @caelus org) — see docs/releasing.md.
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+  id-token: write   # npm --provenance
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      # the full verification chain gates every publish
+      - run: npm run build -w caelus
+      - run: node packages/caelus/dist/test/golden.test.js
+      - run: npm run build -w caelus-mcp
+      - run: node packages/caelus-mcp/smoke.mjs
+      - run: node packages/caelus-mcp/verify_tools.mjs
+      - run: npm run build -w @caelus/birth
+      - run: node packages/birth/dist/test/golden.test.js
+      - run: npm run build -w @caelus/wheel
+      - run: node packages/wheel/dist/test/render.test.js
+      - run: node scripts/check-llms.mjs
+      # engine first: the others depend on it
+      - run: npm publish --provenance -w caelus
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+      - run: npm publish --provenance -w caelus-mcp
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+      - run: npm publish --provenance -w @caelus/birth
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+      - run: npm publish --provenance -w @caelus/wheel
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }

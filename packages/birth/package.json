@@ -5,11 +5,16 @@
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "files": ["dist"],
-  "scripts": { "build": "tsc", "test": "node dist/test/golden.test.js" },
+  "files": [
+    "dist/src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node dist/test/golden.test.js"
+  },
   "license": "MIT",
   "dependencies": {
-    "caelus": "*",
+    "caelus": "^0.1.0",
     "luxon": "^3.7.2",
     "tz-lookup": "^6.1.25"
   },
@@ -19,8 +24,31 @@
     "typescript": "^6.0.3"
   },
   "exports": {
-    ".": { "types": "./dist/src/index.d.ts", "default": "./dist/src/index.js" },
-    "./geocode": { "types": "./dist/src/geocode.d.ts", "default": "./dist/src/geocode.js" },
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./geocode": {
+      "types": "./dist/src/geocode.d.ts",
+      "default": "./dist/src/geocode.js"
+    },
     "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heavyblotto/caelus.git",
+    "directory": "packages/birth"
+  },
+  "homepage": "https://ephemengine.com",
+  "keywords": [
+    "astrology",
+    "timezone",
+    "birth-time",
+    "iana",
+    "tzdb",
+    "natal-chart"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
