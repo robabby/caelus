@@ -8,3 +8,4 @@ export * from "./eclipses.js";
 export * from "./query.js";
 export * from "./derived.js";
 export * from "./turbo.js";
+export * from "./electional.js";

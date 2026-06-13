@@ -1,0 +1,418 @@
+{
+ "basis": "Python reference astroengine.electional (embedded VSOP, full moon)",
+ "cases": [
+  {
+   "id": "phase-conj-sep",
+   "spec": {
+    "id": "phase-conj-sep",
+    "type": "aspect_phase",
+    "lon_a": 10.0,
+    "speed_a": 1.0,
+    "lon_b": 0.0,
+    "speed_b": 0.0,
+    "aspect": 0.0
+   },
+   "result": "separating"
+  },
+  {
+   "id": "phase-conj-app",
+   "spec": {
+    "id": "phase-conj-app",
+    "type": "aspect_phase",
+    "lon_a": 355.0,
+    "speed_a": 1.0,
+    "lon_b": 0.0,
+    "speed_b": 0.0,
+    "aspect": 0.0
+   },
+   "result": "applying"
+  },
+  {
+   "id": "phase-sextile",
+   "spec": {
+    "id": "phase-sextile",
+    "type": "aspect_phase",
+    "lon_a": 50.0,
+    "speed_a": 0.5,
+    "lon_b": 0.0,
+    "speed_b": 1.0,
+    "aspect": 60.0
+   },
+   "result": "separating"
+  },
+  {
+   "id": "phase-square-app",
+   "spec": {
+    "id": "phase-square-app",
+    "type": "aspect_phase",
+    "lon_a": 85.0,
+    "speed_a": 1.2,
+    "lon_b": 0.0,
+    "speed_b": 0.1,
+    "aspect": 90.0
+   },
+   "result": "applying"
+  },
+  {
+   "id": "phase-trine-sep",
+   "spec": {
+    "id": "phase-trine-sep",
+    "type": "aspect_phase",
+    "lon_a": 125.0,
+    "speed_a": 1.0,
+    "lon_b": 0.0,
+    "speed_b": 0.0,
+    "aspect": 120.0
+   },
+   "result": "separating"
+  },
+  {
+   "id": "between-moon-sun",
+   "spec": {
+    "id": "between-moon-sun",
+    "type": "aspect_between",
+    "a": "moon",
+    "b": "sun",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ]
+   },
+   "result": {
+    "aspect": "sextile",
+    "orb": -2.9548294032383353,
+    "separation": 57.045170596761665,
+    "phase": "separating"
+   }
+  },
+  {
+   "id": "between-mars-saturn",
+   "spec": {
+    "id": "between-mars-saturn",
+    "type": "aspect_between",
+    "a": "mars",
+    "b": "saturn",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ]
+   },
+   "result": null
+  },
+  {
+   "id": "between-venus-jupiter",
+   "spec": {
+    "id": "between-venus-jupiter",
+    "type": "aspect_between",
+    "a": "venus",
+    "b": "jupiter",
+    "jd": [
+     2024,
+     3,
+     20,
+     3,
+     0
+    ]
+   },
+   "result": null
+  },
+  {
+   "id": "solar-mercury",
+   "spec": {
+    "id": "solar-mercury",
+    "type": "solar",
+    "body": "mercury",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ]
+   },
+   "result": {
+    "elongation": 8.479634871924304,
+    "phase": "combust"
+   }
+  },
+  {
+   "id": "solar-venus",
+   "spec": {
+    "id": "solar-venus",
+    "type": "solar",
+    "body": "venus",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ]
+   },
+   "result": {
+    "elongation": 38.80312389323882,
+    "phase": null
+   }
+  },
+  {
+   "id": "solar-mars",
+   "spec": {
+    "id": "solar-mars",
+    "type": "solar",
+    "body": "mars",
+    "jd": [
+     2010,
+     7,
+     15,
+     18,
+     30
+    ]
+   },
+   "result": {
+    "elongation": 58.30924006100162,
+    "phase": null
+   }
+  },
+  {
+   "id": "solar-mercury-2",
+   "spec": {
+    "id": "solar-mercury-2",
+    "type": "solar",
+    "body": "mercury",
+    "jd": [
+     2024,
+     3,
+     20,
+     3,
+     0
+    ]
+   },
+   "result": {
+    "elongation": 17.439305136041753,
+    "phase": null
+   }
+  },
+  {
+   "id": "phour-tampa",
+   "spec": {
+    "id": "phour-tampa",
+    "type": "phour",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ],
+    "lat": 27.95,
+    "lon": -82.46
+   },
+   "result": {
+    "ruler": "moon",
+    "kind": "night",
+    "hour": 24,
+    "day_ruler": "venus",
+    "start": 2451544.967412772,
+    "end": 2451545.01465341
+   }
+  },
+  {
+   "id": "phour-london",
+   "spec": {
+    "id": "phour-london",
+    "type": "phour",
+    "jd": [
+     2024,
+     3,
+     20,
+     3,
+     0
+    ],
+    "lat": 51.5,
+    "lon": -0.12
+   },
+   "result": {
+    "ruler": "jupiter",
+    "kind": "night",
+    "hour": 21,
+    "day_ruler": "mars",
+    "start": 2460389.587316894,
+    "end": 2460389.628389976
+   }
+  },
+  {
+   "id": "phour-tampa-night",
+   "spec": {
+    "id": "phour-tampa-night",
+    "type": "phour",
+    "jd": [
+     2010,
+     7,
+     15,
+     4,
+     0
+    ],
+    "lat": 27.95,
+    "lon": -82.46
+   },
+   "result": {
+    "ruler": "saturn",
+    "kind": "night",
+    "hour": 17,
+    "day_ruler": "mercury",
+    "start": 2455392.662045044,
+    "end": 2455392.697645668
+   }
+  },
+  {
+   "id": "voc-2000",
+   "spec": {
+    "id": "voc-2000",
+    "type": "voc",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ]
+   },
+   "result": {
+    "is_void": false,
+    "sign": "Scorpio",
+    "sign_exit": 2451546.397037614,
+    "next_aspect": 2451546.3111632327
+   }
+  },
+  {
+   "id": "voc-2024",
+   "spec": {
+    "id": "voc-2024",
+    "type": "voc",
+    "jd": [
+     2024,
+     3,
+     20,
+     3,
+     0
+    ]
+   },
+   "result": {
+    "is_void": false,
+    "sign": "Leo",
+    "sign_exit": 2460391.8206477873,
+    "next_aspect": 2460390.5658474322
+   }
+  },
+  {
+   "id": "house-0",
+   "spec": {
+    "id": "house-0",
+    "type": "house",
+    "lon": 0.0,
+    "cusps": [
+     274.3552100090464,
+     308.93935139802346,
+     345.88572942944586,
+     19.497879028141895,
+     47.34748873523605,
+     71.24554574269663,
+     94.35521000904639,
+     128.9393513980235,
+     165.8857294294458,
+     199.49787902814188,
+     227.34748873523606,
+     251.24554574269663
+    ]
+   },
+   "result": {
+    "house": 3,
+    "angularity": "cadent"
+   }
+  },
+  {
+   "id": "house-95",
+   "spec": {
+    "id": "house-95",
+    "type": "house",
+    "lon": 95.0,
+    "cusps": [
+     274.3552100090464,
+     308.93935139802346,
+     345.88572942944586,
+     19.497879028141895,
+     47.34748873523605,
+     71.24554574269663,
+     94.35521000904639,
+     128.9393513980235,
+     165.8857294294458,
+     199.49787902814188,
+     227.34748873523606,
+     251.24554574269663
+    ]
+   },
+   "result": {
+    "house": 7,
+    "angularity": "angular"
+   }
+  },
+  {
+   "id": "house-200",
+   "spec": {
+    "id": "house-200",
+    "type": "house",
+    "lon": 200.0,
+    "cusps": [
+     274.3552100090464,
+     308.93935139802346,
+     345.88572942944586,
+     19.497879028141895,
+     47.34748873523605,
+     71.24554574269663,
+     94.35521000904639,
+     128.9393513980235,
+     165.8857294294458,
+     199.49787902814188,
+     227.34748873523606,
+     251.24554574269663
+    ]
+   },
+   "result": {
+    "house": 10,
+    "angularity": "angular"
+   }
+  },
+  {
+   "id": "house-310",
+   "spec": {
+    "id": "house-310",
+    "type": "house",
+    "lon": 310.0,
+    "cusps": [
+     274.3552100090464,
+     308.93935139802346,
+     345.88572942944586,
+     19.497879028141895,
+     47.34748873523605,
+     71.24554574269663,
+     94.35521000904639,
+     128.9393513980235,
+     165.8857294294458,
+     199.49787902814188,
+     227.34748873523606,
+     251.24554574269663
+    ]
+   },
+   "result": {
+    "house": 2,
+    "angularity": "succedent"
+   }
+  }
+ ]
+}
