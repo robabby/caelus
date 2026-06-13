@@ -15,6 +15,8 @@ jobs:
       # from the Python reference. A red suite blocks merge. It also emits
       # conformance-stats.json (check count, worst diff) for the claims linter.
       - run: CAELUS_STATS_OUT=conformance-stats.json node packages/caelus/dist/test/golden.test.js
+      # query engine: TS when() must match the Python reference's intervals
+      - run: node packages/caelus/dist/test/query-golden.test.js
       - run: npm run build -w caelus-mcp
       - run: node packages/caelus-mcp/smoke.mjs
       # MCP-layer oracle suite: golden checks can't see server.ts (PATCHES #2)

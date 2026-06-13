@@ -1,0 +1,169 @@
+{
+ "basis": "Python reference astroengine.query (embedded VSOP, full moon)",
+ "cases": [
+  {
+   "id": "saturn-square-natal-moon",
+   "jd0": 2460676.5,
+   "jd1": 2461771.5,
+   "spec": {
+    "kind": "aspect",
+    "body": "saturn",
+    "aspect": "square",
+    "target": 283.284,
+    "orb": 1.0
+   },
+   "intervals": [
+    [
+     2461192.9678530693,
+     2461224.8613448143
+    ],
+    [
+     2461271.885758877,
+     2461305.34649992
+    ],
+    [
+     2461458.3052134514,
+     2461475.907930851
+    ]
+   ]
+  },
+  {
+   "id": "venus-in-taurus",
+   "jd0": 2460676.5,
+   "jd1": 2461771.5,
+   "spec": {
+    "kind": "in_sign",
+    "body": "venus",
+    "sign": "Taurus"
+   },
+   "intervals": [
+    [
+     2460832.6963267326,
+     2460861.146434307
+    ],
+    [
+     2461130.1672701836,
+     2461154.669054508
+    ],
+    [
+     2461540.376036167,
+     2461565.022593975
+    ]
+   ]
+  },
+  {
+   "id": "mercury-retrograde",
+   "jd0": 2460676.5,
+   "jd1": 2461041.5,
+   "spec": {
+    "kind": "retrograde",
+    "body": "mercury"
+   },
+   "intervals": [
+    [
+     2460749.782307148,
+     2460772.963936329
+    ],
+    [
+     2460874.69776392,
+     2460898.811984539
+    ],
+    [
+     2460989.292069912,
+     2461009.2357211113
+    ]
+   ]
+  },
+  {
+   "id": "electional-triple",
+   "jd0": 2460676.5,
+   "jd1": 2461771.5,
+   "spec": {
+    "kind": "all",
+    "of": [
+     {
+      "kind": "aspect",
+      "body": "saturn",
+      "aspect": "square",
+      "target": 283.284,
+      "orb": 2.0
+     },
+     {
+      "kind": "not_retrograde",
+      "body": "mercury"
+     },
+     {
+      "kind": "in_sign",
+      "body": "venus",
+      "sign": "Taurus"
+     }
+    ]
+   },
+   "intervals": []
+  },
+  {
+   "id": "venus-taurus-or-mars-leo",
+   "jd0": 2460676.5,
+   "jd1": 2461771.5,
+   "spec": {
+    "kind": "any",
+    "of": [
+     {
+      "kind": "in_sign",
+      "body": "venus",
+      "sign": "Taurus"
+     },
+     {
+      "kind": "in_sign",
+      "body": "mars",
+      "sign": "Leo"
+     }
+    ]
+   },
+   "intervals": [
+    [
+     2460676.5,
+     2460681.9472527504
+    ],
+    [
+     2460783.6810688972,
+     2460861.146434307
+    ],
+    [
+     2461130.1672701836,
+     2461154.669054508
+    ],
+    [
+     2461311.617237568,
+     2461370.484003544
+    ],
+    [
+     2461458.092807293,
+     2461565.022593975
+    ]
+   ]
+  },
+  {
+   "id": "moon-conjunct-sun",
+   "jd0": 2460676.5,
+   "jd1": 2460735.5,
+   "spec": {
+    "kind": "aspect",
+    "body": "moon",
+    "aspect": "conjunction",
+    "target": "sun",
+    "orb": 1.0
+   },
+   "intervals": [
+    [
+     2460704.947617054,
+     2460705.1022439003
+    ],
+    [
+     2460734.4576296806,
+     2460734.6045441628
+    ]
+   ]
+  }
+ ]
+}
