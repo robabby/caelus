@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
 """Refit the precise-Moon Chebyshev tiers from JPL DE440/441 via Horizons.
 
+DO NOT SHIP THE OUTPUT YET. Two findings, June 2026:
+
+  * The existing DE423 pack already validates at 0.215" vs JPL apparent
+    (off-grid, all 25 epochs) -- that IS the apparent-place floor (light-time
+    + nutation; the geocentric Moon takes no annual-aberration term). A refit
+    has essentially no headroom on the apparent Moon; only geometric /
+    topocentric uses would benefit.
+  * This pipeline's output currently fails: ~0.12"/yr SECULAR longitude
+    drift vs both the DE423 pack and JPL (16" by 2098), at matching distance
+    -- a timing/rate systematic, not a fit or frame error. Root-cause the
+    cache time-tagging (Horizons vector TDB vs the engine's TT, and the
+    julian_day-based segment grid) before trusting a refit. Until then the
+    DE423 pack stays in place.
+
 Replaces the 2010-era DE423 fit with DE441 geometric geocentric states.
 
 Two correctness rules make this trustworthy where the first DE441 attempt

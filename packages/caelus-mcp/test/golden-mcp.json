@@ -17,7 +17,7 @@
           "speed": 0.96
         },
         "moon": {
-          "lon": 283.29,
+          "lon": 283.28,
           "pos": "13°17'Cap",
           "house": 6,
           "speed": 12.19
@@ -156,7 +156,7 @@
           "a": "moon",
           "b": "chiron",
           "aspect": "opposition",
-          "orb": 2.28
+          "orb": 2.29
         },
         {
           "a": "mercury",
@@ -334,7 +334,7 @@
           "kind": "set"
         },
         {
-          "t": "1990-06-16T04:47:23Z",
+          "t": "1990-06-16T04:47:41Z",
           "kind": "phase",
           "detail": "last_quarter"
         },
@@ -394,22 +394,22 @@
       "end": "2026-12-31T00:00:00Z",
       "events": [
         {
-          "t": "2026-02-17T12:11:34Z",
+          "t": "2026-02-17T12:11:56Z",
           "kind": "solar_eclipse",
           "detail": "annular, gamma 0.97"
         },
         {
-          "t": "2026-03-03T11:33:20Z",
+          "t": "2026-03-03T11:33:43Z",
           "kind": "lunar_eclipse",
           "detail": "total, mag 1.15"
         },
         {
-          "t": "2026-08-12T17:45:34Z",
+          "t": "2026-08-12T17:45:56Z",
           "kind": "solar_eclipse",
           "detail": "total, gamma 0.90"
         },
         {
-          "t": "2026-08-28T04:12:32Z",
+          "t": "2026-08-28T04:12:55Z",
           "kind": "lunar_eclipse",
           "detail": "partial, mag 0.93"
         }
@@ -576,7 +576,7 @@
           "a": "moon",
           "b": "chiron",
           "aspect": "opposition",
-          "orb": 2.28
+          "orb": 2.29
         },
         {
           "a": "mercury",
@@ -701,7 +701,7 @@
           "speed": 1.02
         },
         "moon": {
-          "lon": 223.33,
+          "lon": 223.32,
           "pos": "13°19'Sco",
           "house": 7,
           "speed": 12.02
@@ -801,7 +801,7 @@
           "a": "sun",
           "b": "moon",
           "aspect": "sextile",
-          "orb": 2.96
+          "orb": 2.95
         },
         {
           "a": "sun",
@@ -819,7 +819,7 @@
           "a": "moon",
           "b": "uranus",
           "aspect": "square",
-          "orb": 1.48
+          "orb": 1.49
         },
         {
           "a": "mercury",
@@ -894,7 +894,7 @@
           "natal_house": 11
         },
         "moon": {
-          "pos": "6°58'Tau",
+          "pos": "6°57'Tau",
           "natal_house": 10
         },
         "mercury": {
@@ -957,28 +957,28 @@
           "t": "moon",
           "n": "uranus",
           "aspect": "trine",
-          "orb": 1.38,
+          "orb": 1.39,
           "applying": false
         },
         {
           "t": "moon",
           "n": "mean_node",
           "aspect": "square",
-          "orb": 2.99,
+          "orb": 3,
           "applying": false
         },
         {
           "t": "moon",
           "n": "true_node",
           "aspect": "square",
-          "orb": 1.17,
+          "orb": 1.18,
           "applying": false
         },
         {
           "t": "mercury",
           "n": "moon",
           "aspect": "opposition",
-          "orb": 1.84,
+          "orb": 1.85,
           "applying": false
         },
         {
@@ -1055,7 +1055,7 @@
           "t": "saturn",
           "n": "moon",
           "aspect": "square",
-          "orb": 0.19,
+          "orb": 0.18,
           "applying": true
         },
         {
@@ -1122,7 +1122,7 @@
             "speed": 0.96
           },
           "moon": {
-            "lon": 283.29,
+            "lon": 283.28,
             "pos": "13°17'Cap",
             "house": 6,
             "speed": 12.19
@@ -1261,7 +1261,7 @@
             "a": "moon",
             "b": "chiron",
             "aspect": "opposition",
-            "orb": 2.28
+            "orb": 2.29
           },
           {
             "a": "mercury",
@@ -1496,7 +1496,7 @@
             "a": "moon",
             "b": "mars",
             "aspect": "trine",
-            "orb": 5.36
+            "orb": 5.37
           },
           {
             "a": "moon",
@@ -1508,7 +1508,7 @@
             "a": "moon",
             "b": "pluto",
             "aspect": "opposition",
-            "orb": 1.19
+            "orb": 1.18
           },
           {
             "a": "mercury",
@@ -1607,25 +1607,25 @@
           "a": "moon",
           "b": "moon",
           "aspect": "trine",
-          "orb": 0.12
+          "orb": 0.13
         },
         {
           "a": "moon",
           "b": "venus",
           "aspect": "trine",
-          "orb": 2.93
+          "orb": 2.94
         },
         {
           "a": "moon",
           "b": "neptune",
           "aspect": "conjunction",
-          "orb": 3.22
+          "orb": 3.21
         },
         {
           "a": "moon",
           "b": "pluto",
           "aspect": "sextile",
-          "orb": 1.06
+          "orb": 1.05
         },
         {
           "a": "mercury",
@@ -2391,7 +2391,7 @@
           "a": "moon",
           "b": "venus",
           "aspect": "trine",
-          "orb": 5.56
+          "orb": 5.57
         },
         {
           "a": "moon",
@@ -2809,7 +2809,7 @@
           "a": "moon",
           "b": "pluto",
           "aspect": "opposition",
-          "orb": 4.57
+          "orb": 4.56
         },
         {
           "a": "moon",
@@ -3047,19 +3047,19 @@
           "a": "moon",
           "b": "saturn",
           "aspect": "trine",
-          "orb": 5.16
+          "orb": 5.17
         },
         {
           "a": "moon",
           "b": "uranus",
           "aspect": "sextile",
-          "orb": 0.54
+          "orb": 0.55
         },
         {
           "a": "moon",
           "b": "neptune",
           "aspect": "square",
-          "orb": 1.16
+          "orb": 1.17
         },
         {
           "a": "moon",
