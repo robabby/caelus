@@ -16,6 +16,8 @@
  */
 import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
+import caelusPkg from "caelus/package.json";
+import accuracySwiss from "caelus/accuracy.json";
 
 export const runtime = "nodejs"; // caelus-mcp imports node:fs/url/module
 export const dynamic = "force-dynamic";
@@ -24,6 +26,16 @@ export const maxDuration = 30; // event-search tools can take a beat
 // One engine for the lifetime of the warm instance: it holds no per-request
 // state, only computation caches, so it is safe to share across requests.
 const engine = new Engine(embeddedData);
+
+// caelus-mcp normally reads its version and the accuracy table from disk at
+// runtime. In this serverless bundle those reads don't resolve (the file
+// tracer can't follow them), so we inject the data via static package imports
+// instead -- webpack bundles these deterministically. Version is lockstep
+// across the four packages, so caelus's version is caelus-mcp's. The jpl
+// (Horizons) table isn't a package export, so it stays null here; the validation
+// (swiss) table is the one that matters and ships as caelus/accuracy.json.
+const VERSION: string = (caelusPkg as { version: string }).version;
+const ACCURACY = { swiss: accuracySwiss, jpl: null };
 
 const TOOLS = [
   "natal_chart", "current_sky", "transits", "synastry",
@@ -53,7 +65,7 @@ export function GET(): Response {
   return Response.json(
     {
       name: "caelus",
-      version: "0.8.0",
+      version: VERSION,
       transport: "streamable-http",
       endpoint: "https://www.ephemengine.com/api/mcp",
       stateless: true,
@@ -68,20 +80,22 @@ export function GET(): Response {
 }
 
 async function handle(req: Request): Promise<Response> {
-  // Dynamic import keeps caelus-mcp (and the SDK transport) off the module's
-  // static graph, so they load on first request rather than at build/prerender.
-  const [{ buildServer }, { WebStandardStreamableHTTPServerTransport }] = await Promise.all([
-    import("caelus-mcp"),
-    import("@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js"),
-  ]);
-
-  const server = buildServer(engine);
-  const transport = new WebStandardStreamableHTTPServerTransport({
-    sessionIdGenerator: undefined, // stateless: no session, no in-memory store
-    enableJsonResponse: true,      // buffered JSON responses instead of SSE
-  });
-
   try {
+    // Dynamic import keeps caelus-mcp (and the SDK transport) off the module's
+    // static graph, so they load on first request rather than at build/prerender.
+    // Kept inside the try so a load failure becomes a JSON-RPC error, not an
+    // empty-body 500 that escapes before we can shape a response.
+    const [{ buildServer }, { WebStandardStreamableHTTPServerTransport }] = await Promise.all([
+      import("caelus-mcp"),
+      import("@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js"),
+    ]);
+
+    const server = buildServer(engine, { version: VERSION, accuracy: ACCURACY });
+    const transport = new WebStandardStreamableHTTPServerTransport({
+      sessionIdGenerator: undefined, // stateless: no session, no in-memory store
+      enableJsonResponse: true,      // buffered JSON responses instead of SSE
+    });
+
     await server.connect(transport);
     return withCors(await transport.handleRequest(req));
   } catch (err) {

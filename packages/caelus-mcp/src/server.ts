@@ -237,8 +237,19 @@ export const OUTPUT_SCHEMAS = {
 } as const;
 
 // ---------------------------------------------------------------- server
-export function buildServer(engine: Engine = defaultEngine()): McpServer {
-  const server = new McpServer({ name: "caelus", version: VERSION });
+export interface BuildServerOptions {
+  // Hosted bundles (the apps/web Streamable HTTP mount) can't resolve sibling
+  // files at runtime through the file tracer, so they inject what they'd
+  // otherwise read from disk. stdio leaves these unset and reads its own.
+  version?: string;
+  accuracy?: { swiss: unknown; jpl: unknown };
+}
+
+export function buildServer(
+  engine: Engine = defaultEngine(),
+  opts: BuildServerOptions = {},
+): McpServer {
+  const server = new McpServer({ name: "caelus", version: opts.version ?? VERSION });
 
   server.registerTool("natal_chart", {
     description:
@@ -526,7 +537,7 @@ export function buildServer(engine: Engine = defaultEngine()): McpServer {
       mimeType: "application/json",
     },
     async (uri) => ({
-      contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(accuracyPayload()) }],
+      contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(opts.accuracy ?? accuracyPayload()) }],
     }),
   );
 
