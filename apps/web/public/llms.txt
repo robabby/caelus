@@ -24,10 +24,10 @@ reference by 3,218 golden checks (worst diff 1.64e-9 arcsec).
 Repo: https://github.com/heavyblotto/caelus
 ## Install
 
-- caelus@0.4.0 — the engine
-- caelus-birth@0.4.0 — local birth time + place -> UT (use this; see below)
-- caelus-wheel@0.4.0 — React SVG chart wheel
-- caelus-mcp@0.4.0 — MCP server, 7 chart tools over stdio
+- caelus@0.5.0 — the engine
+- caelus-birth@0.5.0 — local birth time + place -> UT (use this; see below)
+- caelus-wheel@0.5.0 — React SVG chart wheel
+- caelus-mcp@0.5.0 — MCP server, 7 chart tools over stdio
 
 ## Entry points
 

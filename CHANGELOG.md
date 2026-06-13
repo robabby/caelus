@@ -5,6 +5,40 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.5.0 — 2026-06-13
+
+Swiss Ephemeris gap analysis Tiers 2 and 3 close (see
+`docs/gap-analysis.md`): every line item from the original plan is now
+shipped or explicitly documented as out of scope. No breaking changes to
+the 0.4.x surface; the conformance suite grew from 3,177 to 3,218 checks.
+
+### Engine (`caelus`)
+
+- Fixed stars: 318-star HYG-derived catalog (ICRS J2000 + proper
+  motions, full 3D space motion; CC BY-SA 4.0, attributed in the pack).
+  `engine.fixedStar(name, jd, opts?)` and `starNames()`; ≤0.6″ vs
+  `swe_fixstar` fed the same catalog rows.
+- Star-anchored ayanamsas `galcent_0sag` and `true_citra` (the v0.3
+  deferral closes): the Galactic Center / Spica sits at the fixed
+  sidereal longitude by definition; sidereal Sun ≤0.19″ vs Swiss
+  Ephemeris. Eight zodiac modes total.
+- Gauquelin sectors (`gauquelinSector`): rise/set of disc center with
+  refraction (SE method 3), exact to the rise/set bound. `riseSet`
+  gains a `discCenter` option.
+- Solar and lunar eclipse search (`solarEclipses`/`lunarEclipses`),
+  global circumstances: type, gamma, magnitudes, contacts. Types match
+  Swiss Ephemeris exactly over 1990–2030 (92 lunar + 89 solar, none
+  missed, none phantom); maxima ≤9 s; lunar magnitudes ≤0.0013 via
+  Danjon's parallax enlargement (86/85 on the flattened Earth —
+  recovered empirically). Ground paths / local circumstances are the one
+  documented remainder.
+
+### MCP server (`caelus-mcp`)
+
+- `sky_events` gains `solar_eclipse` and `lunar_eclipse` kinds — the
+  reserved Tier 3 extension; still seven tools.
+- The zodiac parameter grows to eight modes (star-anchored ayanamsas).
+
 ## 0.4.0 — 2026-06-13
 
 Swiss Ephemeris gap analysis Tier 2, minus fixed stars (see
