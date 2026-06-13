@@ -2,6 +2,7 @@ import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import CodeBlock from "./components/CodeBlock";
 import { Note, Eyebrow } from "./components/Prose";
+import { Tabs, Tab } from "./components/Tabs";
 
 /**
  * Required by @next/mdx in the App Router. Most elements are styled globally
@@ -23,6 +24,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     CodeBlock,
     Note,
     Eyebrow,
+    Tabs,
+    Tab,
     ...components,
   };
 }

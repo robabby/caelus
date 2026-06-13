@@ -1,0 +1,85 @@
+export const metadata = {
+  title: "Architecture",
+  description: "How the four packages compose end to end: place and local time through caelus-birth, caelus, caelus-wheel, and optional caelus-mcp.",
+};
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
+
+# Architecture
+
+The packages are layers, not alternatives. A real app threads a birth event
+through all of them; each does one job and hands a plain object to the next.
+
+```text
+place + local time
+    → caelus-birth    resolve IANA zone from coordinates, local → UT (DST-safe)
+    → caelus          positions, houses, aspects from the UT instant
+    → caelus-wheel    SSR-safe SVG wheel from the chart object
+    → caelus-mcp      (optional) the same engine, exposed as AI tools
+```
+
+Only `caelus-birth` carries runtime dependencies (timezone data); the core
+engine stays zero-dependency and I/O-free, and the wheel renders to a string.
+That split is why the same chart code runs in the browser, on edge, in Node,
+and behind MCP.
+
+## One component, end to end
+
+This is the whole pipeline in a single server component — birth input to
+rendered wheel, with the timezone resolved for you:
+
+<CodeBlock
+  lang="tsx"
+  label="NatalWheel.tsx"
+  code={`import { Engine } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+import { localToChart } from "caelus-birth";
+import { ChartWheel } from "caelus-wheel";
+
+// Build the engine once and reuse it (module scope, not per render).
+const engine = new Engine(embeddedData);
+
+export function NatalWheel() {
+  // Local wall-clock time and place, exactly as a person would enter them:
+  const { chart, zone, status } = localToChart(
+    { year: 1990, month: 6, day: 10, hour: 14, minute: 30, lat: 27.95, lon: -82.46 },
+    engine,
+  );
+
+  return (
+    <figure>
+      <ChartWheel chart={chart} size={520} showAspects />
+      <figcaption>
+        {zone}
+        {status !== "ok" && \` · \${status} local time — check the offset\`}
+      </figcaption>
+    </figure>
+  );
+}`}
+/>
+
+`localToChart` resolves the IANA zone from the coordinates, converts the local
+time to UT, and runs `engine.chart` — returning the chart plus a `status`
+(`ok`, `ambiguous`, or `nonexistent`) so DST edge cases surface instead of
+silently producing a wrong chart. See
+<a href="/docs/edge-cases">Edge Cases &amp; Stability</a> for those cases.
+
+## Where each package fits
+
+| Layer | Package | Input → output | Runtime deps |
+| --- | --- | --- | :---: |
+| Time & place | `caelus-birth` | local time + coords → UT + zone + status | tz data |
+| Engine | `caelus` | UT instant + location → chart object | none |
+| Render | `caelus-wheel` | chart object → SVG string | none |
+| Agents | `caelus-mcp` | MCP tool call → chart payload | MCP SDK |
+
+## Start from the template
+
+[`caelus-starter`](https://github.com/heavyblotto/caelus-starter) is this exact
+pipeline as a deployable Next.js app: a birth form, `caelus-birth` timezone
+handling, a server-rendered `caelus-wheel`, and an optional reading route. Clone
+it rather than wiring the layers from scratch.
+
+See the <a href="/docs/quickstart">Quickstart</a> for the engine alone, the
+<a href="/docs/mcp">MCP Setup</a> for the agent layer, and
+<a href="/docs/recipes">Recipes</a> for queries and event search.

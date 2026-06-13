@@ -40,6 +40,8 @@ jobs:
       # generate the API reference markdown before building so the
       # /docs/api pages have content to prerender (mirrors vercel-build).
       - run: npm run docs:api
+      # client-side docs/API search index (public/search-index.json)
+      - run: npm run search:index
       - run: npm run build -w web
       # crawl every built route + internal link on an ephemeral server: catches
       # 500s, soft 404s, and dead in-site links that `next build` reports green.

@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DOCS_NAV } from "../lib/site";
+import Search from "./Search";
 
 export default function DocsSidebar() {
   const pathname = usePathname();
   return (
     <nav className="docs-sidebar" aria-label="Documentation">
+      <Search />
       {DOCS_NAV.map((group) => (
         <div key={group.title}>
           <h5>{group.title}</h5>

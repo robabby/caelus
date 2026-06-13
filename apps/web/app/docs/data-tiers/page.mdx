@@ -8,7 +8,34 @@ export const metadata = {
 # Data Tiers
 
 The engine is given its ephemeris data explicitly. Two suppliers ship with the
-package.
+package: the **embedded** dataset for the browser and edge, and the **Node
+loader** for the extended packs. The hosted [REST demo](/api/chart?lat=27.94&lon=-82.46)
+and [MCP server](/docs/mcp) build on these two.
+
+## What runs where
+
+| Capability | Embedded (browser, edge) | Node loader | REST `/api/chart` | MCP (`caelus-mcp`) |
+| --- | :---: | :---: | :---: | :---: |
+| Core bodies (Sun–Pluto, Chiron, nodes) | ✓ | ✓ | ✓ | ✓ |
+| Houses (12 systems), angles, aspects | ✓ | ✓ | Placidus | ✓ |
+| Tropical + 8 sidereal ayanamsas | ✓ | ✓ | tropical | ✓ |
+| Derived charts (returns, progressions, …) | ✓ | ✓ | — | transits, synastry |
+| Extended bodies (asteroids, Uranian points) | — | ✓ | — | ✓ |
+| Fixed stars (318-star catalog) | — | ✓ | — | ✓ |
+| Event search (rise/set, crossings, phases, stations) | — | ✓ | — | ✓ |
+| Eclipses (solar, lunar) | — | ✓ | — | ✓ |
+| Data on disk | none (bundled) | JSON packs (precise Moon ~3.1 MB + catalogs) | none (edge) | JSON packs (Node) |
+| Date range | 1800–2149¹ | 1800–2149¹ | 1800–2149 | 1800–2149¹ |
+| Accuracy | per body, see [Validation](/validation) | per body, see [Validation](/validation) | per body | per body |
+
+<Note>
+  ¹ 1850–2150 for the precise Moon and Chiron tiers. The embedded dataset
+  computes everything from the bodies it bundles; the Node tier adds the data
+  the extended features were validated against. Anything pure-arithmetic on
+  positions — derived charts, sidereal shifts — runs in any tier, including the
+  browser. See <a href="/docs/edge-cases">Edge Cases &amp; Stability</a> for the
+  out-of-range and missing-pack behaviour.
+</Note>
 
 ## Embedded (browser, edge)
 

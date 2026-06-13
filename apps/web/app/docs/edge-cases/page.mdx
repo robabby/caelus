@@ -1,0 +1,118 @@
+export const metadata = {
+  title: "Edge Cases & Stability",
+  description: "Supported date range, polar house fallback, civil-time hazards, the east-positive longitude convention, circumpolar rise/set, missing data packs, and the versioning contract.",
+};
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Reference</div>
+
+# Edge Cases & Stability
+
+What the engine does at the boundaries, and what stays compatible as the
+packages move toward 1.0. Read this before wiring Caelus into anything that
+serves real users.
+
+## Supported date range
+
+Positions are fitted for **1800–2149** (and **1850–2150** for the precise Moon
+and Chiron tiers). Outside that, the fitted-range bodies throw a `RangeError`
+and the hosted REST endpoint returns `400`:
+
+<CodeBlock
+  lang="json"
+  label="GET /api/chart?date=1500-01-01"
+  code={`{ "error": "date out of supported range 1800-2149" }`}
+/>
+
+Validate the date before you call the engine; do not catch and swallow the
+`RangeError`, since a year outside the range usually means a parsing or
+timezone bug upstream.
+
+## Longitude is east-positive
+
+Caelus uses the **east-positive** convention: New York is `-74.0`, Tokyo is
+`+139.7`. Many older astrology libraries are west-positive, so a sign flip here
+silently lands the chart on the wrong side of the planet. The REST endpoint
+rejects anything outside `[-180, 180]` and states the convention in the error.
+
+## Local time vs UTC
+
+The engine takes **UT calendar components** and does no timezone arithmetic.
+You resolve local civil time to UTC yourself, or let
+[`caelus-birth`](/docs/quickstart) do it from a place and an IANA zone. Two civil
+times need a deliberate choice the engine cannot make for you:
+
+- **Nonexistent times** (spring-forward gap, e.g. 02:30 on a DST start date)
+  have no UTC instant — reject them or snap to the gap edge.
+- **Ambiguous times** (fall-back overlap) map to two instants — pick the offset
+  explicitly rather than trusting a default.
+
+## Polar house fallback
+
+Placidus and Koch are undefined above the polar circles (|lat| ≳ 66°, or where
+the MC degree is circumpolar). Rather than throw, `chart()` falls back to
+whole-sign and tells you, so you never get silently wrong cusps:
+
+<CodeBlock
+  lang="typescript"
+  label="polar.ts"
+  code={`const chart = engine.chart(2024, 1, 1, 12, 0, 0, 78.22, 15.65, "placidus"); // Svalbard
+
+chart.houseSystem;          // "whole_sign" — Placidus undefined this far north
+chart.houseSystemRequested; // "placidus"`}
+/>
+
+Compare `houseSystem` against `houseSystemRequested` to detect the fallback.
+The quadrant-independent systems (Porphyry, Equal, Whole Sign) never fall back.
+
+## Circumpolar rise/set
+
+During polar day or polar night a body never crosses the horizon, so
+`riseSet` returns `null` for that window. The same `null` means "no event
+before the search horizon," so always branch on it:
+
+<CodeBlock
+  lang="typescript"
+  label="riseset.ts"
+  code={`const t = riseSet(engine, "sun", jd, 78.22, 15.65, "rise");
+if (t === null) {
+  // polar day/night, or no rise within the searched window
+}`}
+/>
+
+## Event-search windows
+
+Event search is bounded by an explicit `[start, end]` and by the 1800–2149
+fitted range. An empty result means "nothing in this window," not "never" —
+widen the window and retry. Outer-planet returns and crossings can yield
+multiple hits around a retrograde loop, so the search returns an array, not a
+single date.
+
+## Missing data packs
+
+`loadNodeData` degrades gracefully: if an extended pack is absent it falls back
+**per body** to the embedded tier instead of throwing. A body that exists only
+in an extended pack (an asteroid, a Uranian point, a fixed star) is simply
+unavailable, while core bodies keep working at embedded precision. Check
+[Data Tiers](/docs/data-tiers) for which capabilities need which pack.
+
+## Versioning &amp; stability
+
+All four packages — `caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel` —
+ship in **lockstep** at one version. Upgrade them together and pin exact
+versions in production; mixing majors across the set is unsupported.
+
+While the suite is pre-1.0 it follows **semver-zero**: a minor bump (`0.x.0`)
+may carry a breaking change, a patch (`0.x.y`) will not. We aim to keep these
+stable through 1.0:
+
+- The core read paths: `new Engine(data)`, `chart()`, `position()`,
+  `longitude()`, `when()`, the event-search entry points, and `julianDay()`.
+- The two data suppliers, `embeddedData` and `loadNodeData()`.
+- Result shapes (the chart object, `Position`) — changes are additive.
+
+Expect these to still move before 1.0: the derived-charts surface (new in
+0.7.0), the MCP tool schemas, and any low-level helper not re-exported from the
+package root. Treat unexported internals as unstable.
+
+See the [API Reference](/docs/api) for every signature and the
+[Changelog](/changelog) for what shipped per release.

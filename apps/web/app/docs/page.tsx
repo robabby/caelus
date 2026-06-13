@@ -9,12 +9,14 @@ export const metadata = {
 const CARDS: Array<[string, string, string]> = [
   ["/docs/quickstart", "Quickstart", "Install caelus and compute your first chart in the browser or Node."],
   ["/docs/charts", "Computing Charts", "The chart object: bodies, angles, cusps, aspects, and the UT vs local-time hazard."],
+  ["/docs/architecture", "Architecture", "How the four packages compose end to end: birth time, engine, wheel, and MCP."],
   ["/docs/houses-and-zodiacs", "Houses & Zodiacs", "Twelve house systems, tropical and sidereal modes, and polar fallbacks."],
   ["/docs/derived", "Derived Charts", "Returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect."],
   ["/docs/data-tiers", "Data Tiers", "Embedded vs Node loader: what ships in the bundle and what loads lazily."],
   ["/docs/mcp", "MCP Setup", "Add seven chart tools to Claude, Cursor, and other MCP clients."],
   ["/docs/recipes", "Recipes", "Transits, the when() query language, event search, and chart wheels."],
   ["/docs/api", "API Reference", "Generated reference for the caelus package surface."],
+  ["/docs/edge-cases", "Edge Cases & Stability", "Date range, polar fallback, civil-time hazards, longitude convention, and the versioning contract."],
   ["https://github.com/heavyblotto/caelus-starter", "Starter template", "A full Next.js app: birth form, timezone handling, chart wheel. Clone and deploy."],
   ["/changelog", "Changelog", "Release notes for all four packages, versioned in lockstep."],
 ];

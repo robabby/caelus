@@ -1,6 +1,6 @@
 export const metadata = {
   title: "MCP Setup",
-  description: "Add the caelus chart tools to Claude, Cursor, and other MCP clients.",
+  description: "Add the caelus chart tools to Claude Desktop, Claude Code, Cursor, VS Code, and any MCP client — with verification, troubleshooting, and version pinning.",
 };
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Integrations</div>
@@ -9,11 +9,55 @@ export const metadata = {
 
 `caelus-mcp` exposes the engine over the Model Context Protocol. Positions are
 computed by the engine on each call, never recalled from training data, so every
-answer is deterministic.
+answer is deterministic. The server runs over stdio and needs nothing but Node
+on the host.
 
-## Configure
+## Run it
 
-Add the server to `claude_desktop_config.json` or `.cursor/mcp.json`:
+The published binary runs straight from npm — no global install:
+
+<CodeBlock lang="bash" label="Terminal" code={`npx -y caelus-mcp`} />
+
+It waits for an MCP client to speak to it over stdio, so an empty terminal is
+expected. Wire it into a client below instead of running it by hand.
+
+## Configure your client
+
+Every client points at the same command (`npx -y caelus-mcp`); only the config
+file and key differ.
+
+<Tabs>
+  <Tab label="Claude Desktop">
+
+Edit `claude_desktop_config.json` (macOS:
+`~/Library/Application Support/Claude/`, Windows: `%APPDATA%\Claude\`), then fully
+quit and reopen Claude.
+
+<CodeBlock
+  lang="json"
+  label="claude_desktop_config.json"
+  code={`{
+  "mcpServers": {
+    "caelus": {
+      "command": "npx",
+      "args": ["-y", "caelus-mcp"]
+    }
+  }
+}`}
+/>
+
+  </Tab>
+  <Tab label="Claude Code">
+
+Add it from the CLI — it writes the config for you:
+
+<CodeBlock lang="bash" label="Terminal" code={`claude mcp add caelus -- npx -y caelus-mcp`} />
+
+  </Tab>
+  <Tab label="Cursor">
+
+Create `.cursor/mcp.json` in the project (or `~/.cursor/mcp.json` for all
+projects), then reload Cursor.
 
 <CodeBlock
   lang="json"
@@ -22,17 +66,73 @@ Add the server to `claude_desktop_config.json` or `.cursor/mcp.json`:
   "mcpServers": {
     "caelus": {
       "command": "npx",
-      "args": ["caelus-mcp"]
+      "args": ["-y", "caelus-mcp"]
     }
   }
 }`}
 />
 
-## The seven tools
+  </Tab>
+  <Tab label="VS Code">
+
+Create `.vscode/mcp.json` in the workspace — note VS Code uses the `servers`
+key, not `mcpServers`:
+
+<CodeBlock
+  lang="json"
+  label=".vscode/mcp.json"
+  code={`{
+  "servers": {
+    "caelus": {
+      "command": "npx",
+      "args": ["-y", "caelus-mcp"]
+    }
+  }
+}`}
+/>
+
+  </Tab>
+  <Tab label="Generic">
+
+Any stdio MCP client takes the same command and arguments:
+
+<CodeBlock
+  lang="json"
+  label="mcp config"
+  code={`{
+  "command": "npx",
+  "args": ["-y", "caelus-mcp"]
+}`}
+/>
+
+  </Tab>
+</Tabs>
+
+## Verify the tools appeared
+
+After the client reloads, it should list **seven** tools. Ask it to enumerate
+them, or check the client's MCP panel:
 
 `natal_chart`, `current_sky`, `transits`, `synastry`, `find_aspect_dates`,
 `rectification_grid`, and `sky_events` (rise/set, phases, stations, zodiac
 crossings, solar and lunar eclipses).
+
+If you see all seven, the server is wired correctly. A natal-chart call returns
+structured positions, not prose:
+
+<CodeBlock
+  lang="json"
+  label="natal_chart → (abbreviated)"
+  code={`{
+  "utc": "1990-06-10T14:30:00Z",
+  "houses": "placidus",
+  "bodies": {
+    "sun":  { "lon": 79.45,  "pos": "19°27'Gem", "house": 11, "speed": 0.96 },
+    "moon": { "lon": 283.28, "pos": "13°17'Cap", "house": 6,  "speed": 12.19 },
+    "saturn": { "lon": 294.31, "pos": "24°18'Cap", "house": 6, "rx": true, "speed": -0.05 }
+  }
+}`}
+/>
 
 ## Example prompts
 
@@ -41,4 +141,37 @@ crossings, solar and lunar eclipses).
 - "Compare my chart with my partner's."
 - "Next solar eclipse? Lunar eclipses in 2026?"
 
-Agent-oriented docs live at <a href="/llms.txt">llms.txt</a>.
+## Troubleshooting
+
+- **`npx` not found / server never starts.** GUI clients (Claude Desktop,
+  Cursor) do not inherit your shell `PATH`, so a `node`/`npx` installed via nvm
+  or Homebrew may be invisible. Use the absolute path as `command` (find it with
+  `which npx`), or install Node where the client can see it. Node 18+ is
+  required.
+- **Tools don't show up.** Most clients only read MCP config on a full restart —
+  quit completely (not just close the window) and reopen. Confirm the JSON
+  parses (a trailing comma is the usual culprit).
+- **First call is slow.** `npx` downloads the package on first run; it is cached
+  afterward. Pinning a version (below) avoids surprise re-downloads.
+
+## Version pinning for production
+
+`npx -y caelus-mcp` always resolves the latest release. Pin an exact version so
+behaviour is reproducible and the four packages stay in lockstep:
+
+<CodeBlock
+  lang="json"
+  label="pinned"
+  code={`{
+  "mcpServers": {
+    "caelus": {
+      "command": "npx",
+      "args": ["-y", "caelus-mcp@0.7.0"]
+    }
+  }
+}`}
+/>
+
+Agent-oriented docs live at <a href="/llms.txt">llms.txt</a>. See
+<a href="/docs/architecture">Architecture</a> for where MCP fits in an
+end-to-end app.

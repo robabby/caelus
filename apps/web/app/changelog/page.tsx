@@ -11,8 +11,10 @@ export const metadata = {
 function loadChangelog(): string | null {
   const path = join(process.cwd(), "..", "..", "CHANGELOG.md");
   if (!existsSync(path)) return null;
-  // drop the top H1 ("# Changelog"); the page provides its own heading
-  return readFileSync(path, "utf8").replace(/^#\s+Changelog\s*\n/, "");
+  // drop everything before the first release heading: the page already
+  // provides the title and the lockstep/accuracy lead, so the file's own
+  // H1 and intro paragraph would otherwise render a second time.
+  return readFileSync(path, "utf8").replace(/^[\s\S]*?(?=^## )/m, "");
 }
 
 export default function Changelog() {

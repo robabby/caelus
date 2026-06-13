@@ -144,5 +144,40 @@ const day = isDayChart(engine, natalJd, 27.95, -82.46);
 inSect("jupiter", day);   // true when Jupiter is in sect (diurnal by day)`}
 />
 
-See the <a href="/docs/api">API Reference</a> for every signature and the
-<a href="/changelog"> Changelog</a> for what shipped in 0.7.0.
+## Timelines
+
+The derivations compose into timelines: the returns search is already a span,
+and the progression mappings are pure functions of a target JD, so you sample
+them on whatever cadence you need. A JD converts back to a date with the
+standard epoch offset, no helper required.
+
+<CodeBlock
+  lang="typescript"
+  label="timelines.ts"
+  code={`import { solarReturn, progressedLongitude } from "caelus";
+
+const SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+  "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+const toDate = (jd: number) =>
+  new Date((jd - 2440587.5) * 86400000).toISOString().slice(0, 10);
+
+// A decade of solar returns:
+const from = julianDay(2026, 1, 1, 0, 0, 0);
+solarReturn(engine, natalJd, from, from + 365.25 * 10).map(toDate);
+// ["2026-06-10", "2027-06-11", ...]
+
+// Progressed-Moon sign at each birthday for the next twelve years:
+for (let year = 2026; year < 2038; year++) {
+  const jd = julianDay(year, 6, 10, 0, 0, 0);
+  const lon = progressedLongitude(engine, "moon", natalJd, jd);
+  console.log(year, SIGNS[Math.floor(lon / 30)]);
+}`}
+/>
+
+The same shape drives a transit timeline (sample `engine.longitude` over a
+range) or a directed-aspect scan (`directedLongitude` against natal points).
+For ready-made transit and event-search recipes, see <a href="/docs/recipes">Recipes</a>.
+
+See the <a href="/docs/api">API Reference</a> for every signature, <a href="/docs/edge-cases">Edge Cases &amp; Stability</a>
+for range and stability notes, and the <a href="/changelog">Changelog</a> for
+what shipped in 0.7.0.

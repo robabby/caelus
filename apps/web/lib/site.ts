@@ -49,6 +49,7 @@ export const DOCS_NAV: DocsGroup[] = [
   {
     title: "Guides",
     items: [
+      { href: "/docs/architecture", label: "Architecture" },
       { href: "/docs/houses-and-zodiacs", label: "Houses & Zodiacs" },
       { href: "/docs/derived", label: "Derived Charts" },
       { href: "/docs/data-tiers", label: "Data Tiers" },
@@ -63,6 +64,7 @@ export const DOCS_NAV: DocsGroup[] = [
     title: "Reference",
     items: [
       { href: "/docs/api", label: "API Reference" },
+      { href: "/docs/edge-cases", label: "Edge Cases & Stability" },
       { href: "/changelog", label: "Changelog" },
     ],
   },

@@ -31,12 +31,14 @@ The deliverables are the engine and the tools around it: `caelus` (engine),
 
 ## Status
 
-Shipped through **0.6.0** (npm: all four packages; GitHub releases
-v0.1.0–v0.6.0): full body set, 12 house systems, tropical + 8 sidereal
+Shipped through **0.7.0** (npm: all four packages; GitHub releases
+v0.1.0–v0.7.0): full body set, 12 house systems, tropical + 8 sidereal
 ayanamsas, aspects, event search (rise/set, crossings, phases, stations,
 Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
 precession; the `when()` query engine (declarative time queries over celestial
-predicates, Python reference + TS port, suite-pinned); 3,218-check conformance
+predicates, Python reference + TS port, suite-pinned); derived charts (returns,
+secondary progressions, solar arc, composite and Davison, harmonics, antiscia,
+declination aspects/parallels, out-of-bounds, dignities, sect); conformance
 suite; MCP server (stdio) with golden payloads; JPL-direct validation tier.
 
 The `ephemengine.com` site ships its full shape: landing page, browser
@@ -47,10 +49,6 @@ header and footer, and SEO (sitemap, OpenGraph).
 ## Planned
 
 ### Engine breadth
-- **Derived charts**: returns, secondary progressions, solar arc, composite
-  and Davison charts, harmonics, antiscia, declination aspects (parallels),
-  out-of-bounds, dignities/sect. Thin layers on existing primitives;
-  reference + goldens per feature.
 - **Turbo tier**: Chebyshev packs fit to the engine's own output for fast
   bulk evaluation (century-scale scans).
 
