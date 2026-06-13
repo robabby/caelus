@@ -5,6 +5,37 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.6.0 — 2026-06-13
+
+A declarative query language: the engine answers "where is the body?", and
+`when()` answers "when is the configuration true?" over a time range. No
+breaking changes to the 0.5.x surface; the position conformance suite is
+unchanged at 3,218 checks, and a new cross-language golden (38 boundary
+checks) pins the TypeScript port to the Python reference, boundary diff 0 s.
+
+### Engine (`caelus`)
+
+- Query language (`when()`): a predicate is a continuous margin function,
+  true exactly where margin >= 0. Logical combinations reduce to the same form (`allOf`
+  = min, `anyOf` = max, `notOf` = negation), so any query is one continuous
+  function solved with the same coarse-scan-then-bisect root finder as
+  `events.crossings`. Predicates ship for `aspect` (orb around any of seven
+  exact angles, to a body or a fixed longitude), `inSign`, and `retrograde`
+  / `notRetrograde`; all accept a `zodiac` mode. `when()` returns the
+  intervals where the predicate holds, auto-selecting a 0.125 d scan step
+  when a fast body (Moon, nodes, Lilith) is involved and 1 d otherwise.
+  Exported from the package root.
+- The TypeScript port mirrors the Python reference (`astroengine/query.py`);
+  the two are pinned by `test/query-golden.json` (interval boundaries agree
+  to 0 s).
+
+### Docs and tooling
+
+- `ARCHITECTURE.md` rewritten as an actual architecture document.
+- `ROADMAP.md` added: durable, public-safe project plan.
+- `templates/starter` README rewritten in the project's voice.
+- Removed unused DE441 Moon refit tooling (`fit_moon.py`, `horizons.py`).
+
 ## 0.5.0 — 2026-06-13
 
 Swiss Ephemeris gap analysis Tiers 2 and 3 close (see

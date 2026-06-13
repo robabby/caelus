@@ -91,8 +91,9 @@ Correctness is enforced by a chain of checks rather than asserted:
   from Horizons vectors, and `validate_horizons.py` compares the engine
   directly against JPL apparent positions.
 - **Golden fixtures pin the TypeScript port to the Python reference.**
-  `test/golden.json` (the conformance suite) and `test/query-golden.json`
-  are generated from Python and replayed by the TS tests; both engines run
+  `test/golden.json` (the 3,218-check conformance suite) and
+  `test/query-golden.json` are generated from Python and replayed by the TS
+  tests; both engines run
   the same algorithms in IEEE doubles, so any porting error shows up as a
   large deviation. The MCP layer has its own golden payloads.
 - **CI runs the whole chain** (`.github/workflows/ci.yml`) on every push,
