@@ -5,14 +5,14 @@ import { A, H2, P, Code, Pre, Nav } from "../components/Prose";
 export const metadata = {
   title: "Caelus — the ephemeris is now just code",
   description:
-    "MIT astrological ephemeris in ~85 KB of TypeScript: planets, Moon, Chiron, nodes, houses, aspects. No AGPL, no license fees, no ephemeris files. Browser, edge, Node, MCP.",
+    "MIT astrological ephemeris in ~85 KB of TypeScript: planets, Moon, Chiron, nodes, fixed stars, twelve house systems, eight sidereal modes, eclipses, aspects. No AGPL, no ephemeris files. Browser, edge, Node, MCP.",
 };
 
 const PACKAGES: Array<[string, string, string]> = [
   ["caelus", "https://www.npmjs.com/package/caelus",
     "The engine: positions, houses, aspects. Zero dependencies, ~85 KB gzipped"],
   ["caelus-mcp", "https://www.npmjs.com/package/caelus-mcp",
-    "Seven chart tools for AI agents over MCP. Runs with npx, no install"],
+    "Seven chart tools for AI agents — charts, transits, synastry, event search including eclipses"],
   ["caelus-birth", "https://www.npmjs.com/package/caelus-birth",
     "Local birth time + place to UT: DST, historical timezones, edge cases flagged"],
   ["caelus-wheel", "https://www.npmjs.com/package/caelus-wheel",
@@ -30,10 +30,10 @@ export default function Home() {
         The ephemeris is now just code.
       </p>
       <ul style={{ listStyle: "none", padding: 0, margin: "0.8rem 0", lineHeight: 2, opacity: 0.85 }}>
-        <li>🪐 Full natal charts: 13 bodies, twelve house systems, aspects, in ~85 KB</li>
-        <li>🆓 Free and MIT, commercial use included</li>
-        <li>⚖️ No AGPL, no 700 CHF license</li>
-        <li>📦 No ephemeris files: the data ships inside the bundle</li>
+        <li>🪐 Natal charts in ~85 KB: thirteen bodies, twelve house systems, major aspects</li>
+        <li>⭐ Fixed stars (318), asteroids, Uranians, eight sidereal ayanamsas — optional data packs</li>
+        <li>🌑 Rise/set, phases, stations, solar &amp; lunar eclipses via <Code>sky_events</Code></li>
+        <li>🆓 Free MIT · no AGPL · no 700 CHF license · coefficients embedded, not on disk</li>
       </ul>
       <Cta />
       <SkyNow />
@@ -89,12 +89,14 @@ chart.angles, chart.cusps, chart.aspects;`}</Pre>
         <li>&ldquo;What&apos;s my natal chart? Born June 10 1990, 2:30pm, Tampa FL.&rdquo;</li>
         <li>&ldquo;When is Saturn square my natal Moon in the next two years?&rdquo;</li>
         <li>&ldquo;Compare my chart with my partner&apos;s.&rdquo;</li>
+        <li>&ldquo;When is the next solar eclipse? Any lunar eclipses in 2026?&rdquo;</li>
       </ul>
       <P>
         Tools: <Code>natal_chart</Code>, <Code>current_sky</Code>,{" "}
         <Code>transits</Code>, <Code>synastry</Code>,{" "}
         <Code>find_aspect_dates</Code>, <Code>rectification_grid</Code>,{" "}
-        <Code>sky_events</Code>.
+        <Code>sky_events</Code> (rise/set, phases, stations, zodiac crossings,
+        solar and lunar eclipses).
         Positions are computed by the engine, never recalled from training
         data, and every answer is deterministic.
       </P>
@@ -120,12 +122,15 @@ const chart = engine.chart(/* t.utc fields */);
       <P>
         Caelus computes apparent geocentric positions for the Sun, Moon, eight
         planets, Pluto, Chiron, and both lunar nodes, with speeds, retrograde
-        flags, ASC/MC, twelve house systems, and major aspects. Optional
-        bodies (Lilith, asteroids, Uranians) load from data packs. Valid
-        1800–2149.
-        The coefficient data ships inside the bundle: VSOP87D planets, an
-        abridged ELP-2000/82 Moon, Meeus&apos;s Pluto series, and Chebyshev fits
-        of JPL data for Chiron and the precise-Moon tier.
+        flags, ASC/MC/vertex, twelve house systems, and major aspects. On
+        request: mean and true Lilith, five main-belt asteroids + Pholus, eight
+        Hamburg-school Uranians, 318 fixed stars (HYG catalog), eight sidereal
+        ayanamsas (including star-anchored <Code>galcent_0sag</Code> and{" "}
+        <Code>true_citra</Code>), Gauquelin sectors, and global solar/lunar
+        eclipse search. Valid 1800–2149. The ~85 KB core bundles VSOP87D
+        planets, an abridged ELP Moon series, Meeus Pluto, and Chebyshev JPL
+        fits for Chiron and the precise-Moon tier; extended bodies and stars
+        load as lazy JSON in Node.
       </P>
       <P>
         The engine takes injected data and does no I/O, so one codebase serves
@@ -153,8 +158,9 @@ const chart = engine.chart(/* t.utc fields */);
         stops at ±1 arcminute and computes no houses, nodes, or Chiron;{" "}
         <A href="https://www.npmjs.com/package/astronomia">astronomia</A> has
         sub-arcsecond planets and no astrology layer. Caelus is written from
-        the published record and covers the chart core at chart precision.
-        Engine-by-engine comparison: <A href="/provenance">Sources</A>.
+        the published record and now closes the original Swiss Ephemeris gap
+        analysis at chart precision (0.5.0). Engine-by-engine comparison:{" "}
+        <A href="/provenance">Sources</A>.
       </P>
 
       <H2>How It Is Checked</H2>

@@ -8,7 +8,7 @@ ephemeris files. Live at [ephemengine.com](https://www.ephemengine.com).
 | Path | npm | Description |
 |------|-----|-------------|
 | `packages/caelus` | [`caelus`](https://www.npmjs.com/package/caelus) | TypeScript engine (~85 KB gzipped, zero deps) |
-| `packages/caelus-mcp` | [`caelus-mcp`](https://www.npmjs.com/package/caelus-mcp) | MCP server: charts, transits, synastry, aspect search |
+| `packages/caelus-mcp` | [`caelus-mcp`](https://www.npmjs.com/package/caelus-mcp) | MCP server: charts, transits, synastry, events, eclipses |
 | `packages/birth` | [`caelus-birth`](https://www.npmjs.com/package/caelus-birth) | Birth time + place → UT (timezone and DST resolution) |
 | `packages/wheel` | [`caelus-wheel`](https://www.npmjs.com/package/caelus-wheel) | React SVG chart wheel, zero runtime deps |
 | `apps/web` | — | Next.js site: playground, validation, edge `/api/chart` |
@@ -22,7 +22,7 @@ dependency.
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — layout, durability decisions, product strategy
 - [MCP_SPEC.md](./MCP_SPEC.md) — MCP tool contract
-- [docs/gap-analysis.md](./docs/gap-analysis.md) — Swiss Ephemeris comparison and the v0.2+ roadmap
+- [docs/gap-analysis.md](./docs/gap-analysis.md) — Swiss Ephemeris comparison (closed at 0.5.0)
 - [docs/agents.md](./docs/agents.md) — pitfalls for coding agents building on Caelus
 - [docs/releasing.md](./docs/releasing.md) — release process
 
