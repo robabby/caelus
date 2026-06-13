@@ -180,6 +180,202 @@
     39.725,
     -41.289999999999964
    ]
+  },
+  {
+   "id": "harmonic-5",
+   "spec": {
+    "id": "harmonic-5",
+    "type": "harmonic",
+    "jd": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "n": 5,
+    "bodies": [
+     "sun",
+     "moon",
+     "venus",
+     "mars"
+    ]
+   },
+   "result": {
+    "sun": 37.26003231902348,
+    "moon": 336.41803527390016,
+    "venus": 215.15668527908582,
+    "mars": 37.542696583514
+   }
+  },
+  {
+   "id": "antiscia",
+   "spec": {
+    "id": "antiscia",
+    "type": "antiscia",
+    "jd": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "bodies": [
+     "sun",
+     "mercury",
+     "mars"
+    ]
+   },
+   "result": {
+    "sun": [
+     100.5479935361953,
+     280.5479935361953
+    ],
+    "mercury": [
+     122.15307046000844,
+     302.15307046000845
+    ],
+    "mars": [
+     172.4914606832972,
+     352.4914606832972
+    ]
+   }
+  },
+  {
+   "id": "dec-aspects",
+   "spec": {
+    "id": "dec-aspects",
+    "type": "dec_aspects",
+    "jd": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "orb": 2.0,
+    "bodies": [
+     "sun",
+     "moon",
+     "mercury",
+     "venus",
+     "mars",
+     "jupiter",
+     "saturn"
+    ]
+   },
+   "result": [
+    {
+     "a": "sun",
+     "b": "moon",
+     "kind": "contraparallel"
+    },
+    {
+     "a": "sun",
+     "b": "jupiter",
+     "kind": "parallel"
+    },
+    {
+     "a": "sun",
+     "b": "saturn",
+     "kind": "contraparallel"
+    },
+    {
+     "a": "jupiter",
+     "b": "saturn",
+     "kind": "contraparallel"
+    }
+   ]
+  },
+  {
+   "id": "out-of-bounds",
+   "spec": {
+    "id": "out-of-bounds",
+    "type": "oob",
+    "jd": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "bodies": [
+     "sun",
+     "moon",
+     "mercury",
+     "venus",
+     "mars"
+    ]
+   },
+   "result": {
+    "sun": -0.4177101059623247,
+    "moon": 1.4857832473686514,
+    "mercury": -6.169825294284429,
+    "venus": -9.613975192620186,
+    "mars": -22.25724744963161
+   }
+  },
+  {
+   "id": "dignities",
+   "spec": {
+    "id": "dignities",
+    "type": "dignities",
+    "jd": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "bodies": [
+     "sun",
+     "moon",
+     "mercury",
+     "venus",
+     "mars",
+     "jupiter",
+     "saturn"
+    ]
+   },
+   "result": {
+    "sun": [],
+    "moon": [
+     "detriment"
+    ],
+    "mercury": [],
+    "venus": [
+     "domicile"
+    ],
+    "mars": [
+     "domicile"
+    ],
+    "jupiter": [
+     "exaltation"
+    ],
+    "saturn": [
+     "domicile"
+    ]
+   }
+  },
+  {
+   "id": "sect",
+   "spec": {
+    "id": "sect",
+    "type": "sect",
+    "jd": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "lat": 27.95,
+    "lon": -82.46
+   },
+   "result": {
+    "day": true,
+    "sun_alt": 49.479468783119444
+   }
   }
  ]
 }

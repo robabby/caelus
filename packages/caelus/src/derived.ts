@@ -8,9 +8,10 @@
  * ephemeris. Mirrors the Python reference (astroengine/derived.py); the
  * golden fixtures pin the two together.
  */
-import { mod } from "./core.js";
-import { Engine, BodyId, Zodiac } from "./chart.js";
+import { mod, meanObliquity, jdTT, DEG } from "./core.js";
+import { Engine, BodyId, Zodiac, SIGNS } from "./chart.js";
 import { crossings } from "./events.js";
+import { azAlt } from "./pheno.js";
 
 export const TROPICAL_YEAR = 365.24219; // mean tropical year, days
 
@@ -111,4 +112,127 @@ export function davisonParams(
   let midLon = midpointLon(mod(lonEastA, 360), mod(lonEastB, 360));
   if (midLon > 180) midLon -= 360; // back to (-180, 180] east-longitude
   return [midJd, midLat, midLon];
+}
+
+// ----------------------------------------------------------- harmonics
+/** The nth-harmonic longitude of a point: lon * n, wrapped to 360. */
+export function harmonicLongitude(lon: number, n: number): number {
+  return mod(lon * n, 360);
+}
+
+export function harmonicChart(
+  engine: Engine, jd: number, bodies: BodyId[], n: number,
+  zodiac: Zodiac = "tropical",
+): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const b of bodies) out[b] = harmonicLongitude(engine.longitude(b, jd, { zodiac }), n);
+  return out;
+}
+
+// ----------------------------------------------------------- antiscia
+/** Reflection across the solstice (Cancer-Capricorn) axis. */
+export function antiscion(lon: number): number {
+  return mod(180 - lon, 360);
+}
+
+/** Reflection across the equinox (Aries-Libra) axis. */
+export function contraAntiscion(lon: number): number {
+  return mod(-lon, 360);
+}
+
+// ------------------------------------------------- declination aspects
+export type DeclinationKind = "parallel" | "contraparallel" | null;
+
+/** Classify two declinations: parallel (same), contraparallel (opposite), null. */
+export function declinationAspect(decA: number, decB: number, orb = 1.0): DeclinationKind {
+  if (Math.abs(decA - decB) <= orb) return "parallel";
+  if (Math.abs(decA + decB) <= orb) return "contraparallel";
+  return null;
+}
+
+export interface DeclinationPair { a: string; b: string; kind: DeclinationKind }
+
+export function declinationAspects(
+  engine: Engine, bodies: BodyId[], jd: number, orb = 1.0,
+): DeclinationPair[] {
+  const decs: Record<string, number> = {};
+  for (const b of bodies) decs[b] = engine.position(b, jd).dec;
+  const out: DeclinationPair[] = [];
+  for (let i = 0; i < bodies.length; i++) {
+    for (let j = i + 1; j < bodies.length; j++) {
+      const kind = declinationAspect(decs[bodies[i]], decs[bodies[j]], orb);
+      if (kind) out.push({ a: bodies[i], b: bodies[j], kind });
+    }
+  }
+  return out;
+}
+
+// ----------------------------------------------------------- out of bounds
+/** |declination| minus the mean obliquity, degrees. Positive = out of bounds. */
+export function outOfBoundsMargin(engine: Engine, body: BodyId, jd: number): number {
+  const dec = engine.position(body, jd).dec;
+  const eps = meanObliquity(jdTT(jd)) / DEG;
+  return Math.abs(dec) - eps;
+}
+
+export function outOfBounds(engine: Engine, body: BodyId, jd: number): boolean {
+  return outOfBoundsMargin(engine, body, jd) > 0;
+}
+
+// ----------------------------------------------------------- dignities
+const DOMICILE: Record<string, number[]> = {
+  sun: [4], moon: [3], mercury: [2, 5], venus: [1, 6],
+  mars: [0, 7], jupiter: [8, 11], saturn: [9, 10],
+};
+const EXALTATION: Record<string, number> = {
+  sun: 0, moon: 1, mercury: 5, venus: 11, mars: 9, jupiter: 3, saturn: 6,
+};
+
+function signIndex(sign: number | string): number {
+  return typeof sign === "number" ? sign : SIGNS.indexOf(sign);
+}
+
+/** Essential dignities of `body` in `sign`: domicile, exaltation, detriment,
+ *  fall (the last two are the signs opposite domicile and exaltation). */
+export function dignities(body: string, sign: number | string): string[] {
+  const idx = signIndex(sign);
+  const dom = DOMICILE[body] ?? [];
+  const out: string[] = [];
+  if (dom.includes(idx)) out.push("domicile");
+  if (EXALTATION[body] === idx) out.push("exaltation");
+  if (dom.map((d) => mod(d + 6, 12)).includes(idx)) out.push("detriment");
+  if (body in EXALTATION && mod(EXALTATION[body] + 6, 12) === idx) out.push("fall");
+  return out;
+}
+
+export function dignityOf(
+  engine: Engine, body: BodyId, jd: number, zodiac: Zodiac = "tropical",
+): string[] {
+  const lon = engine.longitude(body, jd, { zodiac });
+  return dignities(body, mod(Math.floor(lon / 30), 12));
+}
+
+// ----------------------------------------------------------- sect
+const DIURNAL = new Set(["sun", "jupiter", "saturn"]);
+const NOCTURNAL = new Set(["moon", "venus", "mars"]);
+
+/** Diurnal when the Sun is above the horizon at the given place. */
+export function isDayChart(
+  engine: Engine, jd: number, lat: number, lonEast: number,
+): boolean {
+  const sun = engine.position("sun", jd);
+  const [, alt] = azAlt(engine.data, sun.lon, sun.lat, jd, lat, lonEast);
+  return alt > 0;
+}
+
+export function planetarySect(body: string): "diurnal" | "nocturnal" | null {
+  if (DIURNAL.has(body)) return "diurnal";
+  if (NOCTURNAL.has(body)) return "nocturnal";
+  return null;
+}
+
+export function inSect(body: string, dayChart: boolean): boolean | null {
+  const s = planetarySect(body);
+  if (s === null) return null;
+  return (s === "diurnal") === Boolean(dayChart);
 }

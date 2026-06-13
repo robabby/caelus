@@ -35,6 +35,17 @@ CASES = [
      "bodies": ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"]},
     {"id": "davison", "type": "davison", "a": NATAL, "b": PARTNER,
      "lat_a": 27.95, "lon_a": -82.46, "lat_b": 51.5, "lon_b": -0.12},
+    {"id": "harmonic-5", "type": "harmonic", "jd": NATAL, "n": 5,
+     "bodies": ["sun", "moon", "venus", "mars"]},
+    {"id": "antiscia", "type": "antiscia", "jd": NATAL,
+     "bodies": ["sun", "mercury", "mars"]},
+    {"id": "dec-aspects", "type": "dec_aspects", "jd": NATAL, "orb": 2.0,
+     "bodies": ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"]},
+    {"id": "out-of-bounds", "type": "oob", "jd": NATAL,
+     "bodies": ["sun", "moon", "mercury", "venus", "mars"]},
+    {"id": "dignities", "type": "dignities", "jd": NATAL,
+     "bodies": ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"]},
+    {"id": "sect", "type": "sect", "jd": NATAL, "lat": 27.95, "lon": -82.46},
 ]
 
 
@@ -59,6 +70,27 @@ def compute(spec, eng):
     if t == "davison":
         return list(D.davison_params(jd(spec["a"]), jd(spec["b"]),
                     spec["lat_a"], spec["lon_a"], spec["lat_b"], spec["lon_b"]))
+    if t == "harmonic":
+        return D.harmonic_chart(eng, jd(spec["jd"]), spec["bodies"], spec["n"])
+    if t == "antiscia":
+        j = jd(spec["jd"])
+        return {b: [D.antiscion(eng.longitude(b, j)),
+                    D.contra_antiscion(eng.longitude(b, j))] for b in spec["bodies"]}
+    if t == "dec_aspects":
+        return D.declination_aspects(eng, spec["bodies"], jd(spec["jd"]),
+                                     spec.get("orb", 1.0))
+    if t == "oob":
+        j = jd(spec["jd"])
+        return {b: D.out_of_bounds_margin(eng, b, j) for b in spec["bodies"]}
+    if t == "dignities":
+        j = jd(spec["jd"])
+        return {b: D.dignity_of(eng, b, j) for b in spec["bodies"]}
+    if t == "sect":
+        from astroengine.pheno import az_alt
+        j, lat, lon = jd(spec["jd"]), spec["lat"], spec["lon"]
+        sun = eng.position("sun", j)
+        _, alt = az_alt(sun["lon"], sun["lat"], j, lat, lon)
+        return {"day": D.is_day_chart(eng, j, lat, lon), "sun_alt": alt}
     raise ValueError(spec["type"])
 
 
