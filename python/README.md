@@ -33,7 +33,7 @@ for body in BODIES:
   the planets, Meeus Ch. 47 for the Moon, Meeus Ch. 37 series for Pluto),
   with light-time, annual aberration, FK5 frame correction, and IAU 1980
   nutation.
-- 12 house systems; tropical and sidereal (8 ayanamsas).
+- 12 house systems; tropical and sidereal (7 ayanamsas).
 - Aspects with configurable orbs.
 - Events: rise/set/transit, longitude crossings, lunar phases, stations,
   Gauquelin sectors, solar and lunar eclipses.

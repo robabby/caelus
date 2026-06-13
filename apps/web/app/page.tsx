@@ -49,7 +49,7 @@ export default function Home() {
       </div>
 
       <ul style={{ listStyle: "none", padding: 0, margin: "1.5rem 0", display: "grid", gap: "0.6rem", lineHeight: 1.5 }}>
-        <li>🪐 Sun through Pluto, Chiron, and nodes; twelve house systems; tropical and eight sidereal zodiacs</li>
+        <li>🪐 Sun through Pluto, Chiron, and nodes; twelve house systems; tropical and seven sidereal zodiacs</li>
         <li>🧩 <A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
         <li>🤖 <code>caelus-mcp</code> gives Claude, Cursor, and other MCP clients seven chart tools</li>
         <li>🆓 MIT licensed; coefficients are embedded, with no ephemeris files to deploy</li>

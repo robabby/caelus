@@ -33,7 +33,7 @@ The deliverables are the engine and the tools around it: `caelus` (engine),
 
 Shipped through **0.8.0** (npm: all four packages; PyPI: `caelus-engine`,
 the Python reference; GitHub releases v0.1.0–v0.8.0): full body set, 12 house
-systems, tropical + 8 sidereal
+systems, tropical + 7 sidereal
 ayanamsas, aspects, event search (rise/set, crossings, phases, stations,
 Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
 precession; the `when()` query engine (declarative time queries over celestial
