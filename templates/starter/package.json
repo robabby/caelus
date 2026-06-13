@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
-    "caelus-birth": "^0.1.0",
-    "caelus-wheel": "^0.1.0",
-    "caelus": "^0.1.0",
+    "caelus-birth": "^0.6.0",
+    "caelus-wheel": "^0.6.0",
+    "caelus": "^0.6.0",
     "next": "^15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
