@@ -3,7 +3,7 @@ import accuracy from "caelus/accuracy.json";
 
 export const metadata = {
   title: "Caelus — Validation",
-  description: "Reference engine vs Swiss Ephemeris; TypeScript port vs 3,201 golden checks. CI on every commit.",
+  description: "Reference engine vs Swiss Ephemeris; TypeScript port vs 3,218 golden checks. CI on every commit.",
 };
 
 // Canonical per-body accuracy lives in packages/caelus/accuracy.json so prose,
@@ -50,7 +50,7 @@ export default function Validation() {
       </P>
       <H2>TypeScript Port vs Reference</H2>
       <P>
-        <strong>3,201 golden checks</strong> (bodies, timescales, nutation, twelve house
+        <strong>3,218 golden checks</strong> (bodies, timescales, nutation, twelve house
         systems, speeds, retrograde flags, polar Placidus fallback). Worst deviation
         1.64 nano-arcseconds. Same algorithms in IEEE doubles; tolerance is far below
         astronomical relevance: a porting bug fails the build.

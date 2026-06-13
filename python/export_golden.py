@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from astroengine import BODIES, Engine
 from astroengine import houses as H
 from astroengine import pheno as PH
+from astroengine import eclipses as EC
 from astroengine.core import (DEG, ayanamsa, delta_t, julian_day,
                               mean_obliquity, nutation, jd_tt)
 
@@ -253,6 +254,8 @@ def events_section(eng):
             "sun_tampa": EV.gauquelin_sector(eng, "sun", jd0 + 0.3, 27.95, -82.46),
             "moon_sydney": EV.gauquelin_sector(eng, "moon", jd0 + 0.6, -33.87, 151.21),
         },
+        "lunar_eclipses_1y": EC.lunar_eclipses(eng, jd0, jd0 + 366),
+        "solar_eclipses_1y": EC.solar_eclipses(eng, jd0, jd0 + 366),
     }
 
 

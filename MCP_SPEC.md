@@ -51,8 +51,10 @@ Pairs with find_aspect_dates to check candidate times against dated events.
 ### sky_events(start, end, kinds, body?, lat?, lon?, target_lon?, zodiac?)
 Event search in a date range (≤370 days): rise/set/meridian transits
 (body + place), lunar phases, stations (retrograde/direct), zodiac degree
-crossings. Times agree with Swiss Ephemeris to the second; stations to
-~1 minute (ill-conditioned by nature). Eclipses join this tool in Tier 3.
+crossings, and solar/lunar eclipses (global circumstances: type,
+magnitude, gamma; types match Swiss Ephemeris exactly). Times agree with
+Swiss Ephemeris to the second; stations to ~1 minute (ill-conditioned by
+nature).
 
 ## Resources (phase 2)
 - `caelus://glossary` — machine-readable definitions (aspects, houses, dignities).
@@ -86,4 +88,8 @@ Payloads gain a `zodiac` key only when sidereal.
 
 ## v0.4 surface (shipped)
 `sky_events` (the seventh tool, above): rise/set/transits, phases,
-stations, crossings. Eclipses extend it in Tier 3 — no eighth tool.
+stations, crossings.
+
+## v0.5 surface (shipped)
+`sky_events` gains `solar_eclipse` and `lunar_eclipse` kinds — the
+Tier 3 extension, still no eighth tool.

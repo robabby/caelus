@@ -194,6 +194,12 @@
       "max": "0.0001 sectors",
       "rms": "—",
       "note": "rise/set of disc center with refraction (SE method 3): exact to the rise/set bound"
+    },
+    {
+      "name": "Eclipses (solar + lunar)",
+      "max": "9 s",
+      "rms": "—",
+      "note": "times of maximum vs swe; types exact over 1990-2030 (92 lunar + 89 solar, zero mismatches); lunar magnitudes ≤0.0013 (Danjon parallax enlargement, recovered empirically). Contact times typically ≤15 s, minutes for grazing geometries. Global circumstances only — no ground paths"
     }
   ],
   "summary": [
@@ -256,6 +262,10 @@
     {
       "label": "Sidereal (7 ayanamsas)",
       "bound": "≤ 0.3″ added"
+    },
+    {
+      "label": "Eclipses",
+      "bound": "types exact; max ≤ 9 s"
     }
   ],
   "v03_harness": "python/validate_swiss.py regenerates every figure above the line against pyswisseph 2.10 (Moshier mode)",

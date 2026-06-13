@@ -333,6 +333,38 @@ for body, sb in [("sun", swe.SUN), ("moon", swe.MOON), ("mars", swe.MARS)]:
             worst = max(worst, min(d, 36 - d))
 report("gauquelin sectors", worst, unit=" sec.", n=ng)
 
+# ---- eclipses ---------------------------------------------------------------
+from astroengine import eclipses as EC
+
+jd0e, jd1e = julian_day(2000, 1, 1), julian_day(2020, 1, 1)
+le = EC.lunar_eclipses(eng, jd0e, jd1e)
+ses = []
+t = jd0e - 5
+while True:
+    ret, tret = swe.lun_eclipse_when(t, FLG, 0)
+    if tret[0] > jd1e:
+        break
+    ses.append((tret[0], {4: "total", 16: "partial", 64: "penumbral"}[ret & 84]))
+    t = tret[0] + 20
+bad = sum(1 for o, s in zip(le, ses) if o["type"] != s[1])
+wt = max(abs(o["t_max"] - s[0]) * 86400 for o, s in zip(le, ses)) if le else 1e9
+report("lunar eclipses (type+max)", wt if len(le) == len(ses) and not bad else 1e9,
+       unit=" s", n=len(le))
+se2 = []
+t = jd0e - 5
+while True:
+    ret, tret = swe.sol_eclipse_when_glob(t, FLG, 0)
+    if tret[0] > jd1e:
+        break
+    se2.append((tret[0], "total" if ret & 4 else "annular" if ret & 8 else
+                "hybrid" if ret & 32 else "partial"))
+    t = tret[0] + 25
+solar = EC.solar_eclipses(eng, jd0e, jd1e)
+bad = sum(1 for o, s in zip(solar, se2) if o["type"] != s[1])
+wt = max(abs(o["t_max"] - s[0]) * 86400 for o, s in zip(solar, se2)) if solar else 1e9
+report("solar eclipses (type+max)", wt if len(solar) == len(se2) and not bad else 1e9,
+       unit=" s", n=len(solar))
+
 print()
 # az/alt and pheno phase angle carry ΔT-model and sun-moon-distance noise;
 # they get wider tolerances than positions.
@@ -341,7 +373,8 @@ TOL = {"az/alt (mars)": 30.0, "pheno phase angle": 300.0,
 TOL_SEC = {"gauquelin sectors": 0.001}
 TOL_S = {"sun rise/set/transit": 1.0, "moon rise/set/transit": 2.0,
          "mars rise/set/transit": 1.0, "crossings (sun+moon)": 10.0,
-         "lunar phases": 10.0, "stations": 180.0}
+         "lunar phases": 10.0, "stations": 180.0,
+         "lunar eclipses (type+max)": 15.0, "solar eclipses (type+max)": 15.0}
 fails = [r for r in rows if (r[2] == '"' and r[1] > TOL.get(r[0], 5.0))
          or (r[2] == " s" and r[1] > TOL_S.get(r[0], 10.0))
          or (r[2] == " sec." and r[1] > TOL_SEC.get(r[0], 0.001))

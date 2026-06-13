@@ -13,6 +13,7 @@ import {
 import { Engine, BODIES, Body } from "../src/chart.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
+import { lunarEclipses, solarEclipses } from "../src/eclipses.js";
 import * as H from "../src/houses.js";
 import { loadNodeData } from "../src/node-loader.js";
 
@@ -256,6 +257,40 @@ for (const g of G.houses) {
     g.gauquelin.sun_tampa, 1e-6);
   expect("gauquelin.moon", gauquelinSector(eng, "moon", jd0 + 0.6, -33.87, 151.21)!,
     g.gauquelin.moon_sydney, 1e-6);
+  {
+    const le = lunarEclipses(eng, jd0, jd0 + 366);
+    const ge = g.lunar_eclipses_1y;
+    checks++;
+    if (le.length !== ge.length) {
+      failures++;
+      console.error(`FAIL lunar eclipse count ${le.length} vs ${ge.length}`);
+    } else {
+      le.forEach((e, i) => {
+        expect(`lec[${i}].t_max`, e.tMax, ge[i].t_max, 1e-8);
+        expect(`lec[${i}].mag_u`, e.magUmbral, ge[i].mag_umbral, 1e-9);
+        checks++;
+        if (e.type !== ge[i].type) { failures++; console.error(`FAIL lec[${i}].type`); }
+        if (ge[i].partial_begin !== null) {
+          expect(`lec[${i}].pb`, e.partialBegin!, ge[i].partial_begin, 1e-8);
+        }
+      });
+    }
+    const se = solarEclipses(eng, jd0, jd0 + 366);
+    const gs = g.solar_eclipses_1y;
+    checks++;
+    if (se.length !== gs.length) {
+      failures++;
+      console.error(`FAIL solar eclipse count ${se.length} vs ${gs.length}`);
+    } else {
+      se.forEach((e, i) => {
+        expect(`sec[${i}].t_max`, e.tMax, gs[i].t_max, 1e-8);
+        expect(`sec[${i}].gamma`, e.gamma, gs[i].gamma, 1e-9);
+        expect(`sec[${i}].begin`, e.begin, gs[i].begin, 1e-8);
+        checks++;
+        if (e.type !== gs[i].type) { failures++; console.error(`FAIL sec[${i}].type`); }
+      });
+    }
+  }
   for (const [b, want] of Object.entries({ ...g.asteroids, ...g.uranians }) as Array<[string, any]>) {
     const p = eng.position(b, jd0);
     expectAngleDeg(`ast.${b}.lon`, p.lon, want.lon, TOL);

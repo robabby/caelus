@@ -23,7 +23,7 @@ retrograde flags. ΔT from IERS 1955–2025 plus Espenak–Meeus polynomials.
 Placidus, Porphyry, Equal, and Whole Sign houses with an explicit polar
 fallback. Major aspects and transit search. Validated at ≤1″ vs Swiss
 Ephemeris 2.10 for Sun–Saturn and ≤2.5″ for the precise Moon tier;
-`accuracy.json` carries the per-body figures, and the suite holds 3,201
+`accuracy.json` carries the per-body figures, and the suite holds 3,218
 conformance checks.
 
 Swiss Ephemeris agrees with JPL to about 0.001″. Caelus does not chase
@@ -66,8 +66,7 @@ Uranian bodies shipped 2026-06-12
 (`fit_uranian.py`: Kepler element pack, ≤2.3″ geocentric). Fixed stars
 shipped 2026-06-13 (318-star HYG catalog, ≤0.6″; unlocks the
 star-anchored ayanamsas `galcent_0sag` and `true_citra`) along with
-Gauquelin sectors (SE method 3, exact). Tier 2 is closed; Tier 3
-(eclipses) is next.
+Gauquelin sectors (SE method 3, exact). Tier 2 is closed.
 
 The Chiron pattern (`python/fit_chiron.py`: JPL Horizons vectors →
 Chebyshev fit → ~10 KB JSON) generalizes to each of these.
@@ -86,6 +85,12 @@ lazy data chunks like the precise Moon tier, so the embedded core keeps
 its ~85 KB figure.
 
 ## Tier 3: eclipses
+
+**Status (2026-06-13): shipped** — global circumstances (search, type,
+gamma, magnitudes, contacts): types match Swiss Ephemeris exactly over
+1990–2030 (92 lunar + 89 solar), maxima ≤9 s, lunar magnitudes ≤0.0013
+via Danjon's parallax enlargement recovered empirically. Ground paths
+and local circumstances (`sol_eclipse_where`/`_loc`) remain open.
 
 Solar and lunar eclipse search (when, where, how) via Besselian elements
 from Meeus and the Explanatory Supplement. No new data. With a 2.5″ Moon,
@@ -134,7 +139,8 @@ recorded as non-goals:
 2. ~~v0.4: Tier 2~~ (0.4.0 shipped asteroids, Uranians, true Lilith,
    event search; fixed stars, star-anchored ayanamsas, and Gauquelin
    sectors landed 2026-06-13 and close the tier).
-3. v0.5: Tier 3 (eclipses).
+3. ~~v0.5: Tier 3~~ (eclipse search shipped 2026-06-13; local
+   circumstances/ground paths remain open).
 
 Every item inherits the validation chain: Python reference first, golden
 fixtures, then the TS port. Swiss Ephemeris remains the oracle, never the

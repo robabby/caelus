@@ -20,6 +20,7 @@ import { realpathSync } from "node:fs";
 import {
   Engine, BODIES, Body, julianDay, mod,
   riseSet, crossings, lunarPhases, stations, RiseKind,
+  lunarEclipses, solarEclipses,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -162,7 +163,8 @@ export const skyEventsOut = z.object({
   end: z.string(),
   events: z.array(z.object({
     t: z.string(),
-    kind: z.enum(["rise", "set", "mtransit", "itransit", "phase", "station", "crossing"]),
+    kind: z.enum(["rise", "set", "mtransit", "itransit", "phase", "station",
+      "crossing", "solar_eclipse", "lunar_eclipse"]),
     detail: z.string().optional(),
   })),
 });
@@ -384,11 +386,12 @@ export function buildServer(): McpServer {
 
   server.registerTool("sky_events", {
     description:
-      "Sky events in a UTC date range: rise/set/meridian transits (need lat+lon+body), lunar phases (new/quarters/full), stations (body turns retrograde/direct; needs body), zodiac degree crossings (needs body + target_lon). Times to the second vs Swiss Ephemeris (stations to ~1 min: ill-conditioned by nature). Range <= 370 days.",
+      "Sky events in a UTC date range: rise/set/meridian transits (need lat+lon+body), lunar phases (new/quarters/full), solar and lunar eclipses (global circumstances: type, magnitude, gamma), stations (body turns retrograde/direct; needs body), zodiac degree crossings (needs body + target_lon). Times to the second vs Swiss Ephemeris (stations to ~1 min: ill-conditioned by nature). Range <= 370 days.",
     inputSchema: {
       start: z.string().describe("UTC ISO start date (convert from local first)"),
       end: z.string().describe("UTC ISO end date; range <= 370 days"),
-      kinds: z.array(z.enum(["rise", "set", "mtransit", "itransit", "phase", "station", "crossing"]))
+      kinds: z.array(z.enum(["rise", "set", "mtransit", "itransit", "phase",
+        "station", "crossing", "solar_eclipse", "lunar_eclipse"]))
         .min(1).describe("Event kinds to include"),
       body: z.enum(BODIES as unknown as [string, ...string[]]).optional()
         .describe("Required for rise/set/transit/station/crossing"),
@@ -430,6 +433,18 @@ export function buildServer(): McpServer {
       if (body === undefined) throw new Error("station needs body");
       for (const [t, dir] of stations(engine, body as Body, jd0, jd1)) {
         events.push({ t: iso(t), kind: "station", detail: dir });
+      }
+    }
+    if (kinds.includes("lunar_eclipse")) {
+      for (const e of lunarEclipses(engine, jd0, jd1)) {
+        events.push({ t: iso(e.tMax), kind: "lunar_eclipse",
+          detail: `${e.type}, mag ${e.magUmbral > 0 ? e.magUmbral.toFixed(2) : e.magPenumbral.toFixed(2) + " penumbral"}` });
+      }
+    }
+    if (kinds.includes("solar_eclipse")) {
+      for (const e of solarEclipses(engine, jd0, jd1)) {
+        events.push({ t: iso(e.tMax), kind: "solar_eclipse",
+          detail: `${e.type}, gamma ${e.gamma.toFixed(2)}` });
       }
     }
     if (kinds.includes("crossing")) {
