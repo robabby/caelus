@@ -169,7 +169,7 @@ const chart = engine.chart(/* t.utc fields */);
         Ephemeris 2.10 at hundreds of random instants across 1900–2099:
         planets ≤1″, precise-tier Moon ≤2.5″, angles and Placidus cusps ≤3.2″.
         The TypeScript engine must match the reference across 3,218 golden
-        fixtures; worst recorded deviation 1.64 nano-arcseconds. Per-body
+        fixtures; worst recorded deviation 0.41 nano-arcseconds. Per-body
         deltas: <A href="/validation">Validation</A>. Bugs the suite caught:{" "}
         <A href="/notes">Build Notes</A>.
       </P>

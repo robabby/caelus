@@ -26,10 +26,12 @@ let checks = 0;
 let failures = 0;
 let worst = { what: "", diff: 0 };
 
+// `worst` tracks ANGULAR deviations only (expectAngleDeg): mixing JD,
+// AU, magnitude, and second-valued diffs into one headline number would
+// make "nano-arcseconds" a lie of units.
 function expect(what: string, got: number, want: number, tol: number) {
   checks++;
   const diff = Math.abs(got - want);
-  if (diff > worst.diff) worst = { what, diff };
   if (diff > tol) {
     failures++;
     if (failures <= 10) {

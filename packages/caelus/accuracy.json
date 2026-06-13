@@ -107,9 +107,9 @@
     },
     {
       "name": "Sidereal longitudes",
-      "max": "0.1",
+      "max": "—",
       "rms": "—",
-      "note": "ayanamsa model vs SE ≤0.30″ at the 1900/2099 edges (IAU 1976 vs Vondrák precession); Sun worst-case 0.08″ at 120 sampled epochs"
+      "note": "ayanamsa model vs SE ≤0.005″ (Vondrák 2011, same model both sides); sidereal longitudes inherit each body's tropical bound"
     },
     {
       "name": "RA / Dec",
@@ -119,7 +119,7 @@
     },
     {
       "name": "Topocentric Moon",
-      "max": "2.7",
+      "max": "2.5",
       "rms": "—",
       "note": "parallax model adds ≤0.1″ over the geocentric bound"
     },
@@ -179,15 +179,15 @@
     },
     {
       "name": "Fixed stars (318-star catalog)",
-      "max": "0.6",
+      "max": "0.3",
       "rms": "—",
-      "note": "HYG-derived catalog (ICRS J2000 + proper motions, full 3D space motion); vs swe_fixstar fed the same rows. Floor is the IAU 1976 vs Vondrák precession difference"
+      "note": "HYG-derived catalog (ICRS J2000 + proper motions, full 3D space motion, Vondrák 2011 precession); vs swe_fixstar fed the same rows"
     },
     {
       "name": "Star-anchored ayanamsas",
-      "max": "0.2",
+      "max": "0.5",
       "rms": "—",
-      "note": "galcent_0sag and true_citra computed from the apparent star (Galactic Center / Spica); sidereal Sun vs SE ≤0.19″"
+      "note": "galcent_0sag and true_citra computed from the apparent star; bound tracks the fixed-star chain (≤0.3″) plus the body's tropical accuracy"
     },
     {
       "name": "Gauquelin sectors",
@@ -257,11 +257,11 @@
     },
     {
       "label": "Fixed stars",
-      "bound": "≤ 0.6″"
+      "bound": "≤ 0.3″"
     },
     {
       "label": "Sidereal (7 ayanamsas)",
-      "bound": "≤ 0.3″ added"
+      "bound": "≤ 0.005″ added"
     },
     {
       "label": "Eclipses",

@@ -301,32 +301,17 @@ def moon_apparent_precise(jde):
 
 
 def _ecl_j2000_to_ecl_date(v, jde):
-    """Rotate a vector from ecliptic-J2000 to ecliptic-of-date frame:
-    ecl J2000 -> eq J2000 -> precess (IAU 1976: zeta, z, theta) -> ecl of date."""
+    """Rotate a vector from the ecliptic-J2000 data frame (obliquity
+    84381.448 arcsec, as used by Horizons/Meeus) to the mean ecliptic of
+    date (Vondrak 2011)."""
     x, y, z = v
-    e0 = 84381.448 * ARCSEC  # mean obliquity J2000
-    # ecliptic -> equatorial (rotate about x by -e0)
-    y, z = y * math.cos(e0) - z * math.sin(e0), y * math.sin(e0) + z * math.cos(e0)
-    T = (jde - J2000) / 36525.0
-    zeta = (2306.2181 * T + 0.30188 * T * T + 0.017998 * T**3) * ARCSEC
-    zz = (2306.2181 * T + 1.09468 * T * T + 0.018203 * T**3) * ARCSEC
-    th = (2004.3109 * T - 0.42665 * T * T - 0.041833 * T**3) * ARCSEC
+    s, c = math.sin(_EPS0_FRAME), math.cos(_EPS0_FRAME)
+    e = (x, y * c - z * s, y * s + z * c)  # -> J2000 equatorial
+    xt, yt, zt = _ltp_ecl_matrix(jde)
+    return (sum(xt[i] * e[i] for i in range(3)),
+            sum(yt[i] * e[i] for i in range(3)),
+            sum(zt[i] * e[i] for i in range(3)))
 
-    def rz(a, x, y, z):
-        c, s = math.cos(a), math.sin(a)
-        return c * x + s * y, -s * x + c * y, z
-
-    def ry(a, x, y, z):
-        c, s = math.cos(a), math.sin(a)
-        return c * x - s * z, y, s * x + c * z
-
-    x, y, z = rz(-zeta, x, y, z)
-    x, y, z = ry(th, x, y, z)
-    x, y, z = rz(-zz, x, y, z)
-    # equatorial of date -> ecliptic of date (mean obliquity)
-    e = mean_obliquity(jde)
-    y, z = y * math.cos(e) + z * math.sin(e), -y * math.sin(e) + z * math.cos(e)
-    return x, y, z
 
 
 def true_node_precise(jde):
@@ -508,9 +493,8 @@ def equatorial(lon, lat, eps):
 
 # Mean ayanamsa at J2000.0 (degrees) per mode. Values are the standard
 # epoch anchors (matched to Swiss Ephemeris 2.10 to 1e-9 deg); propagation
-# uses our IAU 1976 ecliptic precession. Agreement with Swiss Ephemeris
-# over 1900-2099 is <=0.30 arcsec (precession-model difference: SE uses
-# Vondrak 2011).
+# uses Vondrak 2011 ecliptic precession, the same model Swiss Ephemeris
+# uses: agreement over 1900-2099 is <=0.005 arcsec.
 AYANAMSA_J2000 = {
     "lahiri": 23.857092325,
     "fagan_bradley": 24.740299966,
@@ -660,20 +644,108 @@ def topocentric_ecl(lon, lat, dist_au, lst, obs_lat, alt_m, eps):
     return lon2, lat2, math.sqrt(tx * tx + ty * ty + tz * tz)
 
 
+# ------------------------------------------------- Vondrak 2011 precession
+# Long-term precession of the ecliptic and equator (Vondrak, Capitaine &
+# Wallace 2011, A&A 534 A22; coefficient tables as carried by ERFA under
+# BSD-3). Replaces the IAU 1976 angles: the ~0.3 arcsec range-edge residual
+# vs Swiss Ephemeris (which uses the same model) collapses.
+_PQ_POL = ((5851.607687, -0.1189000, -0.00028913, 0.000000101),
+           (-1600.886300, 1.1689818, -0.00000020, -0.000000437))
+_PQ_PER = ((708.15, -5486.751211, -684.661560, 667.666730, -5523.863691),
+           (2309.00, -17.127623, 2446.283880, -2354.886252, -549.747450),
+           (1620.00, -617.517403, 399.671049, -428.152441, -310.998056),
+           (492.20, 413.442940, -356.652376, 376.202861, 421.535876),
+           (1183.00, 78.614193, -186.387003, 184.778874, -36.776172),
+           (622.00, -180.732815, -316.800070, 335.321713, -145.278396),
+           (882.00, -87.676083, 198.296701, -185.138669, -34.744450),
+           (547.00, 46.140315, 101.135679, -120.972830, 22.885731))
+_XY_POL = ((5453.282155, 0.4252841, -0.00037173, -0.000000152),
+           (-73750.930350, -0.7675452, -0.00018725, 0.000000231))
+_XY_PER = ((256.75, -819.940624, 75004.344875, 81491.287984, 1558.515853),
+           (708.15, -8444.676815, 624.033993, 787.163481, 7774.939698),
+           (274.20, 2600.009459, 1251.136893, 1251.296102, -2219.534038),
+           (241.45, 2755.175630, -1102.212834, -1257.950837, -2523.969396),
+           (2309.00, -167.659835, -2660.664980, -2966.799730, 247.850422),
+           (492.20, 871.855056, 699.291817, 639.744522, -846.485643),
+           (396.10, 44.769698, 153.167220, 131.600209, -1393.124055),
+           (288.90, -512.313065, -950.865637, -445.040117, 368.526116),
+           (231.10, -819.415595, 499.754645, 584.522874, 749.045012),
+           (1610.00, -538.071099, -145.188210, -89.756563, 444.704518),
+           (620.00, -189.793622, 558.116553, 524.429630, 235.934465),
+           (157.87, -402.922932, -23.923029, -13.549067, 374.049623),
+           (220.30, 179.516345, -165.405086, -210.157124, -171.330180),
+           (1200.00, -9.814756, 9.344131, -44.919798, -22.899655))
+_EPS0_V = 84381.406 * ARCSEC   # J2000 obliquity used by the Vondrak model
+_EPS0_FRAME = 84381.448 * ARCSEC  # obliquity defining our ecliptic-J2000 data
+
+
+def _ltp_pecl(jde):
+    """Unit vector of the ecliptic pole, J2000 equatorial frame."""
+    t = (jde - J2000) / 36525.0
+    p = q = 0.0
+    w = 2.0 * math.pi * t
+    for per, c1, c2, s1, s2 in _PQ_PER:
+        a = w / per
+        ca, sa = math.cos(a), math.sin(a)
+        p += ca * c1 + sa * s1
+        q += ca * c2 + sa * s2
+    tn = 1.0
+    for i in range(4):
+        p += _PQ_POL[0][i] * tn
+        q += _PQ_POL[1][i] * tn
+        tn *= t
+    p *= ARCSEC
+    q *= ARCSEC
+    z = math.sqrt(max(1.0 - p * p - q * q, 0.0))
+    s, c = math.sin(_EPS0_V), math.cos(_EPS0_V)
+    return (p, -q * c - z * s, -q * s + z * c)
+
+
+def _ltp_pequ(jde):
+    """Unit vector of the equator pole, J2000 equatorial frame."""
+    t = (jde - J2000) / 36525.0
+    x = y = 0.0
+    w = 2.0 * math.pi * t
+    for per, c1, c2, s1, s2 in _XY_PER:
+        a = w / per
+        ca, sa = math.cos(a), math.sin(a)
+        x += ca * c1 + sa * s1
+        y += ca * c2 + sa * s2
+    tn = 1.0
+    for i in range(4):
+        x += _XY_POL[0][i] * tn
+        y += _XY_POL[1][i] * tn
+        tn *= t
+    x *= ARCSEC
+    y *= ARCSEC
+    return (x, y, math.sqrt(max(1.0 - x * x - y * y, 0.0)))
+
+
+def _ltp_ecl_matrix(jde):
+    """Rows of the rotation J2000-equatorial -> mean ecliptic/equinox of
+    date (ERFA eraLtecm): x = equinox, z = ecliptic pole, y = z cross x."""
+    p = _ltp_pequ(jde)
+    z = _ltp_pecl(jde)
+    wx = (p[1] * z[2] - p[2] * z[1], p[2] * z[0] - p[0] * z[2],
+          p[0] * z[1] - p[1] * z[0])
+    n = math.sqrt(wx[0] ** 2 + wx[1] ** 2 + wx[2] ** 2)
+    x = (wx[0] / n, wx[1] / n, wx[2] / n)
+    y = (z[1] * x[2] - z[2] * x[1], z[2] * x[0] - z[0] * x[2],
+         z[0] * x[1] - z[1] * x[0])
+    return x, y, z
+
+
 def _precess_ecliptic(lon, lat, jde_from, jde_to):
-    """Precession of ecliptic coordinates (Meeus ch.21, eq 21.7)."""
-    T = (jde_from - J2000) / 36525.0
-    t = (jde_to - jde_from) / 36525.0
-    eta = ((47.0029 - 0.06603 * T + 0.000598 * T * T) * t
-           + (-0.03302 + 0.000598 * T) * t * t + 0.000060 * t**3) * ARCSEC
-    Pi = ((174.876384 * 3600 + 3289.4789 * T + 0.60622 * T * T) * ARCSEC
-          - ((869.8089 + 0.50491 * T) * t - 0.03536 * t * t) * ARCSEC)
-    p = ((5029.0966 + 2.22226 * T - 0.000042 * T * T) * t
-         + (1.11113 - 0.000042 * T) * t * t - 0.000006 * t**3) * ARCSEC
-    se, ce = math.sin(eta), math.cos(eta)
-    A = ce * math.cos(lat) * math.sin(Pi - lon) - se * math.sin(lat)
-    B = math.cos(lat) * math.cos(Pi - lon)
-    C = ce * math.sin(lat) + se * math.cos(lat) * math.sin(Pi - lon)
-    lon2 = (p + Pi - math.atan2(A, B)) % (2 * math.pi)
-    lat2 = math.asin(C)
-    return lon2, lat2
+    """Precession of ecliptic coordinates between epochs (Vondrak 2011):
+    ecliptic-of-from -> J2000 equatorial -> ecliptic-of-to."""
+    cb = math.cos(lat)
+    v = (cb * math.cos(lon), cb * math.sin(lon), math.sin(lat))
+    xf, yf, zf = _ltp_ecl_matrix(jde_from)
+    # transpose multiply: ecliptic-of-from -> J2000 equatorial
+    e = tuple(xf[i] * v[0] + yf[i] * v[1] + zf[i] * v[2] for i in range(3))
+    xt, yt, zt = _ltp_ecl_matrix(jde_to)
+    u = (sum(xt[i] * e[i] for i in range(3)),
+         sum(yt[i] * e[i] for i in range(3)),
+         sum(zt[i] * e[i] for i in range(3)))
+    return (math.atan2(u[1], u[0]) % (2 * math.pi),
+            math.asin(max(-1.0, min(1.0, u[2]))))

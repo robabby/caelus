@@ -3,11 +3,10 @@
  * catalog (data/fixed_stars.json; ICRS J2000 with proper motions).
  *
  * Chain: full 3D space motion (proper motion + radial velocity at the
- * parallax distance) -> ICRS equatorial -> ecliptic J2000 -> IAU 1976
+ * parallax distance) -> ICRS equatorial -> ecliptic J2000 -> Vondrak 2011
  * precession to date -> annual aberration (classic elliptic form, as for
  * Pluto/Chiron) -> nutation. Validated against swe_fixstar fed the same
- * catalog rows: <=0.6 arcsec over 1900-2099 (the floor is the IAU 1976 vs
- * Vondrak precession difference, shared with the rest of the engine).
+ * catalog rows: <=0.3 arcsec over 1900-2099.
  */
 import {
   DEG, ARCSEC, J2000, mod, nutation, precessEcliptic, vsopHeliocentric,

@@ -68,7 +68,7 @@ export default function Notes() {
       <H2>Golden Suite</H2>
       <P>
         Swiss Ephemeris checks the Python reference; 3,218 fixtures pin the TypeScript
-        port (worst delta 1.64 nano-arcseconds). CI runs both on every commit. The
+        port (worst delta 0.41 nano-arcseconds). CI runs both on every commit. The
         TS port was mostly agent-written with one gate: keep the suite green.
       </P>
 

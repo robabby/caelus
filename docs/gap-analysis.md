@@ -64,7 +64,7 @@ we could verify against; revisit with a better source. Asteroids shipped 2026-06
 (`python/fit_smallbody.py`), wired through the Chiron pipeline.
 Uranian bodies shipped 2026-06-12
 (`fit_uranian.py`: Kepler element pack, ≤2.3″ geocentric). Fixed stars
-shipped 2026-06-13 (318-star HYG catalog, ≤0.6″; unlocks the
+shipped 2026-06-13 (318-star HYG catalog, ≤0.3″ under Vondrák; unlocks the
 star-anchored ayanamsas `galcent_0sag` and `true_citra`) along with
 Gauquelin sectors (SE method 3, exact). Tier 2 is closed.
 

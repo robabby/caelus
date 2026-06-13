@@ -409,7 +409,7 @@
           "detail": "total, gamma 0.90"
         },
         {
-          "t": "2026-08-28T04:12:54Z",
+          "t": "2026-08-28T04:12:55Z",
           "kind": "lunar_eclipse",
           "detail": "partial, mag 0.93"
         }
@@ -957,21 +957,21 @@
           "t": "moon",
           "n": "uranus",
           "aspect": "trine",
-          "orb": 1.38,
+          "orb": 1.39,
           "applying": false
         },
         {
           "t": "moon",
           "n": "mean_node",
           "aspect": "square",
-          "orb": 2.99,
+          "orb": 3,
           "applying": false
         },
         {
           "t": "moon",
           "n": "true_node",
           "aspect": "square",
-          "orb": 1.17,
+          "orb": 1.18,
           "applying": false
         },
         {

@@ -184,49 +184,147 @@ function fk5Correction(L: number, B: number, jde: number): [number, number] {
   return [L + dL, B + dB];
 }
 
-/** Precession of ecliptic coordinates (Meeus 21.7). */
+// ------------------------------------------------- Vondrak 2011 precession
+// Long-term precession of the ecliptic and equator (Vondrak, Capitaine &
+// Wallace 2011, A&A 534 A22; coefficient tables as carried by ERFA under
+// BSD-3). Replaces the IAU 1976 angles.
+const PQ_POL = [
+  [5851.607687, -0.1189, -0.00028913, 0.000000101],
+  [-1600.8863, 1.1689818, -0.0000002, -0.000000437],
+];
+const PQ_PER = [
+  [708.15, -5486.751211, -684.66156, 667.66673, -5523.863691],
+  [2309.0, -17.127623, 2446.28388, -2354.886252, -549.74745],
+  [1620.0, -617.517403, 399.671049, -428.152441, -310.998056],
+  [492.2, 413.44294, -356.652376, 376.202861, 421.535876],
+  [1183.0, 78.614193, -186.387003, 184.778874, -36.776172],
+  [622.0, -180.732815, -316.80007, 335.321713, -145.278396],
+  [882.0, -87.676083, 198.296701, -185.138669, -34.74445],
+  [547.0, 46.140315, 101.135679, -120.97283, 22.885731],
+];
+const XY_POL = [
+  [5453.282155, 0.4252841, -0.00037173, -0.000000152],
+  [-73750.93035, -0.7675452, -0.00018725, 0.000000231],
+];
+const XY_PER = [
+  [256.75, -819.940624, 75004.344875, 81491.287984, 1558.515853],
+  [708.15, -8444.676815, 624.033993, 787.163481, 7774.939698],
+  [274.2, 2600.009459, 1251.136893, 1251.296102, -2219.534038],
+  [241.45, 2755.17563, -1102.212834, -1257.950837, -2523.969396],
+  [2309.0, -167.659835, -2660.66498, -2966.79973, 247.850422],
+  [492.2, 871.855056, 699.291817, 639.744522, -846.485643],
+  [396.1, 44.769698, 153.16722, 131.600209, -1393.124055],
+  [288.9, -512.313065, -950.865637, -445.040117, 368.526116],
+  [231.1, -819.415595, 499.754645, 584.522874, 749.045012],
+  [1610.0, -538.071099, -145.18821, -89.756563, 444.704518],
+  [620.0, -189.793622, 558.116553, 524.42963, 235.934465],
+  [157.87, -402.922932, -23.923029, -13.549067, 374.049623],
+  [220.3, 179.516345, -165.405086, -210.157124, -171.33018],
+  [1200.0, -9.814756, 9.344131, -44.919798, -22.899655],
+];
+const EPS0_V = 84381.406 * ARCSEC;     // J2000 obliquity of the Vondrak model
+const EPS0_FRAME = 84381.448 * ARCSEC; // obliquity defining our ecliptic-J2000 data
+
+function ltpPecl(jde: number): [number, number, number] {
+  const t = (jde - J2000) / 36525.0;
+  let p = 0.0;
+  let q = 0.0;
+  const w = 2.0 * Math.PI * t;
+  for (const [per, c1, c2, s1, s2] of PQ_PER) {
+    const a = w / per;
+    const ca = Math.cos(a); const sa = Math.sin(a);
+    p += ca * c1 + sa * s1;
+    q += ca * c2 + sa * s2;
+  }
+  let tn = 1.0;
+  for (let i = 0; i < 4; i++) {
+    p += PQ_POL[0][i] * tn;
+    q += PQ_POL[1][i] * tn;
+    tn *= t;
+  }
+  p *= ARCSEC;
+  q *= ARCSEC;
+  const z = Math.sqrt(Math.max(1.0 - p * p - q * q, 0.0));
+  const s = Math.sin(EPS0_V); const c = Math.cos(EPS0_V);
+  return [p, -q * c - z * s, -q * s + z * c];
+}
+
+function ltpPequ(jde: number): [number, number, number] {
+  const t = (jde - J2000) / 36525.0;
+  let x = 0.0;
+  let y = 0.0;
+  const w = 2.0 * Math.PI * t;
+  for (const [per, c1, c2, s1, s2] of XY_PER) {
+    const a = w / per;
+    const ca = Math.cos(a); const sa = Math.sin(a);
+    x += ca * c1 + sa * s1;
+    y += ca * c2 + sa * s2;
+  }
+  let tn = 1.0;
+  for (let i = 0; i < 4; i++) {
+    x += XY_POL[0][i] * tn;
+    y += XY_POL[1][i] * tn;
+    tn *= t;
+  }
+  x *= ARCSEC;
+  y *= ARCSEC;
+  return [x, y, Math.sqrt(Math.max(1.0 - x * x - y * y, 0.0))];
+}
+
+type V3 = [number, number, number];
+
+/** Rows of the rotation J2000-equatorial -> mean ecliptic/equinox of date
+ *  (ERFA eraLtecm): x = equinox, z = ecliptic pole, y = z cross x. */
+function ltpEclMatrix(jde: number): [V3, V3, V3] {
+  const p = ltpPequ(jde);
+  const z = ltpPecl(jde);
+  const wx: V3 = [
+    p[1] * z[2] - p[2] * z[1], p[2] * z[0] - p[0] * z[2], p[0] * z[1] - p[1] * z[0],
+  ];
+  const n = Math.sqrt(wx[0] ** 2 + wx[1] ** 2 + wx[2] ** 2);
+  const x: V3 = [wx[0] / n, wx[1] / n, wx[2] / n];
+  const y: V3 = [
+    z[1] * x[2] - z[2] * x[1], z[2] * x[0] - z[0] * x[2], z[0] * x[1] - z[1] * x[0],
+  ];
+  return [x, y, z];
+}
+
+/** Precession of ecliptic coordinates between epochs (Vondrak 2011):
+ *  ecliptic-of-from -> J2000 equatorial -> ecliptic-of-to. */
 export function precessEcliptic(
   lon: number, lat: number, jdeFrom: number, jdeTo: number,
 ): [number, number] {
-  const T = (jdeFrom - J2000) / 36525.0;
-  const t = (jdeTo - jdeFrom) / 36525.0;
-  const eta = ((47.0029 - 0.06603 * T + 0.000598 * T * T) * t
-    + (-0.03302 + 0.000598 * T) * t * t + 0.00006 * t ** 3) * ARCSEC;
-  const Pi = (174.876384 * 3600 + 3289.4789 * T + 0.60622 * T * T) * ARCSEC
-    - ((869.8089 + 0.50491 * T) * t - 0.03536 * t * t) * ARCSEC;
-  const p = ((5029.0966 + 2.22226 * T - 0.000042 * T * T) * t
-    + (1.11113 - 0.000042 * T) * t * t - 0.000006 * t ** 3) * ARCSEC;
-  const se = Math.sin(eta);
-  const ce = Math.cos(eta);
-  const A = ce * Math.cos(lat) * Math.sin(Pi - lon) - se * Math.sin(lat);
-  const Bv = Math.cos(lat) * Math.cos(Pi - lon);
-  const C = ce * Math.sin(lat) + se * Math.cos(lat) * Math.sin(Pi - lon);
-  return [mod(p + Pi - Math.atan2(A, Bv), TWO_PI), Math.asin(C)];
+  const cb = Math.cos(lat);
+  const v: V3 = [cb * Math.cos(lon), cb * Math.sin(lon), Math.sin(lat)];
+  const [xf, yf, zf] = ltpEclMatrix(jdeFrom);
+  const e: V3 = [0, 1, 2].map(
+    (i) => xf[i] * v[0] + yf[i] * v[1] + zf[i] * v[2],
+  ) as V3;
+  const [xt, yt, zt] = ltpEclMatrix(jdeTo);
+  const u: V3 = [
+    xt[0] * e[0] + xt[1] * e[1] + xt[2] * e[2],
+    yt[0] * e[0] + yt[1] * e[1] + yt[2] * e[2],
+    zt[0] * e[0] + zt[1] * e[1] + zt[2] * e[2],
+  ];
+  return [mod(Math.atan2(u[1], u[0]), TWO_PI),
+    Math.asin(Math.max(-1, Math.min(1, u[2])))];
 }
 
-/** Rotate a vector from ecliptic-J2000 to ecliptic-of-date frame. */
+/** Rotate a vector from the ecliptic-J2000 data frame (obliquity 84381.448
+ *  arcsec, as used by Horizons/Meeus) to the mean ecliptic of date
+ *  (Vondrak 2011). */
 function eclJ2000ToEclDate(
   v: [number, number, number], jde: number,
 ): [number, number, number] {
-  let [x, y, z] = v;
-  const e0 = 84381.448 * ARCSEC;
-  [y, z] = [y * Math.cos(e0) - z * Math.sin(e0), y * Math.sin(e0) + z * Math.cos(e0)];
-  const T = (jde - J2000) / 36525.0;
-  const zeta = (2306.2181 * T + 0.30188 * T * T + 0.017998 * T ** 3) * ARCSEC;
-  const zz = (2306.2181 * T + 1.09468 * T * T + 0.018203 * T ** 3) * ARCSEC;
-  const th = (2004.3109 * T - 0.42665 * T * T - 0.041833 * T ** 3) * ARCSEC;
-  const rz = (a: number) => {
-    const c = Math.cos(a); const s = Math.sin(a);
-    [x, y] = [c * x + s * y, -s * x + c * y];
-  };
-  const ry = (a: number) => {
-    const c = Math.cos(a); const s = Math.sin(a);
-    [x, z] = [c * x - s * z, s * x + c * z];
-  };
-  rz(-zeta); ry(th); rz(-zz);
-  const e = meanObliquity(jde);
-  [y, z] = [y * Math.cos(e) + z * Math.sin(e), -y * Math.sin(e) + z * Math.cos(e)];
-  return [x, y, z];
+  const [x, y, z] = v;
+  const s = Math.sin(EPS0_FRAME); const c = Math.cos(EPS0_FRAME);
+  const e: V3 = [x, y * c - z * s, y * s + z * c];
+  const [xt, yt, zt] = ltpEclMatrix(jde);
+  return [
+    xt[0] * e[0] + xt[1] * e[1] + xt[2] * e[2],
+    yt[0] * e[0] + yt[1] * e[1] + yt[2] * e[2],
+    zt[0] * e[0] + zt[1] * e[1] + zt[2] * e[2],
+  ];
 }
 
 // ---------------------------------------------------------------- planets
@@ -469,9 +567,9 @@ export function equatorial(
 }
 
 /** Mean ayanamsa at J2000.0 (degrees) per mode. Standard epoch anchors
- *  (matched to Swiss Ephemeris 2.10 to 1e-9 deg); propagation uses IAU 1976
- *  ecliptic precession. Agreement with Swiss Ephemeris over 1900-2099 is
- *  <=0.30 arcsec (precession-model difference: SE uses Vondrak 2011). */
+ *  (matched to Swiss Ephemeris 2.10 to 1e-9 deg); propagation uses Vondrak
+ *  2011 ecliptic precession, the same model Swiss Ephemeris uses:
+ *  agreement over 1900-2099 is <=0.005 arcsec. */
 export const AYANAMSA_J2000: Record<string, number> = {
   lahiri: 23.857092325,
   fagan_bradley: 24.740299966,
