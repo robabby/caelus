@@ -37,6 +37,41 @@ No breaking changes to the 0.3.x surface; the conformance suite grew from
 - Chart tools unchanged in shape; optional bodies arrive through engine data
   on the Node loader path.
 
+## 0.4.0 — 2026-06-13
+
+Gap-analysis Tier 2 (minus fixed stars), plus deployment-boundary fixes
+from an external review. The suite grew from 3,087 to 3,177 checks; the
+engine computes 28 bodies.
+
+### Engine (`caelus`)
+
+- Event search (`events` module): rise/set/meridian transits (≤0.5 s vs
+  `swe_rise_trans`, polar no-event cases agree), zodiac crossings (≤4 s),
+  lunar phases (≤4 s), stations (≤1 min — ill-conditioned by nature).
+- New bodies, all on request via `ChartOptions.bodies`:
+  `true_lilith` (osculating apogee; ≤3′ vs SE's built-in ephemeris — the
+  quantity amplifies lunar-theory differences ~18x and implementations
+  disagree across software at that scale), the big-four asteroids +
+  Pholus (`ceres`, `pallas`, `juno`, `vesta`, `pholus`; JPL Horizons
+  Chebyshev fits 1850–2150, ≤1″, Node/lazy data tier), and the eight
+  Hamburg-school Uranian bodies (`cupido`…`poseidon`; oracle-fitted
+  constant-element Kepler orbits, ≤2.3″).
+- `loadNodeData` falls back per planet to the embedded VSOP tier against
+  the published tarball instead of throwing.
+
+### MCP server (`caelus-mcp`)
+
+- `sky_events` — the seventh tool: rise/set/transits, phases, stations,
+  crossings in a date range. Eclipses will extend it, not add a tool.
+
+### Corrections and deployment
+
+- True-node accuracy claim corrected on every surface: ≤1′ vs SE's
+  built-in ephemeris (≤1″ only vs full JPL DE431); now pinned by the
+  claims linter.
+- Live-deploy smoke test (`live-smoke` workflow) guards the production
+  API, including the date-parameter regression an external review found.
+
 ## 0.3.0 — 2026-06-12
 
 Swiss Ephemeris gap analysis Tier 1 (see `docs/gap-analysis.md`). No
