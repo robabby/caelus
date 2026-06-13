@@ -14,6 +14,7 @@ const files = [
   "apps/web/app/validation/page.tsx",
   "apps/web/app/methods/page.tsx",
   "apps/web/app/how-it-was-built/page.tsx",
+  "apps/web/app/features/page.tsx",
 ];
 
 const chunks = ["# Web prose extract (auto-generated for Vale)\n"];

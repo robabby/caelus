@@ -59,7 +59,8 @@ export default function Home() {
         You pass a date, UT time, latitude, and longitude; the engine returns a
         chart object for your app, API, or AI tool. Per-body accuracy is published,
         not asserted: <A href="/validation">Validation</A>. Coefficient sources:{" "}
-        <A href="/provenance">Provenance</A>.
+        <A href="/provenance">Provenance</A>. The full capability list is on{" "}
+        <A href="/features">Features</A>.
       </P>
 
       <H2>The packages</H2>

@@ -30,6 +30,7 @@ export type NavItem = { href: string; label: string };
 /** Primary navigation (home is reached through the wordmark). */
 export const NAV: NavItem[] = [
   { href: "/docs", label: "Docs" },
+  { href: "/features", label: "Features" },
   { href: "/playground", label: "Playground" },
   { href: "/validation", label: "Validation" },
   { href: "/provenance", label: "Provenance" },
