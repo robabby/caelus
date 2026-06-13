@@ -41,7 +41,8 @@ predicates, Python reference + TS port, suite-pinned); derived charts (returns,
 secondary progressions, solar arc, composite and Davison, harmonics, antiscia,
 declination aspects/parallels, out-of-bounds, dignities, sect); the turbo tier
 (`Turbo`: segmented Chebyshev longitude packs fit to the engine for bulk
-scans); conformance suite; MCP server (stdio) with golden payloads, resources
+scans); conformance suite; MCP server over stdio and hosted Streamable HTTP
+(`ephemengine.com/api/mcp`, stateless) with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
 prompt; JPL-direct validation tier.
 
@@ -53,8 +54,6 @@ header and footer, and SEO (sitemap, OpenGraph).
 
 ## Planned
 
-### Distribution & packaging
-- **MCP Streamable HTTP**: mount the server at `ephemengine.com/api/mcp`
-  (stdio already ships).
-- **Site links**: add MCP Streamable HTTP to the nav and footer when it ships
-  (npm, PyPI, and `caelus-starter` are already linked in the footer).
+Distribution is complete: the four npm packages, the `caelus-engine` PyPI
+package, and the MCP server (stdio plus the hosted Streamable HTTP endpoint)
+are all live and linked. New work is tracked in GitHub Issues.

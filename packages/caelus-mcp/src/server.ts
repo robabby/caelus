@@ -29,7 +29,16 @@ const require = createRequire(import.meta.url);
 const VERSION: string = require("caelus-mcp/package.json").version;
 const DATA_DIR = process.env.CAELUS_DATA
   ?? join(dirname(require.resolve("caelus/package.json")), "data");
-const engine = new Engine(loadNodeData(DATA_DIR, "embedded", "full"));
+
+// The stdio server builds its engine from the Node data packs (precise Moon,
+// fixed stars). Hosted transports -- e.g. the Streamable HTTP mount in
+// apps/web -- inject their own engine, typically the embedded tier, which
+// carries every body these seven tools use and touches no filesystem. So the
+// default stays lazy and loadNodeData never runs unless a caller wants it.
+let _defaultEngine: Engine | null = null;
+function defaultEngine(): Engine {
+  return (_defaultEngine ??= new Engine(loadNodeData(DATA_DIR, "embedded", "full")));
+}
 
 // ---------------------------------------------------------------- helpers
 const r2 = (x: number) => Math.round(x * 100) / 100;
@@ -94,6 +103,7 @@ function jdFromIso(iso: string): number {
 }
 
 function chartPayload(
+  engine: Engine,
   iso: string, lat: number, lon: number, hs: HouseSysT,
   zodiac: ZodiacT = "tropical",
 ) {
@@ -203,7 +213,7 @@ export const OUTPUT_SCHEMAS = {
 } as const;
 
 // ---------------------------------------------------------------- server
-export function buildServer(): McpServer {
+export function buildServer(engine: Engine = defaultEngine()): McpServer {
   const server = new McpServer({ name: "caelus", version: VERSION });
 
   server.registerTool("natal_chart", {
@@ -211,7 +221,7 @@ export function buildServer(): McpServer {
       "A person's birth chart. Requires their exact birth date+time and birthplace (all three: date, lat, lon). Use this — not current_sky — whenever the question is about someone's natal/birth chart. Returns 13 bodies (sun–pluto, chiron, nodes) with sign, house, retrograde, speed; ASC/MC; cusps; major aspects with orbs. Vs Swiss Ephemeris (1900–2099): Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤2.5″ (series valid 1885–2099), Chiron ≤1″, mean node ≤1″, true node ≤ 1′ vs SE's built-in ephemeris.",
     inputSchema: { ...birth, house_system: houseSys, zodiac: zodiacSchema },
   }, async ({ date, lat, lon, house_system, zodiac }) =>
-    text(chartPayload(date, lat, lon, house_system, zodiac)));
+    text(chartPayload(engine, date, lat, lon, house_system, zodiac)));
 
   server.registerTool("current_sky", {
     description:
@@ -224,7 +234,7 @@ export function buildServer(): McpServer {
       zodiac: zodiacSchema,
     },
   }, async ({ date, lat, lon, house_system, zodiac }) =>
-    text(chartPayload(date ?? new Date().toISOString(), lat, lon, house_system, zodiac)));
+    text(chartPayload(engine, date ?? new Date().toISOString(), lat, lon, house_system, zodiac)));
 
   server.registerTool("transits", {
     description:
@@ -237,7 +247,7 @@ export function buildServer(): McpServer {
       zodiac: zodiacSchema,
     },
   }, async ({ date, lat, lon, transit_date, orb, house_system, zodiac }) => {
-    const natal = chartPayload(date, lat, lon, house_system, zodiac);
+    const natal = chartPayload(engine, date, lat, lon, house_system, zodiac);
     const tIso = transit_date ?? new Date().toISOString();
     const jdT = jdFromIso(tIso);
     const ASP: Array<[string, number]> = [
@@ -281,8 +291,8 @@ export function buildServer(): McpServer {
       zodiac: zodiacSchema,
     },
   }, async ({ a, b, orb, zodiac }) => {
-    const ca = chartPayload(a.date, a.lat, a.lon, "placidus", zodiac);
-    const cb = chartPayload(b.date, b.lat, b.lon, "placidus", zodiac);
+    const ca = chartPayload(engine, a.date, a.lat, a.lon, "placidus", zodiac);
+    const cb = chartPayload(engine, b.date, b.lat, b.lon, "placidus", zodiac);
     const ASP: Array<[string, number]> = [
       ["conjunction", 0], ["sextile", 60], ["square", 90], ["trine", 120], ["opposition", 180],
     ];
@@ -392,7 +402,7 @@ export function buildServer(): McpServer {
       const iso = new Date(Date.UTC(
         d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, m, 0,
       )).toISOString();
-      const c = chartPayload(iso, lat, lon, "whole_sign");
+      const c = chartPayload(engine, iso, lat, lon, "whole_sign");
       const ascLon = (c.angles as { asc: number }).asc;
       const ascSign = Math.floor(ascLon / 30);
       if (lastAscSign >= 0 && ascSign !== lastAscSign) {
@@ -555,8 +565,13 @@ const isMain = (() => {
   }
 })();
 if (isMain) {
-  const server = buildServer();
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error("caelus-mcp listening on stdio");
+  // An async IIFE rather than top-level await keeps this module synchronous, so
+  // bundlers that import buildServer() for the Streamable HTTP transport (the
+  // apps/web mount) don't have to treat the whole module as async.
+  void (async () => {
+    const server = buildServer();
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    console.error("caelus-mcp listening on stdio");
+  })();
 }

@@ -7,13 +7,15 @@
     "dev:clean": "rm -rf .next && next dev",
     "build": "next build",
     "start": "next start",
-    "vercel-build": "cd ../.. && npm run build -w caelus && npm run build -w caelus-wheel && npm run docs:api && npm run search:index && npm run build -w web"
+    "vercel-build": "cd ../.. && npm run build -w caelus && npm run build -w caelus-wheel && npm run build -w caelus-mcp && npm run docs:api && npm run search:index && npm run build -w web"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
+    "@modelcontextprotocol/sdk": "^1.12.0",
     "@next/mdx": "^16.2.9",
     "caelus": "*",
+    "caelus-mcp": "*",
     "caelus-wheel": "*",
     "next": "^15.3.0",
     "react": "^19.0.0",

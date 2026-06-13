@@ -27,7 +27,8 @@ Repo: https://github.com/heavyblotto/caelus
 - caelus@0.8.0 — the engine
 - caelus-birth@0.8.0 — local birth time + place -> UT (use this; see below)
 - caelus-wheel@0.8.0 — React SVG chart wheel
-- caelus-mcp@0.8.0 — MCP server, 7 chart tools over stdio
+- caelus-mcp@0.8.0 — MCP server, 7 chart tools over stdio; also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp
+- caelus-engine (PyPI) — the Python reference engine (no numpy), https://pypi.org/project/caelus-engine/
 
 ## Entry points
 
@@ -80,5 +81,6 @@ Longitude is EAST-positive everywhere (Americas are negative).
 
 - Validation tables: https://ephemengine.com/validation
 - Data provenance:   https://ephemengine.com/provenance
+- Hosted MCP endpoint (Streamable HTTP): https://www.ephemengine.com/api/mcp
 - Pitfalls for coding agents: docs/agents.md in the repo
 - MCP spec: MCP_SPEC.md in the repo

@@ -9,10 +9,93 @@ export const metadata = {
 
 `caelus-mcp` exposes the engine over the Model Context Protocol. Positions are
 computed by the engine on each call, never recalled from training data, so every
-answer is deterministic. The server runs over stdio and needs nothing but Node
-on the host.
+answer is deterministic.
 
-## Run it
+There are two ways to connect, with the same seven tools either way:
+
+- **Hosted (Streamable HTTP)** — point your client at
+  `https://www.ephemengine.com/api/mcp`. Nothing to install.
+- **Local (stdio)** — run `npx -y caelus-mcp`. Best for offline use, version
+  pinning, or air-gapped setups.
+
+## Hosted endpoint (no install)
+
+The tools are served over MCP Streamable HTTP at
+`https://www.ephemengine.com/api/mcp`. The endpoint is stateless: each request
+is self-contained, so there is no session to manage. Positions are identical to
+the stdio server.
+
+<Tabs>
+  <Tab label="Cursor">
+
+Add to `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (all projects), then
+reload Cursor:
+
+<CodeBlock
+  lang="json"
+  label=".cursor/mcp.json"
+  code={`{
+  "mcpServers": {
+    "caelus": {
+      "url": "https://www.ephemengine.com/api/mcp"
+    }
+  }
+}`}
+/>
+
+  </Tab>
+  <Tab label="Claude Code">
+
+Add the remote server from the CLI:
+
+<CodeBlock
+  lang="bash"
+  label="Terminal"
+  code={`claude mcp add --transport http caelus https://www.ephemengine.com/api/mcp`}
+/>
+
+  </Tab>
+  <Tab label="VS Code">
+
+Create `.vscode/mcp.json` — VS Code uses `servers` and an explicit `type`:
+
+<CodeBlock
+  lang="json"
+  label=".vscode/mcp.json"
+  code={`{
+  "servers": {
+    "caelus": {
+      "type": "http",
+      "url": "https://www.ephemengine.com/api/mcp"
+    }
+  }
+}`}
+/>
+
+  </Tab>
+  <Tab label="curl">
+
+The endpoint speaks JSON-RPC 2.0. A bare `tools/call` works without a prior
+handshake because the server is stateless:
+
+<CodeBlock
+  lang="bash"
+  label="Terminal"
+  code={`curl -s https://www.ephemengine.com/api/mcp \\
+  -H 'Content-Type: application/json' \\
+  -H 'Accept: application/json, text/event-stream' \\
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call",
+       "params":{"name":"natal_chart",
+                 "arguments":{"date":"1990-06-10T14:30:00Z","lat":27.95,"lon":-82.46}}}'`}
+/>
+
+A plain `GET` on the endpoint returns a small descriptor (tools, resources,
+prompts) so you can confirm it is live.
+
+  </Tab>
+</Tabs>
+
+## Run it locally
 
 The published binary runs straight from npm — no global install:
 

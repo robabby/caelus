@@ -106,6 +106,7 @@ export const FOOTER: FooterColumn[] = [
       { href: "/validation", label: "Validation" },
       { href: "/provenance", label: "Provenance" },
       { href: "/api/chart?lat=27.94&lon=-82.46", label: "REST API", external: true },
+      { href: "/api/mcp", label: "MCP endpoint", external: true },
     ],
   },
 ];
