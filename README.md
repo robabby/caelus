@@ -12,7 +12,7 @@ ephemeris files. Live at [ephemengine.com](https://www.ephemengine.com).
 | `packages/birth` | [`caelus-birth`](https://www.npmjs.com/package/caelus-birth) | Birth time + place → UT (timezone and DST resolution) |
 | `packages/wheel` | [`caelus-wheel`](https://www.npmjs.com/package/caelus-wheel) | React SVG chart wheel, zero runtime deps |
 | `apps/web` | — | Next.js site: playground, validation, edge `/api/chart` |
-| `templates/starter` | — | Source for the `caelus-starter` template repo |
+| [`caelus-starter`](https://github.com/heavyblotto/caelus-starter) | — | Next.js starter app (separate repo) |
 
 The Python reference engine and data-fitting pipeline live in `python/`;
 they mint the coefficient data and golden fixtures and are not a runtime

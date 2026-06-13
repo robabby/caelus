@@ -54,8 +54,6 @@ port, suite-pinned).
   bulk evaluation (century-scale scans).
 
 ### Distribution & packaging
-- **`caelus-starter`**: create the standalone public repo from
-  `templates/starter/`.
 - **PyPI**: publish the Python reference as `caelus-engine`.
 - **MCP Streamable HTTP**: mount the server at `ephemengine.com/api/mcp`
   (stdio already ships).

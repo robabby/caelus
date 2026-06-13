@@ -15,7 +15,6 @@ packages/caelus-mcp     Model Context Protocol server over the engine.
 packages/birth          Birth time + place -> UT (timezone lookup).
 packages/wheel          React SVG chart-wheel renderer.
 apps/web                Next.js site (landing, playground, docs + API reference, validation, provenance, changelog).
-templates/starter       Seed for a standalone starter repo.
 python/                 Reference implementation + data-fitting pipeline.
 ```
 
