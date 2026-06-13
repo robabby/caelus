@@ -2,9 +2,9 @@
 
 MCP server for the [caelus](https://github.com/heavyblotto/caelus) ephemeris
 engine: seven chart tools over stdio. Computation only — positions, houses,
-aspects with orbs, event search — the model does the interpreting. No API
-keys, no ephemeris files, no network calls; the engine data ships inside the
-package.
+aspects with orbs, event search — the model does the interpreting. It needs
+no API keys, ephemeris files, or network calls; the engine data ships inside
+the package.
 
 ## Setup
 

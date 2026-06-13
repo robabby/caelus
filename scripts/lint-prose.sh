@@ -25,6 +25,6 @@ vale packages/caelus/README.md packages/birth/README.md packages/wheel/README.md
 
 echo ""
 echo "→ Vale on repo design docs"
-vale README.md CHANGELOG.md docs/gap-analysis.md docs/api-v0.3.md docs/releasing.md || FAIL=1
+vale README.md CHANGELOG.md STRATEGY.md docs/gap-analysis.md docs/api-v0.3.md docs/releasing.md || FAIL=1
 
 exit "$FAIL"
