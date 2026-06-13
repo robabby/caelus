@@ -26,9 +26,20 @@ import {
 import { loadNodeData } from "caelus/node";
 
 const require = createRequire(import.meta.url);
-const VERSION: string = require("caelus-mcp/package.json").version;
-const DATA_DIR = process.env.CAELUS_DATA
-  ?? join(dirname(require.resolve("caelus/package.json")), "data");
+
+// Read our own version relative to this file (dist/src/server.js -> the package
+// root package.json). A bare require("caelus-mcp/package.json") resolves the
+// package by name -- fine under the workspace symlink, but it throws when this
+// module is traced into a serverless bundle (the apps/web Streamable HTTP mount)
+// where "caelus-mcp" is not a resolvable node_modules entry. The relative path
+// resolves from this file's own location, so it holds in both layouts.
+const VERSION: string = (() => {
+  try {
+    return (require("../../package.json") as { version: string }).version;
+  } catch {
+    return "0.0.0";
+  }
+})();
 
 // The stdio server builds its engine from the Node data packs (precise Moon,
 // fixed stars). Hosted transports -- e.g. the Streamable HTTP mount in
@@ -37,7 +48,13 @@ const DATA_DIR = process.env.CAELUS_DATA
 // default stays lazy and loadNodeData never runs unless a caller wants it.
 let _defaultEngine: Engine | null = null;
 function defaultEngine(): Engine {
-  return (_defaultEngine ??= new Engine(loadNodeData(DATA_DIR, "embedded", "full")));
+  if (_defaultEngine) return _defaultEngine;
+  // Resolved lazily: only the stdio default reads the Node data packs. Hosted
+  // transports inject their own engine and never reach this, so the caelus
+  // package-dir lookup and filesystem read never run in a bundle without them.
+  const dataDir = process.env.CAELUS_DATA
+    ?? join(dirname(require.resolve("caelus/package.json")), "data");
+  return (_defaultEngine = new Engine(loadNodeData(dataDir, "embedded", "full")));
 }
 
 // ---------------------------------------------------------------- helpers
@@ -71,15 +88,22 @@ type HouseSysT = (typeof HOUSE_SYSTEMS)[number];
 type ZodiacT = (typeof ZODIACS)[number];
 
 // ----------------------------------------------------- resource payloads
-const ACCURACY = (() => {
-  const swiss = require("caelus/accuracy.json");
+// Loaded lazily on first read of the accuracy resource and memoized. Kept off
+// the module top level so importing this file into the bundled Streamable HTTP
+// mount touches no filesystem; resilient so a missing pack degrades to null
+// instead of failing the server.
+let _accuracy: { swiss: unknown; jpl: unknown } | null = null;
+function accuracyPayload(): { swiss: unknown; jpl: unknown } {
+  if (_accuracy) return _accuracy;
+  let swiss: unknown = null;
+  try { swiss = require("caelus/accuracy.json"); } catch { /* optional */ }
   let jpl: unknown = null;
   try {
     jpl = require(join(dirname(require.resolve("caelus/package.json")),
                        "horizons-accuracy.json"));
   } catch { /* optional, ships with the repo but maybe not the tarball */ }
-  return { swiss, jpl };
-})();
+  return (_accuracy = { swiss, jpl });
+}
 
 const TRADITIONAL = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
 const GLOSSARY = {
@@ -502,7 +526,7 @@ export function buildServer(engine: Engine = defaultEngine()): McpServer {
       mimeType: "application/json",
     },
     async (uri) => ({
-      contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(ACCURACY) }],
+      contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(accuracyPayload()) }],
     }),
   );
 
