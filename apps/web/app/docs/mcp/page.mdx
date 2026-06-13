@@ -117,8 +117,13 @@ them, or check the client's MCP panel:
 `rectification_grid`, and `sky_events` (rise/set, phases, stations, zodiac
 crossings, solar and lunar eclipses).
 
-If you see all seven, the server is wired correctly. A natal-chart call returns
-structured positions, not prose:
+If you see all seven, the server is wired correctly. The server also exposes two
+**resources** — `caelus://glossary` (aspect angles and orbs, signs, bodies,
+house systems, essential dignities) and `caelus://accuracy` (the validation
+table) — and a **prompt**, `rectification_session`, a guided flow around
+`rectification_grid` and `find_aspect_dates`.
+
+A natal-chart call returns structured positions, not prose:
 
 <CodeBlock
   lang="json"
@@ -166,7 +171,7 @@ behaviour is reproducible and the four packages stay in lockstep:
   "mcpServers": {
     "caelus": {
       "command": "npx",
-      "args": ["-y", "caelus-mcp@0.7.0"]
+      "args": ["-y", "caelus-mcp@0.8.0"]
     }
   }
 }`}

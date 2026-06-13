@@ -31,15 +31,18 @@ The deliverables are the engine and the tools around it: `caelus` (engine),
 
 ## Status
 
-Shipped through **0.7.0** (npm: all four packages; GitHub releases
-v0.1.0–v0.7.0): full body set, 12 house systems, tropical + 8 sidereal
+Shipped through **0.8.0** (npm: all four packages; GitHub releases
+v0.1.0–v0.8.0): full body set, 12 house systems, tropical + 8 sidereal
 ayanamsas, aspects, event search (rise/set, crossings, phases, stations,
 Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
 precession; the `when()` query engine (declarative time queries over celestial
 predicates, Python reference + TS port, suite-pinned); derived charts (returns,
 secondary progressions, solar arc, composite and Davison, harmonics, antiscia,
-declination aspects/parallels, out-of-bounds, dignities, sect); conformance
-suite; MCP server (stdio) with golden payloads; JPL-direct validation tier.
+declination aspects/parallels, out-of-bounds, dignities, sect); the turbo tier
+(`Turbo`: segmented Chebyshev longitude packs fit to the engine for bulk
+scans); conformance suite; MCP server (stdio) with golden payloads, resources
+(`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
+prompt; JPL-direct validation tier.
 
 The `ephemengine.com` site ships its full shape: landing page, browser
 playground, validation and provenance tables, build notes, a docs hub with
@@ -48,15 +51,10 @@ header and footer, and SEO (sitemap, OpenGraph).
 
 ## Planned
 
-### Engine breadth
-- **Turbo tier**: Chebyshev packs fit to the engine's own output for fast
-  bulk evaluation (century-scale scans).
-
 ### Distribution & packaging
 - **PyPI**: publish the Python reference as `caelus-engine`.
 - **MCP Streamable HTTP**: mount the server at `ephemengine.com/api/mcp`
   (stdio already ships).
-- **MCP resources/prompts**: `caelus://glossary`, `caelus://accuracy`.
 - **Site links**: add PyPI and MCP Streamable HTTP to the nav and footer as
   they ship (`caelus-starter` is already linked in the footer).
 

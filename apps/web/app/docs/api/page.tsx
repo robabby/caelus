@@ -37,6 +37,7 @@ const TIERS: ReadonlyArray<{
     blurb:
       "Stable but specialized: reach for these when the recommended surface does not cover the case. The Engine already calls most of them for you.",
     refs: [
+      ["Turbo", "Class.Turbo"],
       ["housesPlacidus", "Function.housesPlacidus"],
       ["dignities", "Function.dignities"],
       ["planetarySect", "Function.planetarySect"],

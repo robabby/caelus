@@ -176,6 +176,8 @@ for (let year = 2026; year < 2038; year++) {
 
 The same shape drives a transit timeline (sample `engine.longitude` over a
 range) or a directed-aspect scan (`directedLongitude` against natal points).
+For century-scale sweeps that evaluate a longitude tens of thousands of times,
+the <a href="/docs/data-tiers">turbo tier</a> finds candidate instants fast.
 For ready-made transit and event-search recipes, see <a href="/docs/recipes">Recipes</a>.
 
 See the <a href="/docs/api">API Reference</a> for every signature, <a href="/docs/edge-cases">Edge Cases &amp; Stability</a>

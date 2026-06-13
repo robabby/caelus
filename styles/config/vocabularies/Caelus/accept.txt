@@ -97,3 +97,5 @@ antiscia
 antiscion
 [Cc]ontraparallels?
 [Dd]iurnal
+numpy
+Clenshaw
