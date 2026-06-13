@@ -9,6 +9,7 @@ export const SITE = {
   url: "https://www.ephemengine.com",
   tagline: "MIT astrological ephemeris engine in TypeScript.",
   repo: "https://github.com/heavyblotto/caelus",
+  starter: "https://github.com/heavyblotto/caelus-starter",
   description:
     "MIT astrological ephemeris engine in TypeScript. Natal charts, houses, aspects, and event search. Runs in the browser, on edge, and in Node, with MCP tools for AI clients. No AGPL, no ephemeris files.",
 } as const;
@@ -90,6 +91,7 @@ export const FOOTER: FooterColumn[] = [
     title: "Project",
     links: [
       { href: SITE.repo, label: "GitHub", external: true },
+      { href: SITE.starter, label: "Starter template", external: true },
       { href: `${SITE.repo}/blob/main/ROADMAP.md`, label: "Roadmap", external: true },
       { href: "/changelog", label: "Changelog" },
       { href: "/validation", label: "Validation" },

@@ -59,9 +59,8 @@ header and footer, and SEO (sitemap, OpenGraph).
 - **MCP Streamable HTTP**: mount the server at `ephemengine.com/api/mcp`
   (stdio already ships).
 - **MCP resources/prompts**: `caelus://glossary`, `caelus://accuracy`.
-- **Site links**: surface `caelus-starter` in the footer now that it is a
-  standalone repo; add PyPI and MCP Streamable HTTP to the nav and footer as
-  they ship.
+- **Site links**: add PyPI and MCP Streamable HTTP to the nav and footer as
+  they ship (`caelus-starter` is already linked in the footer).
 
 ### Validation & docs
 - **Methods write-up**: the empirical-recovery notes (what the engine
