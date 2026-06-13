@@ -21,6 +21,10 @@ export const NPM = {
   wheel: "https://www.npmjs.com/package/caelus-wheel",
 } as const;
 
+export const PYPI = {
+  caelusEngine: "https://pypi.org/project/caelus-engine/",
+} as const;
+
 export type NavItem = { href: string; label: string };
 
 /** Primary navigation (home is reached through the wordmark). */
@@ -78,6 +82,7 @@ export const FOOTER: FooterColumn[] = [
       { href: NPM.mcp, label: "caelus-mcp", external: true },
       { href: NPM.birth, label: "caelus-birth", external: true },
       { href: NPM.wheel, label: "caelus-wheel", external: true },
+      { href: PYPI.caelusEngine, label: "caelus-engine (PyPI)", external: true },
     ],
   },
   {

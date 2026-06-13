@@ -31,8 +31,9 @@ The deliverables are the engine and the tools around it: `caelus` (engine),
 
 ## Status
 
-Shipped through **0.8.0** (npm: all four packages; GitHub releases
-v0.1.0–v0.8.0): full body set, 12 house systems, tropical + 8 sidereal
+Shipped through **0.8.0** (npm: all four packages; PyPI: `caelus-engine`,
+the Python reference; GitHub releases v0.1.0–v0.8.0): full body set, 12 house
+systems, tropical + 8 sidereal
 ayanamsas, aspects, event search (rise/set, crossings, phases, stations,
 Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
 precession; the `when()` query engine (declarative time queries over celestial
@@ -53,8 +54,7 @@ header and footer, and SEO (sitemap, OpenGraph).
 ## Planned
 
 ### Distribution & packaging
-- **PyPI**: publish the Python reference as `caelus-engine`.
 - **MCP Streamable HTTP**: mount the server at `ephemengine.com/api/mcp`
   (stdio already ships).
-- **Site links**: add PyPI and MCP Streamable HTTP to the nav and footer as
-  they ship (`caelus-starter` is already linked in the footer).
+- **Site links**: add MCP Streamable HTTP to the nav and footer when it ships
+  (npm, PyPI, and `caelus-starter` are already linked in the footer).
