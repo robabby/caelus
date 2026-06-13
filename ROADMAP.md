@@ -8,7 +8,7 @@ file is the map those issues hang off.
 
 A clean-room astrological ephemeris engine: planetary/lunar positions,
 houses, aspects, and astronomical events, written from published sources
-(VSOP87, ELP/DE, IAU models, JPL Horizons fits) — MIT-licensed, zero runtime
+(VSOP87, ELP/DE, IAU models, JPL Horizons fits): MIT-licensed, zero runtime
 dependencies, no Swiss Ephemeris code, and a core that does no I/O so the
 same code runs in the browser, on edge runtimes, and in Node/MCP.
 
@@ -38,38 +38,38 @@ Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
 precession; 3,218-check conformance suite; MCP server (stdio) with golden
 payloads; JPL-direct validation tier.
 
-**In progress (on `dev`, unreleased):** the `when()` query engine —
-declarative time queries over celestial predicates — Python reference + TS
-port, suite-pinned.
+**In progress (on `dev`, unreleased):** the `when()` query engine:
+declarative time queries over celestial predicates (Python reference + TS
+port, suite-pinned).
 
 ## Planned
 
 ### Engine breadth
-- **Query engine `when()`** — finish shipping (promote, cut release).
-- **Derived charts** — returns, secondary progressions, solar arc, composite
+- **Query engine `when()`**: finish shipping (promote, cut release).
+- **Derived charts**: returns, secondary progressions, solar arc, composite
   and Davison charts, harmonics, antiscia, declination aspects (parallels),
   out-of-bounds, dignities/sect. Thin layers on existing primitives;
   reference + goldens per feature.
-- **Turbo tier** — Chebyshev packs fit to the engine's own output for fast
+- **Turbo tier**: Chebyshev packs fit to the engine's own output for fast
   bulk evaluation (century-scale scans).
 
 ### Distribution & packaging
-- **`caelus-starter`** — create the standalone public repo from
+- **`caelus-starter`**: create the standalone public repo from
   `templates/starter/`.
-- **PyPI** — publish the Python reference as `caelus-engine`.
-- **MCP Streamable HTTP** — mount the server at `ephemengine.com/api/mcp`
+- **PyPI**: publish the Python reference as `caelus-engine`.
+- **MCP Streamable HTTP**: mount the server at `ephemengine.com/api/mcp`
   (stdio already ships).
-- **MCP resources/prompts** — `caelus://glossary`, `caelus://accuracy`.
+- **MCP resources/prompts**: `caelus://glossary`, `caelus://accuracy`.
 
 ### Validation & docs
-- **Methods write-up** — the empirical-recovery notes (what the engine
+- **Methods write-up**: the empirical-recovery notes (what the engine
   reproduces and how it was checked).
-- **Community health** — `CONTRIBUTING.md` (suite-is-the-contract),
+- **Community health**: `CONTRIBUTING.md` (suite-is-the-contract),
   `CODE_OF_CONDUCT.md`, `SECURITY.md`.
 
 ## Out of scope for this repo
 
 This repository is the open engine and its tooling only. Product/business
 planning, monetization, and any consumer-application or knowledge-base work
-are tracked privately, elsewhere — they do not belong in a public engine
+are tracked privately, elsewhere; they do not belong in a public engine
 repo.

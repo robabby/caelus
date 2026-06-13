@@ -39,21 +39,21 @@ test:birth` checks nine timezone edge cases in CI.
 | `/` | Birth form (place search via Open-Meteo geocoding, manual lat/lon fallback, "time unknown" path) and a today's-sky strip |
 | `/chart` | Wheel, positions, houses, aspects, all client-side via `caelus/data-embedded` |
 | `/rectify` | Handling unknown birth times (the `rectification_grid` flow) |
-| `POST /api/reading` | Optional LLM reading — set `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY`); without a key the app runs charts-only |
+| `POST /api/reading` | Optional LLM reading. Set `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY`); without a key the app runs charts-only |
 
 The reading prompt is in `lib/prompt.ts`. This template ships no interpretation
 text: positions are computed (caelus is verified per body against Swiss
-Ephemeris — see [ephemengine.com/validation](https://ephemengine.com/validation)),
+Ephemeris; see [ephemengine.com/validation](https://ephemengine.com/validation)),
 and the interpretation is left to you.
 
 ## What to build next
 
-- **Transits and timing** — `caelus-mcp` exposes `transits`,
+- **Transits and timing:** `caelus-mcp` exposes `transits`,
   `find_aspect_dates` (including retrograde re-hits), and `rectification_grid`
   to any MCP client: `npx caelus-mcp`.
-- **Engine docs** — [ephemengine.com](https://ephemengine.com): playground,
+- **Engine docs:** [ephemengine.com](https://ephemengine.com): playground,
   per-body validation tables, data provenance.
-- **For AI assistants** — [ephemengine.com/llms.txt](https://ephemengine.com/llms.txt)
+- **For AI assistants:** [ephemengine.com/llms.txt](https://ephemengine.com/llms.txt)
   and `docs/agents.md` in the caelus repo.
 
 Place search data: [GeoNames](https://www.geonames.org/) via the

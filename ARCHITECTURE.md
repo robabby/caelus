@@ -31,22 +31,22 @@ browser bundle, on an edge runtime, and in Node.
 
 Modules (`packages/caelus/src/`):
 
-- `core` — timescales (ΔT, UT↔TT), VSOP87D evaluation, IAU 1980 nutation,
+- `core`: timescales (ΔT, UT↔TT), VSOP87D evaluation, IAU 1980 nutation,
   Vondrák 2011 long-term precession, frame rotations, the apparent-place
   pipeline (light-time, aberration, precession, nutation), and the lunar,
   Pluto, and small-body position routines.
-- `chart` — the `Engine` API: apparent longitudes, the body set, aspects,
+- `chart`: the `Engine` API: apparent longitudes, the body set, aspects,
   tropical/sidereal zodiacs and ayanamsas, topocentric placement.
-- `houses` — twelve house systems plus ascendant/MC and related angles.
-- `events` — bracket-and-bisect search over the position functions:
+- `houses`: twelve house systems plus ascendant/MC and related angles.
+- `events`: bracket-and-bisect search over the position functions:
   rise/set, meridian transits, zodiac crossings, lunar phases, stations,
   Gauquelin sectors.
-- `query` — `when()`: declarative time queries (aspect / sign / retrograde
+- `query`: `when()`: declarative time queries (aspect / sign / retrograde
   predicates combined with and/or/not), solved on the `events` root-finder.
-- `eclipses` — solar and lunar eclipse search.
-- `stars` — fixed-star catalog and apparent places.
-- `pheno` — phase, elongation, equation of time, and related phenomena.
-- `node-loader` / `data-embedded` — two ways to supply `EngineData`: read
+- `eclipses`: solar and lunar eclipse search.
+- `stars`: fixed-star catalog and apparent places.
+- `pheno`: phase, elongation, equation of time, and related phenomena.
+- `node-loader` / `data-embedded`: two ways to supply `EngineData`: read
   JSON from disk (Node) or import a bundled subset (browser/edge).
 
 ## Data packs
@@ -58,13 +58,13 @@ independently:
 - **VSOP87D** for the eight planets, in four truncation tiers
   (`micro`, `embedded`, `high`, `full`) trading size for accuracy.
 - **Nutation** (IAU 1980 series).
-- **Moon** — an abridged ELP series (`moon_meeus47`) for the compact tier,
+- **Moon**: an abridged ELP series (`moon_meeus47`) for the compact tier,
   and a DE-derived Chebyshev pack (`moon_cheb`) for the precise tier.
-- **Pluto** — a dedicated Meeus series valid over its fitted span.
-- **Chiron and the asteroids** (Ceres, Pallas, Juno, Vesta, Pholus) —
+- **Pluto**: a dedicated Meeus series valid over its fitted span.
+- **Chiron and the asteroids** (Ceres, Pallas, Juno, Vesta, Pholus):
   Chebyshev packs fit to JPL Horizons vectors.
-- **Uranian points** — a Kepler-element pack.
-- **Fixed stars** — a named-star catalog.
+- **Uranian points**: a Kepler-element pack.
+- **Fixed stars**: a named-star catalog.
 
 The npm package ships only the compact tiers (the embedded VSOP set and the
 embedded Moon pack); the larger tiers live in the repository.
@@ -73,11 +73,11 @@ embedded Moon pack); the larger tiers live in the repository.
 
 Because the core takes injected data and does no I/O, identical code serves:
 
-1. **Browser** — `caelus/data-embedded` bundles a compact dataset; charts
+1. **Browser**: `caelus/data-embedded` bundles a compact dataset; charts
    compute client-side.
-2. **Edge** — the same import runs on serverless edge runtimes with no
+2. **Edge**: the same import runs on serverless edge runtimes with no
    filesystem and no ephemeris files to deploy.
-3. **Node / MCP** — `node-loader` reads the JSON packs from disk; the MCP
+3. **Node / MCP**: `node-loader` reads the JSON packs from disk; the MCP
    server exposes the engine over stdio or HTTP.
 
 ## Validation
@@ -106,10 +106,10 @@ Per-body accuracy figures live in `packages/caelus/accuracy.json` and
 The data packs and fixtures are reproducible build outputs of the Python
 tooling:
 
-- `fit_chiron.py`, `fit_smallbody.py`, `fit_moon.py`, `fit_uranian.py` —
+- `fit_chiron.py`, `fit_smallbody.py`, `fit_uranian.py`:
   fetch reference vectors (Horizons) and fit Chebyshev / element packs.
-- `chebyshev.py` — the segmented Chebyshev fit/evaluate routines.
-- `export_golden.py`, `export_query_golden.py` — regenerate the golden
+- `chebyshev.py`: the segmented Chebyshev fit/evaluate routines.
+- `export_golden.py`, `export_query_golden.py`: regenerate the golden
   fixtures from the reference engine.
 
 These run locally and write into the `data/` and `test/` directories; the
