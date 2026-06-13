@@ -310,25 +310,17 @@ cause of the 1.6-nano drift above). Zero new dependencies.
   scripts. Mutation-tested: flipping an expected longitude sign fails its
   predicate; an out-of-range expected orb fails ajv schema validation.
 
-# Strategy doc + Vale brand-casing fixes — 2026-06-13
+# Vale brand-casing fixes — 2026-06-13
 
-- Added root `STRATEGY.md` (unified strategy/roadmap; content final, placed
-  next to ARCHITECTURE.md/PATCHES.md) and wired it into `scripts/lint-prose.sh`
-  under the repo-design-docs group so it stays prose-clean.
-- Vocab: added the doc's intentional terms to the Caelus accept list
-  (EphemEngine, Magus, Prokerala, Kerykeion, Celestine, Merriman, Streamable,
+- Vocab: added intentional product/competitor terms to the Caelus accept list
+  (EphemEngine, Prokerala, Kerykeion, Celestine, Merriman, Streamable,
   prosumer, composable, embeddable, instrumentable, commoditized, anonymized,
   dogfooding, SDKs, SLAs, eval) and widened `Uranian` to `Uranians?`. Mirrored
   into both `styles/Vocab/Caelus` and `styles/config/vocabularies/Caelus`.
-- Vale.Terms: lowercase `ephemengine`/`magus` accepted so the literal
+- Vale.Terms: lowercase `ephemengine` accepted so the literal
   `ephemengine.com` domain in README/CHANGELOG link text stops tripping the
-  term-casing rule; `[*.md]` gets a URL/hostname `TokenIgnores`; STRATEGY.md
-  (mixes cased prose with lowercase vendor URL slugs) gets `Vale.Terms = NO`,
-  the same treatment as the code/name-heavy READMEs.
+  term-casing rule; `[*.md]` gets a URL/hostname `TokenIgnores`.
 - Cleared two pre-existing prose-lint failures introduced upstream by the
   0.4.0 release docs: `Uranians` spelling in docs/gap-analysis.md (vocab) and a
   stacked "no X, no Y, no Z" anaphora in packages/caelus-mcp/README.md (reworded
   to a single clause, meaning unchanged).
-- STRATEGY.md is intentionally out of the claims registry: its market figures
-  are third-party/externally sourced, not engine-measured, so they are not
-  bound to conformance stats. lint:prose, lint:claims, and the suites stay green.

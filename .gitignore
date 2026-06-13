@@ -26,6 +26,10 @@ python/__pycache__/
 .web-prose-extract.md
 python/astroengine/__pycache__/
 
+# private strategy / roadmap docs — never commit to this public repo
+STRATEGY.md
+STRATEGY*.md
+
 # logs
 *.log
 npm-debug.log*

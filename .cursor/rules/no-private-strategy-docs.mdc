@@ -1,0 +1,20 @@
+---
+description: Never commit private strategy, roadmap, or cross-project business docs to this public repo
+alwaysApply: true
+---
+
+# No private strategy docs in the public repo
+
+This repository is **public MIT open source** (Caelus / ephemeris engine only).
+
+**Never** add, commit, or reference in-repo:
+
+- Strategy, roadmap, or business-plan documents
+- Docs that conflate **private products** (hosted services, consumer apps, unrelated ventures) with this OSS project
+- Market research, pricing strategy, competitive positioning memos, or "unified strategy" write-ups
+
+If the user needs strategy notes, they belong **outside** this repo (private notes, separate private repo, or local-only files).
+
+`STRATEGY.md` and `STRATEGY*.md` are gitignored. Do not recreate them here.
+
+Public docs scope: engine architecture (`ARCHITECTURE.md`), changelog, API notes, validation, and product copy for **this** OSS surface only.
