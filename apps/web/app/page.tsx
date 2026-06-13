@@ -92,7 +92,9 @@ chart.bodies.saturn.retrograde; // true`}
       />
       <P dim>
         Full walkthrough in the <A href="/docs/quickstart">Quickstart</A>, or try it live in the{" "}
-        <A href="/playground">Playground</A>.
+        <A href="/playground">Playground</A>. For a complete app, the{" "}
+        <A href={SITE.starter}>caelus-starter</A> template is a Next.js project with a
+        birth form, timezone handling, and a chart wheel, deployable to Vercel in one click.
       </P>
 
       <H2>How it is checked</H2>

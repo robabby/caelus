@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SITE } from "../lib/site";
 
 export default function Cta() {
   const [copied, setCopied] = useState(false);
@@ -19,8 +20,8 @@ export default function Cta() {
       <a href="/docs/quickstart" className="btn btn-ghost">
         Quickstart
       </a>
-      <a href="/docs/mcp" className="btn btn-ghost">
-        Add to Claude / Cursor
+      <a href={SITE.starter} className="btn btn-ghost" target="_blank" rel="noreferrer">
+        Starter template
       </a>
     </div>
   );
