@@ -269,5 +269,11 @@
     }
   ],
   "v03_harness": "python/validate_swiss.py regenerates every figure above the line against pyswisseph 2.10 (Moshier mode)",
-  "true_node_vs_builtin": "1′"
+  "true_node_vs_builtin": "1′",
+  "counts": {
+    "house_systems": 12,
+    "sidereal_ayanamsas": 7,
+    "mcp_tools": 7,
+    "default_bodies": 13
+  }
 }

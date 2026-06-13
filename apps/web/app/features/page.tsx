@@ -32,8 +32,8 @@ export default function Features() {
         Twelve house systems: Placidus, Koch, Porphyry, Equal, Whole-sign,
         Regiomontanus, Campanus, Alcabitius, Morinus, Meridian, Polich-Page, and
         Vehlow, with a whole-sign fallback above the polar circles. Angles:
-        Ascendant, Midheaven, vertex, and east point. Zodiac: tropical plus seven
-        sidereal ayanamsas (Lahiri, Fagan/Bradley, Krishnamurti, Raman,
+        Ascendant, Midheaven, vertex, and east point. Zodiac: tropical and
+        seven sidereal ayanamsas (Lahiri, Fagan/Bradley, Krishnamurti, Raman,
         Yukteshwar, Galactic Center, and Spica). See{" "}
         <A href="/docs/houses-and-zodiacs">Houses &amp; Zodiacs</A>.
       </P>

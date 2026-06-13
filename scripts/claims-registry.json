@@ -62,6 +62,69 @@
         "llms.txt",
         "apps/web/public/llms.txt"
       ]
+    },
+    {
+      "id": "house-system-count",
+      "source": "accuracy.counts.house_systems",
+      "render": [
+        "{value} house systems",
+        "{value} systems",
+        "twelve house systems",
+        "Twelve house systems"
+      ],
+      "appearsIn": [
+        "apps/web/app/features/page.tsx",
+        "apps/web/app/page.tsx",
+        "apps/web/app/docs/data-tiers/page.mdx",
+        "python/README.md"
+      ]
+    },
+    {
+      "id": "sidereal-ayanamsa-count",
+      "source": "accuracy.counts.sidereal_ayanamsas",
+      "render": [
+        "{value} sidereal",
+        "{value} ayanamsas",
+        "seven sidereal",
+        "seven ayanamsas"
+      ],
+      "competing": "(\\b\\d+|six|seven|eight|nine|ten|eleven|twelve) (sidereal|ayanamsa)",
+      "appearsIn": [
+        "apps/web/app/features/page.tsx",
+        "apps/web/app/page.tsx",
+        "apps/web/app/docs/data-tiers/page.mdx",
+        "ROADMAP.md",
+        "python/README.md"
+      ]
+    },
+    {
+      "id": "mcp-tool-count",
+      "source": "accuracy.counts.mcp_tools",
+      "render": [
+        "{value} chart tools",
+        "seven chart tools",
+        "Seven chart tools",
+        "seven tools"
+      ],
+      "appearsIn": [
+        "apps/web/app/features/page.tsx",
+        "apps/web/app/page.tsx",
+        "llms.txt",
+        "apps/web/public/llms.txt"
+      ]
+    },
+    {
+      "id": "default-body-count",
+      "source": "accuracy.counts.default_bodies",
+      "render": [
+        "{value} bodies",
+        "Thirteen in the default"
+      ],
+      "appearsIn": [
+        "apps/web/app/features/page.tsx",
+        "MCP_SPEC.md",
+        "packages/caelus-mcp/README.md"
+      ]
     }
   ]
 }
