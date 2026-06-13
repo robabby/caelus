@@ -1,9 +1,10 @@
 {
   "basis": "JPL Horizons apparent geocentric RA/Dec (airless), TT epochs",
   "epochs": 25,
+  "caveat": "STALE: these figures were measured at integer-day epochs that aligned with the Moon cache grid, where interpolation error vanishes. The Moon row in particular is unreliable (null below). Regenerate with the off-grid validate_horizons.py against a correctly-sampled Moon pack.",
   "bodies": {
     "sun": 0.108,
-    "moon": 0.215,
+    "moon": null,
     "mercury": 0.142,
     "venus": 0.11,
     "mars": 0.236,

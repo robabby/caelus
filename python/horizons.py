@@ -216,6 +216,40 @@ class HorizonsCache:
             np.interp(jds, self._jds, self._zs),
         )
 
+    def sample_cubic(self, jds):
+        """Cubic (4-point Lagrange) interpolation on the uniform grid.
+
+        LINEAR interpolation (`sample`) is fine for slow bodies but wrong by
+        up to ~159 km (~85") mid-interval for the fast, high-curvature Moon at
+        6-hour spacing -- its error scales as h^2 * |r''|. Cubic error scales
+        as h^4 * |r''''|: ~0.05" at 6h, well under a milliarcsecond at 2h. Use
+        this for the Moon fit so the stored Chebyshev tracks the true motion
+        between grid points, not the chord. Requires a uniform cache step.
+        """
+        import numpy as np
+
+        jds = np.atleast_1d(jds).astype(float)
+        g0, h, n = self._jds[0], float(self._jds[1] - self._jds[0]), len(self._jds)
+        if np.any(jds < g0) or np.any(jds > self._jds[-1]):
+            raise ValueError(
+                f"JD outside cache range {g0}..{self._jds[-1]} "
+                f"(requested {jds.min()}..{jds.max()})"
+            )
+        # i0 = index of the grid point just below jd; clamp so [i0-1, i0+2] fit
+        i0 = np.clip(np.floor((jds - g0) / h).astype(int), 1, n - 3)
+        t = (jds - (g0 + i0 * h)) / h  # fractional position in [0, 1]
+        w = (
+            -t * (t - 1) * (t - 2) / 6.0,        # node i0-1
+            (t + 1) * (t - 1) * (t - 2) / 2.0,   # node i0
+            -(t + 1) * t * (t - 2) / 2.0,        # node i0+1
+            (t + 1) * t * (t - 1) / 6.0,         # node i0+2
+        )
+        out = []
+        for arr in (self._xs, self._ys, self._zs):
+            out.append(w[0] * arr[i0 - 1] + w[1] * arr[i0]
+                       + w[2] * arr[i0 + 1] + w[3] * arr[i0 + 2])
+        return tuple(out)
+
 
 class ChironHorizonsCache(HorizonsCache):
     """Backward-compatible alias used by fit_chiron.py."""

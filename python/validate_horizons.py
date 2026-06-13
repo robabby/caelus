@@ -33,7 +33,12 @@ BODIES = {
     "neptune": "899", "pluto": "999", "chiron": "2060", "ceres": "1;",
     "pallas": "2;", "juno": "3;", "vesta": "4;", "pholus": "5145;",
 }
-EPOCHS_TT = [jd_tt(julian_day(1900 + k * 8, (k * 5) % 12 + 1, 11)) for k in range(25)]
+# Off-grid epochs: spread the time-of-day across the day (golden-ratio
+# fractions) so each comparison lands BETWEEN cache grid points, not on them.
+# Integer-day epochs align with the Moon cache grid, where interpolation error
+# vanishes -- which previously hid an ~85" mid-interval error. See fit_moon.py.
+EPOCHS_TT = [jd_tt(julian_day(1900 + k * 8, (k * 5) % 12 + 1, 11)
+                   + (k * 0.6180339887) % 1.0) for k in range(25)]
 
 
 def fetch(command, jds):
