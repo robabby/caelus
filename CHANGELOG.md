@@ -5,6 +5,35 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.7.0 — 2026-06-13
+
+A derived-charts layer: standard astrological derivations computed on the
+validated primitives. No breaking changes to the 0.6.x surface; the position
+conformance suite is unchanged at 3,218 checks, and a new cross-language golden
+(52 checks) pins the TypeScript port to the Python reference, bit-identical.
+
+### Engine (`caelus`)
+
+- Returns (`returns`, `solarReturn`, `lunarReturn`): the crossing search
+  against a natal longitude.
+- Secondary progressions (`progressedJd`, `progressedLongitude`): the
+  day-for-a-year mapping. Solar arc (`solarArc`, `directedLongitude`): the true
+  progressed-Sun arc, applied forward.
+- Composite (`compositeLongitudes`): shorter-arc midpoints. Davison
+  (`davisonParams`): the midpoint in time and place.
+- Harmonics (`harmonicLongitude`, `harmonicChart`); antiscia (`antiscion`,
+  `contraAntiscion`); declination aspects (`declinationAspect`,
+  `declinationAspects`); out-of-bounds (`outOfBounds`, `outOfBoundsMargin`).
+- Dignities (`dignities`, `dignityOf`): domicile, exaltation, detriment, fall.
+  Sect (`isDayChart`, `planetarySect`, `inSect`): day-night by Sun altitude.
+- All exported from the package root and mirrored between the TS engine and the
+  Python reference (`astroengine/derived.py`), pinned by `test/derived-golden.json`.
+
+### Docs and tooling
+
+- Community-health files: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`.
+- The `caelus-starter` template moved to its own repository.
+
 ## 0.6.0 — 2026-06-13
 
 A declarative query language: the engine answers "where is the body?", and
