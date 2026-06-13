@@ -19,6 +19,8 @@ jobs:
       - run: node packages/caelus/dist/test/query-golden.test.js
       # derived charts: TS derivations must match the Python reference
       - run: node packages/caelus/dist/test/derived-golden.test.js
+      # turbo tier: the TS evaluator must reproduce the Python evaluator on the pack
+      - run: node packages/caelus/dist/test/turbo-golden.test.js
       - run: npm run build -w caelus-mcp
       - run: node packages/caelus-mcp/smoke.mjs
       # MCP-layer oracle suite: golden checks can't see server.ts (PATCHES #2)
