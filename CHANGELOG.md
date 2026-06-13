@@ -5,64 +5,34 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## 0.4.0 — 2026-06-12
-
-Swiss Ephemeris gap analysis Tier 2, partial (see `docs/gap-analysis.md`).
-No breaking changes to the 0.3.x surface; the conformance suite grew from
-3,087 to 3,177 checks.
-
-### Engine (`caelus`)
-
-- Event search API (`events.ts`): rise/set/meridian transits (≤0.5 s vs
-  `swe_rise_trans`), zodiac degree crossings and lunar phases (≤4 s),
-  retrograde stations (~1 minute — ill-conditioned by nature). Topocentric
-  and sidereal modes follow chart options.
-- True/osculating Lilith (`true_lilith` on request; hypersensitive to the
-  lunar theory — see `accuracy.json` for the SE-oracle caveat).
-- Five main-belt asteroids + Pholus: `ceres`, `pallas`, `juno`, `vesta`,
-  `pholus` from JPL Horizons Chebyshev fits (1850–2150, ≤1″ geocentric;
-  same pipeline as Chiron). Loaded via `loadNodeData` / optional data packs.
-- Eight Hamburg-school Uranian bodies: `cupido`, `hades`, `zeus`, `kronos`,
-  `apollon`, `admetos`, `vulkanus`, `poseidon` from a Kepler element pack
-  calibrated to Swiss Ephemeris 2.10 (≤2.3″ geocentric).
-- Open body registry: `BodyId` accepts string ids; `engine.bodies()` reports
-  what the injected data can compute.
-
-### MCP server (`caelus-mcp`)
-
-- **`sky_events`** — seventh outcome-level tool: event search in a date
-  range (≤370 days) for rise/set/meridian transits, lunar phases, stations,
-  and zodiac crossings. Times agree with Swiss Ephemeris to the second
-  where the oracle applies.
-- Chart tools unchanged in shape; optional bodies arrive through engine data
-  on the Node loader path.
-
 ## 0.4.0 — 2026-06-13
 
-Gap-analysis Tier 2 (minus fixed stars), plus deployment-boundary fixes
-from an external review. The suite grew from 3,087 to 3,177 checks; the
-engine computes 28 bodies.
+Swiss Ephemeris gap analysis Tier 2, minus fixed stars (see
+`docs/gap-analysis.md`), plus deployment-boundary fixes from an external
+review. No breaking changes to the 0.3.x surface; the conformance suite
+grew from 3,087 to 3,177 checks; the engine computes 28 bodies.
 
 ### Engine (`caelus`)
 
 - Event search (`events` module): rise/set/meridian transits (≤0.5 s vs
-  `swe_rise_trans`, polar no-event cases agree), zodiac crossings (≤4 s),
-  lunar phases (≤4 s), stations (≤1 min — ill-conditioned by nature).
-- New bodies, all on request via `ChartOptions.bodies`:
-  `true_lilith` (osculating apogee; ≤3′ vs SE's built-in ephemeris — the
-  quantity amplifies lunar-theory differences ~18x and implementations
-  disagree across software at that scale), the big-four asteroids +
+  `swe_rise_trans`, polar no-event cases agree), zodiac degree crossings
+  (≤4 s), lunar phases (≤4 s), retrograde stations (~1 minute —
+  ill-conditioned by nature).
+- New bodies, on request via `ChartOptions.bodies` or `position()`:
+  `true_lilith` (osculating apogee; hypersensitive to the lunar theory —
+  see `accuracy.json` for the SE-oracle caveat), the big-four asteroids +
   Pholus (`ceres`, `pallas`, `juno`, `vesta`, `pholus`; JPL Horizons
-  Chebyshev fits 1850–2150, ≤1″, Node/lazy data tier), and the eight
-  Hamburg-school Uranian bodies (`cupido`…`poseidon`; oracle-fitted
-  constant-element Kepler orbits, ≤2.3″).
+  Chebyshev fits 1850–2150, ≤1″ geocentric, Node/lazy data tier), and the
+  eight Hamburg-school Uranian bodies (`cupido`…`poseidon`; constant-
+  element Kepler pack calibrated to Swiss Ephemeris 2.10, ≤2.3″).
 - `loadNodeData` falls back per planet to the embedded VSOP tier against
   the published tarball instead of throwing.
 
 ### MCP server (`caelus-mcp`)
 
-- `sky_events` — the seventh tool: rise/set/transits, phases, stations,
-  crossings in a date range. Eclipses will extend it, not add a tool.
+- `sky_events` — the seventh outcome-level tool: event search in a date
+  range (≤370 days) for rise/set/meridian transits, lunar phases,
+  stations, and zodiac crossings. Eclipses will extend it, not add a tool.
 
 ### Corrections and deployment
 
@@ -70,7 +40,7 @@ engine computes 28 bodies.
   built-in ephemeris (≤1″ only vs full JPL DE431); now pinned by the
   claims linter.
 - Live-deploy smoke test (`live-smoke` workflow) guards the production
-  API, including the date-parameter regression an external review found.
+  API on every push to main, daily, and on dispatch.
 
 ## 0.3.0 — 2026-06-12
 

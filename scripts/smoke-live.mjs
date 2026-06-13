@@ -67,6 +67,22 @@ async function get(path) {
   else ok("/llms.txt serves");
 }
 
+// 5. bare apex must redirect to www AND land on the real site. The 2026-06-12
+// review's "production 400s" turned out to be the apex resolving to a parked
+// GoDaddy site while www was healthy — this check covers that hole. A failure
+// here with non-Vercel HTML means DNS, not the app.
+if (BASE === "https://www.ephemengine.com") {
+  try {
+    const res = await fetch("https://ephemengine.com" + CHART, { redirect: "follow" });
+    const c = res.status === 200 ? await res.json() : null;
+    if (res.status !== 200 || !(Math.abs(c?.bodies?.sun?.lon - SUN_LON) < 0.05)) {
+      fail(`apex ephemengine.com -> ${res.status} (expected redirect to www + 200): check DNS A record points at Vercel`);
+    } else ok("apex redirects to www and serves the chart");
+  } catch (err) {
+    fail(`apex ephemengine.com unreachable: ${err.message} (DNS?)`);
+  }
+}
+
 if (failures) {
   console.error(`\nlive smoke FAILED (${failures}) against ${BASE}`);
   process.exit(1);
