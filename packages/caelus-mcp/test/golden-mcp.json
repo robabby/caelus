@@ -88,11 +88,11 @@
           "speed": -0.05
         },
         "true_node": {
-          "lon": 308.13,
+          "lon": 308.14,
           "pos": "8°08'Aqr",
           "house": 6,
           "rx": true,
-          "speed": -0.06
+          "speed": -0.07
         }
       },
       "angles": {
@@ -126,7 +126,7 @@
           "a": "moon",
           "b": "mars",
           "aspect": "square",
-          "orb": 5.77
+          "orb": 5.78
         },
         {
           "a": "moon",
@@ -334,7 +334,7 @@
           "kind": "set"
         },
         {
-          "t": "1990-06-16T04:47:40Z",
+          "t": "1990-06-16T04:47:41Z",
           "kind": "phase",
           "detail": "last_quarter"
         },
@@ -394,22 +394,22 @@
       "end": "2026-12-31T00:00:00Z",
       "events": [
         {
-          "t": "2026-02-17T12:12:00Z",
+          "t": "2026-02-17T12:11:56Z",
           "kind": "solar_eclipse",
           "detail": "annular, gamma 0.97"
         },
         {
-          "t": "2026-03-03T11:33:42Z",
+          "t": "2026-03-03T11:33:43Z",
           "kind": "lunar_eclipse",
           "detail": "total, mag 1.15"
         },
         {
-          "t": "2026-08-12T17:45:53Z",
+          "t": "2026-08-12T17:45:56Z",
           "kind": "solar_eclipse",
           "detail": "total, gamma 0.90"
         },
         {
-          "t": "2026-08-28T04:12:54Z",
+          "t": "2026-08-28T04:12:55Z",
           "kind": "lunar_eclipse",
           "detail": "partial, mag 0.93"
         }
@@ -512,7 +512,7 @@
           "pos": "14°24'Cap",
           "house": 6,
           "rx": true,
-          "speed": -0.06
+          "speed": -0.07
         }
       },
       "angles": {
@@ -546,7 +546,7 @@
           "a": "moon",
           "b": "mars",
           "aspect": "square",
-          "orb": 5.77
+          "orb": 5.78
         },
         {
           "a": "moon",
@@ -770,10 +770,10 @@
         },
         "true_node": {
           "lon": 123.95,
-          "pos": "3°56'Leo",
+          "pos": "3°57'Leo",
           "house": 5,
           "rx": true,
-          "speed": -0.06
+          "speed": -0.05
         }
       },
       "angles": {
@@ -940,7 +940,7 @@
           "rx": true
         },
         "true_node": {
-          "pos": "2°43'Psc",
+          "pos": "2°44'Psc",
           "natal_house": 7,
           "rx": true
         }
@@ -971,7 +971,7 @@
           "t": "moon",
           "n": "true_node",
           "aspect": "square",
-          "orb": 1.17,
+          "orb": 1.18,
           "applying": false
         },
         {
@@ -1090,7 +1090,7 @@
           "t": "pluto",
           "n": "true_node",
           "aspect": "conjunction",
-          "orb": 2.91,
+          "orb": 2.92,
           "applying": false
         }
       ]
@@ -1193,11 +1193,11 @@
             "speed": -0.05
           },
           "true_node": {
-            "lon": 308.13,
+            "lon": 308.14,
             "pos": "8°08'Aqr",
             "house": 6,
             "rx": true,
-            "speed": -0.06
+            "speed": -0.07
           }
         },
         "angles": {
@@ -1231,7 +1231,7 @@
             "a": "moon",
             "b": "mars",
             "aspect": "square",
-            "orb": 5.77
+            "orb": 5.78
           },
           {
             "a": "moon",
@@ -2979,11 +2979,11 @@
           "speed": -0.05
         },
         "true_node": {
-          "lon": 287.95,
+          "lon": 287.94,
           "pos": "17°56'Cap",
           "house": 7,
           "rx": true,
-          "speed": -0.1
+          "speed": -0.09
         }
       },
       "angles": {
