@@ -5,6 +5,29 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.8.0 — 2026-06-13
+
+A turbo evaluation tier and the phase-2 MCP surface. No breaking changes to the
+0.7.x surface; the position conformance suite is unchanged at 3,218 checks.
+
+### Engine (`caelus`)
+
+- Turbo tier (`Turbo`): a segmented Chebyshev representation of the engine's
+  apparent longitude, fit to the engine itself, so a longitude costs a couple of
+  dozen multiply-adds. About 580x faster than the full engine, reproducing it to
+  under 0.01" for the planets and ~0.03" for the Moon. The pack is a
+  mint-it-for-your-range artifact; `fit_turbo.py` mints one with a pure-Python
+  fit (no numpy). The TS evaluator is bit-identical to the Python reference,
+  pinned by `test/turbo-golden.json` (110 cases, worst diff 0).
+
+### MCP server (`caelus-mcp`)
+
+- Resources: `caelus://glossary` (aspect angles and default orbs, signs, bodies,
+  the twelve house systems, essential dignities) and `caelus://accuracy` (the
+  validation table vs Swiss Ephemeris and JPL Horizons).
+- Prompt: `rectification_session`, a multi-turn script around
+  `rectification_grid` and `find_aspect_dates`.
+
 ## 0.7.0 — 2026-06-13
 
 A derived-charts layer: standard astrological derivations computed on the
