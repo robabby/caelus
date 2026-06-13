@@ -43,7 +43,7 @@ def _parse_vector_block(text):
     return jds, xs, ys, zs
 
 
-def _fetch_range(jd0, jd1, step_days=1.0, command=CHIRON):
+def _fetch_range(jd0, jd1, step_days=1.0, command=CHIRON, center="@sun"):
     """Download a JD range via START_TIME/STOP_TIME (one API call)."""
     params = {
         "format": "text",
@@ -51,7 +51,7 @@ def _fetch_range(jd0, jd1, step_days=1.0, command=CHIRON):
         "OBJ_DATA": "NO",
         "MAKE_EPHEM": "YES",
         "EPHEM_TYPE": "VECTOR",
-        "CENTER": "'@sun'",
+        "CENTER": f"'{center}'",
         "REF_PLANE": "'ECLIPTIC'",
         "START_TIME": f"'JD{jd0:.9f}'",
         "STOP_TIME": f"'JD{jd1:.9f}'",
@@ -103,10 +103,11 @@ class HorizonsCache:
     command: Horizons COMMAND (e.g. "2060" Chiron, "1;" Ceres -- the
     semicolon marks a small-body record number); label: provenance name."""
 
-    def __init__(self, path, command=CHIRON, label="2060 Chiron"):
+    def __init__(self, path, command=CHIRON, label="2060 Chiron", center="@sun"):
         self.path = path
         self.command = command
         self.label = label
+        self.center = center
         self._jds = None
         self._xs = None
         self._ys = None
@@ -143,7 +144,7 @@ class HorizonsCache:
         for i in range(nchunks):
             t1 = min(t + chunk, hi)
             print(f"  range {i + 1}/{nchunks}: JD {t:.1f} .. {t1:.1f}")
-            jds, xs, ys, zs = _fetch_range(t, t1, step, command=self.command)
+            jds, xs, ys, zs = _fetch_range(t, t1, step, command=self.command, center=self.center)
             jds_all.extend(jds)
             xs_all.extend(xs)
             ys_all.extend(ys)
