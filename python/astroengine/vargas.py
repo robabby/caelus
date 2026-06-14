@@ -29,7 +29,26 @@ from .chart import SIGNS
 # Element start sign for the navamsa (fire, earth, air, water by rasi % 4).
 _NAVAMSA_START = [0, 9, 6, 3]
 # Supported divisions.
-VARGA_DIVISIONS = [1, 3, 9, 10, 12]
+VARGA_DIVISIONS = [1, 3, 9, 10, 12, 30]
+
+# Trimsamsa (D30): five unequal degree-bands per sign, each ruled by a
+# non-luminary and mapping to that ruler's sign of the same gender. Odd signs:
+# Mars 0-5 -> Aries, Saturn 5-10 -> Aquarius, Jupiter 10-18 -> Sagittarius,
+# Mercury 18-25 -> Gemini, Venus 25-30 -> Libra. Even signs reverse the order
+# with the planets' even signs: Venus 0-5 -> Taurus, Mercury 5-12 -> Virgo,
+# Jupiter 12-20 -> Pisces, Saturn 20-25 -> Capricorn, Mars 25-30 -> Scorpio.
+# Each is (upper-degree-bound, result sign index).
+_TRIMSAMSA_ODD = [(5.0, 0), (10.0, 10), (18.0, 8), (25.0, 2), (30.0, 6)]
+_TRIMSAMSA_EVEN = [(5.0, 1), (12.0, 5), (20.0, 11), (25.0, 9), (30.0, 7)]
+
+
+def _trimsamsa(rasi, within):
+    """The (sign index, band 1..5) of a degree `within` an odd or even sign."""
+    bands = _TRIMSAMSA_ODD if rasi % 2 == 0 else _TRIMSAMSA_EVEN
+    for i, (hi, sign) in enumerate(bands):
+        if within < hi:
+            return sign, i + 1
+    return bands[-1][1], 5
 
 
 def _varga_sign(rasi, div, n):
@@ -48,16 +67,20 @@ def _varga_sign(rasi, div, n):
 
 def varga(sidereal_lon, n):
     """The varga D-n placement of a sidereal longitude: the rasi (D1 sign), the
-    division (1..n), and the resulting varga sign."""
+    division (1..n; 1..5 for the trimsamsa D30), and the resulting varga sign."""
     lon = sidereal_lon % 360.0
     rasi = math.floor(lon / 30.0) % 12
     within = lon - rasi * 30.0
-    div = math.floor(within / (30.0 / n))
-    if div >= n:                       # guard a boundary rounding to n
-        div = n - 1
-    s = _varga_sign(rasi, div, n)
+    if n == 30:                        # trimsamsa: unequal bands
+        s, division = _trimsamsa(rasi, within)
+    else:
+        div = math.floor(within / (30.0 / n))
+        if div >= n:                   # guard a boundary rounding to n
+            div = n - 1
+        s = _varga_sign(rasi, div, n)
+        division = div + 1
     return {"varga": n, "rasi": SIGNS[rasi], "rasi_index": rasi,
-            "sign": SIGNS[s], "sign_index": s, "division": div + 1}
+            "sign": SIGNS[s], "sign_index": s, "division": division}
 
 
 def varga_at(engine, jd_ut, n, body="moon", zodiac="sidereal:lahiri"):

@@ -85,6 +85,10 @@ const want = (lon: number, n: number, sign: string, id: string) => {
   want(1, 10, "Aries", "das-aries"); want(31, 10, "Capricorn", "das-taurus");
   // D12 dwadasamsa: from the sign itself
   want(1, 12, "Aries", "dwad-aries");
+  // D30 trimsamsa: odd-sign bands (Mars->Aries, Saturn->Aquarius, Jupiter->Sagittarius);
+  // even-sign bands (Venus->Taurus, Mercury->Virgo)
+  want(3, 30, "Aries", "tri-mars"); want(7, 30, "Aquarius", "tri-saturn"); want(15, 30, "Sagittarius", "tri-jupiter");
+  want(33, 30, "Taurus", "tri-venus-even"); want(38, 30, "Virgo", "tri-mercury-even");
   // D1 is always the rasi; division always within 1..n
   for (const lon of [0, 17, 123.4, 359.9]) for (const n of V.VARGA_DIVISIONS) {
     const v = V.varga(lon, n);

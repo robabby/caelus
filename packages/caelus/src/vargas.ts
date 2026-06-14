@@ -18,7 +18,20 @@ import { Engine, BodyId, BODIES, SIGNS, Zodiac } from "./chart.js";
 /** Element start sign for the navamsa (fire, earth, air, water by rasi % 4). */
 const NAVAMSA_START = [0, 9, 6, 3];
 /** Supported divisions. */
-export const VARGA_DIVISIONS = [1, 3, 9, 10, 12] as const;
+export const VARGA_DIVISIONS = [1, 3, 9, 10, 12, 30] as const;
+
+// Trimsamsa (D30): five unequal degree-bands per sign mapping to a non-luminary's
+// sign. Odd: Mars 0-5 -> Aries, Saturn 5-10 -> Aquarius, Jupiter 10-18 ->
+// Sagittarius, Mercury 18-25 -> Gemini, Venus 25-30 -> Libra. Even reverses with
+// the planets' even signs. Each is [upper-degree-bound, result sign index].
+const TRIMSAMSA_ODD: Array<[number, number]> = [[5, 0], [10, 10], [18, 8], [25, 2], [30, 6]];
+const TRIMSAMSA_EVEN: Array<[number, number]> = [[5, 1], [12, 5], [20, 11], [25, 9], [30, 7]];
+
+function trimsamsa(rasi: number, within: number): [number, number] {
+  const bands = rasi % 2 === 0 ? TRIMSAMSA_ODD : TRIMSAMSA_EVEN;
+  for (let i = 0; i < bands.length; i++) if (within < bands[i][0]) return [bands[i][1], i + 1];
+  return [bands[bands.length - 1][1], 5];
+}
 
 function vargaSign(rasi: number, div: number, n: number): number {
   switch (n) {
@@ -45,10 +58,17 @@ export function varga(siderealLon: number, n: number): Varga {
   const lon = ((siderealLon % 360) + 360) % 360;
   const rasi = Math.floor(lon / 30) % 12;
   const within = lon - rasi * 30;
-  let div = Math.floor(within / (30 / n));
-  if (div >= n) div = n - 1; // guard a boundary rounding to n
-  const s = vargaSign(rasi, div, n);
-  return { varga: n, rasi: SIGNS[rasi], rasi_index: rasi, sign: SIGNS[s], sign_index: s, division: div + 1 };
+  let s: number;
+  let division: number;
+  if (n === 30) { // trimsamsa: unequal bands
+    [s, division] = trimsamsa(rasi, within);
+  } else {
+    let div = Math.floor(within / (30 / n));
+    if (div >= n) div = n - 1; // guard a boundary rounding to n
+    s = vargaSign(rasi, div, n);
+    division = div + 1;
+  }
+  return { varga: n, rasi: SIGNS[rasi], rasi_index: rasi, sign: SIGNS[s], sign_index: s, division };
 }
 
 /** The varga D-n of a body (default the Moon) at jd, in a sidereal zodiac. */

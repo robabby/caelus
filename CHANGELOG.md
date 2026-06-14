@@ -6,6 +6,27 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## Unreleased
+
+Working through the deferred-technique resolution plan (ROADMAP).
+
+### Engine (`caelus`)
+
+- Trimsamsa (D30) divisional chart: the BPHS unequal five-band rule (odd signs
+  Mars 5 / Saturn 5 / Jupiter 8 / Mercury 7 / Venus 5 -> their odd signs; even
+  signs reversed -> their even signs). `varga(lon, 30)` and `vargaChart(..., 30)`;
+  `vargas-golden` pin plus a band oracle and a cited entry in the new Jyotish
+  reference.
+
+### Validation
+
+- `validate_jyotish` tier (`python/validate_jyotish.py` + `jyotish-reference.json`):
+  pins the Vedic technique *conventions* to named authorities (BPHS;
+  PyJHora/PVR Rao for variant cases) by replaying a committed, per-check-cited
+  reference set, the way positions are pinned to Swiss Ephemeris and JPL
+  Horizons. Runs no external tool (stays swisseph-free); grows as deferred
+  techniques land. Documented in ARCHITECTURE.md.
+
 ## 0.13.0 — 2026-06-14
 
 A feature release across all four packages. The engine completes Phase 1 — the
