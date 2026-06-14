@@ -89,7 +89,7 @@ export default function Features() {
         planetary angle lines, plus a graphic ephemeris of any value over time.
         The 3D aspect angle accounts for latitude rather than longitude alone.
         Every view renders to SSR-safe SVG with no runtime dependencies. See{" "}
-        <A href="/docs/architecture">Architecture</A>.
+        <A href="/docs/visualizations">Visualizations</A>.
       </P>
 
       <H2>Packages</H2>
