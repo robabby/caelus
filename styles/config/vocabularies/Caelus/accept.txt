@@ -138,6 +138,8 @@ dwadasamsa
 [Tt]ara
 [Dd]rishti
 [Tt]rikona
+[Pp]romissors?
+[Ss]ignificators?
 Ashtottari
 Narasimha
 Rao
