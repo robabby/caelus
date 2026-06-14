@@ -170,11 +170,11 @@ default):
   with, the Moon) as `kemadruma`/`kemadrumaAt`, with the planet set parameterized
   (`includeSun`/`includeNodes`, default the five tara grahas) and cited checks;
   kemadruma-bhanga (cancellation) remains a possible later flag.
-- **Lordship-based raja/dhana yogas** (the large, high-leverage build): a
-  foundation layer first — house lordship, **graha drishti** (all planets the
-  7th; Mars 4/8, Jupiter 5/9, Saturn 3/10), and association primitives
-  (conjunction / mutual aspect / parivartana) — then the named yogas pinned to
-  BPHS + the oracle. The foundation unlocks a whole class of future yogas.
+- **Lordship-based raja/dhana yogas — done**: the foundation layer (house
+  lordship, graha drishti, association primitives) plus `rajaYogas`/`dhanaYogas`/
+  `yogakarakas` and their `*At` wrappers; `rajayoga-golden` pin + drishti/
+  yogakaraka/raja oracles, cited in `validate_jyotish`. The foundation unlocks a
+  class of future yogas.
 
 Order: (1) `validate_jyotish` tier; (2) trimsamsa + hora + kemadruma; (3)
 Ashtottari; (4) lordship + drishti layer → raja/dhana yogas; (5) inter-planetary

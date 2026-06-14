@@ -22,7 +22,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from astroengine.chart import Engine
-from astroengine import vedic, yogini, vargas, yogas, ashtottari
+from astroengine import vedic, yogini, vargas, yogas, ashtottari, rajayoga
 
 HERE = os.path.dirname(__file__)
 REF = os.path.join(HERE, "jyotish-reference.json")
@@ -49,6 +49,13 @@ def check(c):
                                include_nodes=c.get("include_nodes", False))["present"] == c["expect"]
     if t == "ashtottari_lord":
         return ashtottari.ashtottari_lord(c["nak"]) == c["expect"]
+    if t == "drishti":
+        return rajayoga.aspects_sign(c["planet"], c["ps"], c["ts"]) == c["expect"]
+    if t == "yogakaraka":
+        return rajayoga.yogakarakas(c["asc"]) == c["expect"]
+    if t == "raja_present":
+        pairs = [tuple(y["lords"]) for y in rajayoga.raja_yogas(c["signs"], c["asc"])]
+        return tuple(sorted(c["pair"])) in pairs
     raise ValueError(f"unknown technique {t}")
 
 

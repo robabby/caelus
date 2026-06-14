@@ -1,0 +1,289 @@
+{
+ "basis": "Python reference astroengine.rajayoga (embedded VSOP, full moon); BPHS lordship/drishti, Lahiri ayanamsa",
+ "cases": [
+  {
+   "id": "drishti-mars-4",
+   "spec": {
+    "id": "drishti-mars-4",
+    "type": "drishti",
+    "planet": "mars",
+    "ps": 0,
+    "ts": 3
+   },
+   "result": {
+    "aspects": true
+   }
+  },
+  {
+   "id": "drishti-mars-8",
+   "spec": {
+    "id": "drishti-mars-8",
+    "type": "drishti",
+    "planet": "mars",
+    "ps": 0,
+    "ts": 7
+   },
+   "result": {
+    "aspects": true
+   }
+  },
+  {
+   "id": "drishti-jup-5",
+   "spec": {
+    "id": "drishti-jup-5",
+    "type": "drishti",
+    "planet": "jupiter",
+    "ps": 0,
+    "ts": 4
+   },
+   "result": {
+    "aspects": true
+   }
+  },
+  {
+   "id": "drishti-sat-3",
+   "spec": {
+    "id": "drishti-sat-3",
+    "type": "drishti",
+    "planet": "saturn",
+    "ps": 0,
+    "ts": 2
+   },
+   "result": {
+    "aspects": true
+   }
+  },
+  {
+   "id": "drishti-sun-7",
+   "spec": {
+    "id": "drishti-sun-7",
+    "type": "drishti",
+    "planet": "sun",
+    "ps": 0,
+    "ts": 6
+   },
+   "result": {
+    "aspects": true
+   }
+  },
+  {
+   "id": "drishti-sun-no",
+   "spec": {
+    "id": "drishti-sun-no",
+    "type": "drishti",
+    "planet": "sun",
+    "ps": 0,
+    "ts": 3
+   },
+   "result": {
+    "aspects": false
+   }
+  },
+  {
+   "id": "pari",
+   "spec": {
+    "id": "pari",
+    "type": "parivartana",
+    "pa": "mars",
+    "sa": 1,
+    "pb": "venus",
+    "sb": 0
+   },
+   "result": {
+    "exchange": true
+   }
+  },
+  {
+   "id": "assoc-conj",
+   "spec": {
+    "id": "assoc-conj",
+    "type": "assoc",
+    "pa": "moon",
+    "sa": 3,
+    "pb": "sun",
+    "sb": 3
+   },
+   "result": {
+    "via": "conjunction"
+   }
+  },
+  {
+   "id": "assoc-aspect",
+   "spec": {
+    "id": "assoc-aspect",
+    "type": "assoc",
+    "pa": "mars",
+    "sa": 0,
+    "pb": "saturn",
+    "sb": 6
+   },
+   "result": {
+    "via": "aspect"
+   }
+  },
+  {
+   "id": "yk-taurus",
+   "spec": {
+    "id": "yk-taurus",
+    "type": "yogakaraka",
+    "asc": 1
+   },
+   "result": {
+    "yogakarakas": [
+     "saturn"
+    ]
+   }
+  },
+  {
+   "id": "yk-aries",
+   "spec": {
+    "id": "yk-aries",
+    "type": "yogakaraka",
+    "asc": 0
+   },
+   "result": {
+    "yogakarakas": []
+   }
+  },
+  {
+   "id": "yk-cancer",
+   "spec": {
+    "id": "yk-cancer",
+    "type": "yogakaraka",
+    "asc": 3
+   },
+   "result": {
+    "yogakarakas": [
+     "mars"
+    ]
+   }
+  },
+  {
+   "id": "raja-conj",
+   "spec": {
+    "id": "raja-conj",
+    "type": "raja",
+    "asc": 0,
+    "signs": {
+     "sun": 3,
+     "moon": 3,
+     "mars": 0,
+     "mercury": 5,
+     "jupiter": 8,
+     "venus": 6,
+     "saturn": 9
+    }
+   },
+   "result": [
+    {
+     "lords": [
+      "mars",
+      "venus"
+     ],
+     "via": "aspect"
+    },
+    {
+     "lords": [
+      "moon",
+      "sun"
+     ],
+     "via": "conjunction"
+    },
+    {
+     "lords": [
+      "saturn",
+      "sun"
+     ],
+     "via": "aspect"
+    }
+   ]
+  },
+  {
+   "id": "dhana-conj",
+   "spec": {
+    "id": "dhana-conj",
+    "type": "dhana",
+    "asc": 0,
+    "signs": {
+     "sun": 4,
+     "moon": 1,
+     "mars": 1,
+     "mercury": 7,
+     "jupiter": 10,
+     "venus": 4,
+     "saturn": 2
+    }
+   },
+   "result": [
+    {
+     "lords": [
+      "jupiter",
+      "sun"
+     ],
+     "via": "aspect"
+    },
+    {
+     "lords": [
+      "jupiter",
+      "venus"
+     ],
+     "via": "aspect"
+    },
+    {
+     "lords": [
+      "sun",
+      "venus"
+     ],
+     "via": "conjunction"
+    }
+   ]
+  },
+  {
+   "id": "raja-tampa",
+   "spec": {
+    "id": "raja-tampa",
+    "type": "raja_at",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "lat": 27.95,
+    "lon": -82.46
+   },
+   "result": {
+    "raja": [
+     {
+      "lords": [
+       "jupiter",
+       "moon"
+      ],
+      "via": "aspect"
+     }
+    ],
+    "yogakarakas": [
+     "mars"
+    ]
+   }
+  },
+  {
+   "id": "dhana-tampa",
+   "spec": {
+    "id": "dhana-tampa",
+    "type": "dhana_at",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "lat": 27.95,
+    "lon": -82.46
+   },
+   "result": []
+  }
+ ]
+}

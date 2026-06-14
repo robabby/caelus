@@ -25,3 +25,4 @@ export * from "./vargas.js";
 export * from "./yogini.js";
 export * from "./yogas.js";
 export * from "./ashtottari.js";
+export * from "./rajayoga.js";

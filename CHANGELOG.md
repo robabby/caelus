@@ -33,6 +33,16 @@ Working through the deferred-technique resolution plan (ROADMAP).
   guessed. `ashtottariDashas`/`ashtottariActive`/`ashtottariAt`/`ashtottariLord`.
   Python reference + `ashtottari-golden` pin (108-year-total, tiling, and mapping
   invariants) + cited `validate_jyotish` checks.
+- Lordship + graha-drishti layer and the raja/dhana yogas (deferred-plan Bucket
+  B, the large build): house lordship (`houseLord`/`signLord`/`houseSign`),
+  Vedic aspects (`aspectsSign` — every planet the 7th, Mars 4/8, Jupiter 5/9,
+  Saturn 3/10), and association primitives (`associationType`/`parivartana`:
+  conjunction / mutual aspect / exchange). On top: `rajaYogas` (kendra lord
+  associated with a trikona lord), `dhanaYogas` (two wealth-house 2/5/9/11
+  lords), and `yogakarakas` (a planet ruling both a pure kendra and trikona),
+  with `rajaYogasAt`/`dhanaYogasAt`. The foundation unlocks a class of future
+  yogas. `rajayoga-golden` pin + drishti/yogakaraka/raja oracles, cited in
+  `validate_jyotish` (BPHS).
 
 ### Validation
 

@@ -43,6 +43,8 @@ jobs:
       - run: node packages/caelus/dist/test/yogas-golden.test.js
       # Ashtottari dasha (108-year conditional): TS port must match the reference
       - run: node packages/caelus/dist/test/ashtottari-golden.test.js
+      # raja/dhana yogas (lordship + drishti): TS port must match the reference
+      - run: node packages/caelus/dist/test/rajayoga-golden.test.js
       # scan / rankMoments ergonomics: deterministic unit checks (TS-only layer)
       - run: node packages/caelus/dist/test/scan.test.js
       # spherical geometry (3D aspects): TS port must match the Python reference

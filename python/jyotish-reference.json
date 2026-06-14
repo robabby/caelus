@@ -21,6 +21,10 @@
     {"technique": "kemadruma", "signs": {"sun": 8, "moon": 0, "mars": 3, "mercury": 4, "jupiter": 5, "venus": 6, "saturn": 7}, "expect": true, "source": "BPHS Kemadruma: no graha in the 2nd/12th from, or with, the Moon", "note": "isolated Moon -> Kemadruma"},
     {"technique": "kemadruma", "signs": {"sun": 8, "moon": 0, "mars": 1, "mercury": 4, "jupiter": 5, "venus": 6, "saturn": 7}, "expect": false, "source": "BPHS Kemadruma: a graha in the 2nd from the Moon cancels it", "note": "Mars in the 2nd -> no Kemadruma"},
     {"technique": "ashtottari_lord", "nak": 6, "expect": "sun", "source": "PyJHora/PVR Rao Ashtottari: Punarvasu group -> Sun", "note": "JHora convention"},
-    {"technique": "ashtottari_lord", "nak": 0, "expect": "rahu", "source": "PyJHora/PVR Rao Ashtottari: Rahu group wraps to Ashwini", "note": "JHora convention"}
+    {"technique": "ashtottari_lord", "nak": 0, "expect": "rahu", "source": "PyJHora/PVR Rao Ashtottari: Rahu group wraps to Ashwini", "note": "JHora convention"},
+    {"technique": "drishti", "planet": "mars", "ps": 0, "ts": 3, "expect": true, "source": "BPHS graha drishti: Mars aspects the 4th", "note": "Mars 4th aspect"},
+    {"technique": "drishti", "planet": "jupiter", "ps": 0, "ts": 8, "expect": true, "source": "BPHS graha drishti: Jupiter aspects the 9th", "note": "Jupiter 9th aspect"},
+    {"technique": "yogakaraka", "asc": 1, "expect": ["saturn"], "source": "BPHS: Saturn is the yogakaraka for Taurus lagna (rules the 9th and 10th)", "note": "Taurus yogakaraka"},
+    {"technique": "raja_present", "asc": 0, "signs": {"sun": 3, "moon": 3, "mars": 0, "mercury": 5, "jupiter": 8, "venus": 6, "saturn": 9}, "pair": ["moon", "sun"], "source": "BPHS raja yoga: kendra lord (4th=Moon) conjunct trikona lord (5th=Sun)", "note": "Aries lagna raja yoga"}
   ]
 }
