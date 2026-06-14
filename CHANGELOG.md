@@ -48,6 +48,14 @@ current figures live in `packages/caelus/accuracy.json` and on
   120-year-total and antardasha-tiling invariants. Floor division uses
   `math.floor` in the reference so sign/nakshatra boundaries match JavaScript
   bit for bit (Python `//` buckets exact boundaries differently).
+- Vargas / divisional charts (Roadmap Phase 2): the textbook Parashari set —
+  D1 (rasi), D3 (drekkana), D9 (navamsa), D10 (dasamsa), D12 (dwadasamsa). The
+  contested hora (D2) and unequal trimsamsa (D30) are deferred until their
+  conventions are pinned. `varga` (placement of a longitude), `vargaAt` (of a
+  body), and `vargaChart` (the full divisional chart). Computed from
+  rasi + division (boundary-robust) over the validated sidereal longitudes;
+  `vargas-golden` pin plus a textbook-placement oracle (navamsa
+  Aries->Aries / Taurus->Capricorn, drekkana +4/+8, dasamsa odd/even).
 - Primary directions to the angles (Roadmap Phase 1, completing it):
   `directionArcs` (direct arcs of a body to MC/IC/Asc/Desc by the Placidus
   semi-arc, via the ascensional difference) and `primaryDirections` (the bodies'

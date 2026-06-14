@@ -1,0 +1,1035 @@
+{
+ "basis": "Python reference astroengine.vargas (embedded VSOP, full moon); Lahiri ayanamsa",
+ "cases": [
+  {
+   "id": "v1-0.0",
+   "spec": {
+    "id": "v1-0.0",
+    "type": "varga",
+    "lon": 0.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-0.0",
+   "spec": {
+    "id": "v3-0.0",
+    "type": "varga",
+    "lon": 0.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v9-0.0",
+   "spec": {
+    "id": "v9-0.0",
+    "type": "varga",
+    "lon": 0.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v10-0.0",
+   "spec": {
+    "id": "v10-0.0",
+    "type": "varga",
+    "lon": 0.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v12-0.0",
+   "spec": {
+    "id": "v12-0.0",
+    "type": "varga",
+    "lon": 0.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v1-5.0",
+   "spec": {
+    "id": "v1-5.0",
+    "type": "varga",
+    "lon": 5.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-5.0",
+   "spec": {
+    "id": "v3-5.0",
+    "type": "varga",
+    "lon": 5.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v9-5.0",
+   "spec": {
+    "id": "v9-5.0",
+    "type": "varga",
+    "lon": 5.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Taurus",
+    "sign_index": 1,
+    "division": 2
+   }
+  },
+  {
+   "id": "v10-5.0",
+   "spec": {
+    "id": "v10-5.0",
+    "type": "varga",
+    "lon": 5.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Taurus",
+    "sign_index": 1,
+    "division": 2
+   }
+  },
+  {
+   "id": "v12-5.0",
+   "spec": {
+    "id": "v12-5.0",
+    "type": "varga",
+    "lon": 5.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Gemini",
+    "sign_index": 2,
+    "division": 3
+   }
+  },
+  {
+   "id": "v1-15.0",
+   "spec": {
+    "id": "v1-15.0",
+    "type": "varga",
+    "lon": 15.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-15.0",
+   "spec": {
+    "id": "v3-15.0",
+    "type": "varga",
+    "lon": 15.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 2
+   }
+  },
+  {
+   "id": "v9-15.0",
+   "spec": {
+    "id": "v9-15.0",
+    "type": "varga",
+    "lon": 15.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 5
+   }
+  },
+  {
+   "id": "v10-15.0",
+   "spec": {
+    "id": "v10-15.0",
+    "type": "varga",
+    "lon": 15.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Virgo",
+    "sign_index": 5,
+    "division": 6
+   }
+  },
+  {
+   "id": "v12-15.0",
+   "spec": {
+    "id": "v12-15.0",
+    "type": "varga",
+    "lon": 15.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Libra",
+    "sign_index": 6,
+    "division": 7
+   }
+  },
+  {
+   "id": "v1-25.0",
+   "spec": {
+    "id": "v1-25.0",
+    "type": "varga",
+    "lon": 25.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-25.0",
+   "spec": {
+    "id": "v3-25.0",
+    "type": "varga",
+    "lon": 25.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Sagittarius",
+    "sign_index": 8,
+    "division": 3
+   }
+  },
+  {
+   "id": "v9-25.0",
+   "spec": {
+    "id": "v9-25.0",
+    "type": "varga",
+    "lon": 25.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Scorpio",
+    "sign_index": 7,
+    "division": 8
+   }
+  },
+  {
+   "id": "v10-25.0",
+   "spec": {
+    "id": "v10-25.0",
+    "type": "varga",
+    "lon": 25.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Sagittarius",
+    "sign_index": 8,
+    "division": 9
+   }
+  },
+  {
+   "id": "v12-25.0",
+   "spec": {
+    "id": "v12-25.0",
+    "type": "varga",
+    "lon": 25.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aquarius",
+    "sign_index": 10,
+    "division": 11
+   }
+  },
+  {
+   "id": "v1-30.0",
+   "spec": {
+    "id": "v1-30.0",
+    "type": "varga",
+    "lon": 30.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Taurus",
+    "rasi_index": 1,
+    "sign": "Taurus",
+    "sign_index": 1,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-30.0",
+   "spec": {
+    "id": "v3-30.0",
+    "type": "varga",
+    "lon": 30.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Taurus",
+    "rasi_index": 1,
+    "sign": "Taurus",
+    "sign_index": 1,
+    "division": 1
+   }
+  },
+  {
+   "id": "v9-30.0",
+   "spec": {
+    "id": "v9-30.0",
+    "type": "varga",
+    "lon": 30.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Taurus",
+    "rasi_index": 1,
+    "sign": "Capricorn",
+    "sign_index": 9,
+    "division": 1
+   }
+  },
+  {
+   "id": "v10-30.0",
+   "spec": {
+    "id": "v10-30.0",
+    "type": "varga",
+    "lon": 30.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Taurus",
+    "rasi_index": 1,
+    "sign": "Capricorn",
+    "sign_index": 9,
+    "division": 1
+   }
+  },
+  {
+   "id": "v12-30.0",
+   "spec": {
+    "id": "v12-30.0",
+    "type": "varga",
+    "lon": 30.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Taurus",
+    "rasi_index": 1,
+    "sign": "Taurus",
+    "sign_index": 1,
+    "division": 1
+   }
+  },
+  {
+   "id": "v1-120.0",
+   "spec": {
+    "id": "v1-120.0",
+    "type": "varga",
+    "lon": 120.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Leo",
+    "rasi_index": 4,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-120.0",
+   "spec": {
+    "id": "v3-120.0",
+    "type": "varga",
+    "lon": 120.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Leo",
+    "rasi_index": 4,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 1
+   }
+  },
+  {
+   "id": "v9-120.0",
+   "spec": {
+    "id": "v9-120.0",
+    "type": "varga",
+    "lon": 120.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Leo",
+    "rasi_index": 4,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v10-120.0",
+   "spec": {
+    "id": "v10-120.0",
+    "type": "varga",
+    "lon": 120.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Leo",
+    "rasi_index": 4,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 1
+   }
+  },
+  {
+   "id": "v12-120.0",
+   "spec": {
+    "id": "v12-120.0",
+    "type": "varga",
+    "lon": 120.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Leo",
+    "rasi_index": 4,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 1
+   }
+  },
+  {
+   "id": "v1-200.0",
+   "spec": {
+    "id": "v1-200.0",
+    "type": "varga",
+    "lon": 200.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Libra",
+    "rasi_index": 6,
+    "sign": "Libra",
+    "sign_index": 6,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-200.0",
+   "spec": {
+    "id": "v3-200.0",
+    "type": "varga",
+    "lon": 200.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Libra",
+    "rasi_index": 6,
+    "sign": "Gemini",
+    "sign_index": 2,
+    "division": 3
+   }
+  },
+  {
+   "id": "v9-200.0",
+   "spec": {
+    "id": "v9-200.0",
+    "type": "varga",
+    "lon": 200.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Libra",
+    "rasi_index": 6,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 7
+   }
+  },
+  {
+   "id": "v10-200.0",
+   "spec": {
+    "id": "v10-200.0",
+    "type": "varga",
+    "lon": 200.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Libra",
+    "rasi_index": 6,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 7
+   }
+  },
+  {
+   "id": "v12-200.0",
+   "spec": {
+    "id": "v12-200.0",
+    "type": "varga",
+    "lon": 200.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Libra",
+    "rasi_index": 6,
+    "sign": "Gemini",
+    "sign_index": 2,
+    "division": 9
+   }
+  },
+  {
+   "id": "v1-28.0",
+   "spec": {
+    "id": "v1-28.0",
+    "type": "varga",
+    "lon": 28.0,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Aries",
+    "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-28.0",
+   "spec": {
+    "id": "v3-28.0",
+    "type": "varga",
+    "lon": 28.0,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Sagittarius",
+    "sign_index": 8,
+    "division": 3
+   }
+  },
+  {
+   "id": "v9-28.0",
+   "spec": {
+    "id": "v9-28.0",
+    "type": "varga",
+    "lon": 28.0,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Sagittarius",
+    "sign_index": 8,
+    "division": 9
+   }
+  },
+  {
+   "id": "v10-28.0",
+   "spec": {
+    "id": "v10-28.0",
+    "type": "varga",
+    "lon": 28.0,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Capricorn",
+    "sign_index": 9,
+    "division": 10
+   }
+  },
+  {
+   "id": "v12-28.0",
+   "spec": {
+    "id": "v12-28.0",
+    "type": "varga",
+    "lon": 28.0,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Pisces",
+    "sign_index": 11,
+    "division": 12
+   }
+  },
+  {
+   "id": "v1-359.99",
+   "spec": {
+    "id": "v1-359.99",
+    "type": "varga",
+    "lon": 359.99,
+    "n": 1
+   },
+   "result": {
+    "varga": 1,
+    "rasi": "Pisces",
+    "rasi_index": 11,
+    "sign": "Pisces",
+    "sign_index": 11,
+    "division": 1
+   }
+  },
+  {
+   "id": "v3-359.99",
+   "spec": {
+    "id": "v3-359.99",
+    "type": "varga",
+    "lon": 359.99,
+    "n": 3
+   },
+   "result": {
+    "varga": 3,
+    "rasi": "Pisces",
+    "rasi_index": 11,
+    "sign": "Scorpio",
+    "sign_index": 7,
+    "division": 3
+   }
+  },
+  {
+   "id": "v9-359.99",
+   "spec": {
+    "id": "v9-359.99",
+    "type": "varga",
+    "lon": 359.99,
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Pisces",
+    "rasi_index": 11,
+    "sign": "Pisces",
+    "sign_index": 11,
+    "division": 9
+   }
+  },
+  {
+   "id": "v10-359.99",
+   "spec": {
+    "id": "v10-359.99",
+    "type": "varga",
+    "lon": 359.99,
+    "n": 10
+   },
+   "result": {
+    "varga": 10,
+    "rasi": "Pisces",
+    "rasi_index": 11,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 10
+   }
+  },
+  {
+   "id": "v12-359.99",
+   "spec": {
+    "id": "v12-359.99",
+    "type": "varga",
+    "lon": 359.99,
+    "n": 12
+   },
+   "result": {
+    "varga": 12,
+    "rasi": "Pisces",
+    "rasi_index": 11,
+    "sign": "Aquarius",
+    "sign_index": 10,
+    "division": 12
+   }
+  },
+  {
+   "id": "nav-moon",
+   "spec": {
+    "id": "nav-moon",
+    "type": "varga_at",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "n": 9
+   },
+   "result": {
+    "varga": 9,
+    "rasi": "Sagittarius",
+    "rasi_index": 8,
+    "sign": "Virgo",
+    "sign_index": 5,
+    "division": 6
+   }
+  },
+  {
+   "id": "d9-chart",
+   "spec": {
+    "id": "d9-chart",
+    "type": "chart",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "n": 9
+   },
+   "result": {
+    "sun": {
+     "varga": 9,
+     "rasi": "Taurus",
+     "rasi_index": 1,
+     "sign": "Leo",
+     "sign_index": 4,
+     "division": 8
+    },
+    "moon": {
+     "varga": 9,
+     "rasi": "Sagittarius",
+     "rasi_index": 8,
+     "sign": "Virgo",
+     "sign_index": 5,
+     "division": 6
+    },
+    "mercury": {
+     "varga": 9,
+     "rasi": "Taurus",
+     "rasi_index": 1,
+     "sign": "Aquarius",
+     "sign_index": 10,
+     "division": 2
+    },
+    "venus": {
+     "varga": 9,
+     "rasi": "Aries",
+     "rasi_index": 0,
+     "sign": "Virgo",
+     "sign_index": 5,
+     "division": 6
+    },
+    "mars": {
+     "varga": 9,
+     "rasi": "Pisces",
+     "rasi_index": 11,
+     "sign": "Scorpio",
+     "sign_index": 7,
+     "division": 5
+    },
+    "jupiter": {
+     "varga": 9,
+     "rasi": "Gemini",
+     "rasi_index": 2,
+     "sign": "Aries",
+     "sign_index": 0,
+     "division": 7
+    },
+    "saturn": {
+     "varga": 9,
+     "rasi": "Capricorn",
+     "rasi_index": 9,
+     "sign": "Capricorn",
+     "sign_index": 9,
+     "division": 1
+    },
+    "uranus": {
+     "varga": 9,
+     "rasi": "Sagittarius",
+     "rasi_index": 8,
+     "sign": "Leo",
+     "sign_index": 4,
+     "division": 5
+    },
+    "neptune": {
+     "varga": 9,
+     "rasi": "Sagittarius",
+     "rasi_index": 8,
+     "sign": "Libra",
+     "sign_index": 6,
+     "division": 7
+    },
+    "pluto": {
+     "varga": 9,
+     "rasi": "Libra",
+     "rasi_index": 6,
+     "sign": "Aries",
+     "sign_index": 0,
+     "division": 7
+    },
+    "chiron": {
+     "varga": 9,
+     "rasi": "Gemini",
+     "rasi_index": 2,
+     "sign": "Aries",
+     "sign_index": 0,
+     "division": 7
+    },
+    "mean_node": {
+     "varga": 9,
+     "rasi": "Capricorn",
+     "rasi_index": 9,
+     "sign": "Taurus",
+     "sign_index": 1,
+     "division": 5
+    },
+    "true_node": {
+     "varga": 9,
+     "rasi": "Capricorn",
+     "rasi_index": 9,
+     "sign": "Taurus",
+     "sign_index": 1,
+     "division": 5
+    }
+   }
+  },
+  {
+   "id": "d10-chart",
+   "spec": {
+    "id": "d10-chart",
+    "type": "chart",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "n": 10
+   },
+   "result": {
+    "sun": {
+     "varga": 10,
+     "rasi": "Taurus",
+     "rasi_index": 1,
+     "sign": "Virgo",
+     "sign_index": 5,
+     "division": 9
+    },
+    "moon": {
+     "varga": 10,
+     "rasi": "Sagittarius",
+     "rasi_index": 8,
+     "sign": "Gemini",
+     "sign_index": 2,
+     "division": 7
+    },
+    "mercury": {
+     "varga": 10,
+     "rasi": "Taurus",
+     "rasi_index": 1,
+     "sign": "Aquarius",
+     "sign_index": 10,
+     "division": 2
+    },
+    "venus": {
+     "varga": 10,
+     "rasi": "Aries",
+     "rasi_index": 0,
+     "sign": "Libra",
+     "sign_index": 6,
+     "division": 7
+    },
+    "mars": {
+     "varga": 10,
+     "rasi": "Pisces",
+     "rasi_index": 11,
+     "sign": "Pisces",
+     "sign_index": 11,
+     "division": 5
+    },
+    "jupiter": {
+     "varga": 10,
+     "rasi": "Gemini",
+     "rasi_index": 2,
+     "sign": "Capricorn",
+     "sign_index": 9,
+     "division": 8
+    },
+    "saturn": {
+     "varga": 10,
+     "rasi": "Capricorn",
+     "rasi_index": 9,
+     "sign": "Virgo",
+     "sign_index": 5,
+     "division": 1
+    },
+    "uranus": {
+     "varga": 10,
+     "rasi": "Sagittarius",
+     "rasi_index": 8,
+     "sign": "Aries",
+     "sign_index": 0,
+     "division": 5
+    },
+    "neptune": {
+     "varga": 10,
+     "rasi": "Sagittarius",
+     "rasi_index": 8,
+     "sign": "Gemini",
+     "sign_index": 2,
+     "division": 7
+    },
+    "pluto": {
+     "varga": 10,
+     "rasi": "Libra",
+     "rasi_index": 6,
+     "sign": "Taurus",
+     "sign_index": 1,
+     "division": 8
+    },
+    "chiron": {
+     "varga": 10,
+     "rasi": "Gemini",
+     "rasi_index": 2,
+     "sign": "Capricorn",
+     "sign_index": 9,
+     "division": 8
+    },
+    "mean_node": {
+     "varga": 10,
+     "rasi": "Capricorn",
+     "rasi_index": 9,
+     "sign": "Aquarius",
+     "sign_index": 10,
+     "division": 6
+    },
+    "true_node": {
+     "varga": 10,
+     "rasi": "Capricorn",
+     "rasi_index": 9,
+     "sign": "Capricorn",
+     "sign_index": 9,
+     "division": 5
+    }
+   }
+  }
+ ]
+}

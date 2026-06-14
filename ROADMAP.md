@@ -107,9 +107,12 @@ The sidereal foundation (seven ayanamsas) already exists; this adds the
 technique superstructure, in dependency order: **nakshatras (+padas) — done**
 and **Vimshottari dasha (maha/antar/pratyantar) — done** (`nakshatra`/
 `nakshatraAt`, `vimshottariDashas`/`vimshottariActive`/`vimshottariAt`;
-`vedic-golden` pin + 120-year-total and tiling invariants); next vargas
-(navamsa D9 first, then D10/D12/D30), then further dashas and core yogas. All
-deterministic arithmetic over the
+`vedic-golden` pin + 120-year-total and tiling invariants); **vargas — done**
+(`varga`/`vargaAt`/`vargaChart` for the textbook set D1/D3/D9/D10/D12, computed
+boundary-robustly from rasi+division; `vargas-golden` pin + textbook-placement
+oracle — the contested hora D2 and unequal trimsamsa D30 await their conventions
+being pinned); next further dashas and core yogas. All deterministic arithmetic
+over the
 SE-pinned sidereal longitudes; validated against established Jyotish references
 and published charts as golden fixtures, with ayanamsa/convention variants
 stated explicitly. Multi-release.

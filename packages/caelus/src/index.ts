@@ -21,3 +21,4 @@ export * from "./firdaria.js";
 export * from "./releasing.js";
 export * from "./vedic.js";
 export * from "./directions.js";
+export * from "./vargas.js";
