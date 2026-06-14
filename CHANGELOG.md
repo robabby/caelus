@@ -5,6 +5,28 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.11.0 — 2026-06-14
+
+Two engine layers that treat a chart as something to match and to synthesize.
+No breaking changes to the 0.10.x surface; the position conformance suite is
+unchanged at 3,218 checks, and two new cross-language goldens pin the additions
+to the Python reference.
+
+### Engine (`caelus`)
+
+- Chart feature space: `chartFeatures` maps the sky at an instant to a vector
+  (each body's longitude as a weighted unit-circle point), `cosineSimilarity`
+  and `configurationFit` measure how alike two configurations are, and
+  `searchConfigurations` ranks a time range by resemblance to a target form.
+  The deterministic substrate for matching, retrieving, and searching chart
+  configurations. Reference-first, pinned by `test/features-golden.json`.
+- Geometric compiler: `compileForm` inverts (time, place) -> chart. Given
+  weighted geometric constraints (`aspect`, `sign`, `degree`), it finds the
+  body longitudes that best satisfy them via deterministic coordinate descent,
+  reports the residual and worst constraint, and flags a form as `impossible`
+  when even the best fit is poor. `constraintLoss` and `formLoss` are the pure
+  loss functions. Reference-first, pinned by `test/compiler-golden.json`.
+
 ## 0.10.0 — 2026-06-14
 
 A visualization tranche: 3D chart spheres, astrocartography, and a graphic

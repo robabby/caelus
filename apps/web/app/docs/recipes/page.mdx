@@ -47,6 +47,50 @@ lunarPhases(engine, jd, jd + 90);   // [[jd, "full"], ...]
 stations(engine, "mercury", jd, jd + 365);`}
 />
 
+## Match a configuration
+
+A chart reduces to a feature vector, so you can score how closely the sky at any
+instant resembles a target form, and search a range for the best match.
+
+<CodeBlock
+  lang="typescript"
+  label="match.ts"
+  code={`import { chartFeatures, searchConfigurations, julianDay } from "caelus";
+
+// the feature vector of a target moment (say, a natal chart)
+const target = chartFeatures(engine, julianDay(1990, 6, 14, 12, 0));
+
+// rank the next year by resemblance to that configuration, best first
+const matches = searchConfigurations(engine, target, {
+  start: julianDay(2026, 1, 1),
+  end: julianDay(2027, 1, 1),
+  step: 1,        // days
+  limit: 5,
+});`}
+/>
+
+## Compile a form from constraints
+
+The compiler inverts (time, place) -> chart: give it geometric constraints and
+it finds the body longitudes that best satisfy them, flagging a form as
+impossible when even the best fit falls short.
+
+<CodeBlock
+  lang="typescript"
+  label="compile.ts"
+  code={`import { compileForm } from "caelus";
+
+const form = compileForm([
+  { kind: "aspect", a: "sun", b: "moon", angle: 120 }, // a trine
+  { kind: "sign", body: "mars", sign: 7 },             // Scorpio (0-indexed)
+  { kind: "degree", body: "venus", degree: 15 },
+]);
+
+form.longitudes;  // { sun, moon, mars, venus }
+form.residual;    // total weighted constraint loss, in degrees
+form.impossible;  // true when the worst constraint cannot be met`}
+/>
+
 ## Render a chart wheel
 
 `caelus-wheel` takes the chart object (or an MCP payload) and renders SSR-safe SVG.

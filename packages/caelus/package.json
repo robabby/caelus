@@ -1,6 +1,6 @@
 {
   "name": "caelus",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Astrological ephemeris engine. MIT, no AGPL, no ephemeris files. Checked against Swiss Ephemeris.",
   "type": "module",
   "main": "dist/src/index.js",

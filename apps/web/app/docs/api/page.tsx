@@ -47,6 +47,9 @@ const TIERS: ReadonlyArray<{
       ["pheno", "Function.pheno"],
       ["gauquelinSector", "Function.gauquelinSector"],
       ["deltaT", "Function.deltaT"],
+      ["chartFeatures", "Function.chartFeatures"],
+      ["searchConfigurations", "Function.searchConfigurations"],
+      ["compileForm", "Function.compileForm"],
     ],
   },
   {

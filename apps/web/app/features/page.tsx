@@ -82,6 +82,19 @@ export default function Features() {
         variant for the browser. See <A href="/docs/recipes">Recipes</A>.
       </P>
 
+      <H2>Matching and synthesis</H2>
+      <P>
+        A chart reduces to a feature vector, each body's longitude as a weighted
+        point on the unit circle, so two configurations compare by cosine
+        similarity and <code>searchConfigurations</code> ranks a time range by
+        how closely the sky resembles a target form. The geometric compiler runs
+        the other way: give <code>compileForm</code> weighted constraints (an
+        aspect between two bodies, a sign or a degree placement) and it finds the
+        longitudes that best satisfy them, reports the residual, and flags a form
+        as impossible when even the best fit falls short. Both are pure and
+        pinned to the Python reference. See <A href="/docs/recipes">Recipes</A>.
+      </P>
+
       <H2>Visualization</H2>
       <P>
         The chart as a flat wheel, as a tilted celestial sphere with planets at
