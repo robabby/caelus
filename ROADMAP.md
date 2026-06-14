@@ -254,9 +254,10 @@ Explicitly out of scope for the engine (recorded so they aren't re-proposed):
 interpretive "flavor tags" and metadata; symbolic-correspondence / tarot /
 archetypal layers; "hybrid divinatory systems"; product integrations
 (`tarotbook`, `Memorativa`, mystery-school content); and the vague "living chart
-/ 4D / perceptual" direction. Pattern-mining / historical-echo / rarity scoring
-is interesting but a thin research layer over the existing config search, not
-core — parked as a possible side tool.
+/ 4D / perceptual" direction. (Configuration similarity search — "find when the
+sky resembled this" — is *not* parked: the substrate is already built and
+validated, so it is promoted to an MCP surface in Phase 4b below. Only freeform
+rarity-mining-as-research stays out of core.)
 
 Order and dependency: ship the cookbook docs immediately; build pattern
 detection as the flagship engine addition (reference-first → golden → MCP tool →
@@ -266,3 +267,44 @@ detection and the signature object read `chart.bodies`, whose `ChartBodies` type
 is mid-revision (sparse-body honesty: a packed body such as Chiron can be absent
 for historical dates) — start them only once that change has landed, to avoid
 editing `chart.ts` concurrently.
+
+### Phase 4b — Agent-native MCP surface (planned)
+
+Direction refined after a second external pass (Grok, 2026-06-14). Its strongest
+insight: two powerful, already-built, suite-pinned engine capabilities have no
+MCP surface, so the cheapest, most differentiating agent-native move is not new
+engine math but *exposing the validated math we already have*. The boundary line
+from Phase 4 still holds (computation, never interpretation; meaning and
+correspondence live in the products).
+
+- **`similar_skies` MCP tool (configuration search).** A thin wrapper over the
+  existing feature space — `chartFeatures`, `cosineSimilarity`,
+  `configurationFit`, `searchConfigurations` — answering "find when the sky most
+  resembled this chart / configuration" over a date range. The engine math is
+  built and golden-pinned; only the tool surface and docs are new. The novel
+  agent capability ("when did the sky last look like this?") for near-zero cost.
+
+- **`electional_search` MCP tool.** A thin wrapper over `scan`/`rankMoments` and
+  the electional primitives (`aspectBetween`, `planetaryHour`, `voidOfCourse`,
+  angularity) — "find the next good window for X" over a range. Substrate done;
+  tool surface and docs new.
+
+- **`cosmic_weather` MCP tool.** A day's active configurations plus ingresses and
+  stations. A thin layer over Phase 4's pattern detection (#1), so it follows
+  that item.
+
+- **Fixed-star parans (paranatellonta).** The one genuinely new engine feature
+  here: stars and planets sharing an angle (rising/culminating/setting together)
+  at a place and time. Pure positional astronomy, citeable to a named authority,
+  reference-first + golden — fully aligned with the core's discipline.
+
+- **Transit density as a transparent count (minor).** Number of exact aspect
+  hits / ingresses / stations in a window — a count, never a subjective
+  "intensity" score (that would drift into interpretation).
+
+Order: `similar_skies` + `electional_search` first (wrappers over validated
+math); `cosmic_weather` after pattern detection (#1); parans as its own
+reference-first engine feature; density count anytime. All of the MCP tools touch
+`server.ts`, which is in the in-flight sparse-body type cascade, so they queue
+behind that landing. The cookbook docs (Phase 4 #4) are clear of every frozen
+file and lead.
