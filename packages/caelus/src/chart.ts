@@ -52,40 +52,81 @@ export type Zodiac = "tropical" | `sidereal:${string}`;
 
 export interface Observer { lat: number; lonEast: number; altM?: number }
 
+/** Options shared by the single-body calls ({@link Engine.position},
+ *  {@link Engine.longitude}) and by charts. */
 export interface CalcOptions {
-  zodiac?: Zodiac;            // default "tropical"
-  topocentric?: boolean;      // default false; needs observer
+  /** Tropical (the default) or a sidereal ayanamsa, e.g. `"sidereal:lahiri"`. */
+  zodiac?: Zodiac;
+  /** Apply topocentric parallax for `observer`. Defaults to `false`. */
+  topocentric?: boolean;
+  /** Observer location; required when `topocentric` is set. */
   observer?: Observer;
 }
 
+/** Options for {@link Engine.chart} and {@link Engine.chartAt}, extending
+ *  {@link CalcOptions}. */
 export interface ChartOptions extends CalcOptions {
-  houseSystem?: HouseSystem;  // default "placidus"
-  bodies?: BodyId[];          // extra bodies beyond the core 13
+  /** House system to compute. Defaults to `"placidus"`. */
+  houseSystem?: HouseSystem;
+  /** Extra bodies to compute beyond the core chart set. */
+  bodies?: BodyId[];
+  /** Per-aspect orb overrides in degrees, keyed by aspect name. */
   orbs?: Record<string, number>;
 }
 
+/** A body's full apparent position, as returned by {@link Engine.position}. */
 export interface Position {
-  lon: number; speed: number; retrograde: boolean; sign: string; signDeg: number;
+  /** Ecliptic longitude in degrees, `[0, 360)`. */
+  lon: number;
+  /** Daily motion in longitude, degrees/day; negative when retrograde. */
+  speed: number;
+  /** Whether the body is in apparent retrograde motion (`speed < 0`). */
+  retrograde: boolean;
+  /** Zodiac sign containing `lon`, e.g. `"Leo"`. */
+  sign: string;
+  /** Longitude within the sign, degrees `[0, 30)`. */
+  signDeg: number;
   /** Ecliptic latitude, deg (0 for nodes). */
   lat: number;
   /** Geocentric distance in AU (Moon included); null for nodes and Lilith. */
   dist: number | null;
-  /** Equatorial coordinates, true equinox of date, deg. */
-  ra: number; dec: number;
+  /** Equatorial right ascension, true equinox of date, degrees. */
+  ra: number;
+  /** Equatorial declination, true equinox of date, degrees. */
+  dec: number;
 }
 
-export interface Aspect { a: string; b: string; aspect: string; orb: number }
+/** One aspect between two bodies in a {@link Chart}. */
+export interface Aspect {
+  /** First body id. */
+  a: string;
+  /** Second body id. */
+  b: string;
+  /** Aspect name, e.g. `"trine"`. */
+  aspect: string;
+  /** Orb from exact, in degrees. */
+  orb: number;
+}
 
+/** A full natal chart, as returned by {@link Engine.chart} and
+ *  {@link Engine.chartAt}. Longitudes are degrees in the chart's `zodiac`. */
 export interface Chart {
+  /** The instant, as a Julian Day (UT). */
   jdUt: number;
+  /** The zodiac the longitudes are expressed in. */
   zodiac: Zodiac;
   /** House system actually used. May differ from the request: Placidus and
    *  Koch are undefined above the polar circles and fall back to whole_sign. */
   houseSystem: HouseSystem;
+  /** The house system originally requested, before any polar fallback. */
   houseSystemRequested: HouseSystem;
+  /** Apparent {@link Position} per body, keyed by body id. */
   bodies: Record<string, Position>;
+  /** Chart angles in degrees: Ascendant, Midheaven, Vertex, East Point. */
   angles: { asc: number; mc: number; vertex: number; eastPoint: number };
+  /** The twelve house cusp longitudes in degrees, house 1 first. */
   cusps: number[];
+  /** Aspects found among the bodies, within the active orbs. */
   aspects: Aspect[];
 }
 

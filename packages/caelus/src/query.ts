@@ -48,8 +48,26 @@ function mk(fn: (e: Engine, t: number) => number, bodies: Set<string>): Predicat
 }
 
 // ---------------------------------------------------------------- predicates
-/** True while `body` is within `orb` deg of an exact `kind` aspect to
- *  `target` -- a fixed ecliptic longitude (deg) or another body name. */
+/**
+ * A {@link Predicate} that holds while `body` is within `orb` degrees of an
+ * exact aspect to `target`. Feed it to {@link when} to find the time windows,
+ * or compose it with {@link allOf}/{@link anyOf}.
+ *
+ * @param body The transiting body.
+ * @param kind Aspect name, e.g. `"conjunction"`, `"square"`, `"trine"`,
+ *   `"opposition"`, `"sextile"`.
+ * @param target The aspect target: a fixed ecliptic longitude in degrees (e.g.
+ *   a natal point) or another body id (a mutual aspect).
+ * @param orb Half-width of the window in degrees. Defaults to `1.0`.
+ * @param zodiac Zodiac for the longitudes. Defaults to tropical.
+ * @returns A predicate, true while within orb of the exact aspect.
+ * @throws Error if `kind` is not a known aspect.
+ * @example
+ * ```ts
+ * const natalSun = 79.3;
+ * when(engine, aspect("saturn", "square", natalSun, 1), jd0, jd1); // Saturn squares
+ * ```
+ */
 export function aspect(
   body: BodyId, kind: string, target: number | BodyId,
   orb = 1.0, zodiac: Zodiac = "tropical",

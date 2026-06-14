@@ -28,14 +28,30 @@ function signLoss(lon: number, sign: number): number {
   return Math.min(d - 30.0, 360.0 - d);
 }
 
-/** Degrees by which a single constraint is unmet given the longitudes. */
+/**
+ * Degrees by which a single {@link Constraint} is unmet for a set of body
+ * longitudes — `0` when satisfied. The pure building block of {@link formLoss}
+ * and {@link compileForm}.
+ *
+ * @param lons Body longitudes in degrees, keyed by body id.
+ * @param c The constraint to score.
+ * @returns The unmet amount in degrees (`0` = satisfied).
+ */
 export function constraintLoss(lons: Record<string, number>, c: Constraint): number {
   if (c.kind === "aspect") return Math.abs(angDist(lons[c.a], lons[c.b]) - c.angle);
   if (c.kind === "sign") return signLoss(lons[c.body], c.sign);
   return angDist(lons[c.body], c.degree);
 }
 
-/** Total weighted constraint loss for a set of body longitudes. */
+/**
+ * Total weighted loss for a set of body longitudes — the sum of each
+ * constraint's {@link constraintLoss} times its weight. The objective
+ * {@link compileForm} minimizes.
+ *
+ * @param lons Body longitudes in degrees, keyed by body id.
+ * @param constraints The constraints to score.
+ * @returns The total weighted loss in degrees (`0` = all satisfied).
+ */
 export function formLoss(lons: Record<string, number>, constraints: Constraint[]): number {
   let total = 0;
   for (const c of constraints) total += (c.weight ?? 1.0) * constraintLoss(lons, c);
@@ -76,7 +92,32 @@ export interface CompileOptions {
   impossibleDeg?: number;
 }
 
-/** Find body longitudes minimizing the weighted constraint loss. */
+/**
+ * Synthesize a chart form from geometric constraints — the inverse of
+ * (time, place) → chart. Given weighted {@link Constraint}s (aspects between
+ * bodies, sign placements, exact degrees), find the body longitudes that best
+ * satisfy them via deterministic coordinate descent, and report how well they
+ * can be met. When even the best fit is poor, the form is flagged `impossible`
+ * — a valid, informative result.
+ *
+ * @param constraints The geometric constraints to satisfy; each may carry a
+ *   `weight` (default `1`).
+ * @param opts `restarts` and `iters` tune the optimizer (more = slower, more
+ *   thorough); `impossibleDeg` is the worst-constraint threshold in degrees
+ *   above which the form is impossible. Defaults: `12`, `8`, `5`.
+ * @returns A {@link CompiledForm}: solved `longitudes`, total `residual`,
+ *   `maxConstraintLoss`, the `impossible` flag, and each constraint annotated
+ *   with its `loss`.
+ * @example
+ * ```ts
+ * const form = compileForm([
+ *   { kind: "aspect", a: "sun", b: "moon", angle: 120 }, // trine
+ *   { kind: "sign", body: "sun", sign: 0 },              // Aries
+ * ]);
+ * form.impossible;     // false
+ * form.longitudes.sun; // a degree within Aries
+ * ```
+ */
 export function compileForm(constraints: Constraint[], opts: CompileOptions = {}): CompiledForm {
   const restarts = opts.restarts ?? 12;
   const iters = opts.iters ?? 8;

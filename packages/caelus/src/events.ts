@@ -234,10 +234,19 @@ export function stations(
   return out;
 }
 
-/** Gauquelin sector (1..36, float) from rise/set times of the disc center
- *  with refraction (Swiss Ephemeris method 3). Sectors run from rise: 1-18
- *  above the horizon, 19-36 below. Null in polar no-rise/no-set
- *  conditions. */
+/**
+ * The Gauquelin sector of a body (1–36, fractional) from the rise/set times of
+ * the disc centre with refraction (Swiss Ephemeris method 3). Sectors run from
+ * rise: 1–18 above the horizon, 19–36 below.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param body A body id from {@link Engine.bodies}.
+ * @param jdUt Julian Day (UT).
+ * @param latDeg Observer latitude in degrees, north positive.
+ * @param lonDeg Observer longitude in degrees, east positive.
+ * @returns The sector in `[1, 37)`, or `null` in polar no-rise/no-set
+ *   conditions.
+ */
 export function gauquelinSector(
   engine: Engine, body: BodyId, jdUt: number, latDeg: number, lonDeg: number,
 ): number | null {

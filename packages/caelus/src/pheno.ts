@@ -84,8 +84,22 @@ function magnitude(
   }
 }
 
-/** Phase angle (deg), illuminated fraction, elongation (deg), apparent
- *  diameter (deg), apparent magnitude. */
+/**
+ * Photometric and apparent-geometry quantities for a body at an instant: its
+ * phase angle, illuminated fraction, elongation from the Sun, apparent disc
+ * diameter, and apparent visual magnitude.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param body A body with known physical dimensions (Sun, Moon, the planets).
+ * @param jdUt Julian Day (UT).
+ * @returns A {@link Pheno}: `phaseAngle` (deg), `phase` (lit fraction `0`–`1`),
+ *   `elongation` (deg), `diameter` (deg), and `magnitude`.
+ * @throws Error if `body` has no photometric data.
+ * @example
+ * ```ts
+ * pheno(engine, "venus", julianDay(2025, 6, 1)).phase; // illuminated fraction
+ * ```
+ */
 export function pheno(engine: Engine, body: BodyId, jdUt: number): Pheno {
   if (DIAMETER_KM[body] === undefined) {
     throw new Error(`pheno not available for '${body}'`);

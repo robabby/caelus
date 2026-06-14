@@ -93,8 +93,16 @@ const DT_OBS: Array<[number, number]> = [
   [2005, 64.7], [2010, 66.1], [2015, 67.6], [2020, 69.4], [2025, 69.2],
 ];
 
-/** TT - UT1 in seconds. Observed IERS 1955-2025, E&M polynomials before,
- *  gentle extrapolation after (Earth's rotation sped up post-2016). */
+/**
+ * ΔT (TT − UT1) in seconds at a given instant — the gap between Terrestrial
+ * Time and universal time. Observed IERS values 1955–2025, Espenak–Meeus
+ * polynomials before, and a gentle extrapolation after (Earth's rotation sped
+ * up post-2016). The engine applies this for you; call it directly only for
+ * timescale work.
+ *
+ * @param jdUt Julian Day (UT).
+ * @returns ΔT in seconds.
+ */
 export function deltaT(jdUt: number): number {
   const y = 2000.0 + (jdUt - J2000) / 365.25;
   if (y >= 1955 && y <= 2025) {

@@ -159,6 +159,22 @@ export function harmonicLongitude(lon: number, n: number): number {
   return mod(lon * n, 360);
 }
 
+/**
+ * The nth-harmonic chart: each body's longitude multiplied by `n` and wrapped
+ * to `[0, 360)`. The 5th harmonic surfaces quintiles, the 9th the navamsa, and
+ * so on.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param jd Julian Day (UT).
+ * @param bodies The bodies to include.
+ * @param n The harmonic number, e.g. `5` or `9`.
+ * @param zodiac Zodiac for the base longitudes. Defaults to tropical.
+ * @returns Harmonic longitudes in degrees, keyed by body id.
+ * @example
+ * ```ts
+ * harmonicChart(engine, jd, ["sun", "moon", "venus"], 5); // quintile harmonic
+ * ```
+ */
 export function harmonicChart(
   engine: Engine, jd: number, bodies: BodyId[], n: number,
   zodiac: Zodiac = "tropical",
@@ -191,6 +207,19 @@ export function declinationAspect(decA: number, decB: number, orb = 1.0): Declin
 
 export interface DeclinationPair { a: string; b: string; kind: DeclinationKind }
 
+/**
+ * Parallels and contraparallels among a set of bodies at an instant: pairs
+ * whose declinations are equal (parallel) or equal and opposite
+ * (contraparallel) within `orb` — the declination analogue of conjunction and
+ * opposition.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param bodies The bodies to compare.
+ * @param jd Julian Day (UT).
+ * @param orb Declination orb in degrees. Defaults to `1.0`.
+ * @returns {@link DeclinationPair}s `{ a, b, kind }`, where `kind` is
+ *   `"parallel"` or `"contraparallel"`.
+ */
 export function declinationAspects(
   engine: Engine, bodies: BodyId[], jd: number, orb = 1.0,
 ): DeclinationPair[] {
@@ -231,8 +260,20 @@ function signIndex(sign: number | string): number {
   return typeof sign === "number" ? sign : SIGNS.indexOf(sign);
 }
 
-/** Essential dignities of `body` in `sign`: domicile, exaltation, detriment,
- *  fall (the last two are the signs opposite domicile and exaltation). */
+/**
+ * Essential dignities a body holds in a sign: any of `"domicile"`,
+ * `"exaltation"`, `"detriment"`, `"fall"` (the last two are the signs opposite
+ * domicile and exaltation). Empty when the body is peregrine there.
+ *
+ * @param body Body id, e.g. `"mars"`.
+ * @param sign A sign index `0`–`11` (Aries = 0) or its name, e.g. `"Aries"`.
+ * @returns The dignities held, in the order above; empty if none.
+ * @example
+ * ```ts
+ * dignities("mars", "Aries"); // ["domicile"]
+ * dignities("sun", "Libra");  // ["fall"]
+ * ```
+ */
 export function dignities(body: string, sign: number | string): string[] {
   const idx = signIndex(sign);
   const dom = DOMICILE[body] ?? [];
@@ -264,6 +305,15 @@ export function isDayChart(
   return alt > 0;
 }
 
+/**
+ * The sect a body belongs to: `"diurnal"` (Sun, Jupiter, Saturn),
+ * `"nocturnal"` (Moon, Venus, Mars), or `null` for Mercury and bodies without a
+ * fixed sect. Whether a chart is itself day or night — the Sun above or below
+ * the horizon — is a separate question.
+ *
+ * @param body Body id.
+ * @returns `"diurnal"`, `"nocturnal"`, or `null`.
+ */
 export function planetarySect(body: string): "diurnal" | "nocturnal" | null {
   if (DIURNAL.has(body)) return "diurnal";
   if (NOCTURNAL.has(body)) return "nocturnal";

@@ -298,10 +298,19 @@ export function housesVehlow(armc: number, phi: number, eps: number): number[] {
 }
 
 /**
- * Placidus cusps via the classic iterative scheme. Semi-arc derivation:
- * for ALL four intermediate cusps RA = ARMC + offset + f*AD with
- * AD = asin(tan(phi) tan(dec)); offsets 30/60/120/150, f = 1/3,2/3,2/3,1/3.
- * Undefined above the polar circles (as Placidus itself is).
+ * Placidus house cusps via the classic iterative semi-arc scheme: for all four
+ * intermediate cusps RA = ARMC + offset + f·AD with AD = asin(tan φ · tan δ);
+ * offsets 30/60/120/150, f = 1/3, 2/3, 2/3, 1/3. Undefined above the polar
+ * circles, as Placidus itself is.
+ *
+ * Low-level: {@link Engine.chart} calls this for you when the house system is
+ * `"placidus"`, falling back to whole-sign near the poles. Inputs and outputs
+ * are in **radians**.
+ *
+ * @param armc Right ascension of the MC, in radians.
+ * @param phi Geographic latitude, in radians.
+ * @param eps Obliquity of the ecliptic, in radians.
+ * @returns The twelve cusp longitudes in radians, house 1 (Ascendant) first.
  */
 export function housesPlacidus(armc: number, phi: number, eps: number): number[] {
   const cusp = (offsetDeg: number, f: number): number => {
