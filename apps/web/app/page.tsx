@@ -36,7 +36,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Eyebrow>MIT · zero dependencies · ~85 KB</Eyebrow>
-      <h1>A complete astrology engine, Western and Vedic, from published math</h1>
+      <h1>A free, small, and complete Western and Vedic astrology engine</h1>
       <Lead>
         Caelus computes natal charts and the techniques built on them: houses
         and aspects, the Hellenistic time-lords, and the Vedic dashas, vargas,
