@@ -560,6 +560,60 @@ a.card:hover,
   }
 }
 
+/* ---- chart set tray ("my charts") ---- */
+.chart-tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+
+.chart-chip {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface-3);
+  font-size: 0.82rem;
+}
+
+.chart-chip__load {
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-chip__load:hover {
+  background: var(--surface-2);
+}
+
+.chart-chip__remove {
+  border: none;
+  border-left: 1px solid var(--border-strong);
+  background: none;
+  color: var(--text-mute);
+  font: inherit;
+  line-height: 1;
+  padding: 0 0.5rem;
+  cursor: pointer;
+}
+
+.chart-chip__remove:hover {
+  color: var(--bad);
+  background: var(--surface-2);
+}
+
 /* ---- city picker dropdown ---- */
 .city-results {
   position: absolute;

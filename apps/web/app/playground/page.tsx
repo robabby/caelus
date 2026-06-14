@@ -36,7 +36,9 @@ export default function Playground() {
         without a network request. Then <strong>Copy share link</strong> to mint a
         chart you can send to anyone: the link carries only the values you typed,
         and the recipient&rsquo;s browser recomputes the chart with no server in
-        the loop. (Switch the time mode to UTC for the current sky.)
+        the loop. Or <strong>Add to my charts</strong> to build a labelled set
+        (you, partner, family) and share them all as one link. (Switch the time
+        mode to UTC for the current sky.)
       </P>
 
       <SkyNow />

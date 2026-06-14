@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
@@ -49,37 +49,60 @@ function jdToUtc(jd: number): string {
  * Nothing is computed, transmitted, or stored server-side: whoever opens the
  * link recomputes the chart locally from these numbers. Keys are short to keep
  * the link compact; `n` is an optional, user-chosen nickname (not PII unless
- * the minter puts it there). base64url so the string is URL-safe.
+ * the minter puts it there). `t` is the UT instant, so a link is tz-unambiguous.
  */
 type Share = { v: 1; t: string; la: string; lo: string; h: HouseSystem; z: Zodiac; n?: string };
 
-function encShare(s: Share): string {
-  const bytes = new TextEncoder().encode(JSON.stringify(s));
+/** base64url of any JSON value, so it is URL- and fragment-safe. */
+function b64urlEncode(value: unknown): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(value));
   let bin = "";
   for (const b of bytes) bin += String.fromCharCode(b);
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+function b64urlDecode(raw: string): unknown {
+  const b64 = raw.replace(/-/g, "+").replace(/_/g, "/");
+  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+const isShare = (v: unknown): v is Share =>
+  !!v && typeof v === "object" && typeof (v as Share).t === "string";
+
 function decShare(raw: string): Share | null {
   try {
-    const b64 = raw.replace(/-/g, "+").replace(/_/g, "/");
-    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-    const s = JSON.parse(new TextDecoder().decode(bytes)) as Share;
-    return s && typeof s.t === "string" ? s : null;
+    const s = b64urlDecode(raw);
+    return isShare(s) ? s : null;
+  } catch {
+    return null;
+  }
+}
+
+/** A set of charts ("my charts"), shared as one link. */
+function decSet(raw: string): Share[] | null {
+  try {
+    const s = b64urlDecode(raw) as { c?: unknown };
+    return s && Array.isArray(s.c) ? (s.c.filter(isShare) as Share[]) : null;
   } catch {
     return null;
   }
 }
 
 /**
- * Read the encoded chart from the URL. We prefer the fragment (`#c=...`):
- * browsers never transmit the fragment to the server, so a shared chart's
- * inputs stay out of request lines, access logs, and any infra in between.
- * The query string (`?c=...`) is read only as back-compat for earlier links.
+ * Read the encoded chart(s) from the URL. We prefer the fragment (`#...`):
+ * browsers never transmit the fragment to the server, so the inputs stay out of
+ * request lines, access logs, and any infra in between. `#s=` is a set, `#c=` a
+ * single chart; the query string (`?c=`) is read only as back-compat.
  */
-function readShareParam(): string | null {
-  const fromHash = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("c");
-  return fromHash ?? new URLSearchParams(window.location.search).get("c");
+function readUrlState(): { set: Share[] | null; single: Share | null } {
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const setRaw = hash.get("s");
+  const singleRaw = hash.get("c") ?? new URLSearchParams(window.location.search).get("c");
+  return {
+    set: setRaw ? decSet(setRaw) : null,
+    single: singleRaw ? decShare(singleRaw) : null,
+  };
 }
 
 export default function SkyNow() {
@@ -97,24 +120,37 @@ export default function SkyNow() {
   const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
   const [copied, setCopied] = useState(false);
   const [fromLink, setFromLink] = useState(false);
+  const [set, setSet] = useState<Share[]>([]);
+  const [collectionCopied, setCollectionCopied] = useState(false);
+
+  // Load an encoded chart into the builder. `t` is a UT instant, so we read it
+  // back in UTC mode; the nickname rides along.
+  const loadShare = useCallback((s: Share) => {
+    setIso(s.t);
+    setLat(s.la);
+    setLon(s.lo);
+    if (s.h) setSys(s.h);
+    if (s.z) setZodiac(s.z);
+    setLabel(s.n ?? "");
+    setPlace("");
+    setTzMode("utc");
+  }, []);
 
   useEffect(() => {
-    // A share link restores an exact chart; otherwise seed from the current sky.
-    const c = readShareParam();
-    const s = c ? decShare(c) : null;
-    if (s) {
-      setIso(s.t);
-      setLat(s.la);
-      setLon(s.lo);
-      if (s.h) setSys(s.h);
-      if (s.z) setZodiac(s.z);
-      if (s.n) setLabel(s.n);
+    // A link restores an exact chart or a whole set; otherwise seed from now.
+    const { set: urlSet, single } = readUrlState();
+    if (urlSet && urlSet.length) {
+      setSet(urlSet);
+      loadShare(urlSet[0]);
+      setFromLink(true);
+    } else if (single) {
+      loadShare(single);
       setFromLink(true);
     } else {
       setIso(new Date().toISOString().slice(0, 16));
     }
     setMounted(true);
-  }, []);
+  }, [loadShare]);
 
   const engine = () => (engineRef.current ??= new Engine(embeddedData));
 
@@ -174,7 +210,7 @@ export default function SkyNow() {
     if (label.trim()) payload.n = label.trim();
     // Put the chart in the fragment, not the query: the fragment is never sent
     // to the server, so the inputs never leave the visitor's browser at all.
-    const url = `${window.location.origin}${window.location.pathname}#c=${encShare(payload)}`;
+    const url = `${window.location.origin}${window.location.pathname}#c=${b64urlEncode(payload)}`;
     // Reflect the chart in the address bar so a plain copy of the URL also works.
     window.history.replaceState(null, "", url);
     navigator.clipboard
@@ -185,6 +221,33 @@ export default function SkyNow() {
       })
       .catch(() => {
         /* clipboard blocked (e.g. insecure context): the address bar still holds it */
+      });
+  }
+
+  // "My charts": a session collection, shared as one link. The set lives only in
+  // React state and the URL fragment — never localStorage — so nothing persists.
+  function addToSet() {
+    if (!chart) return;
+    const n = label.trim() || place || `Chart ${set.length + 1}`;
+    setSet((prev) => [...prev, { v: 1, t: utIso, la: lat, lo: lon, h: sys, z: zodiac, n }]);
+  }
+
+  function removeFromSet(i: number) {
+    setSet((prev) => prev.filter((_, j) => j !== i));
+  }
+
+  function shareSet() {
+    if (!set.length) return;
+    const url = `${window.location.origin}${window.location.pathname}#s=${b64urlEncode({ v: 1, c: set })}`;
+    window.history.replaceState(null, "", url);
+    navigator.clipboard
+      ?.writeText(url)
+      .then(() => {
+        setCollectionCopied(true);
+        setTimeout(() => setCollectionCopied(false), 2000);
+      })
+      .catch(() => {
+        /* clipboard blocked: the address bar still holds it */
       });
   }
 
@@ -292,6 +355,16 @@ export default function SkyNow() {
             >
               {copied ? "Link copied ✓" : "Copy share link"}
             </button>
+            <button
+              type="button"
+              className="mono"
+              style={{ ...inp, cursor: "pointer" }}
+              onClick={addToSet}
+              disabled={!chart}
+              title="Add this chart to a labelled set you can share as one link"
+            >
+              + Add to my charts
+            </button>
           </div>
 
           <p className="dim small" style={{ margin: "0.55rem 0 0" }}>
@@ -301,6 +374,41 @@ export default function SkyNow() {
             send over the network, so the chart is recomputed in the
             recipient&rsquo;s browser and the inputs never reach a server at all.
           </p>
+
+          {set.length > 0 && (
+            <div className="chart-tray" aria-label="My charts">
+              <span className="mute small" style={{ alignSelf: "center" }}>My charts:</span>
+              {set.map((s, i) => (
+                <span key={i} className="chart-chip">
+                  <button
+                    type="button"
+                    className="chart-chip__load"
+                    onClick={() => loadShare(s)}
+                    title="Load this chart"
+                  >
+                    {s.n || `Chart ${i + 1}`}
+                  </button>
+                  <button
+                    type="button"
+                    className="chart-chip__remove"
+                    onClick={() => removeFromSet(i)}
+                    aria-label={`Remove ${s.n || `chart ${i + 1}`}`}
+                    title="Remove"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              <button
+                type="button"
+                className="mono"
+                style={{ ...inp, cursor: "pointer", borderColor: "var(--accent)", color: "var(--text)" }}
+                onClick={shareSet}
+              >
+                {collectionCopied ? "Set link copied ✓" : `Copy link to ${set.length} chart${set.length > 1 ? "s" : ""}`}
+              </button>
+            </div>
+          )}
 
           {error && <p style={{ color: "var(--bad)", marginTop: "0.8rem" }}>{error}</p>}
 
