@@ -1,0 +1,18 @@
+{
+  "_note": "Reference checks for the Vedic layer, each citing the named authority and convention it follows. Sourced from BPHS (Brihat Parashara Hora Shastra) and, where a convention has variants, the PyJHora implementation (which follows PVR Narasimha Rao's Integrated Approach). Committed for reproducibility, like the Horizons cache; validate_jyotish.py replays them. Grows as deferred techniques land.",
+  "checks": [
+    {"technique": "nakshatra", "lon": 0.0, "expect": {"name": "Ashwini", "pada": 1, "lord": "ketu"}, "source": "BPHS: 27 nakshatras of 13deg20', Ashwini ruled by Ketu", "note": "0deg sidereal"},
+    {"technique": "nakshatra", "lon": 45.0, "expect": {"name": "Rohini", "pada": 2, "lord": "moon"}, "source": "BPHS nakshatra division", "note": "Rohini ruled by the Moon"},
+    {"technique": "nakshatra", "lon": 200.0, "expect": {"name": "Vishakha", "pada": 1, "lord": "jupiter"}, "source": "BPHS nakshatra division", "note": "exact 15-nakshatra boundary"},
+    {"technique": "vimshottari_start", "moon_lon": 0.0, "expect": {"start_lord": "ketu"}, "source": "BPHS Vimshottari: Ashwini -> Ketu mahadasha", "note": "Moon at 0deg Ashwini"},
+    {"technique": "vimshottari_start", "moon_lon": 45.0, "expect": {"start_lord": "moon"}, "source": "BPHS Vimshottari: Rohini -> Moon mahadasha"},
+    {"technique": "yogini_start", "nak": 0, "expect": "Bhramari", "source": "Yogini dasha add-3 rule: (1 + 3) mod 8 = 4 -> Bhramari", "note": "Ashwini"},
+    {"technique": "varga", "lon": 0.0, "n": 9, "expect": "Aries", "source": "BPHS navamsa: movable sign from itself", "note": "0deg Aries navamsa"},
+    {"technique": "varga", "lon": 30.0, "n": 9, "expect": "Capricorn", "source": "BPHS navamsa: fixed/earth sign from Capricorn", "note": "0deg Taurus navamsa"},
+    {"technique": "varga", "lon": 28.0, "n": 9, "expect": "Sagittarius", "source": "BPHS navamsa: 9th navamsa of Aries", "note": "Aries last navamsa"},
+    {"technique": "varga", "lon": 15.0, "n": 3, "expect": "Leo", "source": "BPHS drekkana: 2nd drekkana = 5th sign", "note": "Aries 2nd drekkana"},
+    {"technique": "varga", "lon": 31.0, "n": 10, "expect": "Capricorn", "source": "BPHS dasamsa: even sign from the 9th", "note": "Taurus 1st dasamsa"},
+    {"technique": "yoga_present", "signs": {"sun": 1, "moon": 1, "mars": 0, "mercury": 1, "jupiter": 1, "venus": 1, "saturn": 1}, "asc": 0, "expect": "Ruchaka", "source": "BPHS Pancha Mahapurusha: Mars in own sign in a kendra", "note": "Mars in Aries in the 1st"},
+    {"technique": "yoga_present", "signs": {"sun": 1, "moon": 0, "mars": 1, "mercury": 1, "jupiter": 3, "venus": 1, "saturn": 1}, "asc": 0, "expect": "Gajakesari", "source": "BPHS: Jupiter in a kendra from the Moon", "note": "Jupiter 4th from the Moon"}
+  ]
+}

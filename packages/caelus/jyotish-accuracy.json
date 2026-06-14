@@ -1,0 +1,19 @@
+{
+ "basis": "Vedic conventions vs named authorities (BPHS, PyJHora/PVR Rao)",
+ "checks": 13,
+ "agree": 13,
+ "sources": [
+  "BPHS Pancha Mahapurusha: Mars in own sign in a kendra",
+  "BPHS Vimshottari: Ashwini -> Ketu mahadasha",
+  "BPHS Vimshottari: Rohini -> Moon mahadasha",
+  "BPHS dasamsa: even sign from the 9th",
+  "BPHS drekkana: 2nd drekkana = 5th sign",
+  "BPHS nakshatra division",
+  "BPHS navamsa: 9th navamsa of Aries",
+  "BPHS navamsa: fixed/earth sign from Capricorn",
+  "BPHS navamsa: movable sign from itself",
+  "BPHS: 27 nakshatras of 13deg20', Ashwini ruled by Ketu",
+  "BPHS: Jupiter in a kendra from the Moon",
+  "Yogini dasha add-3 rule: (1 + 3) mod 8 = 4 -> Bhramari"
+ ]
+}

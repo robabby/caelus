@@ -89,6 +89,13 @@ Correctness is enforced by a chain of checks rather than asserted:
 - **JPL Horizons is the independent reference.** Small-body data is fit
   from Horizons vectors, and `validate_horizons.py` compares the engine
   directly against JPL apparent positions.
+- **Named Jyotish authorities pin the Vedic conventions.** The Vedic
+  techniques (nakshatras, dashas, vargas, yogas) are deterministic, but several
+  have named convention variants. `validate_jyotish.py` replays a committed,
+  per-check-cited reference set (`jyotish-reference.json`, sourced from BPHS and
+  PyJHora/PVR Rao) so each convention choice is validated against a named
+  authority, not asserted — the same discipline as the position oracles, run
+  with no external tool to keep the engine swisseph-free.
 - **Golden fixtures pin the TypeScript port to the Python reference.**
   `test/golden.json` (the 3,218-check conformance suite) and
   `test/query-golden.json` are generated from Python and replayed by the TS
