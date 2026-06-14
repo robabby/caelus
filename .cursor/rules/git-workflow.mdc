@@ -1,0 +1,28 @@
+---
+description: Git branch workflow — dev is the work branch, never touch main
+alwaysApply: true
+---
+
+# Git workflow (Caelus)
+
+`dev` is the canonical work branch. `main` is release-only and is promoted by
+the maintainer.
+
+## Rules
+
+- Commit and push work to `dev`. Nothing else by default.
+- NEVER commit, push, reset, or force-push to `main`. The maintainer promotes
+  `dev` → `main`, or explicitly tells you to. "Promote" / "release" = `main`;
+  only then touch `main`, and confirm first.
+- Do NOT create feature branches and do NOT open pull requests unless the
+  maintainer explicitly asks for one.
+- Before every `git push`, verify the current branch is `dev` (or a branch the
+  maintainer named this session). If it is `main`, stop.
+- A local `pre-push` hook blocks pushes to `main`. Do not bypass it. Promotion
+  is the maintainer's call: `CAELUS_ALLOW_MAIN_PUSH=1 git push origin main`.
+
+## When unsure
+
+Ask before any action that changes branch structure (new branches, PRs,
+merges, resets, pushes to `main`). Match the existing workflow rather than
+introducing a new one.

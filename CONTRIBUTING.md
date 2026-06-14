@@ -3,6 +3,14 @@
 Thanks for your interest. Caelus is a clean-room astrological ephemeris
 engine, and the standard for changes is correctness you can demonstrate.
 
+## Branching
+
+`dev` is the canonical work branch; all changes land there first. `main` is
+release-only. The maintainer promotes `dev` → `main` (or explicitly asks for
+it). Contributors and agents do not commit, push, or reset `main` directly,
+and do not open pull requests unless asked. A local `pre-push` hook enforces
+this; promotion is a deliberate `CAELUS_ALLOW_MAIN_PUSH=1 git push origin main`.
+
 ## The one rule: the conformance suite is the contract
 
 Every change must keep the golden conformance suite green. The suite
