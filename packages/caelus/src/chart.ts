@@ -47,6 +47,32 @@ export type HouseSystem =
   | "koch" | "regiomontanus" | "campanus" | "alcabitius"
   | "morinus" | "meridian" | "polich_page" | "vehlow";
 
+/** The canonical house-system ids, in a stable order (also used for error text). */
+export const HOUSE_SYSTEMS: readonly HouseSystem[] = [
+  "placidus", "porphyry", "equal", "whole_sign", "koch", "regiomontanus",
+  "campanus", "alcabitius", "morinus", "meridian", "polich_page", "vehlow",
+];
+
+// Short or alternate names that normalization (lowercase + space/hyphen -> "_")
+// can't reach on its own. "whole sign", "Polich Page", etc. already normalize to
+// their canonical id, so only genuinely different spellings live here.
+const HOUSE_ALIASES: Record<string, HouseSystem> = {
+  whole: "whole_sign", signs: "whole_sign", wholesign: "whole_sign",
+  equal_house: "equal", porphyrius: "porphyry", placidean: "placidus",
+};
+
+/** Resolve a forgiving house-system string (any case, spaces or hyphens, or a
+ *  known alias) to a canonical {@link HouseSystem}, or throw listing the valid
+ *  ids. Lets MCP, share links, and hand-written calls pass "whole sign",
+ *  "Whole_Sign", "whole", etc. without tripping the strict union. */
+export function normalizeHouseSystem(raw: string): HouseSystem {
+  const key = raw.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  if ((HOUSE_SYSTEMS as readonly string[]).includes(key)) return key as HouseSystem;
+  const alias = HOUSE_ALIASES[key];
+  if (alias) return alias;
+  throw new Error(`unknown house system '${raw}' (valid: ${HOUSE_SYSTEMS.join(", ")})`);
+}
+
 export type Ayanamsa = keyof typeof AYANAMSA_J2000 & string;
 export type Zodiac = "tropical" | `sidereal:${string}`;
 
@@ -515,7 +541,7 @@ export class Engine {
     opts: HouseSystem | ChartOptions = "placidus",
   ): Chart {
     const o: ChartOptions = typeof opts === "string" ? { houseSystem: opts } : opts;
-    const houseSystem = o.houseSystem ?? "placidus";
+    const houseSystem = normalizeHouseSystem(o.houseSystem ?? "placidus");
     const zodiac = o.zodiac ?? "tropical";
     const mode = parseZodiac(zodiac);
     const calc: CalcOptions = {
@@ -562,7 +588,7 @@ export class Engine {
       } else if (houseSystem === "vehlow") {
         cusps = H.housesVehlow(armc, phi, eps);
       } else {
-        throw new Error(`unknown house system '${houseSystem as string}'`);
+        throw new Error(`unknown house system '${houseSystem as string}' (valid: ${HOUSE_SYSTEMS.join(", ")})`);
       }
     } catch (err) {
       if (!(err instanceof RangeError)) throw err;
@@ -619,8 +645,11 @@ export function findAspects(
 }
 
 export function fmtLon(deg: number): string {
-  const sign = SIGNS[Math.floor(deg / 30)];
-  const d = mod(deg, 30);
+  // Normalize first: a raw or rounded longitude (e.g. exactly 360, or a small
+  // negative) would otherwise index SIGNS out of range and render "undefined".
+  const norm = mod(deg, 360);
+  const sign = SIGNS[Math.floor(norm / 30)];
+  const d = mod(norm, 30);
   const m = mod(d, 1) * 60;
   return `${String(Math.floor(d)).padStart(2)}°${String(Math.floor(m)).padStart(2, "0")}' ${sign}`;
 }
