@@ -209,7 +209,7 @@ export default function SkyNow() {
           </div>
 
           <p className="dim small" style={{ margin: "0.55rem 0 0" }}>
-            The share link encodes only the values above &mdash; date, place, and any
+            The share link encodes only the values above: date, place, and any
             nickname you type. The chart is recomputed in the recipient&rsquo;s browser;
             nothing is sent to or stored on a server.
           </p>
