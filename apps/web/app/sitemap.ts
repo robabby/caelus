@@ -9,6 +9,30 @@ import { listApiDocs } from "../lib/api-docs";
 const ROOT = process.cwd();
 const BUILD_DATE = new Date();
 
+// Vercel shallow-clones (git clone --depth=10) by default, so files untouched
+// in the last 10 commits would fall back to the build date. Setting
+// VERCEL_DEEP_CLONE=true in project settings gives the build full history.
+const IS_SHALLOW = (() => {
+  try {
+    return (
+      execFileSync("git", ["rev-parse", "--is-shallow-repository"], {
+        cwd: ROOT,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      }).trim() === "true"
+    );
+  } catch {
+    return false;
+  }
+})();
+
+if (IS_SHALLOW) {
+  console.warn(
+    "[sitemap] shallow git clone detected: lastModified falls back to the build date. " +
+      "Set VERCEL_DEEP_CLONE=true in project settings for accurate per-page dates.",
+  );
+}
+
 /** Last git commit date for a source file, or the build date if unavailable. */
 function gitDate(relPath: string): Date {
   try {
