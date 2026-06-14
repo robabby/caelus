@@ -35,8 +35,8 @@ current figures live in `packages/caelus/accuracy.json` and on
   timeline), `zrActive` (the L1..L4 lords at a moment), and `zrAt` (releasing
   from the chart's Lot of Spirit or Fortune). Standard Valens/Schmidt
   convention: 360-day years, each level a twelfth of the one above, loosing of
-  the bond jumping to the opposite sign. Algorithm pinned to a reference
-  implementation and the literature, not memory; `releasing-golden`
+  the bond jumping to the opposite sign. Algorithm pinned to a reference port
+  and the published literature; `releasing-golden`
   cross-language pin plus invariants in the test (L1/L2 tiling, the +6 jump, and
   the ~17.58-year loosing-of-the-bond threshold across all twelve Lot signs).
 - Vedic / Jyotish layer (Roadmap Phase 2): nakshatras and the Vimshottari dasha

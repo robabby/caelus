@@ -113,3 +113,5 @@ graticule
 [Pp]rofections?
 [Pp]rofected
 [Ff]irdaria
+Valens
+[Aa]phesis
