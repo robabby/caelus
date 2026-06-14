@@ -31,8 +31,8 @@ The deliverables are the engine and the tools around it: `caelus` (engine),
 
 ## Status
 
-Shipped through **0.11.0** (npm: all four packages; PyPI: `caelus-engine`,
-the Python reference; GitHub releases v0.1.0–v0.11.0): full body set, 12 house
+Shipped through **0.12.0** (npm: all four packages; PyPI: `caelus-engine`,
+the Python reference; GitHub releases v0.1.0–v0.12.0): full body set, 12 house
 systems, tropical + 7 sidereal
 ayanamsas, aspects, event search (rise/set, crossings, phases, stations,
 Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
@@ -48,7 +48,9 @@ ephemeris, each landing engine math plus an SSR-safe render in `caelus-wheel`
 (`ChartSphere`, `AstroMap`, `EphemerisGraph`) (0.10.0); a chart feature space
 (`chartFeatures`, `cosineSimilarity`, `configurationFit`, `searchConfigurations`)
 and a geometric compiler that inverts constraints to a chart form and flags
-impossible ones (`compileForm`) (0.11.0); conformance suite;
+impossible ones (`compileForm`) (0.11.0); a JD-first chart entry point that
+builds a full chart directly from a Julian Day, no calendar round-trip
+(`chartAt`) (0.12.0); conformance suite;
 MCP server over stdio and hosted Streamable HTTP (`ephemengine.com/api/mcp`,
 stateless) exposing nine chart tools, with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`

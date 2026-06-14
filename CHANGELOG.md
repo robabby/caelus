@@ -5,6 +5,29 @@ version in lockstep. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.12.0 — 2026-06-14
+
+A JD-first chart entry point. No breaking changes; the position conformance
+suite is unchanged at 3,218 checks.
+
+### Engine (`caelus`)
+
+- `Engine.chartAt(jdUt, lat, lonEast, opts)`: build a full chart directly from
+  a Julian Day (UT), with no calendar round-trip. `engine.chart()` now converts
+  its calendar fields to a JD and delegates to `chartAt`, so the two share one
+  code path and return identical results. The natural entry point for callers
+  that already hold a JD — transit/event scans, `rankMoments` winners, and
+  `position`/`longitude` workflows — and it sidesteps the common
+  `chart(jd, …)` misuse that throws `RangeError: jd … outside fitted range`.
+  Mirrored in the Python reference (`chart_at`) and guarded by a
+  `chartAt == chart` equivalence assertion in the golden suite.
+
+### Docs
+
+- `/docs/charts` presents `chartAt` as the first-class path for charting from a
+  Julian Day; the electional mini-app builds the winner's chart with
+  `chartAt(best.jd, …)` instead of a manual JD→calendar conversion.
+
 ## 0.11.0 — 2026-06-14
 
 Two engine layers that treat a chart as something to match and to synthesize.

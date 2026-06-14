@@ -14,7 +14,7 @@ campanus, alcabitius, morinus, meridian, polich_page, vehlow); major
 aspects; pheno (phase, elongation, diameter, magnitude), equation of
 time, az/alt, refraction; 318 fixed stars (HYG catalog); Gauquelin
 sectors; event search (rise/set/meridian transits,
-zodiac crossings, lunar phases, stations, solar/lunar eclipses). Higher layers: derived charts (returns, progressions, solar arc, composite, Davison, harmonics, antiscia, declination aspects, dignities, sect), electional primitives (applying/separating, combustion/cazimi, planetary hours, void-of-course Moon, house placement), the when() declarative query engine, the turbo longitude tier, and scan/rankMoments ranked time search, the 3D great-circle aspect (angularSeparation3d), astrocartography angle lines, ephemeris time series, a chart feature space with configuration search (chart-to-vector, cosine similarity, searchConfigurations), and a geometric compiler that inverts geometric constraints to a chart form and flags impossible ones. Supported range 1800-2149 (1850-2150 Chebyshev
+zodiac crossings, lunar phases, stations, solar/lunar eclipses). Higher layers: derived charts (returns, progressions, solar arc, composite, Davison, harmonics, antiscia, declination aspects, dignities, sect), electional primitives (applying/separating, combustion/cazimi, planetary hours, void-of-course Moon, house placement), the when() declarative query engine, the turbo longitude tier, and scan/rankMoments ranked time search, the 3D great-circle aspect (angularSeparation3d), astrocartography angle lines, ephemeris time series, a chart feature space with configuration search (chart-to-vector, cosine similarity, searchConfigurations), and a geometric compiler that inverts geometric constraints to a chart form and flags impossible ones. engine.chart(year,month,day,hour,min,sec,lat,lonEast,opts) takes calendar fields in UT (not a Julian Day); engine.chartAt(jdUt,lat,lonEast,opts) builds the same chart directly from a Julian Day. Supported range 1800-2149 (1850-2150 Chebyshev
 tiers). Verified per-body vs Swiss Ephemeris (1900-2099): Sun-Saturn
 <=1", Uranus <=1.9", Neptune <=4.6", Moon <=2.5", Pluto <=2.5" (series
 valid 1885-2099), Chiron <=1", mean node <=1", true node <= 1' vs SE's
@@ -24,10 +24,10 @@ reference by 3,218 golden checks (worst diff 0.41e-9 arcsec).
 Repo: https://github.com/heavyblotto/caelus
 ## Install
 
-- caelus@0.11.0 — the engine
-- caelus-birth@0.11.0 — local birth time + place -> UT (use this; see below)
-- caelus-wheel@0.11.0 — React SVG chart wheel, plus ChartSphere (3D), AstroMap (astrocartography), EphemerisGraph
-- caelus-mcp@0.11.0 — MCP server, 9 chart tools over stdio; also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp
+- caelus@0.12.0 — the engine
+- caelus-birth@0.12.0 — local birth time + place -> UT (use this; see below)
+- caelus-wheel@0.12.0 — React SVG chart wheel, plus ChartSphere (3D), AstroMap (astrocartography), EphemerisGraph
+- caelus-mcp@0.12.0 — MCP server, 9 chart tools over stdio; also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp
 - caelus-engine (PyPI) — the Python reference engine (no numpy), https://pypi.org/project/caelus-engine/
 
 ## Entry points
