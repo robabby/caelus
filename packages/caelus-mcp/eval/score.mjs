@@ -55,7 +55,7 @@ export const ARG_CHECKS = {
     const coords = collectCoords(args);
     const dates = [];
     for (const c of coords) {
-      for (const k of ["date", "transit_date", "start", "end"]) {
+      for (const k of ["date", "transit_date", "start", "end", "search_start", "search_end", "target_date"]) {
         if (typeof c[k] === "string" && c[k] !== "now") dates.push(c[k]);
       }
     }
@@ -113,6 +113,23 @@ export const ARG_CHECKS = {
     const ms = new Date(end).getTime() - new Date(start).getTime();
     if (Number.isNaN(ms)) return null;
     return ms <= 50 * 366 * 86400000;
+  },
+  // returns: the search window must respect the tool's <= 2-year guard.
+  return_window_le_2yr(args) {
+    const { search_start, search_end } = args;
+    if (!search_start || !search_end) return null;
+    const ms = new Date(search_end).getTime() - new Date(search_start).getTime();
+    if (Number.isNaN(ms)) return null;
+    return ms <= 2 * 366 * 86400000;
+  },
+  // progressions: directing forward in time means target_date is on/after birth.
+  target_after_natal(args) {
+    const { date, target_date } = args;
+    if (!date || !target_date) return null;
+    const d0 = new Date(date).getTime();
+    const d1 = new Date(target_date).getTime();
+    if (Number.isNaN(d0) || Number.isNaN(d1)) return null;
+    return d1 >= d0;
   },
   snake_case_body(args) {
     const bodies = [args.body, args.target_body].filter((b) => typeof b === "string");

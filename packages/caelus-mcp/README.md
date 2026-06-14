@@ -2,7 +2,8 @@
 
 MCP server for the [caelus](https://github.com/heavyblotto/caelus) ephemeris
 engine: thirteen chart tools over stdio. Computation only — positions, houses,
-aspects with orbs, event search, electional — the model does the interpreting. It needs
+aspects with orbs, event search, electional, returns, progressions, composite,
+and dignities — the model does the interpreting. It needs
 no API keys, ephemeris files, or network calls; the engine data ships inside
 the package.
 
@@ -44,6 +45,10 @@ A hosted Streamable HTTP endpoint is also live at
 | `sky_events` | Rise/set/meridian transits, lunar phases, stations, zodiac crossings in a date range (≤370 days) |
 | `planetary_hours` | The planetary hour in effect at a moment and place: ruler, day/night, hour number, start/end, day ruler, and the 24-hour ruler sequence |
 | `void_of_course` | Whether the Moon is void-of-course at a moment: its sign, sign-exit time, and next perfecting aspect to Sun–Saturn |
+| `returns` | Solar/lunar return instants in a window plus the first return chart, cast at the return location (defaults to the birthplace) |
+| `progressions` | Secondary progressions (day-for-a-year) and solar-arc directions to a target date: per body the secondary and directed longitude, plus the solar arc |
+| `composite` | Two relationship charts for a pair: the midpoint composite (bodies and angles) and the Davison chart |
+| `dignities` | Essential dignity (domicile/exaltation/detriment/fall) and sect for the seven traditional planets at a moment and place |
 
 `natal_chart` and `current_sky` also tag each body with its solar phase
 (cazimi/combust/under-the-beams) and each aspect with applying/separating.

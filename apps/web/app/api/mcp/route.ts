@@ -41,6 +41,7 @@ const TOOLS = [
   "natal_chart", "current_sky", "transits", "synastry",
   "find_aspect_dates", "rectification_grid", "sky_events",
   "planetary_hours", "void_of_course",
+  "returns", "progressions", "composite", "dignities",
 ] as const;
 
 const CORS: Record<string, string> = {
