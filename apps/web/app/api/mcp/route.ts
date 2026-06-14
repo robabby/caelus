@@ -42,6 +42,7 @@ const TOOLS = [
   "find_aspect_dates", "rectification_grid", "sky_events",
   "planetary_hours", "void_of_course",
   "returns", "progressions", "composite", "dignities", "lots",
+  "profections", "firdaria",
 ] as const;
 
 const CORS: Record<string, string> = {

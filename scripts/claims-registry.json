@@ -102,9 +102,9 @@
       "source": "accuracy.counts.mcp_tools",
       "render": [
         "{value} chart tools",
-        "fourteen chart tools",
-        "Fourteen chart tools",
-        "fourteen tools"
+        "sixteen chart tools",
+        "Sixteen chart tools",
+        "sixteen tools"
       ],
       "appearsIn": [
         "apps/web/app/features/page.tsx",

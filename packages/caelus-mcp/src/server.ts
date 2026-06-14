@@ -3,7 +3,7 @@
  * caelus-mcp -- MCP server for the caelus ephemeris engine.
  *
  * Design (per 2026 MCP practice): one bounded context (chart computation),
- * a small curated tool surface (fourteen outcome-level tools, not API wrappers),
+ * a small curated tool surface (sixteen outcome-level tools, not API wrappers),
  * and token-frugal outputs (positions to 0.01 deg, terse keys, no prose --
  * the model does the interpreting, the server does the math).
  *
@@ -28,6 +28,7 @@ import {
   solarArc, progressedJd, compositeLongitudes, davisonParams, midpointLon,
   dignityOf, isDayChart, planetarySect, inSect,
   lots, HERMETIC_LOTS,
+  profectionAt, firdaria, firdariaActive,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -333,6 +334,38 @@ export const lotsOut = z.object({
   sect: z.enum(["day", "night"]),
   lots: z.record(z.string(), z.object({ lon: z.number(), pos: z.string() })),
 });
+const profectedSignOut = z.object({
+  sign: z.string(),
+  sign_index: z.number(),
+  house: z.number(),
+  lord: z.string(),
+});
+export const profectionsOut = z.object({
+  natal_utc: z.string(),
+  target_utc: z.string(),
+  age_years: z.number(),
+  month: z.number(),
+  annual: profectedSignOut,
+  monthly: profectedSignOut,
+});
+const firdariaSubOut = z.object({ lord: z.string(), start: z.string(), end: z.string() });
+const firdariaPeriodOut = z.object({
+  lord: z.string(),
+  years: z.number(),
+  start: z.string(),
+  end: z.string(),
+  sub: z.array(firdariaSubOut),
+});
+export const firdariaOut = z.object({
+  natal_utc: z.string(),
+  sect: z.enum(["day", "night"]),
+  periods: z.array(firdariaPeriodOut),
+  active: z.object({
+    target_utc: z.string(),
+    major: z.string().nullable(),
+    sub: z.string().nullable(),
+  }).optional(),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -348,6 +381,8 @@ export const OUTPUT_SCHEMAS = {
   composite: compositeOut,
   dignities: dignitiesOut,
   lots: lotsOut,
+  profections: profectionsOut,
+  firdaria: firdariaOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -809,6 +844,58 @@ export function buildServer(
       out[name] = { lon: r2(l[name]), pos: fmt(l[name]) };
     }
     return text({ utc: date, sect: l.day ? "day" : "night", lots: out });
+  });
+
+  server.registerTool("profections", {
+    description:
+      "Annual and monthly profections (a Hellenistic time-lord technique) at a target date. The natal Ascendant advances one whole sign per year of life; the profected sign's traditional ruler is the lord of the year, the single most important time-lord for that year. Returns the age in years, the month within the profection year, and the annual and monthly profected sign (with its whole-sign house from the natal Ascendant and its lord). Needs the birth time and place for the Ascendant.",
+    inputSchema: {
+      ...birth,
+      target_date: z.string().describe("UTC ISO date to profect to (convert from local first)"),
+      zodiac: zodiacSchema,
+    },
+  }, async ({ date, lat, lon, target_date, zodiac }) => {
+    const natalJd = jdFromIso(date);
+    const targetJd = jdFromIso(target_date);
+    const p = profectionAt(engine, natalJd, targetJd, lat, lon, zodiac);
+    return text({
+      natal_utc: date,
+      target_utc: target_date,
+      age_years: p.age_years,
+      month: p.month,
+      annual: p.annual,
+      monthly: p.monthly,
+    });
+  });
+
+  server.registerTool("firdaria", {
+    description:
+      "Firdaria (firdariyyat): the Persian/medieval planetary time-lord periods. Life divides into nine major periods totalling 75 years — the seven planets (a day chart starts with the Sun, a night chart with the Moon) then the North and South Nodes — each planetary period split into seven sub-periods. Returns the full timeline (each period and sub-period with UTC start/end) and, when target_date is given, the major and sub lord active then. Sect is taken from the birth chart, so lat+lon are required; pure time arithmetic, no zodiac.",
+    inputSchema: {
+      ...birth,
+      target_date: z.string().optional().describe("UTC ISO date to look up the active period for; omit for the timeline only"),
+    },
+  }, async ({ date, lat, lon, target_date }) => {
+    const natalJd = jdFromIso(date);
+    const day = isDayChart(engine, natalJd, lat, lon);
+    const periods = firdaria(day, natalJd).map((p) => ({
+      lord: p.lord,
+      years: p.years,
+      start: isoFromJd(p.start),
+      end: isoFromJd(p.end),
+      sub: p.sub.map((s) => ({ lord: s.lord, start: isoFromJd(s.start), end: isoFromJd(s.end) })),
+    }));
+    const payload: {
+      natal_utc: string;
+      sect: "day" | "night";
+      periods: typeof periods;
+      active?: { target_utc: string; major: string | null; sub: string | null };
+    } = { natal_utc: date, sect: day ? "day" : "night", periods };
+    if (target_date !== undefined) {
+      const a = firdariaActive(day, natalJd, jdFromIso(target_date));
+      payload.active = { target_utc: target_date, major: a.major, sub: a.sub };
+    }
+    return text(payload);
   });
 
   // --------------------------------------------------------- resources

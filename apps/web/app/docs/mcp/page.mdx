@@ -12,7 +12,7 @@ export const metadata = {
 computed by the engine on each call, never recalled from training data, so every
 answer is deterministic.
 
-There are two ways to connect, with the same fourteen tools either way:
+There are two ways to connect, with the same sixteen tools either way:
 
 - **Hosted (Streamable HTTP)** — point your client at
   `https://www.ephemengine.com/api/mcp`. Nothing to install.
@@ -194,7 +194,7 @@ Any stdio MCP client takes the same command and arguments:
 
 ## Verify the tools appeared
 
-After the client reloads, it should list **fourteen** tools. Ask it to enumerate
+After the client reloads, it should list **sixteen** tools. Ask it to enumerate
 them, or check the client's MCP panel:
 
 `natal_chart`, `current_sky`, `transits`, `synastry`, `find_aspect_dates`,
@@ -203,13 +203,14 @@ crossings, solar and lunar eclipses), `planetary_hours`, `void_of_course`,
 `returns` (solar/lunar return instants plus the first return chart),
 `progressions` (secondary progressions and solar-arc directions), `composite`
 (midpoint composite and the Davison chart), `dignities` (essential dignity
-and sect for the seven traditional planets), and `lots` (the seven Hermetic
-lots, sect-aware).
+and sect for the seven traditional planets), `lots` (the seven Hermetic
+lots, sect-aware), `profections` (annual and monthly profections, lord of the
+year), and `firdaria` (the planetary time-lord periods).
 
 `natal_chart` and `current_sky` also tag each body with its solar phase
 (cazimi, combust, under the beams) and each aspect as applying or separating.
 
-If you see all fourteen, the server is wired correctly. The server also exposes two
+If you see all sixteen, the server is wired correctly. The server also exposes two
 **resources** — `caelus://glossary` (aspect angles and orbs, signs, bodies,
 house systems, essential dignities) and `caelus://accuracy` (the validation
 table) — and a **prompt**, `rectification_session`, a guided flow around
@@ -242,6 +243,8 @@ A natal-chart call returns structured positions, not prose:
 - "Composite and Davison charts for me and my partner."
 - "Which of my planets have essential dignity, and are they in sect?"
 - "Where are my Lots of Fortune and Spirit?"
+- "Who's my lord of the year for 2026?"
+- "Which firdaria period am I in right now?"
 
 ## Troubleshooting
 

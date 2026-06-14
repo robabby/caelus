@@ -73,9 +73,13 @@ export const GOLDEN_CASES = [
   { id: "dignities-tampa", tool: "dignities",
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
 
-  // --- Hellenistic lots harvest (Phase 1) ---
+  // --- Hellenistic time-lords harvest (Phase 1) ---
   { id: "lots-tampa", tool: "lots",
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
+  { id: "profections-2026", tool: "profections",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46, target_date: "2026-06-10T00:00:00Z" } },
+  { id: "firdaria-2026", tool: "firdaria",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46, target_date: "2026-06-10T00:00:00Z" } },
 ];
 
 async function run() {

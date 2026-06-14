@@ -13,7 +13,7 @@ export const metadata = {
 
 const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
   ["caelus", "caelus", "Chart math: positions, houses, aspects. Zero dependencies, ~85 KB gzipped."],
-  ["mcp", "caelus-mcp", "Fourteen chart tools for AI agents: natal charts, transits, synastry, event search, electional, lots."],
+  ["mcp", "caelus-mcp", "Sixteen chart tools for AI agents: natal charts, transits, synastry, event search, electional, lots, time-lords."],
   ["birth", "caelus-birth", "Local birth time and place to UT, with DST and historical timezone rules."],
   ["wheel", "caelus-wheel", "React SVG chart wheel. SSR-safe, ~3.4 KB gzipped."],
 ];
@@ -51,7 +51,7 @@ export default function Home() {
       <ul style={{ listStyle: "none", padding: 0, margin: "1.5rem 0", display: "grid", gap: "0.6rem", lineHeight: 1.5 }}>
         <li>🪐 Sun through Pluto, Chiron, and nodes; twelve house systems; tropical and seven sidereal zodiacs</li>
         <li>🧩 <A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
-        <li>🤖 <code>caelus-mcp</code> gives Claude, Cursor, and other MCP clients fourteen chart tools</li>
+        <li>🤖 <code>caelus-mcp</code> gives Claude, Cursor, and other MCP clients sixteen chart tools</li>
         <li>🆓 MIT licensed; coefficients are embedded, with no ephemeris files to deploy</li>
         <li>🔒 Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>
       </ul>

@@ -17,6 +17,7 @@ import {
   solarReturn, progressedLongitude, directedLongitude, solarArc,
   compositeLongitudes, davisonParams, dignityOf, isDayChart, planetarySect, inSect,
   lots, HERMETIC_LOTS,
+  profectionAt, firdaria, firdariaActive,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -340,6 +341,54 @@ const assertExactHits = (hits, body, targetLonAt, angle, label, tolDeg = 0.02) =
   const sum = res.lots.fortune.lon + res.lots.spirit.lon;
   assert(Math.abs(mod(sum - 2 * asc + 180, 360) - 180) < 0.02,
     "lots: fortune + spirit symmetric about the ascendant");
+}
+
+// ---------------------------------------------------------------- profections
+{
+  const args = { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 };
+  const target = "2026-06-10T00:00:00Z";
+  const res = await call("profections", { ...args, target_date: target });
+  const exp = profectionAt(eng, jdFromIso(args.date), jdFromIso(target), args.lat, args.lon);
+  assert(res.age_years === exp.age_years, `profections: age ${res.age_years} vs ${exp.age_years}`);
+  assert(res.month === exp.month, `profections: month ${res.month} vs ${exp.month}`);
+  assert(JSON.stringify(res.annual) === JSON.stringify(exp.annual), "profections: annual profected sign");
+  assert(JSON.stringify(res.monthly) === JSON.stringify(exp.monthly), "profections: monthly profected sign");
+  // textbook invariant: the annual profected house advances one sign per year of life
+  assert(res.annual.house === (res.age_years % 12) + 1, "profections: annual house = age%12 + 1");
+}
+
+// ---------------------------------------------------------------- firdaria
+{
+  const NODE_LORDS = ["north_node", "south_node"];
+  const args = { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 };
+  const target = "2026-06-10T00:00:00Z";
+  const res = await call("firdaria", { ...args, target_date: target });
+  const natalJd = jdFromIso(args.date);
+  const day = isDayChart(eng, natalJd, args.lat, args.lon);
+  assert(res.sect === (day ? "day" : "night"), "firdaria: chart sect");
+  assert(res.periods.length === 9, `firdaria: nine major periods, got ${res.periods.length}`);
+  // matches the engine timeline, lord and length for length
+  const exp = firdaria(day, natalJd);
+  for (let i = 0; i < 9; i++) {
+    assert(res.periods[i].lord === exp[i].lord, `firdaria: period ${i} lord`);
+    assert(res.periods[i].years === exp[i].years, `firdaria: period ${i} years`);
+  }
+  // invariant: nine periods total 75 years and tile contiguously
+  assert(res.periods.reduce((a, p) => a + p.years, 0) === 75, "firdaria: 75-year total");
+  for (let i = 1; i < res.periods.length; i++) {
+    assert(res.periods[i].start === res.periods[i - 1].end, `firdaria: period ${i} contiguous with previous`);
+  }
+  // invariant: planetary periods split into seven sub-periods tiling the major; nodes have none
+  for (const p of res.periods) {
+    if (NODE_LORDS.includes(p.lord)) {
+      assert(p.sub.length === 0, `firdaria: ${p.lord} has no sub-periods`);
+    } else {
+      assert(p.sub.length === 7, `firdaria: ${p.lord} has seven sub-periods`);
+      assert(p.sub[0].start === p.start && p.sub[6].end === p.end, `firdaria: ${p.lord} sub-periods tile the major period`);
+    }
+  }
+  const active = firdariaActive(day, natalJd, jdFromIso(target));
+  assert(res.active.major === active.major && res.active.sub === active.sub, "firdaria: active lord matches engine");
 }
 
 await client.close();

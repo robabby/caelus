@@ -27,7 +27,7 @@ Repo: https://github.com/heavyblotto/caelus
 - caelus@0.12.0 — the engine
 - caelus-birth@0.12.0 — local birth time + place -> UT (use this; see below)
 - caelus-wheel@0.12.0 — React SVG chart wheel, plus ChartSphere (3D), AstroMap (astrocartography), EphemerisGraph
-- caelus-mcp@0.12.1 — MCP server, 14 chart tools over stdio (charts, transits, synastry, find_aspect_dates, sky_events, rectification_grid, planetary_hours, void_of_course, returns, progressions, composite, dignities, lots); also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp; listed on the official MCP Registry as io.github.heavyblotto/caelus-mcp
+- caelus-mcp@0.12.1 — MCP server, 16 chart tools over stdio (charts, transits, synastry, find_aspect_dates, sky_events, rectification_grid, planetary_hours, void_of_course, returns, progressions, composite, dignities, lots, profections, firdaria); also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp; listed on the official MCP Registry as io.github.heavyblotto/caelus-mcp
 - caelus-engine (PyPI) — the Python reference engine (no numpy), https://pypi.org/project/caelus-engine/
 
 ## Entry points

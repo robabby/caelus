@@ -92,6 +92,20 @@ Courage, Victory, Nemesis — cast from the Ascendant and reversing by sect (day
 chart = Sun above the horizon). Per lot: its longitude and zodiacal position.
 Anchored to the Ascendant, so an exact time and lat+lon are required.
 
+### profections(date, lat, lon, target_date, zodiac?)
+Annual and monthly profections to `target_date`. The natal Ascendant advances
+one whole sign per year of life; the profected sign's traditional ruler is the
+lord of the year. Returns the age, the month within the profection year, and the
+annual and monthly profected sign (whole-sign house from the Ascendant + lord).
+Needs the birth time and place for the Ascendant.
+
+### firdaria(date, lat, lon, target_date?)
+The Persian/medieval planetary time-lord periods: nine major periods totalling
+75 years (the seven planets by sect, then the two nodes), each planetary period
+split into seven sub-periods. Returns the full timeline (UTC start/end per period
+and sub-period) and, when `target_date` is given, the major and sub lord active
+then. Sect from the birth chart; pure time arithmetic, no zodiac.
+
 ## Resources (shipped)
 - `caelus://glossary`: machine-readable definitions; aspect angles and default
   orbs, signs, bodies, the twelve house systems, and essential dignities
@@ -145,8 +159,10 @@ change; the new tools gain `verify_tools` engine-oracle checks and frozen
 `golden-mcp` payloads. Thirteen tools total.
 
 ## v0.14 surface (shipped)
-Hellenistic time-lords harvest (Roadmap Phase 1): `lots` surfaces the engine's
-sect-aware Hermetic lots (Fortune, Spirit, Eros, Necessity, Courage, Victory,
-Nemesis) over MCP. No engine change; the tool gains `verify_tools` engine-oracle
-checks — including the Fortune/Spirit symmetry invariant — and a frozen
-`golden-mcp` payload. Fourteen tools total.
+Hellenistic time-lords harvest (Roadmap Phase 1): `lots`, `profections`, and
+`firdaria` surface the engine's sect-aware Hermetic lots, annual/monthly
+profections (lord of the year), and the firdaria planetary time-lord periods
+over MCP. No engine change; each tool gains `verify_tools` engine-oracle checks
+— including the Fortune/Spirit symmetry invariant for lots and the 75-year-total
+and sub-period-tiling invariants for firdaria — and a frozen `golden-mcp`
+payload. Sixteen tools total.

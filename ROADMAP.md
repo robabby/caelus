@@ -52,7 +52,7 @@ impossible ones (`compileForm`) (0.11.0); a JD-first chart entry point that
 builds a full chart directly from a Julian Day, no calendar round-trip
 (`chartAt`) (0.12.0); conformance suite;
 MCP server over stdio and hosted Streamable HTTP (`ephemengine.com/api/mcp`,
-stateless) exposing fourteen chart tools, with golden payloads, resources
+stateless) exposing sixteen chart tools, with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
 prompt, listed on the official MCP Registry as `io.github.heavyblotto/caelus-mcp`
 (0.12.1); JPL-direct validation tier.
@@ -99,8 +99,10 @@ loosing-of-the-bond-threshold invariants); **primary directions to
 the angles — done** (`directionArcs`/`primaryDirections`, Placidus semi-arc,
 Ptolemy/Naibod keys; `directions-golden` pin + geometric invariants). Phase 1 is
 complete in the engine (inter-planetary mundane directions, under the pole, are
-a possible later extension). Each lands as an engine export first, then an MCP
-tool and a site docs page.
+a possible later extension). Lots, profections, firdaria, and zodiacal releasing
+are surfaced over MCP (the `lots`, `profections`, `firdaria`, and `releasing`
+tools); primary directions are the next harvest. Each lands as an engine export
+first, then an MCP tool and a site docs page.
 
 ### Phase 2 — Vedic / Jyotish layer (in progress)
 

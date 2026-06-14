@@ -94,4 +94,4 @@ runtime dependencies by design; caelus core stays at zero.
 - [caelus](https://www.npmjs.com/package/caelus) — the engine
 - caelus-birth — this package
 - [caelus-wheel](https://www.npmjs.com/package/caelus-wheel) — React SVG chart wheel
-- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, fourteen chart tools over stdio
+- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, sixteen chart tools over stdio

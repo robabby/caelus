@@ -83,10 +83,16 @@ current figures live in `packages/caelus/accuracy.json` and on
 - `lots` (Roadmap Phase 1): the seven Hermetic lots (Arabic parts) — Fortune,
   Spirit, Eros, Necessity, Courage, Victory, Nemesis — cast from the Ascendant
   and sect-aware, surfacing the engine's `lots()`.
+- `profections` (Roadmap Phase 1): annual and monthly profections to a target
+  date — age, the profected signs and their whole-sign houses, and the lord of
+  the year — surfacing `profectionAt()`.
+- `firdaria` (Roadmap Phase 1): the firdaria planetary time-lord periods — the
+  full 75-year timeline (nine periods, seven sub-periods each) and the lords
+  active at a target date — surfacing `firdaria()`/`firdariaActive()`.
 - No engine change in this layer. Each tool gains engine-oracle checks in
   `verify_tools.mjs` (the `lots` checks include the Fortune/Spirit symmetry
-  invariant) and frozen payloads in `golden-mcp.json`; the tool surface is now
-  fourteen.
+  invariant; `firdaria` the 75-year-total and sub-period-tiling invariants) and
+  frozen payloads in `golden-mcp.json`; the tool surface is now sixteen.
 
 ## 0.12.1 — 2026-06-14
 
