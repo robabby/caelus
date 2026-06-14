@@ -1,6 +1,6 @@
 {
   "name": "caelus-birth",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Local birth time + place -> UT, correctly. IANA timezone resolution for caelus charts: DST, half-hour zones, ambiguous and nonexistent times.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -18,7 +18,7 @@
     "provenance": true
   },
   "dependencies": {
-    "caelus": "^0.14.0",
+    "caelus": "^0.15.0",
     "luxon": "^3.7.2",
     "tz-lookup": "^6.1.25"
   },

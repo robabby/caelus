@@ -6,9 +6,11 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## Unreleased
+## 0.15.0 — 2026-06-14
 
-API-feedback polish (no release cut yet):
+API-feedback polish across all four packages, prompted by an external review of
+the chart contract. No new techniques; this tightens what a chart returns and
+how its bodies are typed.
 
 - `chart()`/`chartAt()` now return enriched bodies (`ChartBody`): each carries
   its 1-based `house` (by the chart's cusps) and the `dignities` it holds in its
@@ -18,9 +20,10 @@ API-feedback polish (no release cut yet):
   `Chart.unavailable[]` rather than failing the whole chart; the analytic
   Sun–Pluto and nodes still compute. An absurd instant (a Julian Day passed
   where a calendar year belongs) still throws `RangeError`.
-- `Chart.bodies` is typed honestly: the analytic core (`AlwaysBody`, Sun–Pluto
-  and the nodes) is guaranteed and autocompleted, while Chiron and any opt-in
-  extras read as `ChartBody | undefined` so the omission case must be handled.
+- `Chart.bodies` is typed to match what a chart actually holds: the analytic
+  core (`AlwaysBody`, Sun–Pluto and the nodes) is guaranteed and autocompleted,
+  while Chiron and any opt-in extras read as `ChartBody | undefined` so the
+  omission case must be handled.
   `caelus-wheel`'s `WheelChart`/`SphereChart` accept the same optional bodies
   (they already filter absent ones before rendering).
 - New pure sign helpers: `element(sign)`, `modality(sign)`, `quadrant(house)`.
