@@ -52,3 +52,4 @@ conformance-stats.json
 packages/caelus-mcp/eval/report.json
 packages/caelus-mcp/eval/report.md
 python/moon_horizons_cache.json
+.vercel
