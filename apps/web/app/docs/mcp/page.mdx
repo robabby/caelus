@@ -199,12 +199,16 @@ them, or check the client's MCP panel:
 
 `natal_chart`, `current_sky`, `transits`, `synastry`, `find_aspect_dates`,
 `rectification_grid`, `sky_events` (rise/set, phases, stations, zodiac
-crossings, solar and lunar eclipses), `planetary_hours`, and `void_of_course`.
+crossings, solar and lunar eclipses), `planetary_hours`, `void_of_course`,
+`returns` (solar/lunar return instants plus the first return chart),
+`progressions` (secondary progressions and solar-arc directions), `composite`
+(midpoint composite and the Davison chart), and `dignities` (essential dignity
+and sect for the seven traditional planets).
 
 `natal_chart` and `current_sky` also tag each body with its solar phase
 (cazimi, combust, under the beams) and each aspect as applying or separating.
 
-If you see all nine, the server is wired correctly. The server also exposes two
+If you see all thirteen, the server is wired correctly. The server also exposes two
 **resources** — `caelus://glossary` (aspect angles and orbs, signs, bodies,
 house systems, essential dignities) and `caelus://accuracy` (the validation
 table) — and a **prompt**, `rectification_session`, a guided flow around
@@ -232,6 +236,10 @@ A natal-chart call returns structured positions, not prose:
 - "When is Saturn square my natal Moon in the next two years?"
 - "Compare my chart with my partner's."
 - "Next solar eclipse? Lunar eclipses in 2026?"
+- "My solar return chart for this year."
+- "Progress my chart to today — secondary positions and the solar arc."
+- "Composite and Davison charts for me and my partner."
+- "Which of my planets have essential dignity, and are they in sect?"
 
 ## Troubleshooting
 
@@ -258,7 +266,7 @@ behaviour is reproducible and the four packages stay in lockstep:
   "mcpServers": {
     "caelus": {
       "command": "npx",
-      "args": ["-y", "caelus-mcp@0.8.0"]
+      "args": ["-y", "caelus-mcp@0.12.1"]
     }
   }
 }`}
