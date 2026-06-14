@@ -24,6 +24,9 @@ import {
   ASPECTS, DEFAULT_ORBS, SIGNS as SIGN_NAMES, dignities,
   solarPhase, aspectPhase, planetaryHour, voidOfCourse,
   CAZIMI_DEG, COMBUST_DEG, UNDER_BEAMS_DEG,
+  solarReturn, lunarReturn, progressedLongitude, directedLongitude,
+  solarArc, progressedJd, compositeLongitudes, davisonParams, midpointLon,
+  dignityOf, isDayChart, planetarySect, inSect,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -287,6 +290,43 @@ export const voidOfCourseOut = z.object({
   sign_exit: z.string(),
   next_aspect: z.string().nullable(),
 });
+export const returnsOut = z.object({
+  body: z.enum(["sun", "moon"]),
+  natal_utc: z.string(),
+  return_lat: z.number(),
+  return_lon: z.number(),
+  returns: z.array(z.string()),
+  chart: chartOut.nullable(),
+});
+const progressedBody = z.object({
+  secondary: z.number(), secondaryPos: z.string(),
+  directed: z.number(), directedPos: z.string(),
+});
+export const progressionsOut = z.object({
+  natal_utc: z.string(),
+  target_utc: z.string(),
+  progressed_jd_utc: z.string(),
+  solar_arc: z.number(),
+  bodies: z.record(z.string(), progressedBody),
+});
+export const compositeOut = z.object({
+  composite: z.object({
+    bodies: z.record(z.string(), z.object({ lon: z.number(), pos: z.string() })),
+    angles: z.object({ asc: z.number(), ascPos: z.string(), mc: z.number(), mcPos: z.string() }),
+  }),
+  davison: chartOut,
+});
+const dignityBody = z.object({
+  sign: z.string(),
+  dignity: z.array(z.enum(["domicile", "exaltation", "detriment", "fall"])),
+  planetary_sect: z.enum(["diurnal", "nocturnal"]).nullable(),
+  in_sect: z.boolean().nullable(),
+});
+export const dignitiesOut = z.object({
+  utc: z.string(),
+  sect: z.enum(["day", "night"]),
+  bodies: z.record(z.string(), dignityBody),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -297,6 +337,10 @@ export const OUTPUT_SCHEMAS = {
   sky_events: skyEventsOut,
   planetary_hours: planetaryHoursOut,
   void_of_course: voidOfCourseOut,
+  returns: returnsOut,
+  progressions: progressionsOut,
+  composite: compositeOut,
+  dignities: dignitiesOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -639,6 +683,111 @@ export function buildServer(
       sign_exit: isoFromJd(voc.signExit),
       next_aspect: voc.nextAspect === null ? null : isoFromJd(voc.nextAspect),
     });
+  });
+
+  server.registerTool("returns", {
+    description:
+      "Solar or lunar return: the instant(s) a body returns to its natal longitude within a window, plus the full return chart for the first one. The Sun returns about yearly (the solar-return chart for the year), the Moon about monthly. Return chart is cast for the return moment at return_lat/return_lon (defaults to the birthplace; pass the current/relocated place for a relocated return).",
+    inputSchema: {
+      ...birth,
+      body: z.enum(["sun", "moon"]).describe("sun for the solar return, moon for the lunar return"),
+      search_start: z.string().describe("UTC ISO start of the window to search for returns"),
+      search_end: z.string().describe("UTC ISO end of the window; range <= 2 years"),
+      return_lat: latSchema.optional().describe("Latitude for the return chart; defaults to the birth latitude"),
+      return_lon: lonSchema.optional().describe("Longitude (EAST positive) for the return chart; defaults to the birth longitude"),
+      house_system: houseSys,
+      zodiac: zodiacSchema,
+    },
+  }, async ({ date, lat, lon, body, search_start, search_end, return_lat, return_lon, house_system, zodiac }) => {
+    const natalJd = jdFromIso(date);
+    const jd0 = jdFromIso(search_start);
+    const jd1 = jdFromIso(search_end);
+    if (jd1 - jd0 > 2 * 366) throw new Error("Search window too large (max 2 years)");
+    const fn = body === "sun" ? solarReturn : lunarReturn;
+    const instants = fn(engine, natalJd, jd0, jd1, zodiac);
+    const rLat = return_lat ?? lat;
+    const rLon = return_lon ?? lon;
+    const returnsIso = instants.map(isoFromJd);
+    const chart = instants.length
+      ? chartPayload(engine, isoFromJd(instants[0]), rLat, rLon, house_system, zodiac)
+      : null;
+    return text({ body, natal_utc: date, return_lat: rLat, return_lon: rLon, returns: returnsIso, chart });
+  });
+
+  server.registerTool("progressions", {
+    description:
+      "Secondary progressions (day-for-a-year) and solar-arc directions of a natal chart to a target date. Returns, per body, the secondary-progressed longitude and the solar-arc-directed longitude, plus the solar arc itself. Longitudes only (no houses), so no birthplace is needed.",
+    inputSchema: {
+      date: birth.date,
+      target_date: z.string().describe("UTC ISO date to progress/direct to (convert from local first)"),
+      zodiac: zodiacSchema,
+    },
+  }, async ({ date, target_date, zodiac }) => {
+    const natalJd = jdFromIso(date);
+    const targetJd = jdFromIso(target_date);
+    const bodies: Record<string, unknown> = {};
+    for (const b of BODIES) {
+      const sec = progressedLongitude(engine, b as Body, natalJd, targetJd, undefined, zodiac);
+      const dir = directedLongitude(engine, b as Body, natalJd, targetJd, undefined, zodiac);
+      bodies[b] = { secondary: r2(sec), secondaryPos: fmt(sec), directed: r2(dir), directedPos: fmt(dir) };
+    }
+    return text({
+      natal_utc: date,
+      target_utc: target_date,
+      progressed_jd_utc: isoFromJd(progressedJd(natalJd, targetJd)),
+      solar_arc: r2(solarArc(engine, natalJd, targetJd, undefined, zodiac)),
+      bodies,
+    });
+  });
+
+  server.registerTool("composite", {
+    description:
+      "Relationship charts for two people: the midpoint composite (each body and angle is the shorter-arc midpoint of the two natal positions) and the Davison chart (a real chart cast for the midpoint in time and place). Each person needs date+lat+lon.",
+    inputSchema: {
+      a: z.object(birth).describe("Person A birth data (UTC date, lat, lon)"),
+      b: z.object(birth).describe("Person B birth data (UTC date, lat, lon)"),
+      house_system: houseSys,
+      zodiac: zodiacSchema,
+    },
+  }, async ({ a, b, house_system, zodiac }) => {
+    const jdA = jdFromIso(a.date);
+    const jdB = jdFromIso(b.date);
+    const compBodies = compositeLongitudes(engine, jdA, jdB, BODIES as unknown as Body[], zodiac);
+    const ca = chartPayload(engine, a.date, a.lat, a.lon, "placidus", zodiac);
+    const cb = chartPayload(engine, b.date, b.lat, b.lon, "placidus", zodiac);
+    const asc = midpointLon(ca.angles.asc, cb.angles.asc);
+    const mc = midpointLon(ca.angles.mc, cb.angles.mc);
+    const bodies: Record<string, unknown> = {};
+    for (const body of BODIES) bodies[body] = { lon: r2(compBodies[body]), pos: fmt(compBodies[body]) };
+    const [midJd, midLat, midLon] = davisonParams(jdA, jdB, a.lat, a.lon, b.lat, b.lon);
+    const davison = chartPayload(engine, isoFromJd(midJd), midLat, midLon, house_system, zodiac);
+    return text({
+      composite: {
+        bodies,
+        angles: { asc: r2(asc), ascPos: fmt(asc), mc: r2(mc), mcPos: fmt(mc) },
+      },
+      davison,
+    });
+  });
+
+  server.registerTool("dignities", {
+    description:
+      "Essential dignity and sect for the seven traditional planets at a moment and place. Per planet: its sign, any essential dignity (domicile/exaltation/detriment/fall), its planetary sect (diurnal/nocturnal, null for Mercury), and whether it is in sect given a day or night chart. The chart is day when the Sun is above the horizon — so lat+lon are required.",
+    inputSchema: { ...birth, zodiac: zodiacSchema },
+  }, async ({ date, lat, lon, zodiac }) => {
+    const jd = jdFromIso(date);
+    const dayChart = isDayChart(engine, jd, lat, lon);
+    const bodies: Record<string, unknown> = {};
+    for (const b of TRADITIONAL) {
+      const lonB = engine.longitude(b as Body, jd, { zodiac });
+      bodies[b] = {
+        sign: SIGNS[Math.floor(lonB / 30)],
+        dignity: dignityOf(engine, b as Body, jd, zodiac),
+        planetary_sect: planetarySect(b),
+        in_sect: inSect(b, dayChart),
+      };
+    }
+    return text({ utc: date, sect: dayChart ? "day" : "night", bodies });
   });
 
   // --------------------------------------------------------- resources

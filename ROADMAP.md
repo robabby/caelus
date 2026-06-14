@@ -52,7 +52,7 @@ impossible ones (`compileForm`) (0.11.0); a JD-first chart entry point that
 builds a full chart directly from a Julian Day, no calendar round-trip
 (`chartAt`) (0.12.0); conformance suite;
 MCP server over stdio and hosted Streamable HTTP (`ephemengine.com/api/mcp`,
-stateless) exposing nine chart tools, with golden payloads, resources
+stateless) exposing thirteen chart tools, with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
 prompt, listed on the official MCP Registry as `io.github.heavyblotto/caelus-mcp`
 (0.12.1); JPL-direct validation tier.
@@ -74,13 +74,14 @@ with golden fixtures, then ports to TypeScript pinned to them, then surfaces in
 the MCP server and the site. All of it stays interpretation-free; meaning is
 out of scope for the engine. Tracked work hangs off GitHub Issues.
 
-### Phase 0 — MCP tool harvest
+### Phase 0 — MCP tool harvest (done)
 
-Surface engine capabilities that are already built and suite-pinned but not yet
-exposed over MCP: returns (solar/lunar), progressions (secondary + solar arc),
-composite/Davison, dignities/sect. No engine change; new tool schemas plus
-`verify_tools`/`integration` golden coverage (the MCP layer is invisible to the
-conformance suite). Ships as a `caelus-mcp` minor.
+Surfaced engine capabilities that were already built and suite-pinned but not
+yet exposed over MCP, as four tools: `returns` (solar/lunar), `progressions`
+(secondary + solar arc), `composite` (midpoint + Davison), and `dignities`
+(essential dignity + sect). No engine change; each gained `verify_tools`
+engine-oracle checks and frozen `golden-mcp` payloads (the MCP layer is
+invisible to the conformance suite). Pending a `caelus-mcp` minor release.
 
 ### Phase 1 — Hellenistic time-lords
 

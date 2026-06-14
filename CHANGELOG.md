@@ -6,6 +6,22 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## Unreleased
+
+### MCP server (`caelus-mcp`)
+
+- Four new tools surfacing engine capabilities that were already suite-pinned
+  in `caelus` but not yet exposed over MCP (Roadmap Phase 0):
+  - `returns` — solar/lunar return instants in a window plus the full return
+    chart for the first, cast at a return location (defaults to the birthplace).
+  - `progressions` — secondary progressions (day-for-a-year) and solar-arc
+    directions to a target date; longitudes only, no birthplace needed.
+  - `composite` — midpoint composite (bodies and angles) and the Davison chart.
+  - `dignities` — essential dignity (domicile/exaltation/detriment/fall) and
+    sect for the seven traditional planets at a moment and place.
+- No engine change. Each tool gains engine-oracle checks in `verify_tools.mjs`
+  and frozen payloads in `golden-mcp.json`; the tool surface is now thirteen.
+
 ## 0.12.1 — 2026-06-14
 
 A `caelus-mcp` metadata patch: registry listing only, no functional change.

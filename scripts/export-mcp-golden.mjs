@@ -60,6 +60,18 @@ export const GOLDEN_CASES = [
   { id: "find-mars-conj-jupiter", tool: "find_aspect_dates",
     args: { body: "mars", aspect: "conjunction", target_body: "jupiter",
             start: "2020-01-01T00:00:00Z", end: "2024-01-01T00:00:00Z" } },
+
+  // --- derived-chart harvest (returns, progressions, composite, dignities) ---
+  { id: "solar-return-2025", tool: "returns",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46, body: "sun",
+            search_start: "2025-01-01T00:00:00Z", search_end: "2026-01-01T00:00:00Z" } },
+  { id: "progressions-2025", tool: "progressions",
+    args: { date: "1990-06-10T14:30:00Z", target_date: "2025-06-10T00:00:00Z" } },
+  { id: "composite-pair", tool: "composite",
+    args: { a: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 },
+            b: { date: "1988-03-21T06:00:00Z", lat: 40.71, lon: -74.01 } } },
+  { id: "dignities-tampa", tool: "dignities",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
 ];
 
 async function run() {

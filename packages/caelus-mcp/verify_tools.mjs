@@ -12,7 +12,11 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { createRequire } from "node:module";
 import { writeFileSync } from "node:fs";
-import { Engine, BODIES, julianDay, mod, aspectPhase, solarPhase, ASPECTS } from "caelus";
+import {
+  Engine, BODIES, julianDay, mod, aspectPhase, solarPhase, ASPECTS,
+  solarReturn, progressedLongitude, directedLongitude, solarArc,
+  compositeLongitudes, davisonParams, dignityOf, isDayChart, planetarySect, inSect,
+} from "caelus";
 import { loadNodeData } from "caelus/node";
 
 const require = createRequire(import.meta.url);
@@ -250,6 +254,73 @@ const assertExactHits = (hits, body, targetLonAt, angle, label, tolDeg = 0.02) =
   });
   assert(row.asc === sky.angles.ascPos && row.mc === sky.angles.mcPos,
     `rectification_grid: row ${row.utc} matches current_sky (${row.asc}/${row.mc} vs ${sky.angles.ascPos}/${sky.angles.mcPos})`);
+}
+
+// ---------------------------------------------------------------- returns
+{
+  const natal = { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 };
+  const res = await call("returns", {
+    ...natal, body: "sun",
+    search_start: "2025-01-01T00:00:00Z", search_end: "2026-01-01T00:00:00Z",
+  });
+  const natalJd = jdFromIso(natal.date);
+  const expected = solarReturn(eng, natalJd, jdFromIso("2025-01-01T00:00:00Z"), jdFromIso("2026-01-01T00:00:00Z"));
+  assert(res.returns.length === expected.length, `returns: count ${res.returns.length} vs ${expected.length}`);
+  // defining property: the Sun is back at its natal longitude at each return instant
+  const natalSun = eng.longitude("sun", natalJd);
+  for (const iso of res.returns) {
+    const d = Math.abs(mod(eng.longitude("sun", jdFromIso(iso)) - natalSun + 180, 360) - 180);
+    assert(d < 0.01, `returns: sun back to natal lon at ${iso} (off ${d.toFixed(4)}°)`);
+  }
+  assert(res.return_lat === natal.lat && res.return_lon === natal.lon, "returns: return place defaults to birthplace");
+  // the return chart is a real chart at that instant+place: identical to current_sky there
+  const sky = await call("current_sky", { date: res.returns[0], lat: res.return_lat, lon: res.return_lon });
+  assert(JSON.stringify(res.chart) === JSON.stringify(sky), "returns: chart matches current_sky at the return instant");
+}
+
+// ---------------------------------------------------------------- progressions
+{
+  const res = await call("progressions", { date: "1990-06-10T14:30:00Z", target_date: "2025-06-10T00:00:00Z" });
+  const natalJd = jdFromIso("1990-06-10T14:30:00Z");
+  const targetJd = jdFromIso("2025-06-10T00:00:00Z");
+  assert(Math.abs(res.solar_arc - r2(solarArc(eng, natalJd, targetJd))) < 1e-9, "progressions: solar arc");
+  for (const b of BODIES) {
+    assert(Math.abs(res.bodies[b].secondary - r2(progressedLongitude(eng, b, natalJd, targetJd))) < 1e-9,
+      `progressions: ${b} secondary`);
+    assert(Math.abs(res.bodies[b].directed - r2(directedLongitude(eng, b, natalJd, targetJd))) < 1e-9,
+      `progressions: ${b} directed`);
+  }
+}
+
+// ---------------------------------------------------------------- composite
+{
+  const a = { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 };
+  const b = { date: "1988-03-21T06:00:00Z", lat: 40.71, lon: -74.01 };
+  const res = await call("composite", { a, b });
+  const jdA = jdFromIso(a.date);
+  const jdB = jdFromIso(b.date);
+  const comp = compositeLongitudes(eng, jdA, jdB, BODIES);
+  for (const body of BODIES) {
+    assert(Math.abs(res.composite.bodies[body].lon - r2(comp[body])) < 1e-9, `composite: ${body} midpoint`);
+  }
+  // davison: a real chart at the temporal+geographic midpoint; equals current_sky there
+  const [, midLat, midLon] = davisonParams(jdA, jdB, a.lat, a.lon, b.lat, b.lon);
+  const sky = await call("current_sky", { date: res.davison.utc, lat: midLat, lon: midLon });
+  assert(JSON.stringify(res.davison) === JSON.stringify(sky), "composite: davison matches current_sky at the midpoint");
+}
+
+// ---------------------------------------------------------------- dignities
+{
+  const args = { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 };
+  const res = await call("dignities", args);
+  const jd = jdFromIso(args.date);
+  const day = isDayChart(eng, jd, args.lat, args.lon);
+  assert(res.sect === (day ? "day" : "night"), "dignities: chart sect");
+  for (const b of ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"]) {
+    assert(JSON.stringify(res.bodies[b].dignity) === JSON.stringify(dignityOf(eng, b, jd)), `dignities: ${b} dignity`);
+    assert(res.bodies[b].planetary_sect === planetarySect(b), `dignities: ${b} planetary sect`);
+    assert(res.bodies[b].in_sect === inSect(b, day), `dignities: ${b} in sect`);
+  }
 }
 
 await client.close();

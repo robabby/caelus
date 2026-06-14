@@ -64,6 +64,28 @@ Whether the Moon makes no further Ptolemaic aspect to a traditional planet
 (Sun..Saturn) before leaving its current sign: the sign, the sign-exit time
 (UTC), and the next perfecting aspect (null when void).
 
+### returns(date, lat, lon, body, search_start, search_end, return_lat?, return_lon?, house_system?, zodiac?)
+Solar or lunar return: the instants a body (`sun` ~yearly, `moon` ~monthly)
+returns to its natal longitude within a window (≤2 years), plus the full return
+chart (same shape as `natal_chart`) for the first one, cast at
+`return_lat`/`return_lon` (defaulting to the birthplace).
+
+### progressions(date, target_date, zodiac?)
+Secondary progressions (day-for-a-year) and solar-arc directions to a target
+date. Per body: the secondary-progressed and solar-arc-directed longitude, plus
+the solar arc. Longitudes only — no birthplace needed.
+
+### composite(a, b, house_system?, zodiac?)
+Two relationship charts: the midpoint composite (shorter-arc midpoint of each
+body and angle) and the Davison chart (a real `natal_chart`-shaped chart cast
+for the temporal and geographic midpoint).
+
+### dignities(date, lat, lon, zodiac?)
+Essential dignity and sect for the seven traditional planets: per planet its
+sign, any dignity (domicile/exaltation/detriment/fall), planetary sect
+(diurnal/nocturnal, null for Mercury), and whether it is in sect given the
+chart's day/night status (Sun above the horizon).
+
 ## Resources (shipped)
 - `caelus://glossary`: machine-readable definitions; aspect angles and default
   orbs, signs, bodies, the twelve house systems, and essential dignities
@@ -107,3 +129,11 @@ and each aspect with an applying/separating phase. `caelus://glossary` gains an
 `electional` block (solar-phase thresholds, Chaldean order and day rulers, the
 void-of-course and aspect-phase definitions). Built on the validated electional
 primitives in `caelus`, golden-pinned to the Python reference.
+
+## v0.13 surface (shipped)
+Derived-chart harvest: `returns`, `progressions`, `composite`, and `dignities`
+surface engine functions (solar/lunar returns, secondary progressions and
+solar arc, midpoint composite and Davison, essential dignity and sect) that
+were already suite-pinned in `caelus` but not yet exposed over MCP. No engine
+change; the new tools gain `verify_tools` engine-oracle checks and frozen
+`golden-mcp` payloads. Thirteen tools total.
