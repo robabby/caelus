@@ -23,8 +23,9 @@ export interface SpherePosition {
 }
 export interface SphereChart {
   /** Bodies with ecliptic longitude AND latitude (the caelus chart's bodies
-   *  satisfy this as-is). */
-  bodies: Record<string, SpherePosition>;
+   *  satisfy this as-is). A body may be absent (e.g. Chiron outside its fitted
+   *  range); the component filters these out before reading them. */
+  bodies: Record<string, SpherePosition | undefined>;
 }
 
 export interface ChartSphereProps {
@@ -117,7 +118,7 @@ export function ChartSphere({
 
   const names = (bodies ?? Object.keys(chart.bodies)).filter((b) => chart.bodies[b]);
   const drawn = names.map((name) => {
-    const { lon, lat, retrograde } = chart.bodies[name];
+    const { lon, lat, retrograde } = chart.bodies[name]!;
     const p = project(eclVec(lon, lat), ctx);
     const base = project(eclVec(lon, 0), ctx); // foot on the ecliptic plane
     return { name, p, base, retrograde };

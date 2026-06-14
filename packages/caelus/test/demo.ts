@@ -11,6 +11,7 @@ const c = eng.chart(2026, 6, 10, 16, 0, 0, 27.94, -82.46, "placidus");
 console.log("Today's sky over Brandon, FL (16:00 UT):\n");
 for (const b of BODIES) {
   const p = c.bodies[b];
+  if (!p) continue; // omitted: outside its fitted range (see c.unavailable)
   console.log(`${b.padEnd(10)} ${fmtLon(p.lon)}${p.retrograde ? " R" : ""}`);
 }
 console.log(`\nASC ${fmtLon(c.angles.asc)}   MC ${fmtLon(c.angles.mc)}`);

@@ -191,10 +191,21 @@ export interface ChartBody extends Position {
   dignities: string[];
 }
 
-/** A chart's bodies, keyed by id. The core {@link BODIES} are always present
- *  (and autocompleted); any extra ids requested via {@link ChartOptions.bodies}
- *  are present too. */
-export type ChartBodies = Record<Body, ChartBody> & Record<string, ChartBody>;
+/** Bodies guaranteed to be in every chart: the analytic Sun–Pluto and the lunar
+ *  nodes, which resolve across all supported epochs. (Chiron is Chebyshev-packed
+ *  and can fall outside its fitted range, so it is *not* guaranteed.) */
+export type AlwaysBody = Exclude<Body, "chiron">;
+
+/**
+ * A chart's bodies, keyed by id. The analytic core ({@link AlwaysBody}) is
+ * always present and needs no presence check. Chiron and any opt-in extras
+ * requested via {@link ChartOptions.bodies} may be absent when the instant is
+ * outside their fitted range (see {@link Chart.unavailable}), so those accesses
+ * are typed `ChartBody | undefined` and must be guarded.
+ */
+export type ChartBodies =
+  & Record<AlwaysBody, ChartBody>
+  & { [id: string]: ChartBody | undefined };
 
 /** One aspect between two bodies in a {@link Chart}. */
 export interface Aspect {

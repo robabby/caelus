@@ -11,7 +11,7 @@
  * Definitions follow BPHS, validated against the named source in
  * `validate_jyotish`. Mirrors the Python reference (astroengine/rajayoga.py).
  */
-import { Engine, BodyId, Zodiac } from "./chart.js";
+import { Engine, Zodiac, AlwaysBody } from "./chart.js";
 import { SIGN_RULERS } from "./profections.js";
 
 /** Graha drishti: the house-distances (1-based) each planet aspects. */
@@ -24,7 +24,8 @@ export const TRIKONAS = [1, 5, 9];
 export const DHANA_HOUSES = [2, 5, 9, 11];
 const PURE_KENDRAS = [4, 7, 10];
 const PURE_TRIKONAS = [5, 9];
-const PLANETS: BodyId[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
+// The seven classical grahas: all analytic, so always present in a chart.
+const PLANETS: readonly AlwaysBody[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
 
 /** The traditional ruler of a sign index (0 = Aries). */
 export function signLord(sign: number): string {

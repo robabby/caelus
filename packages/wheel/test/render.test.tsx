@@ -119,8 +119,8 @@ assert(render(fixture).includes("℞"), "fixture: retrograde mark rendered");
     bodies: Object.fromEntries(Object.entries(fixture.bodies).map(([id, p]) => [
       id,
       {
-        lon: Math.round(p.lon * 100) / 100,
-        ...(p.retrograde ? { rx: true } : {}),
+        lon: Math.round(p!.lon * 100) / 100,
+        ...(p!.retrograde ? { rx: true } : {}),
       },
     ])),
     angles: { asc: fixture.angles.asc, mc: fixture.angles.mc },

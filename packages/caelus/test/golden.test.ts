@@ -313,7 +313,9 @@ for (const g of G.houses) {
   const c = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
   expect("chart.jdUt", c.jdUt, g.jd_ut, 1e-9);
   for (const b of BODIES) {
-    expectAngleDeg(`chart.${b}`, c.bodies[b].lon, g.bodies[b].lon, TOL);
+    const cb = c.bodies[b];
+    if (!cb) { failures++; console.error(`FAIL chart.${b}: unexpectedly absent`); continue; }
+    expectAngleDeg(`chart.${b}`, cb.lon, g.bodies[b].lon, TOL);
   }
   for (let i = 0; i < 12; i++) {
     expectAngleDeg(`chart.cusp[${i}]`, c.cusps[i], g.cusps[i], TOL);
@@ -347,7 +349,9 @@ for (const g of G.houses) {
     console.error(`FAIL chart_sidereal meta: ${c.zodiac}/${c.houseSystem}`);
   }
   for (const b of BODIES) {
-    expectAngleDeg(`sid.${b}`, c.bodies[b].lon, g.bodies[b].lon, TOL);
+    const cb = c.bodies[b];
+    if (!cb) { failures++; console.error(`FAIL sid.${b}: unexpectedly absent`); continue; }
+    expectAngleDeg(`sid.${b}`, cb.lon, g.bodies[b].lon, TOL);
   }
   for (let i = 0; i < 12; i++) {
     expectAngleDeg(`sid.cusp[${i}]`, c.cusps[i], g.cusps[i], TOL);

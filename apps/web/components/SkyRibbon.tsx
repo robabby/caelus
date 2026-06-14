@@ -39,7 +39,10 @@ export default function SkyRibbon() {
     now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
     now.getUTCHours(), now.getUTCMinutes(), 0, 0, 0, "whole_sign",
   );
-  const placed = place(SHOWN.map((body) => ({ body, lon: chart.bodies[body].lon })));
+  const placed = place(SHOWN.flatMap((body) => {
+    const p = chart.bodies[body];
+    return p ? [{ body, lon: p.lon }] : []; // skip a body outside its fitted range
+  }));
   const stamp = now.toISOString().slice(0, 16).replace("T", " ");
 
   return (

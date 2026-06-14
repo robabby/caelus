@@ -12,8 +12,7 @@
  * variant-laden yogas (Kemadruma, lordship-based raja/dhana) are left to a later
  * step. Mirrors the Python reference (astroengine/yogas.py).
  */
-import { Engine, BodyId, Zodiac } from "./chart.js";
-import { dignities } from "./chart.js";
+import { Engine, Zodiac, AlwaysBody, dignities } from "./chart.js";
 
 /** Pancha Mahapurusha: [yoga name, planet]. */
 const MAHAPURUSHA: Array<[string, string]> = [
@@ -21,7 +20,8 @@ const MAHAPURUSHA: Array<[string, string]> = [
   ["Malavya", "venus"], ["Shasha", "saturn"],
 ];
 const KENDRA = new Set([1, 4, 7, 10]);
-export const YOGA_PLANETS: BodyId[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
+// The seven classical grahas: all analytic, so always present in a chart.
+export const YOGA_PLANETS: readonly AlwaysBody[] = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn"];
 
 export interface Yoga { yoga: string; planets: string[]; }
 
@@ -71,7 +71,7 @@ export function kemadrumaAt(
   includeSun = false, includeNodes = false, zodiac: Zodiac = "sidereal:lahiri",
 ): Kemadruma {
   const chart = engine.chartAt(natalJd, lat, lonEast, { zodiac });
-  const bodies: BodyId[] = includeNodes ? [...YOGA_PLANETS, "mean_node"] : YOGA_PLANETS;
+  const bodies: readonly AlwaysBody[] = includeNodes ? [...YOGA_PLANETS, "mean_node"] : YOGA_PLANETS;
   const signs: Record<string, number> = {};
   for (const b of bodies) signs[b] = Math.floor(chart.bodies[b].lon / 30) % 12;
   if (includeNodes) { signs.rahu = signs.mean_node; signs.ketu = (signs.mean_node + 6) % 12; }

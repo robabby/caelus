@@ -23,7 +23,9 @@ export interface WheelPosition {
 }
 export interface WheelAspect { a: string; b: string; aspect: string; orb: number }
 export interface WheelChart {
-  bodies: Record<string, WheelPosition>;
+  // A body may be absent (e.g. Chiron outside its fitted range on a historical
+  // chart); the component filters these out before reading them.
+  bodies: Record<string, WheelPosition | undefined>;
   angles: { asc: number; mc: number };
   cusps: number[];
   aspects: WheelAspect[];
@@ -198,7 +200,7 @@ export function ChartWheel({
 
   const names = (bodies ?? Object.keys(chart.bodies).filter((b) => b !== "mean_node"))
     .filter((b) => chart.bodies[b] !== undefined);
-  const trueLons = names.map((b) => chart.bodies[b].lon);
+  const trueLons = names.map((b) => chart.bodies[b]!.lon);
   const dispLons = spreadAngles(trueLons, 6.5);
 
   const el: ReactElement[] = [];
@@ -243,8 +245,8 @@ export function ChartWheel({
     const drawn = new Set(names);
     for (const a of chart.aspects) {
       if (!want.has(a.aspect) || !drawn.has(a.a) || !drawn.has(a.b)) continue;
-      const [x1, y1] = pt(chart.bodies[a.a].lon, 0.50);
-      const [x2, y2] = pt(chart.bodies[a.b].lon, 0.50);
+      const [x1, y1] = pt(chart.bodies[a.a]!.lon, 0.50);
+      const [x2, y2] = pt(chart.bodies[a.b]!.lon, 0.50);
       const tightness = Math.max(0, 1 - a.orb / (MAX_ORB[a.aspect] ?? 8));
       el.push(<line key={`asp-${a.a}-${a.aspect}-${a.b}`}
         x1={fix(x1)} y1={fix(y1)} x2={fix(x2)} y2={fix(y2)}
@@ -257,7 +259,7 @@ export function ChartWheel({
 
   // planets: pointer tick at true longitude, glyph + label at fanned angle
   names.forEach((b, i) => {
-    const p = chart.bodies[b];
+    const p = chart.bodies[b]!;
     const disp = dispLons[i];
     el.push(line(p.lon, 0.815, 0.84, { stroke: T.planetText, strokeWidth: 1.2 }, `pt-${b}`));
     // connector when the glyph was displaced off its true longitude

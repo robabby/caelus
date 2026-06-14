@@ -33,7 +33,7 @@ assert(svg.length > 2000, `SVG has real content (length ${svg.length})`);
 // changes (the Moon's ~5 deg and Pluto's ~17 deg move on the sphere).
 const flat = {
   bodies: Object.fromEntries(
-    Object.entries(chart.bodies).map(([k, v]) => [k, { ...v, lat: 0 }]),
+    Object.entries(chart.bodies).map(([k, v]) => [k, { ...v!, lat: 0 }]),
   ),
 };
 const svgFlat = renderToStaticMarkup(<ChartSphere chart={flat} size={500} />);

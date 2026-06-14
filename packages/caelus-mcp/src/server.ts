@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { realpathSync } from "node:fs";
 import {
-  Engine, BODIES, Body, julianDay, mod,
+  Engine, BODIES, Body, AlwaysBody, julianDay, mod,
   riseSet, crossings, lunarPhases, stations, RiseKind,
   lunarEclipses, solarEclipses,
   ASPECTS, DEFAULT_ORBS, SIGNS as SIGN_NAMES, dignities, normalizeHouseSystem,
@@ -131,7 +131,8 @@ function accuracyPayload(): { swiss: unknown; jpl: unknown } {
   return (_accuracy = { swiss, jpl });
 }
 
-const TRADITIONAL = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
+// The seven classical planets: all analytic, so always present in a chart.
+const TRADITIONAL: readonly AlwaysBody[] = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
 const GLOSSARY = {
   aspects: Object.fromEntries(Object.entries(ASPECTS).map(
     ([k, deg]) => [k, { degrees: deg, default_orb: DEFAULT_ORBS[k] ?? null }])),
@@ -216,14 +217,16 @@ function chartPayload(
     // Engine Aspect objects ({a, b, aspect, orb}) plus an applying/separating
     // phase from the two bodies' longitude speeds. The extra key is additive, so
     // the payload still feeds caelus-wheel's <ChartWheel> without adaptation.
-    aspects: c.aspects.map((a) => ({
-      ...a,
-      phase: aspectPhase(
-        c.bodies[a.a as Body].lon, c.bodies[a.a as Body].speed,
-        c.bodies[a.b as Body].lon, c.bodies[a.b as Body].speed,
-        ASPECTS[a.aspect],
-      ),
-    })),
+    // Aspects only ever reference bodies present in the chart (the engine omits
+    // out-of-range ones before pairing), so these lookups are non-null.
+    aspects: c.aspects.map((a) => {
+      const ba = c.bodies[a.a]!;
+      const bb = c.bodies[a.b]!;
+      return {
+        ...a,
+        phase: aspectPhase(ba.lon, ba.speed, bb.lon, bb.speed, ASPECTS[a.aspect]),
+      };
+    }),
   };
 }
 
@@ -1163,7 +1166,7 @@ export function buildServer(
       return { nakshatra: n.name, pada: n.pada, lord: n.lord, deg: r2(n.pos) };
     };
     const points: Record<string, ReturnType<typeof desc>> = {};
-    for (const b of TRADITIONAL) points[b] = desc(chart.bodies[b as Body].lon);
+    for (const b of TRADITIONAL) points[b] = desc(chart.bodies[b].lon);
     points.asc = desc(chart.angles.asc);
     return text({ natal_utc: date, zodiac, points });
   });
@@ -1256,7 +1259,7 @@ export function buildServer(
     const chart = engine.chartAt(natalJd, lat, lon, { zodiac });
     const ns = divisions && divisions.length ? divisions : (VARGA_DIVISIONS as readonly number[]);
     const lons: Record<string, number> = { asc: chart.angles.asc };
-    for (const b of TRADITIONAL) lons[b] = chart.bodies[b as Body].lon;
+    for (const b of TRADITIONAL) lons[b] = chart.bodies[b].lon;
     const charts: Record<string, Record<string, { sign: string; sign_index: number; division: number }>> = {};
     for (const n of ns) {
       const c: Record<string, { sign: string; sign_index: number; division: number }> = {};

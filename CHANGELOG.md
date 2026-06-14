@@ -12,9 +12,17 @@ API-feedback polish (no release cut yet):
 
 - `chart()`/`chartAt()` now return enriched bodies (`ChartBody`): each carries
   its 1-based `house` (by the chart's cusps) and the `dignities` it holds in its
-  sign, so library callers no longer recompute placement from `cusps`. The core
-  thirteen bodies are always present (and autocompleted) via the new
-  `ChartBodies` type.
+  sign, so library callers no longer recompute placement from `cusps`.
+- A body outside its fitted range (Chiron, opt-in asteroids before ~1850 or
+  after ~2150) is now omitted from `bodies` and listed in the new
+  `Chart.unavailable[]` rather than failing the whole chart; the analytic
+  Sun–Pluto and nodes still compute. An absurd instant (a Julian Day passed
+  where a calendar year belongs) still throws `RangeError`.
+- `Chart.bodies` is typed honestly: the analytic core (`AlwaysBody`, Sun–Pluto
+  and the nodes) is guaranteed and autocompleted, while Chiron and any opt-in
+  extras read as `ChartBody | undefined` so the omission case must be handled.
+  `caelus-wheel`'s `WheelChart`/`SphereChart` accept the same optional bodies
+  (they already filter absent ones before rendering).
 - New pure sign helpers: `element(sign)`, `modality(sign)`, `quadrant(house)`.
   The `dignities(body, sign)` primitive moved to the chart module (same export
   from the package root).
