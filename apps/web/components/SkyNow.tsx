@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Engine, BODIES, fmtLon, mod, julianDay, lunarPhases,
-  type Chart, type HouseSystem, type Zodiac,
+  Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
+  type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
-import { ChartWheel } from "caelus-wheel";
+import { ChartWheel, ChartSphere, AstroMap } from "caelus-wheel";
 import accuracy from "caelus/accuracy.json";
+
+const MAP_BODIES: BodyId[] = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
 
 const SYSTEMS: HouseSystem[] = [
   "placidus", "whole_sign", "equal", "porphyry",
@@ -45,6 +47,7 @@ export default function SkyNow() {
   const [sys, setSys] = useState<HouseSystem>("placidus");
   const [zodiac, setZodiac] = useState<Zodiac>("tropical");
   const [tab, setTab] = useState<"positions" | "aspects" | "events" | "json">("positions");
+  const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
 
   useEffect(() => {
     setIso(new Date().toISOString().slice(0, 16));
@@ -77,6 +80,16 @@ export default function SkyNow() {
     return lunarPhases(engine(), jd0, jd0 + 120).slice(0, 6);
   }, [chart, iso]);
 
+  const mapLines = useMemo(() => {
+    if (view !== "map" || !chart || !iso) return null;
+    const d = new Date(iso + ":00Z");
+    const jd = julianDay(
+      d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
+      d.getUTCHours(), d.getUTCMinutes(),
+    );
+    return astrocartography(engine(), jd, MAP_BODIES);
+  }, [view, chart, iso]);
+
   const inp: React.CSSProperties = {
     background: "var(--surface-3)", color: "var(--text)", border: "1px solid var(--border-strong)",
     borderRadius: "var(--radius-sm)", padding: "0.35rem 0.55rem", font: "inherit", fontSize: "0.85rem",
@@ -85,6 +98,11 @@ export default function SkyNow() {
     ...inp, cursor: "pointer", opacity: tab === t ? 1 : 0.55,
     borderColor: tab === t ? "var(--accent)" : "var(--border-strong)",
     color: tab === t ? "var(--text)" : "var(--text-dim)",
+  });
+  const viewBtn = (v: typeof view): React.CSSProperties => ({
+    ...inp, cursor: "pointer", opacity: view === v ? 1 : 0.55,
+    borderColor: view === v ? "var(--accent)" : "var(--border-strong)",
+    color: view === v ? "var(--text)" : "var(--text-dim)",
   });
   const cell: React.CSSProperties = { padding: "0.18rem 0.9rem 0.18rem 0" };
 
@@ -124,7 +142,26 @@ export default function SkyNow() {
 
               <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 460px) 1fr", gap: "1.5rem", alignItems: "start", marginTop: "0.8rem" }}>
                 <div style={{ maxWidth: 460 }}>
-                  <ChartWheel chart={chart} size={460} />
+                  <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.6rem" }}>
+                    {(["wheel", "sphere", "map"] as const).map((v) => (
+                      <button key={v} type="button" className="mono" style={viewBtn(v)} onClick={() => setView(v)}>
+                        {v.charAt(0).toUpperCase() + v.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                  {view === "wheel" && <ChartWheel chart={chart} size={460} />}
+                  {view === "sphere" && <ChartSphere chart={chart} size={460} />}
+                  {view === "map" && mapLines && <AstroMap lines={mapLines} width={460} height={230} />}
+                  {view === "sphere" && (
+                    <p className="dim small" style={{ margin: "0.5rem 0 0" }}>
+                      Planets at true ecliptic latitude. Solid ring is the ecliptic, dashed the equator.
+                    </p>
+                  )}
+                  {view === "map" && (
+                    <p className="dim small" style={{ margin: "0.5rem 0 0" }}>
+                      Where each planet is angular across the globe at this instant: MC and IC meridians, ASC and DSC tracks.
+                    </p>
+                  )}
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
