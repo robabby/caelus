@@ -89,11 +89,14 @@ Deterministic time-math on top of the validated positions, in dependency order:
 **lots/Arabic parts (sect-aware) — done** (the seven Hermetic lots, Python
 reference + `lots-golden` pin + a Fortune/Spirit symmetry invariant);
 **annual + monthly profections — done** (`profection`/`profectionAt`, lord of
-the year, `profections-golden` pin + a textbook-fact oracle); next zodiacal
-releasing (L1–L4, loosing-of-the-bond), then firdaria; primary directions
-later. Pinned by golden fixtures (and, where available, published canonical
-examples). Each lands as an engine export first, then an MCP tool and a site
-docs page.
+the year, `profections-golden` pin + a textbook-fact oracle); **firdaria — done**
+(the 75-year planetary period system, day/night, sub-periods; `firdaria-golden`
+pin + total/tiling invariants). Remaining: **zodiacal releasing** (L1–L4,
+loosing-of-the-bond) — deferred until its year-length and loosing-of-the-bond
+conventions are pinned to a published worked example, so it meets the
+validated-not-asserted bar rather than being implemented from memory. Primary
+directions later. Each lands as an engine export first, then an MCP tool and a
+site docs page.
 
 ### Phase 2 — Vedic / Jyotish layer
 

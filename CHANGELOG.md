@@ -24,6 +24,12 @@ current figures live in `packages/caelus/accuracy.json` and on
   one whole sign per year; the profected sign's traditional ruler is the lord
   of the year. Python reference + `profections-golden` cross-language pin, with
   a textbook-fact oracle in the test.
+- Firdaria (Roadmap Phase 1): the Persian/medieval planetary time-lord periods
+  — nine periods totalling 75 years (seven planets in the firdaria order, then
+  the two nodes), each planetary period split into seven sub-periods; day vs
+  night start. `firdaria`, `firdariaSequence`, `firdariaActive`, `firdariaAt`.
+  Python reference + `firdaria-golden` cross-language pin, with 75-year-total
+  and sub-period-tiling invariants in the test.
 
 ### MCP server (`caelus-mcp`)
 
