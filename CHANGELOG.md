@@ -39,6 +39,15 @@ current figures live in `packages/caelus/accuracy.json` and on
   implementation and the literature, not memory; `releasing-golden`
   cross-language pin plus invariants in the test (L1/L2 tiling, the +6 jump, and
   the ~17.58-year loosing-of-the-bond threshold across all twelve Lot signs).
+- Vedic / Jyotish layer (Roadmap Phase 2): nakshatras and the Vimshottari dasha
+  on the validated sidereal longitudes. `nakshatra`/`nakshatraAt` (the 27 lunar
+  mansions, padas, and lords) and `vimshottariDashas`/`vimshottariActive`/
+  `vimshottariAt` (the 120-year dasha sequence, mahadasha/antardasha/
+  pratyantardasha, started from the Moon's nakshatra). Lahiri ayanamsa and a
+  365.25-day dasha year by default. Python reference + `vedic-golden` pin, with
+  120-year-total and antardasha-tiling invariants. Floor division uses
+  `math.floor` in the reference so sign/nakshatra boundaries match JavaScript
+  bit for bit (Python `//` buckets exact boundaries differently).
 
 ### MCP server (`caelus-mcp`)
 

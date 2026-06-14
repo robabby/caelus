@@ -31,6 +31,8 @@ jobs:
       - run: node packages/caelus/dist/test/firdaria-golden.test.js
       # zodiacal releasing (aphesis): TS port must match the Python reference
       - run: node packages/caelus/dist/test/releasing-golden.test.js
+      # Vedic (nakshatras + Vimshottari dasha): TS port must match the reference
+      - run: node packages/caelus/dist/test/vedic-golden.test.js
       # scan / rankMoments ergonomics: deterministic unit checks (TS-only layer)
       - run: node packages/caelus/dist/test/scan.test.js
       # spherical geometry (3D aspects): TS port must match the Python reference
