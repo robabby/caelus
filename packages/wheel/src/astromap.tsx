@@ -68,6 +68,23 @@ export function AstroMap({
   const colorOf = (body: string, i: number): string =>
     colors?.[body] ?? DEFAULT_COLORS[body] ?? PALETTE[i % PALETTE.length];
 
+  // MC labels crowd into an unreadable run where meridians sit close in
+  // longitude. Pack them into staggered rows: each label drops to the first row
+  // whose previous label clears its x, so every "<body> MC" tag stays legible.
+  const mcLabels = show.includes("mc")
+    ? Object.keys(lines)
+        .map((body, i) => ({ body, x: px(lines[body].mc), col: colorOf(body, i) }))
+        .sort((a, b) => a.x - b.x)
+    : [];
+  const rowEnds: number[] = [];
+  const placedLabels = mcLabels.map((l) => {
+    const w = (l.body.length + 3) * 6.4; // chars * ~px, including " MC"
+    let row = 0;
+    while (row < rowEnds.length && rowEnds[row] > l.x - 4) row++;
+    rowEnds[row] = l.x + w;
+    return { ...l, y: 11 + row * 12, w };
+  });
+
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}
       xmlns="http://www.w3.org/2000/svg" role="img"
@@ -92,11 +109,7 @@ export function AstroMap({
         return (
           <g key={body} stroke={col} fill={col} strokeWidth={1.5}>
             {show.includes("mc") && (
-              <>
-                <line x1={px(L.mc)} y1={0} x2={px(L.mc)} y2={height} />
-                <text x={px(L.mc) + 2} y={12} fontSize={11} stroke="none"
-                  fontFamily={th.fontFamily}>{body} MC</text>
-              </>
+              <line x1={px(L.mc)} y1={0} x2={px(L.mc)} y2={height} />
             )}
             {show.includes("ic") && (
               <line x1={px(L.ic)} y1={0} x2={px(L.ic)} y2={height}
@@ -111,6 +124,17 @@ export function AstroMap({
           </g>
         );
       })}
+
+      {/* MC labels last, staggered into rows so close meridians stay legible */}
+      <g fontFamily={th.fontFamily} fontSize={11}>
+        {placedLabels.map((l) => (
+          <g key={l.body}>
+            <rect x={l.x} y={l.y - 9} width={l.w} height={11} rx={2}
+              fill={th.background} opacity={0.65} />
+            <text x={l.x + 2} y={l.y} fill={l.col} stroke="none">{l.body} MC</text>
+          </g>
+        ))}
+      </g>
     </svg>
   );
 }
