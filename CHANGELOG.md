@@ -25,9 +25,9 @@ new cross-language goldens pin the additions to the Python reference.
 
 ### MCP server (`caelus-mcp`)
 
-- Hosted over MCP Streamable HTTP at `ephemengine.com/api/mcp`, stateless,
-  alongside the stdio transport. `buildServer(engine?)` takes an injectable
-  engine so the same tool surface backs both.
+- Hosted over MCP Streamable HTTP at `https://www.ephemengine.com/api/mcp`,
+  stateless, alongside the stdio transport. `buildServer(engine?)` takes an
+  injectable engine so the same tool surface backs both.
 - Two electional tools (seven to nine): `planetary_hours` (the hour in effect,
   its ruler and day/night span, the day ruler, and the 24-hour Chaldean
   sequence) and `void_of_course` (the Moon's sign, sign-exit time, and next

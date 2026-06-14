@@ -99,3 +99,10 @@ antiscion
 [Dd]iurnal
 numpy
 Clenshaw
+[Ee]lectional
+cazimi
+combust
+esbuild
+goldens
+crawlable
+injectable
