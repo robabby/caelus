@@ -38,6 +38,33 @@ function jdToUtc(jd: number): string {
   return new Date((jd - 2440587.5) * 86400000).toISOString().slice(0, 16).replace("T", " ");
 }
 
+/**
+ * A shareable chart is just the inputs the user typed, encoded into the URL.
+ * Nothing is computed, transmitted, or stored server-side: whoever opens the
+ * link recomputes the chart locally from these numbers. Keys are short to keep
+ * the link compact; `n` is an optional, user-chosen nickname (not PII unless
+ * the minter puts it there). base64url so the string is URL-safe.
+ */
+type Share = { v: 1; t: string; la: string; lo: string; h: HouseSystem; z: Zodiac; n?: string };
+
+function encShare(s: Share): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(s));
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decShare(raw: string): Share | null {
+  try {
+    const b64 = raw.replace(/-/g, "+").replace(/_/g, "/");
+    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const s = JSON.parse(new TextDecoder().decode(bytes)) as Share;
+    return s && typeof s.t === "string" ? s : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function SkyNow() {
   const engineRef = useRef<Engine | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -46,13 +73,46 @@ export default function SkyNow() {
   const [lon, setLon] = useState("-82.46");
   const [sys, setSys] = useState<HouseSystem>("placidus");
   const [zodiac, setZodiac] = useState<Zodiac>("tropical");
+  const [label, setLabel] = useState("");
   const [tab, setTab] = useState<"positions" | "aspects" | "events" | "json">("positions");
   const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
+  const [copied, setCopied] = useState(false);
+  const [fromLink, setFromLink] = useState(false);
 
   useEffect(() => {
-    setIso(new Date().toISOString().slice(0, 16));
+    // A `?c=` link restores an exact chart; otherwise seed from the current sky.
+    const c = new URLSearchParams(window.location.search).get("c");
+    const s = c ? decShare(c) : null;
+    if (s) {
+      setIso(s.t);
+      setLat(s.la);
+      setLon(s.lo);
+      if (s.h) setSys(s.h);
+      if (s.z) setZodiac(s.z);
+      if (s.n) setLabel(s.n);
+      setFromLink(true);
+    } else {
+      setIso(new Date().toISOString().slice(0, 16));
+    }
     setMounted(true);
   }, []);
+
+  function share() {
+    const payload: Share = { v: 1, t: iso, la: lat, lo: lon, h: sys, z: zodiac };
+    if (label.trim()) payload.n = label.trim();
+    const url = `${window.location.origin}/playground?c=${encShare(payload)}`;
+    // Reflect the chart in the address bar so a plain copy of the URL also works.
+    window.history.replaceState(null, "", url);
+    navigator.clipboard
+      ?.writeText(url)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {
+        /* clipboard blocked (e.g. insecure context): the address bar still holds it */
+      });
+  }
 
   const engine = () => (engineRef.current ??= new Engine(embeddedData));
 
@@ -126,15 +186,41 @@ export default function SkyNow() {
               {SYSTEMS.map((s) => <option key={s}>{s}</option>)}
             </select>
             <select style={inp} value={zodiac} onChange={(e) => setZodiac(e.target.value as Zodiac)} aria-label="zodiac">
-              {ZODIACS.map(([label, value]) => <option key={value} value={value}>{label}</option>)}
+              {ZODIACS.map(([zlabel, value]) => <option key={value} value={value}>{zlabel}</option>)}
             </select>
+            <label className="small mute" style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+              name
+              <input
+                style={{ ...inp, width: "8rem" }}
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="optional nickname"
+                aria-label="chart nickname"
+              />
+            </label>
+            <button
+              type="button"
+              className="mono"
+              style={{ ...inp, cursor: "pointer", borderColor: "var(--accent)", color: "var(--text)" }}
+              onClick={share}
+            >
+              {copied ? "Link copied ✓" : "Copy share link"}
+            </button>
           </div>
+
+          <p className="dim small" style={{ margin: "0.55rem 0 0" }}>
+            The share link encodes only the values above &mdash; date, place, and any
+            nickname you type. The chart is recomputed in the recipient&rsquo;s browser;
+            nothing is sent to or stored on a server.
+          </p>
 
           {error && <p style={{ color: "var(--bad)", marginTop: "0.8rem" }}>{error}</p>}
 
           {chart && (
             <>
               <p className="dim small" style={{ marginTop: "0.8rem" }}>
+                {label.trim() && <><strong style={{ color: "var(--text)" }}>{label.trim()}</strong> · </>}
+                {fromLink && <span className="mute">shared chart · </span>}
                 {iso}Z · {lat}°, {lon}° (east+) · {chart.houseSystem} · {zodiac}
                 {chart.houseSystem !== chart.houseSystemRequested && " · placidus undefined at this latitude, fell back"}
                 {" · "}computed client-side in {ms.toFixed(1)} ms

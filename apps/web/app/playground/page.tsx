@@ -31,7 +31,10 @@ export default function Playground() {
       </Lead>
       <P dim>
         Times are UT. For a local birth time, convert with <code>caelus-birth</code>{" "}
-        first (a four-hour timezone error moves the ascendant about 60°).
+        first (a four-hour timezone error moves the ascendant about 60°). Set any
+        date and place, then <strong>Copy share link</strong> to mint a chart you
+        can send to anyone: the link carries only the values you typed, and the
+        recipient&rsquo;s browser recomputes the chart with no server in the loop.
       </P>
 
       <SkyNow />
