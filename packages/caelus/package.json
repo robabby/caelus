@@ -21,6 +21,10 @@
     "test": "node dist/test/golden.test.js"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "devDependencies": {
     "@types/node": "^25.9.2",
     "typescript": "^6.0.3"

@@ -21,6 +21,10 @@
     "ajv": "^8.17.1"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "dist/src"
   ],

@@ -13,6 +13,10 @@
     "test": "node dist/test/golden.test.js"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "caelus": "^0.13.0",
     "luxon": "^3.7.2",

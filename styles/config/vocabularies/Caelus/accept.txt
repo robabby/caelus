@@ -137,6 +137,7 @@ dwadasamsa
 [Gg]rahas?
 [Tt]ara
 [Dd]rishti
+[Tt]rikona
 Ashtottari
 Narasimha
 Rao

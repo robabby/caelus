@@ -63,6 +63,16 @@ registered by the first publish itself. Re-check before tagging:
    publishes `caelus-engine` to PyPI via Trusted Publishing (no token). A red
    suite blocks the publish.
 
+**Never `npm publish` by hand.** All four packages set
+`publishConfig.provenance: true`, so every publish must carry an npm provenance
+attestation — which can only be minted from a supported CI runner with OIDC
+(this workflow has `id-token: write`). A local `npm publish` fails by design:
+provenance can't be generated off a laptop. The tag workflow is the
+only path that publishes, and it always publishes with provenance. Do not work
+around this with a token; if a release went out without provenance, the fix is
+a new patch version through CI, not a manual upload (npm versions are
+immutable, so the attestation can never be backfilled onto the bad version).
+
 Publishes are idempotent: `scripts/publish-if-missing.sh` skips any npm
 package whose version is already on the registry, and the PyPI step uses
 `skip-existing`, so pushing a tag after a dispatch release (or re-running a
