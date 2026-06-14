@@ -223,6 +223,11 @@ export interface Chart {
   /** Apparent position per body, enriched with house and dignities, keyed by
    *  body id. See {@link ChartBody}. */
   bodies: ChartBodies;
+  /** Body ids that were requested but omitted because the instant falls outside
+   *  their fitted range (e.g. Chiron and other Chebyshev-packed bodies before
+   *  ~1850 or after ~2150). Empty for the usual modern dates. The analytic
+   *  bodies (Sun through Pluto and the nodes) are always present. */
+  unavailable: string[];
   /** Chart angles in degrees: Ascendant, Midheaven, Vertex, East Point. */
   angles: { asc: number; mc: number; vertex: number; eastPoint: number };
   /** The twelve house cusp longitudes in degrees, house 1 first. */
@@ -232,6 +237,12 @@ export interface Chart {
 }
 
 const KM_PER_AU = 149597870.7;
+
+// A generous window for the analytic models. Every real chart, however
+// historical, sits well inside it; an instant far outside almost always means a
+// Julian Day was passed to chart() where calendar fields belong.
+const JD_SANE_MIN = -2_000_000; // ~ 10000 BC
+const JD_SANE_MAX = 9_000_000; // ~ 20000 AD
 
 function parseZodiac(zodiac: Zodiac): string | null {
   if (zodiac === "tropical") return null;
@@ -554,10 +565,10 @@ export class Engine {
    * instant and place.
    *
    * The first six arguments are calendar fields in **UT** — not local civil
-   * time, and not a Julian Day. Passing a JD in `y` builds an instant far
-   * outside the fitted range and throws `RangeError`; use {@link Engine.chartAt}
-   * for a chart from a JD. For a birth time given in a local time zone, resolve
-   * it to UT first (see the `caelus-birth` package).
+   * time, and not a Julian Day. Passing a JD in `y` builds an absurd instant and
+   * throws `RangeError`; use {@link Engine.chartAt} for a chart from a JD. For a
+   * birth time given in a local time zone, resolve it to UT first (see the
+   * `caelus-birth` package).
    *
    * @param y Year in UT, e.g. `1990` — a calendar year, not a Julian Day.
    * @param mo Month, `1`–`12`.
@@ -573,9 +584,12 @@ export class Engine {
    *   custom orbs. Defaults to Placidus houses in the tropical zodiac.
    * @returns A {@link Chart}: `bodies`, `cusps`, `angles`, and `aspects`, plus
    *   `jdUt` and the house system actually used (Placidus and Koch fall back to
-   *   whole-sign above the polar circles).
-   * @throws RangeError if the instant lands outside the fitted range
-   *   (1800–2149) — most often from passing a Julian Day where a year belongs.
+   *   whole-sign above the polar circles). A body outside its fitted range
+   *   (e.g. Chiron before ~1850) is omitted from `bodies` and listed in
+   *   `unavailable` rather than failing the whole chart.
+   * @throws RangeError only if the instant itself is absurd — far outside any
+   *   supported epoch — which almost always means a Julian Day was passed where
+   *   calendar fields belong.
    * @example
    * ```ts
    * // 1990-06-10 14:30 UT at Tampa, FL (27.95° N, 82.46° W), Placidus houses
@@ -615,6 +629,12 @@ export class Engine {
     jdUt: number, lat: number, lonEast: number,
     opts: HouseSystem | ChartOptions = "placidus",
   ): Chart {
+    if (!Number.isFinite(jdUt) || jdUt < JD_SANE_MIN || jdUt > JD_SANE_MAX) {
+      throw new RangeError(
+        `chart instant (jd ${jdUt}) is far outside the supported range; if you ` +
+        `meant a calendar date, pass year/month/day to chart() rather than a Julian Day.`,
+      );
+    }
     const o: ChartOptions = typeof opts === "string" ? { houseSystem: opts } : opts;
     const houseSystem = normalizeHouseSystem(o.houseSystem ?? "placidus");
     const zodiac = o.zodiac ?? "tropical";
@@ -628,7 +648,19 @@ export class Engine {
       ...BODIES, ...(o.bodies ?? []).filter((b) => !(BODIES as readonly string[]).includes(b)),
     ];
     const bodies: Record<string, Position> = {};
-    for (const b of names) bodies[b] = this.position(b, jdUt, calc);
+    const unavailable: string[] = [];
+    for (const b of names) {
+      try {
+        bodies[b] = this.position(b, jdUt, calc);
+      } catch (e) {
+        // A Chebyshev-packed body (Chiron, fitted asteroids) outside its fitted
+        // range throws RangeError. Omit it and report it rather than discarding
+        // the whole chart; the analytic bodies still resolve. Any other error
+        // (e.g. a missing data pack) is a real fault and propagates.
+        if (e instanceof RangeError) unavailable.push(b);
+        else throw e;
+      }
+    }
     const [asc, mc, armc, eps] = H.angles(this.data, jdUt, lat, lonEast);
     const [vtx, east] = H.vertexEastPoint(armc, lat * DEG, eps);
     const phi = lat * DEG;
@@ -687,6 +719,7 @@ export class Engine {
     const chartBodies: Record<string, ChartBody> = {};
     for (const b of names) {
       const p = bodies[b];
+      if (!p) continue; // omitted: outside its fitted range (see `unavailable`)
       chartBodies[b] = {
         ...p,
         house: houseIndex(p.lon, cuspsDeg),
@@ -699,6 +732,7 @@ export class Engine {
       houseSystem: used,
       houseSystemRequested: houseSystem,
       bodies: chartBodies as ChartBodies,
+      unavailable,
       angles: {
         asc: outDeg(asc), mc: outDeg(mc),
         vertex: outDeg(vtx), eastPoint: outDeg(east),

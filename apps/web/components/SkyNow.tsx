@@ -199,7 +199,7 @@ export default function SkyNow() {
         tzStatus: status,
       };
     } catch {
-      return { ...none, error: "date is outside the supported range (1850–2150)" };
+      return { ...none, error: "could not compute a chart for this instant" };
     }
   }, [mounted, iso, lat, lon, sys, zodiac, tzMode]);
 
@@ -435,6 +435,11 @@ export default function SkyNow() {
                   This local time falls in a spring-forward gap that never occurred; it was shifted forward per the time-zone rules.
                 </p>
               )}
+              {chart.unavailable.length > 0 && (
+                <p className="dim small" style={{ margin: "0.25rem 0 0", color: "var(--warm)" }}>
+                  Outside its fitted range at this date, so omitted from the chart: {chart.unavailable.join(", ")}.
+                </p>
+              )}
 
               <div className="skynow-layout">
                 <div className="skynow-chart">
@@ -471,13 +476,22 @@ export default function SkyNow() {
                   {tab === "positions" && (
                     <table className="mono" style={{ fontSize: "0.82rem" }}>
                       <tbody>
-                        {BODIES.map((b) => (
-                          <tr key={b}>
-                            <td className="mute" style={cell}>{b}</td>
-                            <td style={cell}>{fmtLon(chart.bodies[b].lon)}{chart.bodies[b].retrograde ? " ℞" : ""}</td>
-                            <td className="mute" style={cell}>h{houseOf(chart.cusps, chart.bodies[b].lon)}</td>
-                          </tr>
-                        ))}
+                        {BODIES.map((b) => {
+                          const p = chart.bodies[b];
+                          return (
+                            <tr key={b}>
+                              <td className="mute" style={cell}>{b}</td>
+                              {p ? (
+                                <>
+                                  <td style={cell}>{fmtLon(p.lon)}{p.retrograde ? " ℞" : ""}</td>
+                                  <td className="mute" style={cell}>h{houseOf(chart.cusps, p.lon)}</td>
+                                </>
+                              ) : (
+                                <td className="mute" style={cell} colSpan={2}>n/a (outside fitted range)</td>
+                              )}
+                            </tr>
+                          );
+                        })}
                         <tr><td className="mute" style={cell}>ASC</td><td style={cell}>{fmtLon(chart.angles.asc)}</td><td /></tr>
                         <tr><td className="mute" style={cell}>MC</td><td style={cell}>{fmtLon(chart.angles.mc)}</td><td /></tr>
                       </tbody>

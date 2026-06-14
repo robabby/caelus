@@ -367,6 +367,42 @@ for (const g of G.houses) {
   }
 }
 
+// Graceful degradation: a body outside its fitted range is omitted + reported,
+// not thrown; an absurd instant (Julian Day passed as a year) still throws.
+// These are behavioural assertions, not accuracy fixtures, so they gate the run
+// via `failures` without inflating the `checks` count the docs quote.
+{
+  const inRange = eng.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+  if (inRange.unavailable.length !== 0 || !("chiron" in inRange.bodies)) {
+    failures++;
+    console.error(`FAIL in-range unavailable: ${JSON.stringify(inRange.unavailable)}`);
+  }
+
+  const pre1850 = eng.chart(1700, 3, 21, 12, 0, 0, 51.5, -0.12, "placidus");
+  if (
+    !pre1850.unavailable.includes("chiron") ||
+    "chiron" in pre1850.bodies ||
+    !("sun" in pre1850.bodies) ||
+    !("moon" in pre1850.bodies)
+  ) {
+    failures++;
+    console.error(
+      `FAIL pre-1850 degradation: unavailable=${JSON.stringify(pre1850.unavailable)} bodies=${Object.keys(pre1850.bodies).length}`,
+    );
+  }
+
+  let threw = false;
+  try {
+    eng.chart(2451545, 6, 10, 0, 0, 0, 0, 0);
+  } catch (e) {
+    threw = e instanceof RangeError;
+  }
+  if (!threw) {
+    failures++;
+    console.error("FAIL Julian-Day-as-year did not throw RangeError");
+  }
+}
+
 console.log(`\n${checks} checks, ${failures} failures`);
 console.log(`worst diff: ${worst.what} = ${(worst.diff * 3600).toExponential(2)}" (${worst.diff.toExponential(2)} deg)`);
 

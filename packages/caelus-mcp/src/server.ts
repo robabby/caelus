@@ -187,6 +187,9 @@ function chartPayload(
   const bodies: Record<string, unknown> = {};
   for (const b of BODIES) {
     const p = c.bodies[b];
+    // Outside its fitted range at this date (reported in c.unavailable); skip it
+    // rather than dereferencing an absent position.
+    if (!p) continue;
     // solar phase: nearness to the Sun by ecliptic longitude (cazimi within
     // 17', combust within 8.5deg, under the beams within 15deg). Omitted when
     // the body is far from the Sun (and always for the Sun itself).
@@ -209,6 +212,7 @@ function chartPayload(
     bodies,
     angles: { asc: r2(c.angles.asc), ascPos: fmt(c.angles.asc), mc: r2(c.angles.mc), mcPos: fmt(c.angles.mc) },
     cusps: cusps.map(r2),
+    ...(c.unavailable.length ? { unavailable: c.unavailable } : {}),
     // Engine Aspect objects ({a, b, aspect, orb}) plus an applying/separating
     // phase from the two bodies' longitude speeds. The extra key is additive, so
     // the payload still feeds caelus-wheel's <ChartWheel> without adaptation.
@@ -288,6 +292,7 @@ export const chartOut = z.object({
   angles: z.object({ asc: z.number(), ascPos: z.string(), mc: z.number(), mcPos: z.string() }),
   cusps: z.array(z.number()).length(12),
   aspects: z.array(aspectOut),
+  unavailable: z.array(z.string()).optional(),
 });
 export const transitsOut = z.object({
   transit_utc: z.string(),
