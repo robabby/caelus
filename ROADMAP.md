@@ -31,8 +31,8 @@ The deliverables are the engine and the tools around it: `caelus` (engine),
 
 ## Status
 
-Shipped through **0.8.0** (npm: all four packages; PyPI: `caelus-engine`,
-the Python reference; GitHub releases v0.1.0–v0.8.0): full body set, 12 house
+Shipped through **0.10.0** (npm: all four packages; PyPI: `caelus-engine`,
+the Python reference; GitHub releases v0.1.0–v0.10.0): full body set, 12 house
 systems, tropical + 7 sidereal
 ayanamsas, aspects, event search (rise/set, crossings, phases, stations,
 Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
@@ -41,8 +41,13 @@ predicates, Python reference + TS port, suite-pinned); derived charts (returns,
 secondary progressions, solar arc, composite and Davison, harmonics, antiscia,
 declination aspects/parallels, out-of-bounds, dignities, sect); the turbo tier
 (`Turbo`: segmented Chebyshev longitude packs fit to the engine for bulk
-scans); conformance suite; MCP server over stdio and hosted Streamable HTTP
-(`ephemengine.com/api/mcp`, stateless) with golden payloads, resources
+scans); electional primitives (`aspectBetween`, `solarPhase`, `planetaryHour`,
+`voidOfCourse`, angularity) with a `scan`/`rankMoments` search layer (0.9.0);
+3D spherical geometry (`angularSeparation3d`), astrocartography, and a graphic
+ephemeris, each landing engine math plus an SSR-safe render in `caelus-wheel`
+(`ChartSphere`, `AstroMap`, `EphemerisGraph`) (0.10.0); conformance suite;
+MCP server over stdio and hosted Streamable HTTP (`ephemengine.com/api/mcp`,
+stateless) exposing nine chart tools, with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
 prompt; JPL-direct validation tier.
 
