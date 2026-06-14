@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/docs/derived",
     "/docs/data-tiers",
     "/docs/recipes",
+    "/docs/electional",
     "/docs/mcp",
     "/docs/edge-cases",
     "/docs/api",

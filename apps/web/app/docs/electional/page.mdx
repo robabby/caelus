@@ -1,0 +1,164 @@
+export const metadata = {
+  title: "Electional Search",
+  description: "Find a good moment: thread caelus-birth, caelus, and caelus-wheel through a real electional search that scans a local window, scores each instant with the electional primitives, and renders the winning chart.",
+};
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
+
+# Electional search
+
+Electional work asks the opposite question from a natal chart. Instead of reading
+the sky at a fixed birth moment, you search a window for the instant that best
+fits a set of rules. This guide builds that search end to end. It threads all
+three packages and the 0.9.0 search and electional layer into one believable
+flow:
+
+```text
+place + local window
+    → caelus-birth    resolve the IANA zone, local window → UT (DST-safe)
+    → caelus          rankMoments scans the window, scoring each instant
+                      with the electional primitives
+    → caelus-wheel    render the winning moment's chart as an SVG wheel
+```
+
+The engine does no I/O and imposes no scoring model. The rules below are an
+example you can rewrite. `rankMoments` is plain control flow over the validated
+primitives, so the same search runs in the browser, on the server, or in a Web
+Worker.
+
+## The scoring function
+
+A score turns one instant into a number. Higher is better. This one rewards an
+applying Moon to Venus trine, the kind of benefic moment an election hunts for,
+and penalizes the classic spoilers: a void-of-course Moon and a benefic burned
+by the Sun. It nudges toward hours ruled by the benefics. Each rule is one call
+to an electional primitive.
+
+<CodeBlock
+  lang="typescript"
+  label="score.ts"
+  code={`import { Engine, aspectBetween, solarPhase, voidOfCourse, planetaryHour } from "caelus";
+
+export function electionalScore(
+  engine: Engine, jd: number, lat: number, lon: number,
+): number {
+  let score = 0;
+
+  // A Moon-Venus trine is what we are hunting for. An applying aspect (still
+  // tightening) counts for more than one that has already separated.
+  const trine = aspectBetween(engine, "moon", "venus", jd);
+  if (trine?.aspect === "trine") {
+    score += trine.phase === "applying" ? 3 : 1;
+  }
+
+  // A void-of-course Moon is the classic "nothing comes of it" warning.
+  if (voidOfCourse(engine, jd).isVoid) {
+    score -= 4;
+  }
+
+  // A benefic burned by the Sun loses its strength. Cazimi, the exact heart of
+  // the Sun, is the one nearness that helps rather than harms.
+  const venus = solarPhase(engine, "venus", jd);
+  if (venus === "combust" || venus === "under_beams") score -= 2;
+  if (venus === "cazimi") score += 1;
+
+  // Tilt toward hours ruled by the benefics.
+  const hour = planetaryHour(engine, jd, lat, lon);
+  if (hour && (hour.ruler === "venus" || hour.ruler === "jupiter")) {
+    score += 1;
+  }
+
+  return score;
+}`}
+/>
+
+`aspectBetween` returns the tightest aspect within orb (or `null`), tagged
+`applying`, `separating`, or `exact`. `solarPhase` returns `cazimi`, `combust`,
+`under_beams`, or `null`. `voidOfCourse` reports whether the Moon makes no more
+classical aspects before it leaves its sign. `planetaryHour` returns the ruler
+of the hour containing the instant at that place.
+
+## The whole search
+
+The search itself is one component. `toUT` resolves the timezone from the
+coordinates and converts the local window bounds to UT Julian Days, so a
+daylight-saving shift inside the window is handled for you. `rankMoments`
+samples the range and keeps the best instant. The winner comes back as a UT
+Julian Day, which converts to a chart with one call.
+
+<CodeBlock
+  lang="tsx"
+  label="FindAMoment.tsx"
+  code={`import { Engine, rankMoments } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+import { toUT } from "caelus-birth";
+import { ChartWheel } from "caelus-wheel";
+import { electionalScore } from "./score";
+
+// Build the engine once and reuse it (module scope, not per render).
+const engine = new Engine(embeddedData);
+
+// Brooklyn, NY. Longitude is EAST-positive, so the Americas are negative.
+const place = { lat: 40.69, lon: -73.99 };
+
+// A local wall-clock window. toUT resolves the IANA zone from the coordinates
+// and converts each end to UT.
+const from = toUT({ year: 2026, month: 7, day: 1, hour: 0, minute: 0, ...place });
+const until = toUT({ year: 2026, month: 7, day: 4, hour: 0, minute: 0, ...place });
+
+export function FindAMoment() {
+  // Sample every hour across the window and keep the single best instant.
+  const [best] = rankMoments(
+    { start: from.jdUt, end: until.jdUt, step: 1 / 24, limit: 1 },
+    (jd) => electionalScore(engine, jd, place.lat, place.lon),
+  );
+
+  // rankMoments returns UT Julian Days. Convert the winner back to UT calendar
+  // parts (the inverse of toUT) and build its chart.
+  const d = new Date((best.jd - 2440587.5) * 86400000);
+  const chart = engine.chart(
+    d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
+    d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(),
+    place.lat, place.lon, "placidus",
+  );
+
+  return (
+    <figure>
+      <ChartWheel chart={chart} size={520} showAspects />
+      <figcaption>{from.zone} · score {best.score}</figcaption>
+    </figure>
+  );
+}`}
+/>
+
+## Scaling the scan
+
+A three-day hourly scan is 72 samples and renders inline. For a longer window
+or a search that runs in the browser, swap `rankMoments` for `rankMomentsAsync`,
+which yields to the event loop every few hundred samples so the page stays
+responsive. The score function is identical:
+
+<CodeBlock
+  lang="typescript"
+  label="async.ts"
+  code={`import { rankMomentsAsync } from "caelus";
+
+const best = await rankMomentsAsync(
+  { start: from.jdUt, end: until.jdUt, step: 1 / 24, limit: 5 },
+  (jd) => electionalScore(engine, jd, place.lat, place.lon),
+  256, // yield every 256 samples
+);`}
+/>
+
+Because the engine does no I/O, the same scan and score run unchanged inside a
+Web Worker, keeping the main thread free during a long sweep.
+
+## Next steps
+
+See the <a href="/docs/architecture">Architecture</a> guide for the simpler
+natal version of this pipeline, <a href="/docs/recipes">Recipes</a> for the
+`when()` query language and event search, and
+<a href="/docs/edge-cases">Edge Cases &amp; Stability</a> for how DST gaps,
+polar latitudes, and circumpolar bodies surface in these results.
+[`caelus-starter`](https://github.com/heavyblotto/caelus-starter) is a
+deployable app built on the same layers.

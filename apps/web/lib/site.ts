@@ -56,6 +56,7 @@ export const DOCS_NAV: DocsGroup[] = [
       { href: "/docs/derived", label: "Derived Charts" },
       { href: "/docs/data-tiers", label: "Data Tiers" },
       { href: "/docs/recipes", label: "Recipes" },
+      { href: "/docs/electional", label: "Electional Search" },
     ],
   },
   {
