@@ -80,6 +80,8 @@ export const GOLDEN_CASES = [
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46, target_date: "2026-06-10T00:00:00Z" } },
   { id: "firdaria-2026", tool: "firdaria",
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46, target_date: "2026-06-10T00:00:00Z" } },
+  { id: "releasing-spirit-2026", tool: "releasing",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46, target_date: "2026-06-10T00:00:00Z", max_level: 2, horizon_years: 40 } },
 ];
 
 async function run() {

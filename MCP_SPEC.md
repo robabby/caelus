@@ -106,6 +106,15 @@ split into seven sub-periods. Returns the full timeline (UTC start/end per perio
 and sub-period) and, when `target_date` is given, the major and sub lord active
 then. Sect from the birth chart; pure time arithmetic, no zodiac.
 
+### releasing(date, lat, lon, target_date?, lot?, max_level?, horizon_years?, zodiac?)
+Zodiacal releasing (aphesis) from a Lot — Spirit (default) or Fortune. Periods
+release sign by sign from the Lot's sign on the 360-day-year convention; each
+level is a twelfth of the one above (L1..L4), and a loop back to the start sign
+looses the bond, jumping once to the opposite sign. Returns the timeline down to
+`max_level` over `horizon_years` (each period: level, sign, lord, UTC start/end,
+loosing-of-the-bond flag) and, when `target_date` is given, the L1..L4 lords
+active then. Anchored to the natal Lot, so an exact time and lat+lon are required.
+
 ## Resources (shipped)
 - `caelus://glossary`: machine-readable definitions; aspect angles and default
   orbs, signs, bodies, the twelve house systems, and essential dignities
@@ -159,10 +168,11 @@ change; the new tools gain `verify_tools` engine-oracle checks and frozen
 `golden-mcp` payloads. Thirteen tools total.
 
 ## v0.14 surface (shipped)
-Hellenistic time-lords harvest (Roadmap Phase 1): `lots`, `profections`, and
-`firdaria` surface the engine's sect-aware Hermetic lots, annual/monthly
-profections (lord of the year), and the firdaria planetary time-lord periods
-over MCP. No engine change; each tool gains `verify_tools` engine-oracle checks
-— including the Fortune/Spirit symmetry invariant for lots and the 75-year-total
-and sub-period-tiling invariants for firdaria — and a frozen `golden-mcp`
-payload. Sixteen tools total.
+Hellenistic time-lords harvest (Roadmap Phase 1): `lots`, `profections`,
+`firdaria`, and `releasing` surface the engine's sect-aware Hermetic lots,
+annual/monthly profections (lord of the year), the firdaria planetary time-lord
+periods, and zodiacal releasing (aphesis) over MCP. No engine change; each tool
+gains `verify_tools` engine-oracle checks — including the Fortune/Spirit symmetry
+invariant for lots, the 75-year-total and sub-period-tiling invariants for
+firdaria, and the +6 loosing-of-the-bond and L2-tiling invariants for releasing —
+and a frozen `golden-mcp` payload. Seventeen tools total.

@@ -18,6 +18,7 @@ import {
   compositeLongitudes, davisonParams, dignityOf, isDayChart, planetarySect, inSect,
   lots, HERMETIC_LOTS,
   profectionAt, firdaria, firdariaActive,
+  zrRelease, zrAt, SIGNS,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -389,6 +390,42 @@ const assertExactHits = (hits, body, targetLonAt, angle, label, tolDeg = 0.02) =
   }
   const active = firdariaActive(day, natalJd, jdFromIso(target));
   assert(res.active.major === active.major && res.active.sub === active.sub, "firdaria: active lord matches engine");
+}
+
+// ---------------------------------------------------------------- releasing
+{
+  const args = { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 };
+  const target = "2026-06-10T00:00:00Z";
+  const res = await call("releasing", { ...args, target_date: target, max_level: 2, horizon_years: 60 });
+  const natalJd = jdFromIso(args.date);
+  const targetJd = jdFromIso(target);
+  const oa = zrAt(eng, natalJd, targetJd, args.lat, args.lon, "spirit");
+  assert(res.lot === "spirit" && res.lot_sign === oa.lot_sign, "releasing: lot and lot sign match engine zrAt");
+  assert(res.sect === (oa.day ? "day" : "night"), "releasing: chart sect");
+  assert((res.active.l1 ?? null) === (oa.l1 ?? null) && (res.active.l2 ?? null) === (oa.l2 ?? null) &&
+    (res.active.l3 ?? null) === (oa.l3 ?? null) && (res.active.l4 ?? null) === (oa.l4 ?? null),
+    "releasing: active L1..L4 match engine zrAt");
+  const lotSign = SIGNS.indexOf(oa.lot_sign);
+  const exp = zrRelease(lotSign, natalJd, 2, 60);
+  assert(res.periods.length === exp.length, `releasing: timeline length ${res.periods.length} vs ${exp.length}`);
+  // L1 periods tile contiguously
+  const l1 = res.periods.filter((p) => p.level === 1);
+  for (let i = 1; i < l1.length; i++) {
+    assert(l1[i].start === l1[i - 1].end, `releasing: L1 period ${i} contiguous with previous`);
+  }
+  // loosing-of-the-bond invariant: the L1 loosing period jumps +6 signs from the start sign
+  const lb1 = l1.find((p) => p.lb);
+  if (lb1) {
+    assert(SIGNS.indexOf(lb1.sign) === mod(lotSign + 6, 12), "releasing: L1 loosing of the bond is +6 from the start sign");
+  }
+  // each L2 run fills (tiles) its parent L1 period
+  for (const p of l1) {
+    const subs = res.periods.filter((s) => s.level === 2 && s.start >= p.start && s.end <= p.end);
+    if (subs.length) {
+      assert(subs[0].start === p.start, "releasing: first L2 starts at its L1 parent");
+      assert(subs[subs.length - 1].end === p.end, "releasing: last L2 ends at its L1 parent");
+    }
+  }
 }
 
 await client.close();

@@ -1,10 +1,10 @@
 # caelus-mcp
 
 MCP server for the [caelus](https://github.com/heavyblotto/caelus) ephemeris
-engine: sixteen chart tools over stdio. Computation only — positions, houses,
+engine: seventeen chart tools over stdio. Computation only — positions, houses,
 aspects with orbs, event search, electional, returns, progressions, composite,
 dignities, Hermetic lots, and the Hellenistic time-lords (profections,
-firdaria) — the model does the interpreting. It needs
+firdaria, zodiacal releasing) — the model does the interpreting. It needs
 no API keys, ephemeris files, or network calls; the engine data ships inside
 the package.
 
@@ -53,6 +53,7 @@ A hosted Streamable HTTP endpoint is also live at
 | `lots` | The seven Hermetic lots (Arabic parts) — Fortune, Spirit, Eros, Necessity, Courage, Victory, Nemesis — cast from the Ascendant, sect-aware |
 | `profections` | Annual and monthly profections to a target date: age, the profected signs and their whole-sign houses, and the lord of the year |
 | `firdaria` | The firdaria planetary time-lord periods: the full 75-year timeline (nine periods, seven sub-periods each) and the lords active at a target date |
+| `releasing` | Zodiacal releasing (aphesis) from the Lot of Spirit or Fortune: the L1–L4 period timeline and the lords active at a target date, with loosing of the bond |
 
 `natal_chart` and `current_sky` also tag each body with its solar phase
 (cazimi/combust/under-the-beams) and each aspect with applying/separating.

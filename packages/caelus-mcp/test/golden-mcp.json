@@ -4509,5 +4509,271 @@
         "sub": "mars"
       }
     }
+  },
+  "releasing-spirit-2026": {
+    "tool": "releasing",
+    "args": {
+      "date": "1990-06-10T14:30:00Z",
+      "lat": 27.95,
+      "lon": -82.46,
+      "target_date": "2026-06-10T00:00:00Z",
+      "max_level": 2,
+      "horizon_years": 40
+    },
+    "payload": {
+      "natal_utc": "1990-06-10T14:30:00Z",
+      "lot": "spirit",
+      "lot_sign": "Capricorn",
+      "sect": "day",
+      "periods": [
+        {
+          "level": 1,
+          "sign": "Capricorn",
+          "lord": "saturn",
+          "start": "1990-06-10T14:29:59Z",
+          "end": "2017-01-19T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Capricorn",
+          "lord": "saturn",
+          "start": "1990-06-10T14:29:59Z",
+          "end": "1992-08-28T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Aquarius",
+          "lord": "saturn",
+          "start": "1992-08-28T14:29:59Z",
+          "end": "1995-02-14T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Pisces",
+          "lord": "jupiter",
+          "start": "1995-02-14T14:29:59Z",
+          "end": "1996-02-09T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Aries",
+          "lord": "mars",
+          "start": "1996-02-09T14:29:59Z",
+          "end": "1997-05-04T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Taurus",
+          "lord": "venus",
+          "start": "1997-05-04T14:29:59Z",
+          "end": "1997-12-30T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Gemini",
+          "lord": "mercury",
+          "start": "1997-12-30T14:29:59Z",
+          "end": "1999-08-22T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Cancer",
+          "lord": "moon",
+          "start": "1999-08-22T14:29:59Z",
+          "end": "2001-09-10T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Leo",
+          "lord": "sun",
+          "start": "2001-09-10T14:29:59Z",
+          "end": "2003-04-03T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Virgo",
+          "lord": "mercury",
+          "start": "2003-04-03T14:29:59Z",
+          "end": "2004-11-23T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Libra",
+          "lord": "venus",
+          "start": "2004-11-23T14:29:59Z",
+          "end": "2005-07-21T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Scorpio",
+          "lord": "mars",
+          "start": "2005-07-21T14:29:59Z",
+          "end": "2006-10-14T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Sagittarius",
+          "lord": "jupiter",
+          "start": "2006-10-14T14:29:59Z",
+          "end": "2007-10-09T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Cancer",
+          "lord": "moon",
+          "start": "2007-10-09T14:29:59Z",
+          "end": "2009-10-28T14:29:59Z",
+          "lb": true
+        },
+        {
+          "level": 2,
+          "sign": "Leo",
+          "lord": "sun",
+          "start": "2009-10-28T14:29:59Z",
+          "end": "2011-05-21T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Virgo",
+          "lord": "mercury",
+          "start": "2011-05-21T14:29:59Z",
+          "end": "2013-01-10T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Libra",
+          "lord": "venus",
+          "start": "2013-01-10T14:29:59Z",
+          "end": "2013-09-07T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Scorpio",
+          "lord": "mars",
+          "start": "2013-09-07T14:29:59Z",
+          "end": "2014-12-01T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Sagittarius",
+          "lord": "jupiter",
+          "start": "2014-12-01T14:29:59Z",
+          "end": "2015-11-26T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Capricorn",
+          "lord": "saturn",
+          "start": "2015-11-26T14:29:59Z",
+          "end": "2017-01-19T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 1,
+          "sign": "Aquarius",
+          "lord": "saturn",
+          "start": "2017-01-19T14:29:59Z",
+          "end": "2029-11-12T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Aquarius",
+          "lord": "saturn",
+          "start": "2017-01-19T14:29:59Z",
+          "end": "2019-07-08T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Pisces",
+          "lord": "jupiter",
+          "start": "2019-07-08T14:29:59Z",
+          "end": "2020-07-02T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Aries",
+          "lord": "mars",
+          "start": "2020-07-02T14:29:59Z",
+          "end": "2021-09-25T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Taurus",
+          "lord": "venus",
+          "start": "2021-09-25T14:29:59Z",
+          "end": "2022-05-23T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Gemini",
+          "lord": "mercury",
+          "start": "2022-05-23T14:29:59Z",
+          "end": "2024-01-13T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Cancer",
+          "lord": "moon",
+          "start": "2024-01-13T14:29:59Z",
+          "end": "2026-02-01T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Leo",
+          "lord": "sun",
+          "start": "2026-02-01T14:29:59Z",
+          "end": "2027-08-25T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Virgo",
+          "lord": "mercury",
+          "start": "2027-08-25T14:29:59Z",
+          "end": "2029-04-16T14:29:59Z",
+          "lb": false
+        },
+        {
+          "level": 2,
+          "sign": "Libra",
+          "lord": "venus",
+          "start": "2029-04-16T14:29:59Z",
+          "end": "2029-11-12T14:29:59Z",
+          "lb": false
+        }
+      ],
+      "active": {
+        "target_utc": "2026-06-10T00:00:00Z",
+        "l1": "Aquarius",
+        "l2": "Leo",
+        "l3": "Scorpio",
+        "l4": "Capricorn"
+      }
+    }
   }
 }

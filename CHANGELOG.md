@@ -89,10 +89,14 @@ current figures live in `packages/caelus/accuracy.json` and on
 - `firdaria` (Roadmap Phase 1): the firdaria planetary time-lord periods — the
   full 75-year timeline (nine periods, seven sub-periods each) and the lords
   active at a target date — surfacing `firdaria()`/`firdariaActive()`.
+- `releasing` (Roadmap Phase 1): zodiacal releasing (aphesis) from the Lot of
+  Spirit or Fortune — the L1–L4 period timeline (with loosing of the bond) and
+  the lords active at a target date — surfacing `zrRelease()`/`zrActive()`.
 - No engine change in this layer. Each tool gains engine-oracle checks in
   `verify_tools.mjs` (the `lots` checks include the Fortune/Spirit symmetry
-  invariant; `firdaria` the 75-year-total and sub-period-tiling invariants) and
-  frozen payloads in `golden-mcp.json`; the tool surface is now sixteen.
+  invariant; `firdaria` the 75-year-total and sub-period-tiling invariants;
+  `releasing` the +6 loosing-of-the-bond and L2-tiling invariants) and frozen
+  payloads in `golden-mcp.json`; the tool surface is now seventeen.
 
 ## 0.12.1 — 2026-06-14
 

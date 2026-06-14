@@ -3,7 +3,7 @@
  * caelus-mcp -- MCP server for the caelus ephemeris engine.
  *
  * Design (per 2026 MCP practice): one bounded context (chart computation),
- * a small curated tool surface (sixteen outcome-level tools, not API wrappers),
+ * a small curated tool surface (seventeen outcome-level tools, not API wrappers),
  * and token-frugal outputs (positions to 0.01 deg, terse keys, no prose --
  * the model does the interpreting, the server does the math).
  *
@@ -29,6 +29,7 @@ import {
   dignityOf, isDayChart, planetarySect, inSect,
   lots, HERMETIC_LOTS,
   profectionAt, firdaria, firdariaActive,
+  zrRelease, zrActive, lotSpirit, lotFortune,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -366,6 +367,28 @@ export const firdariaOut = z.object({
     sub: z.string().nullable(),
   }).optional(),
 });
+const zrPeriodOut = z.object({
+  level: z.number(),
+  sign: z.string(),
+  lord: z.string(),
+  start: z.string(),
+  end: z.string(),
+  lb: z.boolean(),
+});
+export const releasingOut = z.object({
+  natal_utc: z.string(),
+  lot: z.enum(["spirit", "fortune"]),
+  lot_sign: z.string(),
+  sect: z.enum(["day", "night"]),
+  periods: z.array(zrPeriodOut),
+  active: z.object({
+    target_utc: z.string(),
+    l1: z.string().nullable(),
+    l2: z.string().nullable(),
+    l3: z.string().nullable(),
+    l4: z.string().nullable(),
+  }).optional(),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -383,6 +406,7 @@ export const OUTPUT_SCHEMAS = {
   lots: lotsOut,
   profections: profectionsOut,
   firdaria: firdariaOut,
+  releasing: releasingOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -894,6 +918,54 @@ export function buildServer(
     if (target_date !== undefined) {
       const a = firdariaActive(day, natalJd, jdFromIso(target_date));
       payload.active = { target_utc: target_date, major: a.major, sub: a.sub };
+    }
+    return text(payload);
+  });
+
+  server.registerTool("releasing", {
+    description:
+      "Zodiacal releasing (aphesis), the Hellenistic time-lord technique from Vettius Valens, released from a Lot (Spirit by default, or Fortune). From the Lot's sign, periods release sign by sign with planetary minor-year lengths on the 360-day-year convention; each level is a twelfth of the one above (L1..L4), and a loop back to the starting sign looses the bond, jumping once to the opposite sign (+6). Returns the timeline down to max_level over the horizon and, when target_date is given, the L1..L4 lords active then. Anchored to the natal Lot, so an exact time and lat+lon are required.",
+    inputSchema: {
+      ...birth,
+      target_date: z.string().optional().describe("UTC ISO date to read the active L1..L4 periods for; omit for the timeline only"),
+      lot: z.enum(["spirit", "fortune"]).optional().describe("the Lot to release from (default spirit)"),
+      max_level: z.number().int().min(1).max(4).optional().describe("deepest sub-period level in the timeline, 1..4 (default 2)"),
+      horizon_years: z.number().positive().optional().describe("timeline length in 360-day years from birth (default 100)"),
+      zodiac: zodiacSchema,
+    },
+  }, async ({ date, lat, lon, target_date, lot = "spirit", max_level = 2, horizon_years = 100, zodiac }) => {
+    const natalJd = jdFromIso(date);
+    const asc = engine.chartAt(natalJd, lat, lon, { zodiac }).angles.asc;
+    const day = isDayChart(engine, natalJd, lat, lon);
+    const sun = engine.longitude("sun", natalJd, { zodiac });
+    const moon = engine.longitude("moon", natalJd, { zodiac });
+    const lotLon = (lot === "spirit" ? lotSpirit : lotFortune)(asc, sun, moon, day);
+    const lotSign = mod(Math.floor(lotLon / 30), 12);
+    const periods = zrRelease(lotSign, natalJd, max_level, horizon_years).map((p) => ({
+      level: p.level,
+      sign: p.sign,
+      lord: p.lord,
+      start: isoFromJd(p.start),
+      end: isoFromJd(p.end),
+      lb: p.lb,
+    }));
+    const payload: {
+      natal_utc: string;
+      lot: "spirit" | "fortune";
+      lot_sign: string;
+      sect: "day" | "night";
+      periods: typeof periods;
+      active?: { target_utc: string; l1: string | null; l2: string | null; l3: string | null; l4: string | null };
+    } = { natal_utc: date, lot, lot_sign: SIGN_NAMES[lotSign], sect: day ? "day" : "night", periods };
+    if (target_date !== undefined) {
+      const a = zrActive(lotSign, natalJd, jdFromIso(target_date));
+      payload.active = {
+        target_utc: target_date,
+        l1: a?.l1 ?? null,
+        l2: a?.l2 ?? null,
+        l3: a?.l3 ?? null,
+        l4: a?.l4 ?? null,
+      };
     }
     return text(payload);
   });
