@@ -10,6 +10,7 @@
     "test": "npm run test -w caelus",
     "lint:prose": "bash scripts/lint-prose.sh",
     "lint:claims": "node scripts/check-claims.mjs",
+    "check:versions": "node scripts/check-versions.mjs",
     "docs:api": "typedoc",
     "search:index": "node scripts/build-search-index.mjs",
     "bundle-sizes": "node scripts/bundle-sizes.mjs",
@@ -17,7 +18,7 @@
     "smoke:web": "node scripts/smoke-web.mjs",
     "smoke:live": "node scripts/smoke-live.mjs",
     "test:web": "export NEXT_DIST_DIR=.next-ci; npm run build -w caelus-mcp && npm run docs:api && npm run search:index && npm run build -w web && npm run smoke:web",
-    "preflight": "npm run test && npm run lint:prose && npm run lint:claims && npm run test:web",
+    "preflight": "npm run check:versions && npm run test && npm run lint:prose && npm run lint:claims && npm run test:web",
     "dev:web": "npm run dev -w web",
     "dev:web:clean": "npm run dev:clean -w web"
   },

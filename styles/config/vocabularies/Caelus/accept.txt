@@ -132,8 +132,14 @@ drekkana
 navamsa
 dasamsa
 dwadasamsa
-hora
-trimsamsa
+[Hh]ora
+[Tt]rimsamsa
+[Gg]rahas?
+[Tt]ara
+[Dd]rishti
+Ashtottari
+Narasimha
+Rao
 [Yy]oginis?
 Mangala
 Sankata

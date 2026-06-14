@@ -23,6 +23,7 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: npm ci
       # the full verification chain gates every publish
+      - run: node scripts/check-versions.mjs   # npm × PyPI × server.json must agree
       - run: npm run build -w caelus
       - run: node packages/caelus/dist/test/golden.test.js
       - run: npm run build -w caelus-mcp
@@ -44,3 +45,26 @@ jobs:
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
       - run: bash scripts/publish-if-missing.sh caelus-wheel packages/wheel
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+
+  # Python reference engine → PyPI. No token: PyPI Trusted Publishing (OIDC)
+  # mints a short-lived credential from this job's id-token. One-time setup on
+  # PyPI: project caelus-engine → Settings → Publishing → add a GitHub trusted
+  # publisher (owner heavyblotto, repo caelus, workflow release.yml, the
+  # environment below). skip-existing makes tag-push + dispatch idempotent.
+  pypi:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # OIDC token for Trusted Publishing
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install --upgrade build
+      - run: python -m build
+        working-directory: python
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: python/dist
+          skip-existing: true

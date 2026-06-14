@@ -5,11 +5,30 @@ steps (they need npm account auth no CI runner should hold interactively).
 
 ## One-time setup
 
+### npm (token)
+
 1. On npmjs.com: create/log into the publishing account.
 2. Create an **automation** access token (Settings → Access Tokens →
    Generate → Automation; bypasses 2FA for CI).
 3. Add it to the repo: GitHub → Settings → Secrets and variables →
    Actions → new secret `NPM_TOKEN`.
+
+### PyPI (no token — Trusted Publishing)
+
+`caelus-engine` publishes from CI via PyPI **Trusted Publishing** (OIDC), so
+there is no PyPI token to create, paste, or rotate. Configure it once:
+
+1. GitHub → repo Settings → Environments → create an environment named `pypi`.
+2. PyPI → project `caelus-engine` → Settings → Publishing → **Add a new
+   pending publisher** (GitHub Actions):
+   - Owner: `heavyblotto` · Repository: `caelus`
+   - Workflow filename: `release.yml`
+   - Environment: `pypi`
+
+After that, every tagged release publishes the Python package automatically
+alongside the npm packages. (The legacy manual path — `python -m build` then
+`twine upload` with a `pypi-…` token — is no longer needed; it's what let the
+PyPI version silently lag the npm versions.)
 
 All four names are unscoped (`caelus`, `caelus-mcp`, `caelus-birth`,
 `caelus-wheel` — the `@caelus` scope is claimed/reserved on npm) and are
@@ -18,27 +37,39 @@ registered by the first publish itself. Re-check before tagging:
 
 ## Each release
 
-1. Bump versions in the four package.json files (lockstep on feature
-   releases; a metadata-only patch may bump a single package — see MCP
-   Registry below) and in `llms.txt` + `apps/web/public/llms.txt` —
-   `node scripts/check-llms.mjs` verifies the sync, CI enforces it.
-2. Update `caelus-mcp`'s dependency range on `caelus` if needed.
-3. Commit, then tag and push:
+1. Bump the version everywhere it lives, in lockstep on feature releases
+   (a metadata-only patch may bump a single package — see MCP Registry below):
+   the four `package.json` files, `python/pyproject.toml`,
+   `packages/caelus-mcp/server.json` (both the top-level `version` and the
+   `packages[].version`), and `llms.txt` + `apps/web/public/llms.txt`.
+2. Update `caelus-mcp`'s and `caelus-birth`'s dependency range on `caelus`
+   (`^X.Y.Z`) to match.
+3. Run `npm run check:versions` — it asserts npm × PyPI × `server.json` all
+   agree and the `caelus` dep ranges match, so a half-bumped release fails
+   locally instead of shipping. `node scripts/check-llms.mjs` verifies the
+   `llms.txt` sync. Both run in CI (`check:versions` also gates `release`).
+4. Commit, then tag and push:
    ```
    git tag v0.1.0 && git push origin v0.1.0
    ```
    Remote-execution sessions cannot push tags (the git proxy rejects tag
    refs); from those, dispatch the `release` workflow on `main` instead
    (Actions → release → Run workflow) and push the tag afterward from a
-   local clone. The published versions come from package.json either way.
-4. The release workflow runs the full verification chain (golden suite,
-   MCP oracle suite, birth tzdb suite, wheel render suite, llms.txt sync)
-   and publishes all four packages with `--provenance`. A red suite
-   blocks the publish.
+   local clone. The published versions come from package.json /
+   pyproject.toml either way.
+5. The release workflow runs the version gate and the full verification chain
+   (golden suite, MCP oracle suite, birth tzdb suite, wheel render suite,
+   llms.txt sync), publishes all four npm packages with `--provenance`, and
+   publishes `caelus-engine` to PyPI via Trusted Publishing (no token). A red
+   suite blocks the publish.
 
-Publishes are idempotent: `scripts/publish-if-missing.sh` skips any
-package whose version is already on the registry, so pushing a tag after
-a dispatch release (or re-running a partially failed workflow) is safe.
+Publishes are idempotent: `scripts/publish-if-missing.sh` skips any npm
+package whose version is already on the registry, and the PyPI step uses
+`skip-existing`, so pushing a tag after a dispatch release (or re-running a
+partially failed workflow) is safe.
+
+The only thing not yet wired into the tag is the MCP Registry push (it needs
+interactive GitHub device-code auth); see below.
 
 ## MCP Registry (`caelus-mcp`)
 
