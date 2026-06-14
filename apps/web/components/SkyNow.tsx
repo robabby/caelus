@@ -65,6 +65,17 @@ function decShare(raw: string): Share | null {
   }
 }
 
+/**
+ * Read the encoded chart from the URL. We prefer the fragment (`#c=...`):
+ * browsers never transmit the fragment to the server, so a shared chart's
+ * inputs stay out of request lines, access logs, and any infra in between.
+ * The query string (`?c=...`) is read only as back-compat for earlier links.
+ */
+function readShareParam(): string | null {
+  const fromHash = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("c");
+  return fromHash ?? new URLSearchParams(window.location.search).get("c");
+}
+
 export default function SkyNow() {
   const engineRef = useRef<Engine | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -80,8 +91,8 @@ export default function SkyNow() {
   const [fromLink, setFromLink] = useState(false);
 
   useEffect(() => {
-    // A `?c=` link restores an exact chart; otherwise seed from the current sky.
-    const c = new URLSearchParams(window.location.search).get("c");
+    // A share link restores an exact chart; otherwise seed from the current sky.
+    const c = readShareParam();
     const s = c ? decShare(c) : null;
     if (s) {
       setIso(s.t);
@@ -100,7 +111,9 @@ export default function SkyNow() {
   function share() {
     const payload: Share = { v: 1, t: iso, la: lat, lo: lon, h: sys, z: zodiac };
     if (label.trim()) payload.n = label.trim();
-    const url = `${window.location.origin}/playground?c=${encShare(payload)}`;
+    // Put the chart in the fragment, not the query: the fragment is never sent
+    // to the server, so the inputs never leave the visitor's browser at all.
+    const url = `${window.location.origin}${window.location.pathname}#c=${encShare(payload)}`;
     // Reflect the chart in the address bar so a plain copy of the URL also works.
     window.history.replaceState(null, "", url);
     navigator.clipboard
@@ -226,8 +239,10 @@ export default function SkyNow() {
 
           <p className="dim small" style={{ margin: "0.55rem 0 0" }}>
             The share link encodes only the values above: date, place, and any
-            nickname you type. The chart is recomputed in the recipient&rsquo;s browser;
-            nothing is sent to or stored on a server.
+            nickname you type. It lives in the URL fragment (after the
+            <code style={{ margin: "0 0.2rem" }}>#</code>), which browsers never
+            send over the network, so the chart is recomputed in the
+            recipient&rsquo;s browser and the inputs never reach a server at all.
           </p>
 
           {error && <p style={{ color: "var(--bad)", marginTop: "0.8rem" }}>{error}</p>}
