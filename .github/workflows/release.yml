@@ -58,7 +58,8 @@ jobs:
       id-token: write   # OIDC token for Trusted Publishing
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
+      # v6 runs on Node 24; v5 was on the Node 20 runtime GitHub is removing.
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
       - run: python -m pip install --upgrade build
