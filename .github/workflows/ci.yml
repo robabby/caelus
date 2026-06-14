@@ -43,6 +43,9 @@ jobs:
       - run: node packages/wheel/dist/test/render.test.js
       # cross-package journey: local time -> chart -> SVG wheel, end to end
       - run: node packages/wheel/dist/test/integration.test.js
+      # per-entrypoint bundle sizes (esbuild): informational, prints the table
+      # the data-tiers doc quotes. Per-target try/catch keeps it non-blocking.
+      - run: npm run bundle-sizes
       # generate the API reference markdown before building so the
       # /docs/api pages have content to prerender (mirrors vercel-build).
       - run: npm run docs:api
