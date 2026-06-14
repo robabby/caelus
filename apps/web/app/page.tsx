@@ -53,6 +53,7 @@ export default function Home() {
         <li>🧩 <A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
         <li>🤖 <code>caelus-mcp</code> gives Claude, Cursor, and other MCP clients nine chart tools</li>
         <li>🆓 MIT licensed; coefficients are embedded, with no ephemeris files to deploy</li>
+        <li>🔒 Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>
       </ul>
 
       <P>

@@ -1,0 +1,7 @@
+---
+extends: existence
+message: "Em-dash on the site reads as AI slop. Use a comma, colon, period, or parentheses."
+level: error
+nonword: true
+raw:
+  - '—| -- '

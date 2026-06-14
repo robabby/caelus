@@ -1,4 +1,5 @@
 import { A, Eyebrow, H2, P } from "../../components/Prose";
+import { SITE } from "../../lib/site";
 
 export const metadata = {
   title: "Provenance",
@@ -116,8 +117,19 @@ export default function Provenance() {
       <P>
         MIT. Ship in closed source, SaaS, mobile, or edge bundles without AGPL
         obligations or ephemeris file deployment. Engine plus embedded data is
-        ~85 KB gzipped; same code in browser, edge API, and the{" "}
+        ~85 KB gzipped, so a full chart computes in the browser; the same code
+        runs on the edge API and the{" "}
         <A href="https://www.npmjs.com/package/caelus-mcp">MCP Server</A>.
+      </P>
+      <P>
+        Because the engine is small enough to run in the browser, an app can
+        compute a chart on the user&apos;s device and never send their birth
+        time or place to a server. The{" "}
+        <A href={SITE.starter}>caelus-starter</A> works this way, which sidesteps
+        a lot of privacy and GDPR overhead: there is no birth data to store,
+        transfer, or lose. A Swiss Ephemeris stack has a harder time here. Its
+        AGPL license applies once you serve results over a network, and its
+        accuracy depends on ephemeris files too large to ship to the browser.
       </P>
       <P dim>
         <A href="/validation">Validation tables →</A>
