@@ -6,29 +6,15 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## Unreleased
-
-### Engine (`caelus`)
-
-- Vedic yogas (Roadmap Phase 2): the well-defined, placement-based combinations
-  on the sidereal rasi chart — the five Pancha Mahapurusha yogas (Ruchaka,
-  Bhadra, Hamsa, Malavya, Shasha: a non-luminary in its own sign or exaltation
-  and in a kendra), Gajakesari (Jupiter in a kendra from the Moon), Budha-Aditya
-  (Sun + Mercury in one sign), and Chandra-Mangala (Moon + Mars in one sign).
-  `detectYogas` (pure, from a sign map) and `yogasAt` (from a chart), reusing the
-  engine's `dignities` for own-sign/exaltation. The variant-laden yogas
-  (Kemadruma, lordship-based raja/dhana) are deferred. `yogas-golden` pin plus a
-  defining-rule oracle (in vs. off kendra, kendra-from-Moon, same-sign).
-
 ## 0.13.0 — 2026-06-14
 
 A feature release across all four packages. The engine completes Phase 1 — the
 Hellenistic time-lords (lots, profections, firdaria, zodiacal releasing) and
-primary directions to the angles — and opens the Phase 2 Vedic layer (nakshatras,
-Vimshottari dasha, and the Parashari vargas), each pinned by a cross-language
-golden. The MCP server grows from nine to eighteen tools, surfacing returns,
-progressions, composite, dignities, and the five Phase 1 time-lord and
-direction tools.
+primary directions to the angles — and lays the Phase 2 Vedic layer (nakshatras,
+the Vimshottari and Yogini dashas, the Parashari vargas, and the placement-based
+yogas), each pinned by a cross-language golden. The MCP server grows from nine to
+eighteen tools, surfacing returns, progressions, composite, dignities, and the
+five Phase 1 time-lord and direction tools.
 
 ### Engine (`caelus`)
 
@@ -83,6 +69,16 @@ direction tools.
   the add-3 rule, with proportional sub-periods. `yoginiDashas`/`yoginiActive`/
   `yoginiAt`. Python reference + `yogini-golden` pin, with 36-year-total,
   sub-period-tiling, and starting-yogini (Ashwini -> Bhramari) invariants.
+- Vedic yogas / placement combinations (Roadmap Phase 2): the well-defined,
+  placement-based combinations on the sidereal rasi chart — the five Pancha
+  Mahapurusha yogas (Ruchaka, Bhadra, Hamsa, Malavya, Shasha: a non-luminary in
+  its own sign or exaltation and in a kendra), Gajakesari (Jupiter in a kendra
+  from the Moon), Budha-Aditya (Sun + Mercury in one sign), and Chandra-Mangala
+  (Moon + Mars in one sign). `detectYogas` (pure, from a sign map) and `yogasAt`
+  (from a chart), reusing the engine's `dignities` for own-sign/exaltation. The
+  variant-laden yogas (Kemadruma, lordship-based raja/dhana) are deferred.
+  `yogas-golden` pin plus a defining-rule oracle (in vs. off kendra,
+  kendra-from-Moon, same-sign).
 - Primary directions to the angles (Roadmap Phase 1, completing it):
   `directionArcs` (direct arcs of a body to MC/IC/Asc/Desc by the Placidus
   semi-arc, via the ascensional difference) and `primaryDirections` (the bodies'
