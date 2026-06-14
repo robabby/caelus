@@ -1,0 +1,613 @@
+{
+ "basis": "Python reference astroengine.yogini (embedded VSOP, full moon); Lahiri ayanamsa, 365.25-day dasha year",
+ "cases": [
+  {
+   "id": "start-0",
+   "spec": {
+    "id": "start-0",
+    "type": "start",
+    "nak": 0
+   },
+   "result": {
+    "yogini": "Bhramari"
+   }
+  },
+  {
+   "id": "start-3",
+   "spec": {
+    "id": "start-3",
+    "type": "start",
+    "nak": 3
+   },
+   "result": {
+    "yogini": "Siddha"
+   }
+  },
+  {
+   "id": "start-12",
+   "spec": {
+    "id": "start-12",
+    "type": "start",
+    "nak": 12
+   },
+   "result": {
+    "yogini": "Sankata"
+   }
+  },
+  {
+   "id": "start-26",
+   "spec": {
+    "id": "start-26",
+    "type": "start",
+    "nak": 26
+   },
+   "result": {
+    "yogini": "Ulka"
+   }
+  },
+  {
+   "id": "dashas",
+   "spec": {
+    "id": "dashas",
+    "type": "dashas",
+    "moon_lon": 45.0,
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ]
+   },
+   "result": {
+    "start_yogini": "Siddha",
+    "balance_years": 4.375,
+    "dashas": [
+     {
+      "level": 1,
+      "yogini": "Siddha",
+      "lord": "venus",
+      "years": 7,
+      "start": 2447094.3229166665,
+      "end": 2449651.0729166665,
+      "sub": [
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2447094.3229166665,
+        "end": 2447591.46875
+       },
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2447591.46875,
+        "end": 2448159.6354166665
+       },
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2448159.6354166665,
+        "end": 2448230.65625
+       },
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2448230.65625,
+        "end": 2448372.6979166665
+       },
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2448372.6979166665,
+        "end": 2448585.7604166665
+       },
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2448585.7604166665,
+        "end": 2448869.84375
+       },
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2448869.84375,
+        "end": 2449224.9479166665
+       },
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2449224.9479166665,
+        "end": 2449651.0729166665
+       }
+      ]
+     },
+     {
+      "level": 1,
+      "yogini": "Sankata",
+      "lord": "rahu",
+      "years": 8,
+      "start": 2449651.0729166665,
+      "end": 2452573.0729166665,
+      "sub": [
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2449651.0729166665,
+        "end": 2450300.40625
+       },
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2450300.40625,
+        "end": 2450381.5729166665
+       },
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2450381.5729166665,
+        "end": 2450543.90625
+       },
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2450543.90625,
+        "end": 2450787.40625
+       },
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2450787.40625,
+        "end": 2451112.0729166665
+       },
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2451112.0729166665,
+        "end": 2451517.90625
+       },
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2451517.90625,
+        "end": 2452004.90625
+       },
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2452004.90625,
+        "end": 2452573.0729166665
+       }
+      ]
+     },
+     {
+      "level": 1,
+      "yogini": "Mangala",
+      "lord": "moon",
+      "years": 1,
+      "start": 2452573.0729166665,
+      "end": 2452938.3229166665,
+      "sub": [
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2452573.0729166665,
+        "end": 2452583.21875
+       },
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2452583.21875,
+        "end": 2452603.5104166665
+       },
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2452603.5104166665,
+        "end": 2452633.9479166665
+       },
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2452633.9479166665,
+        "end": 2452674.53125
+       },
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2452674.53125,
+        "end": 2452725.2604166665
+       },
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2452725.2604166665,
+        "end": 2452786.1354166665
+       },
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2452786.1354166665,
+        "end": 2452857.15625
+       },
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2452857.15625,
+        "end": 2452938.3229166665
+       }
+      ]
+     },
+     {
+      "level": 1,
+      "yogini": "Pingala",
+      "lord": "sun",
+      "years": 2,
+      "start": 2452938.3229166665,
+      "end": 2453668.8229166665,
+      "sub": [
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2452938.3229166665,
+        "end": 2452978.90625
+       },
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2452978.90625,
+        "end": 2453039.78125
+       },
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2453039.78125,
+        "end": 2453120.9479166665
+       },
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2453120.9479166665,
+        "end": 2453222.40625
+       },
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2453222.40625,
+        "end": 2453344.15625
+       },
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2453344.15625,
+        "end": 2453486.1979166665
+       },
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2453486.1979166665,
+        "end": 2453648.53125
+       },
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2453648.53125,
+        "end": 2453668.8229166665
+       }
+      ]
+     },
+     {
+      "level": 1,
+      "yogini": "Dhanya",
+      "lord": "jupiter",
+      "years": 3,
+      "start": 2453668.8229166665,
+      "end": 2454764.5729166665,
+      "sub": [
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2453668.8229166665,
+        "end": 2453760.1354166665
+       },
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2453760.1354166665,
+        "end": 2453881.8854166665
+       },
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2453881.8854166665,
+        "end": 2454034.0729166665
+       },
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2454034.0729166665,
+        "end": 2454216.6979166665
+       },
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2454216.6979166665,
+        "end": 2454429.7604166665
+       },
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2454429.7604166665,
+        "end": 2454673.2604166665
+       },
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2454673.2604166665,
+        "end": 2454703.6979166665
+       },
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2454703.6979166665,
+        "end": 2454764.5729166665
+       }
+      ]
+     },
+     {
+      "level": 1,
+      "yogini": "Bhramari",
+      "lord": "mars",
+      "years": 4,
+      "start": 2454764.5729166665,
+      "end": 2456225.5729166665,
+      "sub": [
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2454764.5729166665,
+        "end": 2454926.90625
+       },
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2454926.90625,
+        "end": 2455129.8229166665
+       },
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2455129.8229166665,
+        "end": 2455373.3229166665
+       },
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2455373.3229166665,
+        "end": 2455657.40625
+       },
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2455657.40625,
+        "end": 2455982.0729166665
+       },
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2455982.0729166665,
+        "end": 2456022.65625
+       },
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2456022.65625,
+        "end": 2456103.8229166665
+       },
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2456103.8229166665,
+        "end": 2456225.5729166665
+       }
+      ]
+     },
+     {
+      "level": 1,
+      "yogini": "Bhadrika",
+      "lord": "mercury",
+      "years": 5,
+      "start": 2456225.5729166665,
+      "end": 2458051.8229166665,
+      "sub": [
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2456225.5729166665,
+        "end": 2456479.21875
+       },
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2456479.21875,
+        "end": 2456783.59375
+       },
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2456783.59375,
+        "end": 2457138.6979166665
+       },
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2457138.6979166665,
+        "end": 2457544.53125
+       },
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2457544.53125,
+        "end": 2457595.2604166665
+       },
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2457595.2604166665,
+        "end": 2457696.71875
+       },
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2457696.71875,
+        "end": 2457848.90625
+       },
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2457848.90625,
+        "end": 2458051.8229166665
+       }
+      ]
+     },
+     {
+      "level": 1,
+      "yogini": "Ulka",
+      "lord": "saturn",
+      "years": 6,
+      "start": 2458051.8229166665,
+      "end": 2460243.3229166665,
+      "sub": [
+       {
+        "yogini": "Ulka",
+        "lord": "saturn",
+        "start": 2458051.8229166665,
+        "end": 2458417.0729166665
+       },
+       {
+        "yogini": "Siddha",
+        "lord": "venus",
+        "start": 2458417.0729166665,
+        "end": 2458843.1979166665
+       },
+       {
+        "yogini": "Sankata",
+        "lord": "rahu",
+        "start": 2458843.1979166665,
+        "end": 2459330.1979166665
+       },
+       {
+        "yogini": "Mangala",
+        "lord": "moon",
+        "start": 2459330.1979166665,
+        "end": 2459391.0729166665
+       },
+       {
+        "yogini": "Pingala",
+        "lord": "sun",
+        "start": 2459391.0729166665,
+        "end": 2459512.8229166665
+       },
+       {
+        "yogini": "Dhanya",
+        "lord": "jupiter",
+        "start": 2459512.8229166665,
+        "end": 2459695.4479166665
+       },
+       {
+        "yogini": "Bhramari",
+        "lord": "mars",
+        "start": 2459695.4479166665,
+        "end": 2459938.9479166665
+       },
+       {
+        "yogini": "Bhadrika",
+        "lord": "mercury",
+        "start": 2459938.9479166665,
+        "end": 2460243.3229166665
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "active-5y",
+   "spec": {
+    "id": "active-5y",
+    "type": "active",
+    "moon_lon": 45.0,
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "target": [
+     1995,
+     6,
+     10,
+     0,
+     0
+    ]
+   },
+   "result": {
+    "maha": "Sankata",
+    "antar": "Sankata"
+   }
+  },
+  {
+   "id": "active-40y",
+   "spec": {
+    "id": "active-40y",
+    "type": "active",
+    "moon_lon": 45.0,
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "target": [
+     2030,
+     1,
+     1,
+     0,
+     0
+    ]
+   },
+   "result": {
+    "maha": "Siddha",
+    "antar": "Ulka"
+   }
+  },
+  {
+   "id": "at-tampa",
+   "spec": {
+    "id": "at-tampa",
+    "type": "at",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "target": [
+     2025,
+     6,
+     10,
+     0,
+     0
+    ]
+   },
+   "result": {
+    "moon_nakshatra": "Purva Ashadha",
+    "start_yogini": "Siddha",
+    "maha": "Siddha",
+    "antar": "Sankata"
+   }
+  }
+ ]
+}

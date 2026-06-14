@@ -56,6 +56,11 @@ current figures live in `packages/caelus/accuracy.json` and on
   rasi + division (boundary-robust) over the validated sidereal longitudes;
   `vargas-golden` pin plus a textbook-placement oracle (navamsa
   Aries->Aries / Taurus->Capricorn, drekkana +4/+8, dasamsa odd/even).
+- Yogini dasha (Roadmap Phase 2): the 36-year nakshatra-based cycle of eight
+  yoginis (Mangala..Sankata, periods 1..8), started from the Moon's nakshatra by
+  the add-3 rule, with proportional sub-periods. `yoginiDashas`/`yoginiActive`/
+  `yoginiAt`. Python reference + `yogini-golden` pin, with 36-year-total,
+  sub-period-tiling, and starting-yogini (Ashwini -> Bhramari) invariants.
 - Primary directions to the angles (Roadmap Phase 1, completing it):
   `directionArcs` (direct arcs of a body to MC/IC/Asc/Desc by the Placidus
   semi-arc, via the ascensional difference) and `primaryDirections` (the bodies'

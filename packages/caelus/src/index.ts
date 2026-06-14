@@ -22,3 +22,4 @@ export * from "./releasing.js";
 export * from "./vedic.js";
 export * from "./directions.js";
 export * from "./vargas.js";
+export * from "./yogini.js";

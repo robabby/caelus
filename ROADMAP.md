@@ -111,7 +111,10 @@ and **Vimshottari dasha (maha/antar/pratyantar) — done** (`nakshatra`/
 (`varga`/`vargaAt`/`vargaChart` for the textbook set D1/D3/D9/D10/D12, computed
 boundary-robustly from rasi+division; `vargas-golden` pin + textbook-placement
 oracle — the contested hora D2 and unequal trimsamsa D30 await their conventions
-being pinned); next further dashas and core yogas. All deterministic arithmetic
+being pinned); **Yogini dasha — done** (the 36-year eight-yogini cycle;
+`yoginiDashas`/`yoginiActive`/`yoginiAt`, `yogini-golden` pin + total/tiling/
+starting-yogini invariants); next further dashas (Ashtottari) and core yogas.
+All deterministic arithmetic
 over the
 SE-pinned sidereal longitudes; validated against established Jyotish references
 and published charts as golden fixtures, with ayanamsa/convention variants

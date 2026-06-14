@@ -37,6 +37,8 @@ jobs:
       - run: node packages/caelus/dist/test/directions-golden.test.js
       # vargas (divisional charts): TS port must match the Python reference
       - run: node packages/caelus/dist/test/vargas-golden.test.js
+      # Yogini dasha (36-year nakshatra cycle): TS port must match the reference
+      - run: node packages/caelus/dist/test/yogini-golden.test.js
       # scan / rankMoments ergonomics: deterministic unit checks (TS-only layer)
       - run: node packages/caelus/dist/test/scan.test.js
       # spherical geometry (3D aspects): TS port must match the Python reference
