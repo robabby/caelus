@@ -29,7 +29,7 @@ from .chart import SIGNS
 # Element start sign for the navamsa (fire, earth, air, water by rasi % 4).
 _NAVAMSA_START = [0, 9, 6, 3]
 # Supported divisions.
-VARGA_DIVISIONS = [1, 3, 9, 10, 12, 30]
+VARGA_DIVISIONS = [1, 2, 3, 9, 10, 12, 30]
 
 # Trimsamsa (D30): five unequal degree-bands per sign, each ruled by a
 # non-luminary and mapping to that ruler's sign of the same gender. Odd signs:
@@ -54,6 +54,10 @@ def _trimsamsa(rasi, within):
 def _varga_sign(rasi, div, n):
     if n == 1:
         return rasi
+    if n == 2:
+        # Parashari hora: odd sign first half -> Leo (Sun's hora), second half ->
+        # Cancer (Moon's hora); even sign reversed. odd sign == even rasi index.
+        return 4 if (rasi % 2 == 0) == (div == 0) else 3
     if n == 3:
         return (rasi + 4 * div) % 12
     if n == 9:

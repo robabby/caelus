@@ -83,6 +83,10 @@ const want = (lon: number, n: number, sign: string, id: string) => {
   want(5, 3, "Aries", "drek1"); want(15, 3, "Leo", "drek2"); want(25, 3, "Sagittarius", "drek3");
   // D10 dasamsa: odd from sign, even from the 9th
   want(1, 10, "Aries", "das-aries"); want(31, 10, "Capricorn", "das-taurus");
+  // D2 Parashari hora: odd sign first half -> Leo, second half -> Cancer;
+  // even sign reversed
+  want(5, 2, "Leo", "hora-odd-1"); want(20, 2, "Cancer", "hora-odd-2");
+  want(35, 2, "Cancer", "hora-even-1"); want(50, 2, "Leo", "hora-even-2");
   // D12 dwadasamsa: from the sign itself
   want(1, 12, "Aries", "dwad-aries");
   // D30 trimsamsa: odd-sign bands (Mars->Aries, Saturn->Aquarius, Jupiter->Sagittarius);

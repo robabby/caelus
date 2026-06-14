@@ -19,6 +19,23 @@
    }
   },
   {
+   "id": "v2-0.0",
+   "spec": {
+    "id": "v2-0.0",
+    "type": "varga",
+    "lon": 0.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 1
+   }
+  },
+  {
    "id": "v3-0.0",
    "spec": {
     "id": "v3-0.0",
@@ -117,6 +134,23 @@
     "rasi_index": 0,
     "sign": "Aries",
     "sign_index": 0,
+    "division": 1
+   }
+  },
+  {
+   "id": "v2-5.0",
+   "spec": {
+    "id": "v2-5.0",
+    "type": "varga",
+    "lon": 5.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Leo",
+    "sign_index": 4,
     "division": 1
    }
   },
@@ -223,6 +257,23 @@
    }
   },
   {
+   "id": "v2-15.0",
+   "spec": {
+    "id": "v2-15.0",
+    "type": "varga",
+    "lon": 15.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Cancer",
+    "sign_index": 3,
+    "division": 2
+   }
+  },
+  {
    "id": "v3-15.0",
    "spec": {
     "id": "v3-15.0",
@@ -322,6 +373,23 @@
     "sign": "Aries",
     "sign_index": 0,
     "division": 1
+   }
+  },
+  {
+   "id": "v2-25.0",
+   "spec": {
+    "id": "v2-25.0",
+    "type": "varga",
+    "lon": 25.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Cancer",
+    "sign_index": 3,
+    "division": 2
    }
   },
   {
@@ -427,6 +495,23 @@
    }
   },
   {
+   "id": "v2-30.0",
+   "spec": {
+    "id": "v2-30.0",
+    "type": "varga",
+    "lon": 30.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Taurus",
+    "rasi_index": 1,
+    "sign": "Cancer",
+    "sign_index": 3,
+    "division": 1
+   }
+  },
+  {
    "id": "v3-30.0",
    "spec": {
     "id": "v3-30.0",
@@ -521,6 +606,23 @@
    },
    "result": {
     "varga": 1,
+    "rasi": "Leo",
+    "rasi_index": 4,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 1
+   }
+  },
+  {
+   "id": "v2-120.0",
+   "spec": {
+    "id": "v2-120.0",
+    "type": "varga",
+    "lon": 120.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
     "rasi": "Leo",
     "rasi_index": 4,
     "sign": "Leo",
@@ -631,6 +733,23 @@
    }
   },
   {
+   "id": "v2-200.0",
+   "spec": {
+    "id": "v2-200.0",
+    "type": "varga",
+    "lon": 200.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Libra",
+    "rasi_index": 6,
+    "sign": "Cancer",
+    "sign_index": 3,
+    "division": 2
+   }
+  },
+  {
    "id": "v3-200.0",
    "spec": {
     "id": "v3-200.0",
@@ -733,6 +852,23 @@
    }
   },
   {
+   "id": "v2-28.0",
+   "spec": {
+    "id": "v2-28.0",
+    "type": "varga",
+    "lon": 28.0,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Aries",
+    "rasi_index": 0,
+    "sign": "Cancer",
+    "sign_index": 3,
+    "division": 2
+   }
+  },
+  {
    "id": "v3-28.0",
    "spec": {
     "id": "v3-28.0",
@@ -832,6 +968,23 @@
     "sign": "Pisces",
     "sign_index": 11,
     "division": 1
+   }
+  },
+  {
+   "id": "v2-359.99",
+   "spec": {
+    "id": "v2-359.99",
+    "type": "varga",
+    "lon": 359.99,
+    "n": 2
+   },
+   "result": {
+    "varga": 2,
+    "rasi": "Pisces",
+    "rasi_index": 11,
+    "sign": "Leo",
+    "sign_index": 4,
+    "division": 2
    }
   },
   {

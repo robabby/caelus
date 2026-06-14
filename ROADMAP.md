@@ -152,8 +152,9 @@ Bucket A — standard convention, just complex (clear wins, do early):
 - **Trimsamsa (D30) — done**: the BPHS unequal-division table (odd 5/5/8/7/5 by
   Mars/Saturn/Jupiter/Mercury/Venus, even reversed) mapping to the ruler's sign;
   `varga(lon, 30)`, `vargas-golden` band oracle + cited `validate_jyotish` checks.
-- **Hora (D2)**: pin the Parashari convention as the default; expose the
-  alternate scheme as a `variant`.
+- **Hora (D2) — done**: the BPHS Parashari convention (odd sign first half ->
+  Leo, second half -> Cancer; even reversed) as `varga(lon, 2)`, with cited
+  `validate_jyotish` checks; alternate hora schemes remain a possible `variant`.
 - **Inter-planetary primary directions under the pole**: Placidus semi-arc
   between planets (not just to angles); validate against a primary-directions
   oracle / published worked example.

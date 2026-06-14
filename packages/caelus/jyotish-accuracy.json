@@ -1,9 +1,11 @@
 {
  "basis": "Vedic conventions vs named authorities (BPHS, PyJHora/PVR Rao)",
- "checks": 15,
- "agree": 15,
+ "checks": 17,
+ "agree": 17,
  "sources": [
   "BPHS Pancha Mahapurusha: Mars in own sign in a kendra",
+  "BPHS Parashari hora: even sign first half -> Moon's hora (Cancer)",
+  "BPHS Parashari hora: odd sign first half -> Sun's hora (Leo)",
   "BPHS Vimshottari: Ashwini -> Ketu mahadasha",
   "BPHS Vimshottari: Rohini -> Moon mahadasha",
   "BPHS dasamsa: even sign from the 9th",

@@ -17,6 +17,10 @@ Working through the deferred-technique resolution plan (ROADMAP).
   signs reversed -> their even signs). `varga(lon, 30)` and `vargaChart(..., 30)`;
   `vargas-golden` pin plus a band oracle and a cited entry in the new Jyotish
   reference.
+- Hora (D2) divisional chart: the BPHS Parashari convention (odd sign first half
+  -> Leo / Sun's hora, second half -> Cancer / Moon's hora; even sign reversed).
+  `varga(lon, 2)`; `vargas-golden` oracle + cited entries. Completes the deferred
+  varga set; alternate hora schemes remain a possible later `variant`.
 
 ### Validation
 

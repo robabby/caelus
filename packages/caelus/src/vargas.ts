@@ -18,7 +18,7 @@ import { Engine, BodyId, BODIES, SIGNS, Zodiac } from "./chart.js";
 /** Element start sign for the navamsa (fire, earth, air, water by rasi % 4). */
 const NAVAMSA_START = [0, 9, 6, 3];
 /** Supported divisions. */
-export const VARGA_DIVISIONS = [1, 3, 9, 10, 12, 30] as const;
+export const VARGA_DIVISIONS = [1, 2, 3, 9, 10, 12, 30] as const;
 
 // Trimsamsa (D30): five unequal degree-bands per sign mapping to a non-luminary's
 // sign. Odd: Mars 0-5 -> Aries, Saturn 5-10 -> Aquarius, Jupiter 10-18 ->
@@ -36,6 +36,9 @@ function trimsamsa(rasi: number, within: number): [number, number] {
 function vargaSign(rasi: number, div: number, n: number): number {
   switch (n) {
     case 1: return rasi;
+    // Parashari hora: odd sign first half -> Leo, second half -> Cancer; even
+    // sign reversed (odd sign == even rasi index).
+    case 2: return ((rasi % 2 === 0) === (div === 0)) ? 4 : 3;
     case 3: return (rasi + 4 * div) % 12;
     case 9: return (NAVAMSA_START[rasi % 4] + div) % 12;
     case 10: return rasi % 2 === 0 ? (rasi + div) % 12 : (rasi + 8 + div) % 12;
