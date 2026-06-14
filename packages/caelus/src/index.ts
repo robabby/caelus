@@ -14,3 +14,4 @@ export * from "./spherical.js";
 export * from "./astrocartography.js";
 export * from "./ephemeris.js";
 export * from "./features.js";
+export * from "./compiler.js";

@@ -1,0 +1,164 @@
+{
+ "basis": "Python reference astroengine.compiler.form_loss",
+ "cases": [
+  {
+   "id": "aspect-exact",
+   "spec": {
+    "id": "aspect-exact",
+    "lons": {
+     "a": 10.0,
+     "b": 70.0
+    },
+    "constraints": [
+     {
+      "kind": "aspect",
+      "a": "a",
+      "b": "b",
+      "angle": 60.0
+     }
+    ]
+   },
+   "result": 0.0
+  },
+  {
+   "id": "aspect-off",
+   "spec": {
+    "id": "aspect-off",
+    "lons": {
+     "a": 10.0,
+     "b": 100.0
+    },
+    "constraints": [
+     {
+      "kind": "aspect",
+      "a": "a",
+      "b": "b",
+      "angle": 60.0
+     }
+    ]
+   },
+   "result": 30.0
+  },
+  {
+   "id": "aspect-wrap",
+   "spec": {
+    "id": "aspect-wrap",
+    "lons": {
+     "a": 350.0,
+     "b": 10.0
+    },
+    "constraints": [
+     {
+      "kind": "aspect",
+      "a": "a",
+      "b": "b",
+      "angle": 20.0
+     }
+    ]
+   },
+   "result": 0.0
+  },
+  {
+   "id": "sign-inside",
+   "spec": {
+    "id": "sign-inside",
+    "lons": {
+     "v": 45.0
+    },
+    "constraints": [
+     {
+      "kind": "sign",
+      "body": "v",
+      "sign": 1
+     }
+    ]
+   },
+   "result": 0.0
+  },
+  {
+   "id": "sign-outside",
+   "spec": {
+    "id": "sign-outside",
+    "lons": {
+     "v": 75.0
+    },
+    "constraints": [
+     {
+      "kind": "sign",
+      "body": "v",
+      "sign": 1
+     }
+    ]
+   },
+   "result": 15.0
+  },
+  {
+   "id": "sign-wrap",
+   "spec": {
+    "id": "sign-wrap",
+    "lons": {
+     "v": 5.0
+    },
+    "constraints": [
+     {
+      "kind": "sign",
+      "body": "v",
+      "sign": 11
+     }
+    ]
+   },
+   "result": 5.0
+  },
+  {
+   "id": "degree",
+   "spec": {
+    "id": "degree",
+    "lons": {
+     "v": 200.0
+    },
+    "constraints": [
+     {
+      "kind": "degree",
+      "body": "v",
+      "degree": 185.0
+     }
+    ]
+   },
+   "result": 15.0
+  },
+  {
+   "id": "weighted-combo",
+   "spec": {
+    "id": "weighted-combo",
+    "lons": {
+     "venus": 44.0,
+     "mars": 46.0,
+     "pluto": 220.0
+    },
+    "constraints": [
+     {
+      "kind": "aspect",
+      "a": "venus",
+      "b": "pluto",
+      "angle": 180.0,
+      "weight": 0.9
+     },
+     {
+      "kind": "aspect",
+      "a": "venus",
+      "b": "mars",
+      "angle": 0.0,
+      "weight": 0.8
+     },
+     {
+      "kind": "sign",
+      "body": "venus",
+      "sign": 1,
+      "weight": 0.95
+     }
+    ]
+   },
+   "result": 5.2
+  }
+ ]
+}
