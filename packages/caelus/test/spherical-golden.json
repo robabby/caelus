@@ -1,0 +1,197 @@
+{
+ "basis": "Python reference astroengine.spherical (embedded VSOP, full moon)",
+ "cases": [
+  {
+   "id": "sep-equal-lon",
+   "spec": {
+    "id": "sep-equal-lon",
+    "type": "sep",
+    "a": [
+     0.0,
+     0.0
+    ],
+    "b": [
+     60.0,
+     0.0
+    ]
+   },
+   "result": 59.99999999999999
+  },
+  {
+   "id": "sep-with-lat",
+   "spec": {
+    "id": "sep-with-lat",
+    "type": "sep",
+    "a": [
+     0.0,
+     5.0
+    ],
+    "b": [
+     60.0,
+     -5.0
+    ]
+   },
+   "result": 60.75101305058632
+  },
+  {
+   "id": "sep-poles",
+   "spec": {
+    "id": "sep-poles",
+    "type": "sep",
+    "a": [
+     0.0,
+     90.0
+    ],
+    "b": [
+     0.0,
+     -90.0
+    ]
+   },
+   "result": 180.0
+  },
+  {
+   "id": "sep-coincident",
+   "spec": {
+    "id": "sep-coincident",
+    "type": "sep",
+    "a": [
+     10.0,
+     3.0
+    ],
+    "b": [
+     10.0,
+     3.0
+    ]
+   },
+   "result": 1.2074182697257333e-06
+  },
+  {
+   "id": "sep-opposition",
+   "spec": {
+    "id": "sep-opposition",
+    "type": "sep",
+    "a": [
+     0.0,
+     0.0
+    ],
+    "b": [
+     180.0,
+     0.0
+    ]
+   },
+   "result": 180.0
+  },
+  {
+   "id": "sep-high-lat",
+   "spec": {
+    "id": "sep-high-lat",
+    "type": "sep",
+    "a": [
+     350.0,
+     17.0
+    ],
+    "b": [
+     10.0,
+     -17.0
+    ]
+   },
+   "result": 39.295917208607165
+  },
+  {
+   "id": "unit-aries",
+   "spec": {
+    "id": "unit-aries",
+    "type": "unit",
+    "lon": 0.0,
+    "lat": 0.0
+   },
+   "result": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "unit-cancer-lat",
+   "spec": {
+    "id": "unit-cancer-lat",
+    "type": "unit",
+    "lon": 90.0,
+    "lat": 12.0
+   },
+   "result": [
+    5.989426641661592e-17,
+    0.9781476007338057,
+    0.20791169081775934
+   ]
+  },
+  {
+   "id": "bodies-moon-sun",
+   "spec": {
+    "id": "bodies-moon-sun",
+    "type": "sep_bodies",
+    "a": "moon",
+    "b": "sun",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ]
+   },
+   "result": 57.19617251926558
+  },
+  {
+   "id": "bodies-moon-mars",
+   "spec": {
+    "id": "bodies-moon-mars",
+    "type": "sep_bodies",
+    "a": "moon",
+    "b": "mars",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ]
+   },
+   "result": 104.67552726605965
+  },
+  {
+   "id": "bodies-mercury-venus",
+   "spec": {
+    "id": "bodies-mercury-venus",
+    "type": "sep_bodies",
+    "a": "mercury",
+    "b": "venus",
+    "jd": [
+     2024,
+     3,
+     20,
+     3,
+     0
+    ]
+   },
+   "result": 37.36758820078004
+  },
+  {
+   "id": "bodies-pluto-sun",
+   "spec": {
+    "id": "bodies-pluto-sun",
+    "type": "sep_bodies",
+    "a": "pluto",
+    "b": "sun",
+    "jd": [
+     2010,
+     7,
+     15,
+     18,
+     30
+    ]
+   },
+   "result": 159.82021811895848
+  }
+ ]
+}
