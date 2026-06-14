@@ -162,7 +162,23 @@ export function lunarEclipses(
   return out;
 }
 
-/** Solar eclipses (global circumstances) in [jdStart, jdEnd] (UT JDs). */
+/**
+ * Solar eclipses in `[jdStart, jdEnd]`, with global circumstances (not
+ * local visibility). Each new Moon in the window is tested for an eclipse and,
+ * when found, classified by the Moon's shadow geometry.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param jdStart Start of the window, Julian Day (UT).
+ * @param jdEnd End of the window, Julian Day (UT).
+ * @returns {@link SolarEclipse} records: `tMax` (greatest eclipse, JD UT),
+ *   `type` (`"total"`/`"annular"`/`"hybrid"`/`"partial"`), `gamma` (minimum
+ *   shadow-axis distance in Earth radii), and the `begin`/`end` JDs.
+ * @example
+ * ```ts
+ * const eclipses = solarEclipses(engine, julianDay(2025, 1, 1), julianDay(2030, 1, 1));
+ * eclipses[0].type; // e.g. "partial"
+ * ```
+ */
 export function solarEclipses(
   engine: Engine, jdStart: number, jdEnd: number,
 ): SolarEclipse[] {

@@ -32,6 +32,25 @@ export function returns(
   return crossings(engine, body, natalLon, jdStart, jdEnd, zodiac, maxHits);
 }
 
+/**
+ * Solar-return instants in `[jdStart, jdEnd]`: the times the Sun returns to its
+ * natal longitude (about once a year). Build a chart at each with
+ * {@link Engine.chartAt} for the solar-return chart.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param natalJd Natal Julian Day (UT) — defines the target Sun longitude.
+ * @param jdStart Start of the search window, Julian Day (UT).
+ * @param jdEnd End of the search window, Julian Day (UT).
+ * @param zodiac Zodiac for the longitude match. Defaults to tropical.
+ * @returns Return instants as Julian Days (UT), sorted.
+ * @example
+ * ```ts
+ * const natal = julianDay(1990, 6, 10, 14, 30);
+ * const [thisYear] = solarReturn(engine, natal, julianDay(2025, 1, 1), julianDay(2026, 1, 1));
+ * const returnChart = engine.chartAt(thisYear, 27.95, -82.46);
+ * ```
+ * @see {@link lunarReturn} for the monthly Moon return.
+ */
 export function solarReturn(
   engine: Engine, natalJd: number, jdStart: number, jdEnd: number,
   zodiac: Zodiac = "tropical",
@@ -55,6 +74,26 @@ export function progressedJd(
   return natalJd + (targetJd - natalJd) / yearLength;
 }
 
+/**
+ * Secondary-progressed longitude of a body for a given target date: the
+ * "day-for-a-year" method, where one day of real motion after birth maps to one
+ * year of life. Equivalent to taking the body's longitude at
+ * {@link progressedJd}.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param body A body id from {@link Engine.bodies}.
+ * @param natalJd Natal Julian Day (UT).
+ * @param targetJd The date to progress to, Julian Day (UT).
+ * @param yearLength Days per year of life. Defaults to the tropical year.
+ * @param zodiac Zodiac for the result. Defaults to tropical.
+ * @returns The progressed ecliptic longitude in degrees, `[0, 360)`.
+ * @example
+ * ```ts
+ * const natal = julianDay(1990, 6, 10, 14, 30);
+ * progressedLongitude(engine, "moon", natal, julianDay(2025, 6, 10));
+ * ```
+ * @see {@link solarArc} and {@link directedLongitude} for solar-arc directions.
+ */
 export function progressedLongitude(
   engine: Engine, body: BodyId, natalJd: number, targetJd: number,
   yearLength = TROPICAL_YEAR, zodiac: Zodiac = "tropical",

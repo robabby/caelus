@@ -143,7 +143,18 @@ export class Engine {
       && this.moonCheb.jd0 <= jde - 0.1 && jde + 0.1 <= this.moonCheb.jd1;
   }
 
-  /** Body ids this engine can compute, given the data it was handed. */
+  /**
+   * The body ids this engine can compute, given the data pack it was
+   * constructed with. The core set is always present; extra asteroids and
+   * hypotheticals appear only when their Chebyshev or Kepler packs are loaded.
+   *
+   * @returns Body ids accepted by {@link Engine.position},
+   *   {@link Engine.longitude}, and {@link Engine.chart}.
+   * @example
+   * ```ts
+   * engine.bodies().includes("ceres"); // true only if the Ceres pack is loaded
+   * ```
+   */
   bodies(): BodyId[] {
     return [
       ...[...BODIES, ...EXTRA_BODIES].filter((b) => b !== "chiron" || this.chironCheb),
@@ -152,9 +163,20 @@ export class Engine {
     ];
   }
 
-  /** Apparent geocentric [lon rad, lat rad, dist AU | null] at TT jde.
-   *  Building block for the events module; chart consumers want
-   *  position() instead. */
+  /**
+   * Low-level apparent geocentric ecliptic coordinates at a **TT** Julian Day,
+   * in **radians**. This is the engine's internal building block for the events
+   * module; it takes TT (not UT) and does no zodiac shift. Most callers want
+   * {@link Engine.position} (full Position in degrees) or
+   * {@link Engine.longitude} (longitude in degrees) instead.
+   *
+   * @param body A body id from {@link Engine.bodies}.
+   * @param jde Julian Day in **TT** (Terrestrial Time), e.g. `jdTT(jdUt)`.
+   * @returns `[lon, lat, dist]` — longitude and latitude in **radians** (true
+   *   equinox of date), distance in AU, or `null` distance for nodes and
+   *   Lilith points.
+   * @throws Error if no data is loaded for `body`.
+   */
   ecliptic(body: BodyId, jde: number): [number, number, number | null] {
     if (body === "sun") return sunApparent(this.data, jde);
     if (body === "moon") {
@@ -207,7 +229,26 @@ export class Engine {
     return mod(nutation(this.data, jde)[0] / DEG + ayanamsa(jde, mode), 360);
   }
 
-  /** Apparent place of a catalog star: lon/lat/ra/dec (deg), sign, mag. */
+  /**
+   * Apparent place of a catalog fixed star at a Julian Day (UT). Requires the
+   * fixed-star catalog to be present in the data pack; see
+   * {@link Engine.starNames} for the available names.
+   *
+   * @param name Catalog star name, e.g. `"Regulus"` (see
+   *   {@link Engine.starNames}).
+   * @param jdUt Julian Day in UT.
+   * @param opts Calculation options; only `zodiac` is meaningful here (tropical
+   *   by default, or a sidereal ayanamsa).
+   * @returns Ecliptic `lon`/`lat`, equatorial `ra`/`dec` (all degrees), the
+   *   zodiac `sign` and `signDeg`, and the star's visual magnitude `mag`.
+   * @throws Error if `name` is not in the loaded catalog.
+   * @example
+   * ```ts
+   * const regulus = engine.fixedStar("Regulus", julianDay(2025, 1, 1));
+   * regulus.sign;  // e.g. "Leo"
+   * regulus.mag;   // apparent magnitude
+   * ```
+   */
   fixedStar(name: string, jdUt: number, opts: CalcOptions = {}): {
     lon: number; lat: number; ra: number; dec: number; mag: number;
     sign: string; signDeg: number;
@@ -226,7 +267,12 @@ export class Engine {
     };
   }
 
-  /** Names in the loaded fixed-star catalog (sorted). */
+  /**
+   * The names in the loaded fixed-star catalog, sorted. Empty if no catalog is
+   * present in the data pack. Pass any of these to {@link Engine.fixedStar}.
+   *
+   * @returns Sorted catalog star names.
+   */
   starNames(): string[] {
     return Object.keys(this.data.fixedStars?.stars ?? {}).sort();
   }
@@ -248,15 +294,44 @@ export class Engine {
     return lonDeg;
   }
 
-  /** Apparent geocentric ecliptic longitude (deg). Tropical: true equinox
-   *  of date. Sidereal: mean equinox minus ayanamsa. */
+  /**
+   * Apparent geocentric ecliptic longitude of a body, in degrees `[0, 360)`,
+   * at a Julian Day (UT). The fast path when you need only a longitude — a
+   * transit position, an aspect angle, a sign — without the full
+   * {@link Position}. In the tropical zodiac this is referred to the true
+   * equinox of date; sidereal subtracts the ayanamsa.
+   *
+   * @param body A body id from {@link Engine.bodies}.
+   * @param jdUt Julian Day in UT.
+   * @param opts Calculation options: `zodiac` (tropical or a sidereal
+   *   ayanamsa), and `topocentric` with an `observer` for a parallax-corrected
+   *   place.
+   * @returns Ecliptic longitude in degrees, `[0, 360)`.
+   * @example
+   * ```ts
+   * engine.longitude("mars", julianDay(2025, 6, 1));               // tropical
+   * engine.longitude("mars", julianDay(2025, 6, 1), { zodiac: "sidereal:lahiri" });
+   * ```
+   * @see {@link Engine.position} for speed, retrograde, latitude, and distance.
+   */
   longitude(body: BodyId, jdUt: number, opts: CalcOptions = {}): number {
     const mode = parseZodiac(opts.zodiac ?? "tropical");
     const topo = opts.topocentric ? opts.observer ?? null : null;
     return this.lonOnly(body, jdUt, mode, topo);
   }
 
-  /** Geometric heliocentric ecliptic of date (deg, deg, AU). */
+  /**
+   * Geometric heliocentric ecliptic position (Sun-centred) at a Julian Day
+   * (UT), referred to the ecliptic of date. Unlike {@link Engine.position},
+   * this is a geometric place — no light-time, aberration, or nutation — and is
+   * undefined for the Sun, the Moon, and the lunar nodes.
+   *
+   * @param body A Sun-orbiting body (planet or asteroid) from
+   *   {@link Engine.bodies}.
+   * @param jdUt Julian Day in UT.
+   * @returns Heliocentric `lon`/`lat` in degrees and `dist` in AU.
+   * @throws Error if `body` has no heliocentric solution (e.g. the Moon).
+   */
   heliocentric(body: BodyId, jdUt: number): { lon: number; lat: number; dist: number } {
     const jde = jdTT(jdUt);
     let l: number; let b: number; let r: number;
@@ -284,7 +359,27 @@ export class Engine {
     return { lon: l / DEG, lat: b / DEG, dist: r };
   }
 
-  /** Full position: lon/speed/retrograde/sign + lat, dist (AU), ra, dec. */
+  /**
+   * Full apparent position of a body at a Julian Day (UT): ecliptic longitude
+   * and daily speed (with a retrograde flag), the zodiac sign, ecliptic
+   * latitude, geocentric distance, and equatorial right ascension and
+   * declination. The general-purpose single-body call; use
+   * {@link Engine.longitude} when you need only the longitude.
+   *
+   * @param body A body id from {@link Engine.bodies}.
+   * @param jdUt Julian Day in UT.
+   * @param opts Calculation options: `zodiac` (tropical or a sidereal
+   *   ayanamsa), and `topocentric` with an `observer` for a parallax-corrected
+   *   place.
+   * @returns A {@link Position}: `lon`, `speed`, `retrograde`, `sign`,
+   *   `signDeg`, `lat`, `dist` (AU; `null` for nodes and Lilith), `ra`, `dec`.
+   * @example
+   * ```ts
+   * const mars = engine.position("mars", julianDay(2025, 6, 1));
+   * mars.retrograde; // boolean
+   * mars.speed;      // degrees/day (negative when retrograde)
+   * ```
+   */
   position(body: BodyId, jdUt: number, opts: CalcOptions = {}): Position {
     const mode = parseZodiac(opts.zodiac ?? "tropical");
     const topo = opts.topocentric ? opts.observer ?? null : null;
@@ -312,12 +407,42 @@ export class Engine {
     };
   }
 
-  /** Full natal chart. The first six arguments are calendar fields in UT
-   *  (year, month, day, hour, minute, second), NOT a Julian Day; passing a JD
-   *  in `y` builds an instant outside the fitted range and throws. East
-   *  longitude positive. The ninth argument takes a house system name (0.2.x
-   *  form) or a ChartOptions bag. To compute a chart directly from a JD (no
-   *  calendar round-trip), use `chartAt`. */
+  /**
+   * Full natal chart: body positions, house cusps, angles, and aspects for one
+   * instant and place.
+   *
+   * The first six arguments are calendar fields in **UT** — not local civil
+   * time, and not a Julian Day. Passing a JD in `y` builds an instant far
+   * outside the fitted range and throws `RangeError`; use {@link Engine.chartAt}
+   * for a chart from a JD. For a birth time given in a local time zone, resolve
+   * it to UT first (see the `caelus-birth` package).
+   *
+   * @param y Year in UT, e.g. `1990` — a calendar year, not a Julian Day.
+   * @param mo Month, `1`–`12`.
+   * @param d Day of month, `1`–`31`.
+   * @param h Hour in UT, `0`–`23`.
+   * @param mi Minute, `0`–`59`.
+   * @param s Second, `0`–`59`.
+   * @param lat Geographic latitude in degrees, north positive.
+   * @param lonEast Geographic longitude in degrees, **east positive** (so
+   *   82.46° W is `-82.46`).
+   * @param opts A house-system name (e.g. `"placidus"`) or a
+   *   {@link ChartOptions} bag for zodiac, topocentric mode, extra bodies, and
+   *   custom orbs. Defaults to Placidus houses in the tropical zodiac.
+   * @returns A {@link Chart}: `bodies`, `cusps`, `angles`, and `aspects`, plus
+   *   `jdUt` and the house system actually used (Placidus and Koch fall back to
+   *   whole-sign above the polar circles).
+   * @throws RangeError if the instant lands outside the fitted range
+   *   (1800–2149) — most often from passing a Julian Day where a year belongs.
+   * @example
+   * ```ts
+   * // 1990-06-10 14:30 UT at Tampa, FL (27.95° N, 82.46° W), Placidus houses
+   * const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+   * chart.bodies.sun.lon; // Sun's ecliptic longitude, degrees
+   * chart.angles.asc;     // Ascendant, degrees
+   * ```
+   * @see {@link Engine.chartAt} to build the same chart from a Julian Day.
+   */
   chart(
     y: number, mo: number, d: number, h: number, mi: number, s: number,
     lat: number, lonEast: number, opts: HouseSystem | ChartOptions = "placidus",
@@ -325,10 +450,25 @@ export class Engine {
     return this.chartAt(julianDay(y, mo, d, h, mi, s), lat, lonEast, opts);
   }
 
-  /** Full natal chart from a Julian Day (UT). Identical to `chart` but skips
-   *  the calendar round-trip, for callers that already hold a JD (e.g. from
-   *  `position`/`longitude` workflows or transit scans). East longitude
-   *  positive. The fourth argument takes a house system name or ChartOptions. */
+  /**
+   * Full natal chart from a Julian Day (UT) — identical output to
+   * {@link Engine.chart}, without the calendar round-trip. Reach for this when
+   * you already hold a JD: transit and event scans, `rankMoments` winners, or
+   * `position`/`longitude` workflows.
+   *
+   * @param jdUt Julian Day in UT, e.g. from {@link julianDay} or a scan.
+   * @param lat Geographic latitude in degrees, north positive.
+   * @param lonEast Geographic longitude in degrees, east positive.
+   * @param opts A house-system name or a {@link ChartOptions} bag. Defaults to
+   *   Placidus houses in the tropical zodiac.
+   * @returns The same {@link Chart} shape returned by {@link Engine.chart}.
+   * @example
+   * ```ts
+   * const jd = julianDay(1990, 6, 10, 14, 30, 0);
+   * const chart = engine.chartAt(jd, 27.95, -82.46, "placidus");
+   * ```
+   * @see {@link Engine.chart} for the calendar-field entry point.
+   */
   chartAt(
     jdUt: number, lat: number, lonEast: number,
     opts: HouseSystem | ChartOptions = "placidus",

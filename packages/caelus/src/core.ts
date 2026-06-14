@@ -51,6 +51,29 @@ export interface EngineData {
 }
 
 // ---------------------------------------------------------------- timescale
+/**
+ * Convert a UT calendar date and time to a Julian Day (UT) — the time
+ * coordinate the engine consumes. Pass the result to {@link Engine.position},
+ * {@link Engine.longitude}, {@link Engine.chartAt}, and the event/derived
+ * functions; {@link Engine.chart} takes the calendar fields directly instead.
+ *
+ * Arguments are **UT**, not local civil time — convert a local time to UT
+ * first (see the `caelus-birth` package). Uses the proleptic Gregorian
+ * calendar.
+ *
+ * @param y Year in UT, e.g. `1990`.
+ * @param mo Month, `1`–`12`.
+ * @param d Day of month, `1`–`31`.
+ * @param h Hour, `0`–`23`. Defaults to `0`.
+ * @param mi Minute, `0`–`59`. Defaults to `0`.
+ * @param s Second, `0`–`59`. Defaults to `0`.
+ * @returns The Julian Day in UT (a fractional day count).
+ * @example
+ * ```ts
+ * const jd = julianDay(2025, 6, 1, 12, 0, 0); // 2025-06-01 12:00 UT
+ * engine.longitude("sun", jd);
+ * ```
+ */
 export function julianDay(
   y: number, mo: number, d: number, h = 0, mi = 0, s = 0,
 ): number {

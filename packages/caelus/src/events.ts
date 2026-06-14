@@ -66,8 +66,29 @@ function bisect(f: (t: number) => number, a: number, b: number, iters = 45): num
   return (a + b) / 2;
 }
 
-/** Next rise/set/meridian transit (UT JD) after jdStart, or null when the
- *  event does not occur in the window (polar day/night). */
+/**
+ * The next rise, set, or meridian transit of a body after `jdStart`, as a
+ * Julian Day (UT). Accounts for the body's apparent radius, atmospheric
+ * refraction, and observer altitude.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param body A body id from {@link Engine.bodies}.
+ * @param jdStart Search start, Julian Day (UT). The result is the first event
+ *   strictly after this instant.
+ * @param latDeg Observer latitude in degrees, north positive.
+ * @param lonDeg Observer longitude in degrees, east positive.
+ * @param kind `"rise"`, `"set"`, `"mtransit"` (upper/meridian transit), or
+ *   `"itransit"` (lower transit). Defaults to `"rise"`.
+ * @param opts `altM` (observer altitude, m), `pressure` (hPa), `tempC`, and
+ *   `searchDays` (how far ahead to look; defaults to 2).
+ * @returns The event time as a Julian Day (UT), or `null` when it does not
+ *   occur in the window (e.g. polar day or night).
+ * @example
+ * ```ts
+ * // Next sunrise over London after 2025-06-01
+ * const jd = riseSet(engine, "sun", julianDay(2025, 6, 1), 51.5, -0.13, "rise");
+ * ```
+ */
 export function riseSet(
   engine: Engine, body: BodyId, jdStart: number,
   latDeg: number, lonDeg: number, kind: RiseKind = "rise",
@@ -146,7 +167,23 @@ export function crossings(
 
 export type PhaseName = "new" | "first_quarter" | "full" | "last_quarter";
 
-/** New/first-quarter/full/last-quarter times in [jdStart, jdEnd], sorted. */
+/**
+ * Every principal lunar phase (new, first quarter, full, last quarter) within
+ * `[jdStart, jdEnd]`, sorted by time. Found from the Sun–Moon elongation
+ * crossing 0°/90°/180°/270°.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param jdStart Start of the window, Julian Day (UT).
+ * @param jdEnd End of the window, Julian Day (UT).
+ * @param maxHits Cap on the number of phases returned. Defaults to 60.
+ * @returns Sorted `[jdUt, phase]` pairs, where `phase` is one of
+ *   {@link PhaseName}.
+ * @example
+ * ```ts
+ * const phases = lunarPhases(engine, julianDay(2025, 1, 1), julianDay(2025, 2, 1));
+ * // [[jd, "new"], [jd, "first_quarter"], ...]
+ * ```
+ */
 export function lunarPhases(
   engine: Engine, jdStart: number, jdEnd: number, maxHits = 60,
 ): Array<[number, PhaseName]> {

@@ -136,10 +136,33 @@ function bisect(
 
 export interface WhenOptions { step?: number; maxIntervals?: number }
 
-/** Time intervals (jdStartUt, jdEndUt) in [jdStart, jdEnd] where `predicate`
- *  is true. Endpoints touching the range bounds are clamped. The scan step
- *  defaults to 0.125 d when a fast body (Moon, nodes, Lilith) is involved
- *  and 1 d otherwise. */
+/**
+ * Solve for the time intervals within `[jdStart, jdEnd]` (UT Julian Days) where
+ * a {@link Predicate} holds. Predicates compose from {@link aspect},
+ * {@link inSign}, {@link retrograde}, {@link notRetrograde}, and the
+ * {@link allOf}/{@link anyOf} combinators, so one call answers questions like
+ * "when is Venus in Taurus while Mercury is direct?".
+ *
+ * Returned intervals are sorted and disjoint; endpoints touching the range
+ * bounds are clamped. The scan step defaults to 0.125 d when a fast body (Moon,
+ * nodes, Lilith) is involved and 1 d otherwise — override it with `opts.step`.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param predicate A celestial predicate (see {@link aspect}, {@link inSign}).
+ * @param jdStart Start of the search window, Julian Day (UT).
+ * @param jdEnd End of the search window, Julian Day (UT).
+ * @param opts `step` (scan resolution in days) and `maxIntervals`.
+ * @returns Sorted, disjoint `[startUt, endUt]` intervals where the predicate is
+ *   true.
+ * @example
+ * ```ts
+ * const windows = when(
+ *   engine,
+ *   allOf(inSign("venus", "Taurus"), notRetrograde("mercury")),
+ *   julianDay(2025, 1, 1), julianDay(2026, 1, 1),
+ * );
+ * ```
+ */
 export function when(
   engine: Engine, predicate: Predicate,
   jdStart: number, jdEnd: number, opts: WhenOptions = {},
