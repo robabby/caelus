@@ -198,3 +198,71 @@ extended to the app endpoint.
 parallel with the MCP server. Next: the server-side UI-resource wiring (the
 tool-result `_meta`/`ui://` reference, in the MCP layer) and the Apps-SDK
 manifest / host registration. See `docs/mcp-app.md`.
+
+### Phase 4 — Symbolic computation layer, agent-native (planned)
+
+Direction set after evaluating an external vision doc (Grok, 2026-06-14) against
+the actual surface. Most of that doc's "critical/missing" Phase 1–2 already
+ships — house placement (`chart.bodies[b].house`), per-body `dignities`, a
+forgiving house-system API (`normalizeHouseSystem`), 23 MCP tools, and the full
+transit/event and synastry/composite/Davison/harmonic set — so the genuinely
+additive, engine-shaped work is narrower than the doc implies. The decision
+criterion is unchanged and decides every item below: **add computation that can
+be validated against a named authority; never add interpretation.** Meaning,
+correspondence (astrology↔tarot↔archetype), and product integrations live one
+layer up, in the products (e.g. `mymagus`), not in the MIT core.
+
+Agreed, in priority order:
+
+- **Named aspect-pattern detection (flagship).** A `detectPatterns(chart)` that
+  enumerates the classical configurations — T-square, grand trine, grand cross,
+  yod, kite, mystic rectangle, and stelliums by sign and by house — as
+  first-class objects (`{ kind, bodies, orb, ... }`). Distinct from the existing
+  `configurationFit`/`searchConfigurations`, which are a fuzzy *similarity*
+  substrate (cosine over a feature vector), not an enumerator. Pure geometry over
+  the chart's aspects and longitudes: interpretation-free, reference-first,
+  golden-pinned, surfaced as an MCP tool and a docs page. Orb policy explicit and
+  configurable.
+
+- **Computed chart-signature object.** A `chartSignature(chart)` consolidating
+  element / modality / quadrant / angularity distributions and the dominant
+  planet and sign, built from the existing `element`/`modality`/`quadrant`/
+  `house`/`dignities` helpers and the pattern set above. Counts and weights only —
+  no "flavor tags" or interpretive labels. The dominance *weighting* is itself a
+  contested convention, so it is stated explicitly and cited, not invented;
+  alternate weightings are a `variant`.
+
+- **Essential-dignity scoring (dedicated, citation-pinned pass).** Extend the
+  qualitative `dignities()` (domicile/exaltation/detriment/fall) to the full
+  weighted Ptolemaic table — triplicity, term, face, weighted total, almuten,
+  peregrine. Contested-convention turf (Egyptian vs Ptolemaic terms; Dorothean
+  triplicity rulers), so it follows the deferred-work discipline: pin to a named
+  authority (Lilly/Ptolemy), make the table selectable, golden-test against a
+  cited source. Held as its own pass, not bundled.
+
+- **Agent docs + task cookbook (cheap parallel win).** A "For Agents / MCP" page
+  and a "Common Tasks" cookbook ("house placement", "next Mars ingress",
+  "essential dignities", "detect a T-square"). No engine change; closes a real
+  documentation gap and can land immediately, independent of the items above.
+
+- **Thin transit convenience wrappers (minor).** Named ergonomics over the
+  existing primitives — `nextIngress`, `nextStation`,
+  `significantTransitsForChart`, `transitsInWindow` — for agent temporal
+  reasoning. Low cost, low risk.
+
+Explicitly out of scope for the engine (recorded so they aren't re-proposed):
+interpretive "flavor tags" and metadata; symbolic-correspondence / tarot /
+archetypal layers; "hybrid divinatory systems"; product integrations
+(`tarotbook`, `Memorativa`, mystery-school content); and the vague "living chart
+/ 4D / perceptual" direction. Pattern-mining / historical-echo / rarity scoring
+is interesting but a thin research layer over the existing config search, not
+core — parked as a possible side tool.
+
+Order and dependency: ship the cookbook docs immediately; build pattern
+detection as the flagship engine addition (reference-first → golden → MCP tool →
+docs); then the signature object (depends on the pattern set); hold dignity
+scoring for its own citation-pinned pass; wrappers anytime. Note: pattern
+detection and the signature object read `chart.bodies`, whose `ChartBodies` type
+is mid-revision (sparse-body honesty: a packed body such as Chiron can be absent
+for historical dates) — start them only once that change has landed, to avoid
+editing `chart.ts` concurrently.
