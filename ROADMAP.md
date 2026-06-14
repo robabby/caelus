@@ -66,5 +66,45 @@ header and footer, and SEO (sitemap, OpenGraph).
 ## Planned
 
 Distribution is complete: the four npm packages, the `caelus-engine` PyPI
-package, and the MCP server (stdio plus the hosted Streamable HTTP endpoint)
-are all live and linked. New work is tracked in GitHub Issues.
+package, and the MCP server (stdio plus the hosted Streamable HTTP endpoint,
+listed on the official MCP Registry) are all live and linked. The next tranche
+extends technique coverage and reach. Each phase ships value independently and
+follows the reference-first rule: the capability lands in the Python reference
+with golden fixtures, then ports to TypeScript pinned to them, then surfaces in
+the MCP server and the site. All of it stays interpretation-free; meaning is
+out of scope for the engine. Tracked work hangs off GitHub Issues.
+
+### Phase 0 — MCP tool harvest
+
+Surface engine capabilities that are already built and suite-pinned but not yet
+exposed over MCP: returns (solar/lunar), progressions (secondary + solar arc),
+composite/Davison, dignities/sect. No engine change; new tool schemas plus
+`verify_tools`/`integration` golden coverage (the MCP layer is invisible to the
+conformance suite). Ships as a `caelus-mcp` minor.
+
+### Phase 1 — Hellenistic time-lords
+
+Deterministic time-math on top of the validated positions, in dependency order:
+lots/Arabic parts (sect-aware), annual profections, zodiacal releasing (L1–L4,
+loosing-of-the-bond), firdaria; primary directions later. Pinned against
+published canonical examples plus a cross-implementation check encoded as golden
+fixtures. New engine exports, MCP tools, and a site docs page.
+
+### Phase 2 — Vedic / Jyotish layer
+
+The sidereal foundation (seven ayanamsas) already exists; this adds the
+technique superstructure, in dependency order: nakshatras (+padas), Vimshottari
+dasha (maha/antar/pratyantar), vargas (navamsa D9 first, then D10/D12/D30),
+then further dashas and core yogas. All deterministic arithmetic over the
+SE-pinned sidereal longitudes; validated against established Jyotish references
+and published charts as golden fixtures, with ayanamsa/convention variants
+stated explicitly. Multi-release.
+
+### Phase 3 — Chat MCP App
+
+An Apps SDK MCP App on the existing hosted server: a correct chart with a
+rendered `caelus-wheel` SVG in-host, interpretation-free, reusing the shipped
+`server.json`/Registry work. Built once on the MCP App standard, it runs across
+ChatGPT, Claude, and other MCP-Apps hosts. Distribution rather than capability;
+it grows richer as Phases 0–2 add tools. Guarded by the live-smoke pattern
+extended to the app endpoint.
