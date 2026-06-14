@@ -8,7 +8,13 @@ the package.
 
 ## Setup
 
-Any MCP client that speaks stdio:
+Claude Code / Claude Desktop, one line:
+
+```bash
+claude mcp add caelus -- npx caelus-mcp
+```
+
+Or any MCP client that speaks stdio:
 
 ```json
 {
@@ -21,6 +27,9 @@ Any MCP client that speaks stdio:
 - **Claude Desktop** — `claude_desktop_config.json`
 - **Cursor** — `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (global)
 - **Anything else** — spawn `npx caelus-mcp` and speak JSON-RPC over stdio
+
+A hosted Streamable HTTP endpoint is also live at
+`https://www.ephemengine.com/api/mcp` for clients that prefer a remote server.
 
 ## Tools
 

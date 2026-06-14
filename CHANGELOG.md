@@ -1,9 +1,23 @@
 # Changelog
 
-All four packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`)
-version in lockstep. Numbers quoted here are as measured at release time;
+The four packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`)
+version together on feature releases; metadata-only patches can ship per
+package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
+
+## 0.12.1 — 2026-06-14
+
+A `caelus-mcp` metadata patch: registry listing only, no functional change.
+The other three packages stay at 0.12.0.
+
+### MCP server (`caelus-mcp`)
+
+- Listed on the official MCP Registry as `io.github.heavyblotto/caelus-mcp`.
+  Adds an `mcpName` field to `package.json` and a `server.json` describing the
+  npm package (stdio) and the hosted Streamable HTTP endpoint, so the server is
+  discoverable from the Registry and the directories that sync from it. The
+  README gains a one-line `claude mcp add` install.
 
 ## 0.12.0 — 2026-06-14
 

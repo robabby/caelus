@@ -32,7 +32,7 @@ The deliverables are the engine and the tools around it: `caelus` (engine),
 ## Status
 
 Shipped through **0.12.0** (npm: all four packages; PyPI: `caelus-engine`,
-the Python reference; GitHub releases v0.1.0–v0.12.0): full body set, 12 house
+the Python reference; GitHub releases v0.1.0–v0.12.1): full body set, 12 house
 systems, tropical + 7 sidereal
 ayanamsas, aspects, event search (rise/set, crossings, phases, stations,
 Gauquelin), solar/lunar eclipses, fixed stars, topocentric, Vondrák 2011
@@ -54,7 +54,8 @@ builds a full chart directly from a Julian Day, no calendar round-trip
 MCP server over stdio and hosted Streamable HTTP (`ephemengine.com/api/mcp`,
 stateless) exposing nine chart tools, with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
-prompt; JPL-direct validation tier.
+prompt, listed on the official MCP Registry as `io.github.heavyblotto/caelus-mcp`
+(0.12.1); JPL-direct validation tier.
 
 The `ephemengine.com` site ships its full shape: landing page, browser
 playground, validation and provenance tables, build notes, a methods page

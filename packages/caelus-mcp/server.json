@@ -1,0 +1,26 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.heavyblotto/caelus-mcp",
+  "description": "Astrology/ephemeris MCP server: 9 chart tools — positions, houses, aspects, transits, electional.",
+  "repository": {
+    "url": "https://github.com/heavyblotto/caelus",
+    "source": "github"
+  },
+  "version": "0.12.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "caelus-mcp",
+      "version": "0.12.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://www.ephemengine.com/api/mcp"
+    }
+  ]
+}
