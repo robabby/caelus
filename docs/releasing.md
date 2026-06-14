@@ -19,8 +19,10 @@ steps (they need npm account auth no CI runner should hold interactively).
 there is no PyPI token to create, paste, or rotate. Configure it once:
 
 1. GitHub → repo Settings → Environments → create an environment named `pypi`.
-2. PyPI → project `caelus-engine` → Settings → Publishing → **Add a new
-   pending publisher** (GitHub Actions):
+2. PyPI → Your projects → `caelus-engine` → Manage → Settings → Publishing →
+   under **GitHub Actions**, **Add a new publisher** (the project already
+   exists, so this is a publisher on the live project, not a "pending"
+   publisher — pending publishers are only for projects that don't exist yet):
    - Owner: `heavyblotto` · Repository: `caelus`
    - Workflow filename: `release.yml`
    - Environment: `pypi`
