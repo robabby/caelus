@@ -214,9 +214,20 @@ class Engine:
 
     def chart(self, y, mo, d, h, mi, s, lat, lon_east, house_system="placidus",
               zodiac="tropical", topocentric=False, extra_bodies=None, orbs=None):
-        """Full natal chart. Time is UT. East longitude positive."""
+        """Full natal chart from calendar fields. Time is UT. East longitude
+        positive. For a chart directly from a Julian Day, use ``chart_at``."""
+        return self.chart_at(
+            julian_day(y, mo, d, h, mi, s), lat, lon_east,
+            house_system=house_system, zodiac=zodiac, topocentric=topocentric,
+            extra_bodies=extra_bodies, orbs=orbs,
+        )
+
+    def chart_at(self, jd_ut, lat, lon_east, house_system="placidus",
+                 zodiac="tropical", topocentric=False, extra_bodies=None,
+                 orbs=None):
+        """Full natal chart from a Julian Day (UT). Identical to ``chart`` but
+        skips the calendar round-trip. East longitude positive."""
         mode = _parse_zodiac(zodiac)
-        jd_ut = julian_day(y, mo, d, h, mi, s)
         observer = (lat, lon_east, 0.0) if topocentric else None
         names = BODIES + [b for b in (extra_bodies or []) if b not in BODIES]
         bodies = {b: self.position(b, jd_ut, zodiac=zodiac,

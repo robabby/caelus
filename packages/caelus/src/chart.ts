@@ -316,17 +316,27 @@ export class Engine {
    *  (year, month, day, hour, minute, second), NOT a Julian Day; passing a JD
    *  in `y` builds an instant outside the fitted range and throws. East
    *  longitude positive. The ninth argument takes a house system name (0.2.x
-   *  form) or a ChartOptions bag. For a chart from a JD, convert it to calendar
-   *  fields first; `position`/`longitude` take a JD directly. */
+   *  form) or a ChartOptions bag. To compute a chart directly from a JD (no
+   *  calendar round-trip), use `chartAt`. */
   chart(
     y: number, mo: number, d: number, h: number, mi: number, s: number,
     lat: number, lonEast: number, opts: HouseSystem | ChartOptions = "placidus",
+  ): Chart {
+    return this.chartAt(julianDay(y, mo, d, h, mi, s), lat, lonEast, opts);
+  }
+
+  /** Full natal chart from a Julian Day (UT). Identical to `chart` but skips
+   *  the calendar round-trip, for callers that already hold a JD (e.g. from
+   *  `position`/`longitude` workflows or transit scans). East longitude
+   *  positive. The fourth argument takes a house system name or ChartOptions. */
+  chartAt(
+    jdUt: number, lat: number, lonEast: number,
+    opts: HouseSystem | ChartOptions = "placidus",
   ): Chart {
     const o: ChartOptions = typeof opts === "string" ? { houseSystem: opts } : opts;
     const houseSystem = o.houseSystem ?? "placidus";
     const zodiac = o.zodiac ?? "tropical";
     const mode = parseZodiac(zodiac);
-    const jdUt = julianDay(y, mo, d, h, mi, s);
     const calc: CalcOptions = {
       zodiac,
       topocentric: o.topocentric,

@@ -113,14 +113,9 @@ export function FindAMoment() {
     (jd) => electionalScore(engine, jd, place.lat, place.lon),
   );
 
-  // rankMoments returns UT Julian Days. Convert the winner back to UT calendar
-  // parts (the inverse of toUT) and build its chart.
-  const d = new Date((best.jd - 2440587.5) * 86400000);
-  const chart = engine.chart(
-    d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
-    d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(),
-    place.lat, place.lon, "placidus",
-  );
+  // rankMoments returns UT Julian Days, so build the winner's chart straight
+  // from its JD with chartAt -- no calendar round-trip.
+  const chart = engine.chartAt(best.jd, place.lat, place.lon, "placidus");
 
   return (
     <figure>

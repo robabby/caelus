@@ -25,18 +25,19 @@ const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");`}
 Passing a Julian Day in the year slot is a common mistake: the engine reads it
 as a calendar year, builds an instant far outside the fitted range, and the
 first body to check its range throws `RangeError: jd ... outside fitted range`.
-If you hold a Julian Day in UT, convert it to calendar fields first:
+
+If you already hold a Julian Day in UT, use `engine.chartAt()` — the same chart,
+no calendar round-trip. (`engine.chart()` is just `chartAt()` with the calendar
+conversion in front.)
 
 <CodeBlock
   lang="typescript"
-  label="from-jd.ts"
-  code={`const d = new Date((jdUt - 2440587.5) * 86400000); // JD(UT) -> Date
-const chart = engine.chart(
-  d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
-  d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(),
-  lat, lon,
-);`}
+  label="chart-at.ts"
+  code={`const chart = engine.chartAt(jdUt, 27.95, -82.46, "placidus");`}
 />
+
+It takes the same third argument as `chart()` — a house-system name or a full
+`ChartOptions` object — and returns an identical `Chart`.
 
 For a single body at a Julian Day, `engine.position()` and `engine.longitude()`
 take a JD directly, so no conversion is needed:

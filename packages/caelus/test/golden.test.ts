@@ -325,6 +325,14 @@ for (const g of G.houses) {
     failures++;
     console.error(`FAIL aspect count: ${c.aspects.length} vs ${g.aspects.length}`);
   }
+  // chartAt(jd) must be byte-for-byte identical to chart(calendar fields).
+  // A TS-internal invariant (not a Python-pinned golden), so it guards
+  // regressions without inflating the conformance check count.
+  const cAt = eng.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
+  if (JSON.stringify(cAt) !== JSON.stringify(c)) {
+    failures++;
+    console.error("FAIL chartAt != chart for identical instant");
+  }
 }
 
 // sidereal chart: koch + lahiri, options-object call form
