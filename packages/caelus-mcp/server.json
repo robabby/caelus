@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.heavyblotto/caelus-mcp",
-  "description": "Astrology/ephemeris MCP server: 18 chart tools — natal, transits, synastry, returns, progressions, composite, dignities, Hellenistic lots and time-lords (profections, firdaria, zodiacal releasing), and primary directions.",
+  "description": "Astrology/ephemeris MCP server: 18 chart tools — natal, transits, synastry, returns, time-lords.",
   "repository": {
     "url": "https://github.com/heavyblotto/caelus",
     "source": "github"
