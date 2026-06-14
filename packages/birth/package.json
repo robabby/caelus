@@ -14,7 +14,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "caelus": "^0.8.0",
+    "caelus": "^0.9.0",
     "luxon": "^3.7.2",
     "tz-lookup": "^6.1.25"
   },
