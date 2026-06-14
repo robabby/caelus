@@ -46,6 +46,7 @@ export const DOCS_NAV: DocsGroup[] = [
       { href: "/docs", label: "Overview" },
       { href: "/docs/quickstart", label: "Quickstart" },
       { href: "/docs/charts", label: "Computing Charts" },
+      { href: "/docs/cookbook", label: "Common Tasks" },
     ],
   },
   {

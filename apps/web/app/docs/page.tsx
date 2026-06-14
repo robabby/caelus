@@ -10,6 +10,7 @@ export const metadata = {
 const CARDS: Array<[string, string, string]> = [
   ["/docs/quickstart", "Quickstart", "Install caelus and compute your first chart in the browser or Node."],
   ["/docs/charts", "Computing Charts", "The chart object: bodies, angles, cusps, aspects, and the UT vs local-time hazard."],
+  ["/docs/cookbook", "Common Tasks", "Copy-paste recipes: house placement, dignities, stations, ingresses, lunar phases, and a local birth time done right."],
   ["/docs/architecture", "Architecture", "How the four packages compose end to end: birth time, engine, wheel, and MCP."],
   ["/docs/houses-and-zodiacs", "Houses & Zodiacs", "Twelve house systems, tropical and sidereal modes, and polar fallbacks."],
   ["/docs/derived", "Derived Charts", "Returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect."],

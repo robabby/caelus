@@ -1,0 +1,174 @@
+export const metadata = {
+  title: "Common Tasks",
+  description:
+    "Copy-paste recipes for the things people and agents ask for most: house placement, essential dignities, aspects, stations, ingresses, lunar phases, and a local birth time done right.",
+  alternates: { canonical: "/docs/cookbook" },
+};
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Getting Started</div>
+
+# Common Tasks
+
+Short recipes for the things people, and AI agents, ask for most. Each returns
+plain structured data, positions, houses, dignities, dates, with no
+interpretation; that layer is yours. For the engine itself see{" "}
+<a href="/docs/charts">Computing Charts</a>; to drive it from a chat agent over
+MCP, jump to <a href="#for-agents-over-mcp">For agents</a> below.
+
+Every recipe assumes an `engine`:
+
+<CodeBlock
+  lang="typescript"
+  label="setup.ts"
+  code={`import { Engine, julianDay } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+
+const engine = new Engine(embeddedData);
+const jd = julianDay(2026, 6, 14); // a Julian Day (UT) to work from`}
+/>
+
+Event search (stations, ingresses, rise/set) wants the fuller Node data tier;
+see <a href="/docs/data-tiers">Data Tiers</a> for loading it.
+
+## Cast a natal chart
+
+`chart()` takes calendar fields in **UT** and a place. It returns the bodies
+(each enriched with its house and dignities), the angles, the twelve cusps, and
+the aspects found among the bodies.
+
+<CodeBlock
+  lang="typescript"
+  label="natal.ts"
+  code={`// 1990-06-10 14:30 UT, Tampa FL (27.95 N, 82.46 W), Placidus houses
+const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+
+chart.bodies.sun.lon;   // ecliptic longitude, degrees
+chart.angles.asc;       // Ascendant, degrees
+chart.cusps;            // [house 1, ..., house 12], degrees
+chart.aspects.length;   // aspects within the active orbs`}
+/>
+
+## Which house is a planet in?
+
+Each body in a chart carries its 1-based house, so there's nothing to recompute
+from the cusps.
+
+<CodeBlock
+  lang="typescript"
+  label="house.ts"
+  code={`const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+
+chart.bodies.mars.house;   // e.g. 7
+chart.bodies.moon.sign;    // e.g. "Cancer"`}
+/>
+
+## Essential dignities of a planet
+
+Each body also carries the essential dignities it holds in its sign (domicile,
+exaltation, detriment, fall). The standalone `dignities()` answers the same for
+any body-in-sign without a chart.
+
+<CodeBlock
+  lang="typescript"
+  label="dignities.ts"
+  code={`import { dignities } from "caelus";
+
+const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+chart.bodies.venus.dignities;  // e.g. ["domicile"]
+
+dignities("mars", "Aries");    // ["domicile"]
+dignities("sun", "Libra");     // ["fall"]`}
+/>
+
+## The aspects in a chart
+
+`chart.aspects` is the list of aspects among the bodies, each with the two
+bodies, the aspect name, and the orb from exact.
+
+<CodeBlock
+  lang="typescript"
+  label="aspects.ts"
+  code={`const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+
+chart.aspects;
+// [{ a: "sun", b: "moon", aspect: "trine", orb: 2.13 }, ...]`}
+/>
+
+## When does a planet next station?
+
+`stations()` returns the retrograde and direct stations in a window, each as
+`[jd, direction]`.
+
+<CodeBlock
+  lang="typescript"
+  label="stations.ts"
+  code={`import { stations } from "caelus";
+
+stations(engine, "mercury", jd, jd + 365);
+// [[2461190.4, "retrograde"], [2461214.1, "direct"], ...]`}
+/>
+
+## When does a planet change sign (ingress)?
+
+A sign ingress is a longitude crossing of a sign cusp (a multiple of 30°).
+`crossings()` returns every JD a body crosses the target longitude in the window.
+
+<CodeBlock
+  lang="typescript"
+  label="ingress.ts"
+  code={`import { crossings } from "caelus";
+
+// Mars entering Gemini (60 degrees), within the next ~2 years
+const [next] = crossings(engine, "mars", 60, jd, jd + 800);`}
+/>
+
+## Lunar phases in a window
+
+<CodeBlock
+  lang="typescript"
+  label="phases.ts"
+  code={`import { lunarPhases } from "caelus";
+
+lunarPhases(engine, jd, jd + 90);
+// [[jd, "new"], [jd, "first_quarter"], [jd, "full"], ...]`}
+/>
+
+## A local birth time, done right
+
+The core takes UT. Real birth times are local wall-clock, and a naive conversion
+silently lands the chart hours off. `caelus-birth` resolves the time zone from
+the coordinates offline and applies historical daylight-saving rules.
+
+<CodeBlock
+  lang="typescript"
+  label="birth.ts"
+  code={`import { localToChart } from "caelus-birth";
+
+// born 1988-02-14 08:15 local in London
+const { chart, utc, zone } = localToChart(
+  { year: 1988, month: 2, day: 14, hour: 8, minute: 15, lat: 51.5, lon: -0.12 },
+  engine,
+  "placidus",
+);
+chart.angles.asc; // computed from the correct UT instant`}
+/>
+
+## For agents over MCP
+
+The same capabilities are exposed as MCP tools, so a chat agent can do real
+astrological work and get back structured, **interpretation-free** JSON, the
+agent supplies the meaning. Connect the server first (see{" "}
+<a href="/docs/mcp">MCP Setup</a>), then reach for:
+
+- **`natal_chart`** / **`current_sky`**: a full chart (bodies with house and
+  dignities, angles, cusps, aspects) for a moment and place.
+- **`transits`**: transiting bodies and the aspects they make to a natal chart.
+- **`find_aspect_dates`**: when a given aspect is exact across a date range.
+- **`sky_events`**: stations, ingresses, lunar phases, rise/set in a window.
+- **`synastry`** / **`composite`**: geometry between two charts.
+- **`dignities`**, **`void_of_course`**, **`planetary_hours`**, **`returns`**,
+  **`progressions`**: the classical building blocks.
+
+Each tool returns numbers and structured objects, never an interpretation, so it
+composes cleanly into whatever reasoning or prose the agent is doing. The full
+list and schemas live in <a href="/docs/mcp">MCP Setup</a>.
