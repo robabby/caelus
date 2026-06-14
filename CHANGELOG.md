@@ -8,6 +8,17 @@ current figures live in `packages/caelus/accuracy.json` and on
 
 ## Unreleased
 
+### Engine (`caelus`)
+
+- Hellenistic lots (Arabic parts), sect-aware (Roadmap Phase 1): the seven
+  Hermetic lots — Fortune, Spirit, Eros, Necessity, Courage, Victory, Nemesis —
+  via `lots(engine, jdUt, lat, lonEast, zodiac)` plus the pure formula helpers
+  `hermeticLots`, `lotFortune`, `lotSpirit`. Arithmetic on the validated
+  longitudes; landed in the Python reference first and pinned by a new
+  cross-language golden (`lots-golden`), which also checks the
+  implementation-independent invariant that Fortune and Spirit are symmetric
+  about the Ascendant.
+
 ### MCP server (`caelus-mcp`)
 
 - Four new tools surfacing engine capabilities that were already suite-pinned

@@ -1,0 +1,188 @@
+{
+ "basis": "Python reference astroengine.lots (embedded VSOP, full moon)",
+ "cases": [
+  {
+   "id": "formula-day",
+   "spec": {
+    "id": "formula-day",
+    "type": "formula",
+    "asc": 100.0,
+    "day": true,
+    "sun": 80.0,
+    "moon": 200.0,
+    "mercury": 70.0,
+    "venus": 60.0,
+    "mars": 250.0,
+    "jupiter": 120.0,
+    "saturn": 300.0
+   },
+   "result": {
+    "fortune": 220.0,
+    "spirit": 340.0,
+    "eros": 180.0,
+    "necessity": 250.0,
+    "courage": 70.0,
+    "victory": 240.0,
+    "nemesis": 20.0
+   }
+  },
+  {
+   "id": "formula-night",
+   "spec": {
+    "id": "formula-night",
+    "type": "formula",
+    "asc": 100.0,
+    "day": false,
+    "sun": 80.0,
+    "moon": 200.0,
+    "mercury": 70.0,
+    "venus": 60.0,
+    "mars": 250.0,
+    "jupiter": 120.0,
+    "saturn": 300.0
+   },
+   "result": {
+    "fortune": 340.0,
+    "spirit": 220.0,
+    "eros": 260.0,
+    "necessity": 190.0,
+    "courage": 10.0,
+    "victory": 200.0,
+    "nemesis": 60.0
+   }
+  },
+  {
+   "id": "formula-wrap",
+   "spec": {
+    "id": "formula-wrap",
+    "type": "formula",
+    "asc": 350.0,
+    "day": true,
+    "sun": 10.0,
+    "moon": 40.0,
+    "mercury": 300.0,
+    "venus": 5.0,
+    "mars": 359.0,
+    "jupiter": 200.0,
+    "saturn": 30.0
+   },
+   "result": {
+    "fortune": 20.0,
+    "spirit": 320.0,
+    "eros": 35.0,
+    "necessity": 70.0,
+    "courage": 11.0,
+    "victory": 230.0,
+    "nemesis": 340.0
+   }
+  },
+  {
+   "id": "chart-tampa-day",
+   "spec": {
+    "id": "chart-tampa-day",
+    "type": "chart",
+    "jd": [
+     2000,
+     1,
+     1,
+     12,
+     0
+    ],
+    "lat": 27.95,
+    "lon": -82.46,
+    "zodiac": "tropical"
+   },
+   "result": {
+    "day": false,
+    "fortune": 331.4003806058081,
+    "spirit": 217.31003941228474,
+    "eros": 250.09945659235555,
+    "necessity": 214.8441112535284,
+    "courage": 270.91813889141395,
+    "victory": 106.41211080482447,
+    "nemesis": 343.3504884533063
+   }
+  },
+  {
+   "id": "chart-tampa-night",
+   "spec": {
+    "id": "chart-tampa-night",
+    "type": "chart",
+    "jd": [
+     2010,
+     7,
+     15,
+     4,
+     0
+    ],
+    "lat": 27.95,
+    "lon": -82.46,
+    "zodiac": "tropical"
+   },
+   "result": {
+    "day": false,
+    "fortune": 314.1251654311175,
+    "spirit": 47.14226084609182,
+    "eros": 252.53305031288926,
+    "necessity": 176.64641236049667,
+    "courage": 217.62865948971233,
+    "victory": 44.48676316524462,
+    "nemesis": 226.02315844812875
+   }
+  },
+  {
+   "id": "chart-london",
+   "spec": {
+    "id": "chart-london",
+    "type": "chart",
+    "jd": [
+     2024,
+     3,
+     20,
+     3,
+     0
+    ],
+    "lat": 51.5,
+    "lon": -0.12,
+    "zodiac": "tropical"
+   },
+   "result": {
+    "day": false,
+    "fortune": 156.00197758306558,
+    "spirit": 43.540429032595654,
+    "eros": 343.1454787270324,
+    "necessity": 141.20411580373215,
+    "courage": 91.53941489793698,
+    "victory": 278.4267782119248,
+    "nemesis": 105.99425142816432
+   }
+  },
+  {
+   "id": "chart-tampa-sidereal",
+   "spec": {
+    "id": "chart-tampa-sidereal",
+    "type": "chart",
+    "jd": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "lat": 27.95,
+    "lon": -82.46,
+    "zodiac": "sidereal:lahiri"
+   },
+   "result": {
+    "day": true,
+    "fortune": 311.0057433947054,
+    "spirit": 263.3425422127547,
+    "eros": 223.1358765443456,
+    "necessity": 24.060017760890844,
+    "courage": 74.39840798417957,
+    "victory": 284.94034022386097,
+    "nemesis": 147.60067060523022
+   }
+  }
+ ]
+}

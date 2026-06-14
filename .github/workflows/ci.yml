@@ -23,6 +23,8 @@ jobs:
       - run: node packages/caelus/dist/test/turbo-golden.test.js
       # electional primitives: TS port must match the Python reference
       - run: node packages/caelus/dist/test/electional-golden.test.js
+      # Hellenistic lots (Arabic parts): TS port must match the Python reference
+      - run: node packages/caelus/dist/test/lots-golden.test.js
       # scan / rankMoments ergonomics: deterministic unit checks (TS-only layer)
       - run: node packages/caelus/dist/test/scan.test.js
       # spherical geometry (3D aspects): TS port must match the Python reference
