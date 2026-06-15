@@ -36,7 +36,7 @@ export default function Home() {
     <main className="container page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Eyebrow>MIT · zero dependencies · ~85 KB</Eyebrow>
+      <Eyebrow>MIT · zero dependencies · ~85 KB · 24 MCP tools</Eyebrow>
       <h1>A free, small, and complete Western and Vedic astrology engine</h1>
       <Lead>
         Caelus computes natal charts and the techniques built on them: houses
