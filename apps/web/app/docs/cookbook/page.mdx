@@ -113,6 +113,26 @@ detectPatterns(chart);
 // [{ kind: "mystic_rectangle", bodies: ["chiron","moon","pluto","venus"], orb: 2.54 }, ...]`}
 />
 
+## Read a chart's signature
+
+`chartSignature()` summarises a chart's structure as plain counts: element,
+modality, angularity, quadrant, and hemisphere distributions, plus the dominant
+element / modality / sign and the classical chart ruler. Counts only, no
+interpretation.
+
+<CodeBlock
+  lang="typescript"
+  label="signature.ts"
+  code={`import { chartSignature } from "caelus";
+
+const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+
+const sig = chartSignature(chart);
+sig.elements;   // { fire: 1, earth: 6, air: 1, water: 3 }
+sig.dominant;   // { element: "earth", modality: "cardinal", sign: "Capricorn" }
+sig.ruler;      // "sun" (ruler of the Ascendant's sign)`}
+/>
+
 ## When does a planet next station?
 
 `stations()` returns the retrograde and direct stations in a window, each as

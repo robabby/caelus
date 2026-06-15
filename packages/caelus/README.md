@@ -100,4 +100,4 @@ test/golden.test.ts  conformance suite vs Python fixtures
 - caelus — this package
 - [caelus-birth](https://www.npmjs.com/package/caelus-birth) — local birth time + place → UT (charts take UT; use this)
 - [caelus-wheel](https://www.npmjs.com/package/caelus-wheel) — React SVG chart wheel
-- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, twenty-three chart tools over stdio
+- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, twenty-four chart tools over stdio

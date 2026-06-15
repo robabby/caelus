@@ -12,7 +12,7 @@ export const metadata = {
 computed by the engine on each call, never recalled from training data, so every
 answer is deterministic.
 
-There are two ways to connect, with the same twenty-three tools either way:
+There are two ways to connect, with the same twenty-four tools either way:
 
 - **Hosted (Streamable HTTP)**: point your client at
   `https://www.ephemengine.com/api/mcp`. Nothing to install.
@@ -194,7 +194,7 @@ Any stdio MCP client takes the same command and arguments:
 
 ## Verify the tools appeared
 
-After the client reloads, it should list **twenty-three** tools. Ask it to enumerate
+After the client reloads, it should list **twenty-four** tools. Ask it to enumerate
 them, or check the client's MCP panel:
 
 `natal_chart`, `current_sky`, `transits`, `synastry`, `find_aspect_dates`,
@@ -215,7 +215,7 @@ Yogini, or Ashtottari periods), `vargas` (Parashari divisional charts), and
 `natal_chart` and `current_sky` also tag each body with its solar phase
 (cazimi, combust, under the beams) and each aspect as applying or separating.
 
-If you see all twenty-three, the server is wired correctly. The server also exposes two
+If you see all twenty-four, the server is wired correctly. The server also exposes two
 **resources**: `caelus://glossary` (aspect angles and orbs, signs, bodies,
 house systems, essential dignities) and `caelus://accuracy` (the validation
 table), plus a **prompt**, `rectification_session`, a guided flow around

@@ -2488,6 +2488,67 @@
       ]
     }
   },
+  "signature-tampa": {
+    "tool": "chart_signature",
+    "args": {
+      "date": "1990-06-10T14:30:00Z",
+      "lat": 27.95,
+      "lon": -82.46
+    },
+    "payload": {
+      "utc": "1990-06-10T14:30:00Z",
+      "houses": "placidus",
+      "signature": {
+        "elements": {
+          "fire": 1,
+          "earth": 6,
+          "air": 1,
+          "water": 3
+        },
+        "modalities": {
+          "cardinal": 7,
+          "fixed": 3,
+          "mutable": 1
+        },
+        "angularity": {
+          "angular": 3,
+          "succedent": 2,
+          "cadent": 6
+        },
+        "quadrants": {
+          "1": 0,
+          "2": 5,
+          "3": 1,
+          "4": 5
+        },
+        "hemispheres": {
+          "above": 6,
+          "below": 5,
+          "eastern": 5,
+          "western": 6
+        },
+        "dominant": {
+          "element": "earth",
+          "modality": "cardinal",
+          "sign": "Capricorn"
+        },
+        "ruler": "sun",
+        "bodies": [
+          "chiron",
+          "jupiter",
+          "mars",
+          "mercury",
+          "moon",
+          "neptune",
+          "pluto",
+          "saturn",
+          "sun",
+          "uranus",
+          "venus"
+        ]
+      }
+    }
+  },
   "natal-polar-svalbard": {
     "tool": "natal_chart",
     "args": {

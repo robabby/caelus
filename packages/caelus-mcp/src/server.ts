@@ -35,7 +35,7 @@ import {
   yoginiDashas, yoginiAt, ashtottariDashas, ashtottariAt,
   varga, VARGA_DIVISIONS,
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
-  detectPatterns,
+  detectPatterns, chartSignature,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -538,6 +538,22 @@ export const patternsOut = z.object({
     orb: z.number(),
   })),
 });
+const countMap = z.record(z.string(), z.number().int());
+export const signatureOut = z.object({
+  utc: z.string(),
+  houses: z.enum(HOUSE_SYSTEMS),
+  zodiac: z.enum(ZODIACS).optional(),
+  signature: z.object({
+    elements: countMap,
+    modalities: countMap,
+    angularity: countMap,
+    quadrants: countMap,
+    hemispheres: countMap,
+    dominant: z.object({ element: z.string(), modality: z.string(), sign: z.string().nullable() }),
+    ruler: z.string().nullable(),
+    bodies: z.array(z.string()),
+  }),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -562,6 +578,7 @@ export const OUTPUT_SCHEMAS = {
   vargas: vargasOut,
   yogas: yogasOut,
   aspect_patterns: patternsOut,
+  chart_signature: signatureOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -1323,6 +1340,25 @@ export function buildServer(
       utc: date, houses: c.houseSystem,
       ...(zodiac !== "tropical" ? { zodiac } : {}),
       patterns: detectPatterns(c),
+    });
+  });
+
+  server.registerTool("chart_signature", {
+    description:
+      "A chart's structural signature as plain counts: element, modality, angularity, quadrant, and hemisphere distributions over the bodies; the dominant element, modality, and most-occupied sign; and the classical chart ruler (the ruler of the Ascendant's sign). Counts only, no interpretation — a compact summary for emphasis and comparison. Needs date, lat, lon.",
+    inputSchema: { ...birth, house_system: houseSys, zodiac: zodiacSchema },
+  }, async ({ date, lat, lon, house_system, zodiac }) => {
+    const d = new Date(date);
+    if (Number.isNaN(d.getTime())) throw new Error(`Invalid date: ${date}`);
+    const c = engine.chart(
+      d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
+      d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), lat, lon,
+      { houseSystem: normalizeHouseSystem(house_system), zodiac },
+    );
+    return text({
+      utc: date, houses: c.houseSystem,
+      ...(zodiac !== "tropical" ? { zodiac } : {}),
+      signature: chartSignature(c),
     });
   });
 
