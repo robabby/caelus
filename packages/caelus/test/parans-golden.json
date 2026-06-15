@@ -1,0 +1,286 @@
+{
+ "basis": "Python reference astroengine.parans; classical planets, lon-independent, stated tolerance",
+ "cases": [
+  {
+   "id": "tampa_1990",
+   "spec": {
+    "id": "tampa_1990",
+    "jd": 2448052.5,
+    "lat": 27.95,
+    "tolerance_min": 30.0
+   },
+   "result": [
+    {
+     "a": "jupiter",
+     "a_angle": "rise",
+     "b": "mars",
+     "b_angle": "mtransit",
+     "jd": 2448052.796048,
+     "gap_min": 19.9977
+    },
+    {
+     "a": "jupiter",
+     "a_angle": "mtransit",
+     "b": "mars",
+     "b_angle": "set",
+     "jd": 2448053.066265,
+     "gap_min": 28.8399
+    },
+    {
+     "a": "jupiter",
+     "a_angle": "rise",
+     "b": "moon",
+     "b_angle": "set",
+     "jd": 2448052.779273,
+     "gap_min": 28.3164
+    },
+    {
+     "a": "jupiter",
+     "a_angle": "mtransit",
+     "b": "moon",
+     "b_angle": "itransit",
+     "jd": 2448053.073659,
+     "gap_min": 7.545
+    },
+    {
+     "a": "jupiter",
+     "a_angle": "set",
+     "b": "moon",
+     "b_angle": "rise",
+     "jd": 2448053.366749,
+     "gap_min": 9.5567
+    },
+    {
+     "a": "mars",
+     "a_angle": "rise",
+     "b": "moon",
+     "b_angle": "mtransit",
+     "jd": 2448052.551613,
+     "gap_min": 4.8138
+    },
+    {
+     "a": "mars",
+     "a_angle": "set",
+     "b": "moon",
+     "b_angle": "itransit",
+     "jd": 2448053.063645,
+     "gap_min": 21.2948
+    },
+    {
+     "a": "mars",
+     "a_angle": "itransit",
+     "b": "sun",
+     "b_angle": "set",
+     "jd": 2448053.295619,
+     "gap_min": 19.9625
+    },
+    {
+     "a": "moon",
+     "a_angle": "rise",
+     "b": "saturn",
+     "b_angle": "rise",
+     "jd": 2448053.377189,
+     "gap_min": 20.5097
+    },
+    {
+     "a": "saturn",
+     "a_angle": "mtransit",
+     "b": "venus",
+     "b_angle": "rise",
+     "jd": 2448052.614448,
+     "gap_min": 25.4479
+    },
+    {
+     "a": "saturn",
+     "a_angle": "rise",
+     "b": "venus",
+     "b_angle": "itransit",
+     "jd": 2448053.390167,
+     "gap_min": 16.8694
+    }
+   ]
+  },
+  {
+   "id": "london_2026",
+   "spec": {
+    "id": "london_2026",
+    "jd": 2461119.5,
+    "lat": 51.5,
+    "tolerance_min": 20.0
+   },
+   "result": [
+    {
+     "a": "jupiter",
+     "a_angle": "rise",
+     "b": "mars",
+     "b_angle": "mtransit",
+     "jd": 2461119.962525,
+     "gap_min": 9.8658
+    },
+    {
+     "a": "jupiter",
+     "a_angle": "rise",
+     "b": "mercury",
+     "b_angle": "mtransit",
+     "jd": 2461119.954183,
+     "gap_min": 14.1602
+    },
+    {
+     "a": "mars",
+     "a_angle": "rise",
+     "b": "sun",
+     "b_angle": "rise",
+     "jd": 2461119.745724,
+     "gap_min": 18.1747
+    },
+    {
+     "a": "moon",
+     "a_angle": "rise",
+     "b": "saturn",
+     "b_angle": "rise",
+     "jd": 2461119.764341,
+     "gap_min": 9.0317
+    },
+    {
+     "a": "moon",
+     "a_angle": "rise",
+     "b": "sun",
+     "b_angle": "rise",
+     "jd": 2461119.756619,
+     "gap_min": 13.2056
+    },
+    {
+     "a": "moon",
+     "a_angle": "mtransit",
+     "b": "venus",
+     "b_angle": "mtransit",
+     "jd": 2461120.051507,
+     "gap_min": 1.2316
+    },
+    {
+     "a": "saturn",
+     "a_angle": "mtransit",
+     "b": "sun",
+     "b_angle": "mtransit",
+     "jd": 2461120.011701,
+     "gap_min": 18.8283
+    },
+    {
+     "a": "saturn",
+     "a_angle": "set",
+     "b": "sun",
+     "b_angle": "set",
+     "jd": 2461120.264039,
+     "gap_min": 14.5355
+    },
+    {
+     "a": "saturn",
+     "a_angle": "rise",
+     "b": "venus",
+     "b_angle": "rise",
+     "jd": 2461119.772537,
+     "gap_min": 14.5741
+    }
+   ]
+  },
+  {
+   "id": "equator_2000",
+   "spec": {
+    "id": "equator_2000",
+    "jd": 2451544.5,
+    "lat": 0.0,
+    "tolerance_min": 45.0
+   },
+   "result": [
+    {
+     "a": "mars",
+     "a_angle": "itransit",
+     "b": "venus",
+     "b_angle": "rise",
+     "jd": 2451544.637361,
+     "gap_min": 5.5779
+    },
+    {
+     "a": "mars",
+     "a_angle": "rise",
+     "b": "venus",
+     "b_angle": "mtransit",
+     "jd": 2451544.887388,
+     "gap_min": 0.4231
+    },
+    {
+     "a": "mars",
+     "a_angle": "mtransit",
+     "b": "venus",
+     "b_angle": "set",
+     "jd": 2451545.139011,
+     "gap_min": 0.1426
+    },
+    {
+     "a": "mars",
+     "a_angle": "set",
+     "b": "venus",
+     "b_angle": "itransit",
+     "jd": 2451545.388992,
+     "gap_min": 4.0138
+    },
+    {
+     "a": "mercury",
+     "a_angle": "rise",
+     "b": "sun",
+     "b_angle": "rise",
+     "jd": 2451544.737078,
+     "gap_min": 36.3463
+    },
+    {
+     "a": "mercury",
+     "a_angle": "mtransit",
+     "b": "sun",
+     "b_angle": "mtransit",
+     "jd": 2451544.989475,
+     "gap_min": 36.8836
+    },
+    {
+     "a": "mercury",
+     "a_angle": "set",
+     "b": "sun",
+     "b_angle": "set",
+     "jd": 2451545.241874,
+     "gap_min": 37.4169
+    },
+    {
+     "a": "moon",
+     "a_angle": "rise",
+     "b": "saturn",
+     "b_angle": "set",
+     "jd": 2451544.579063,
+     "gap_min": 6.7461
+    },
+    {
+     "a": "moon",
+     "a_angle": "mtransit",
+     "b": "saturn",
+     "b_angle": "itransit",
+     "jd": 2451544.83155,
+     "gap_min": 7.0199
+    },
+    {
+     "a": "moon",
+     "a_angle": "set",
+     "b": "saturn",
+     "b_angle": "rise",
+     "jd": 2451545.084051,
+     "gap_min": 20.8286
+    },
+    {
+     "a": "moon",
+     "a_angle": "itransit",
+     "b": "saturn",
+     "b_angle": "mtransit",
+     "jd": 2451545.338458,
+     "gap_min": 30.9293
+    }
+   ]
+  }
+ ]
+}

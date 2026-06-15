@@ -226,6 +226,21 @@ const sunrise = riseSet(engine, "sun", jd, 27.95, -82.46, "rise");
 const sunset = riseSet(engine, "sun", jd, 27.95, -82.46, "set");`}
 />
 
+## Parans (co-angular bodies)
+
+`parans()` finds bodies that are simultaneously on the angles (rising,
+culminating, setting, anti-culminating) over a day at a latitude, within a
+stated tolerance. Latitude only; the daily pattern is longitude-independent.
+
+<CodeBlock
+  lang="typescript"
+  label="parans.ts"
+  code={`import { parans } from "caelus";
+
+parans(engine, jd, 27.95); // 30-minute window by default
+// [{ a: "jupiter", a_angle: "rise", b: "mars", b_angle: "mtransit", gap_min: 20, ... }, ...]`}
+/>
+
 ## The next solar return
 
 `solarReturn()` returns the JDs in a window where the Sun returns to its natal
