@@ -128,6 +128,29 @@ for (const p of housePassages) {
   }
 }
 
+// 4c. Each planet-aspect-planet rule fires for its configuration and cites the
+//     real aspect atom (pair order must not matter).
+console.log("planet-aspect-planet rules fire");
+function aspectCtx(a: string, b: string, aspect: string): InterpretationContext {
+  const [x, y] = [a, b].sort();
+  const atom: FactAtom = {
+    id: `aspect:${x}~${y}:${aspect}`, kind: "aspect", bodies: [a, b], salience: 2,
+    text: `${a} ${aspect} ${b}`, a, b, aspect, orb: 1, phase: "applying", strength: 0.8,
+  };
+  return { jdUt: 0, zodiac: "tropical", atoms: [atom] };
+}
+const aspectPassages = passages.filter((p) => p.when.kind === "aspect");
+check(aspectPassages.length > 0, "corpus has planet-aspect-planet passages");
+for (const p of aspectPassages) {
+  const w = p.when as { a: string; b: string; aspect: string };
+  const entry = interpret(aspectCtx(w.a, w.b, w.aspect), sources).entries.find((e) => e.rule === p.id);
+  check(!!entry, `${p.id}: fires for ${w.a} ${w.aspect} ${w.b}`);
+  if (entry) {
+    const [x, y] = [w.a, w.b].sort();
+    check(entry.atomIds.includes(`aspect:${x}~${y}:${w.aspect}`), `${p.id}: cites the aspect atom`);
+  }
+}
+
 // 5. No reading ever cites an atom the projection did not contain.
 console.log("no dangling citations");
 for (const sign of ["aries", "scorpio", "pisces"]) {

@@ -9,6 +9,7 @@ import saintGermain from "../data/passages/saint-germain.json" with { type: "jso
 import alanLeoKey from "../data/passages/alan-leo-key.json" with { type: "json" };
 import alanLeoJudge from "../data/passages/alan-leo-judge.json" with { type: "json" };
 import alanLeoSigns from "../data/passages/alan-leo-signs.json" with { type: "json" };
+import heindelAspects from "../data/passages/heindel-aspects.json" with { type: "json" };
 import type { PassageRecord } from "./types.js";
 
 export interface PassageSet {
@@ -38,6 +39,11 @@ export const passageSets: PassageSet[] = [
     id: "alan-leo-how-to-judge-nativity",
     version: "0.1.0",
     passages: alanLeoJudge as PassageRecord[],
+  },
+  {
+    id: "heindel-message-of-the-stars",
+    version: "0.1.0",
+    passages: heindelAspects as PassageRecord[],
   },
 ];
 

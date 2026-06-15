@@ -10,10 +10,10 @@
 
 /** Lines that are running heads / page furniture, not prose. */
 const FURNITURE = [
-  /^\s*\d{1,3}\s+[A-Z][A-Z .]{2,}$/, // "24  ASTROLOGY"
-  /^\s*[A-Z][A-Z .]{2,}\s+\d{1,3}\s*$/, // "SIGNS OF THE ZODIAC 25"
+  /^\s*\d{1,3}\s+[A-Z][A-Z ,.'-]{2,}$/, // "159  THE MESSAGE OF THE STARS"
+  /^\s*[A-Z][A-Z ,.'-]{2,}\s+\d{1,3}\s*$/, // "THE SUN, GIVER OF LIFE 159"
   /^\s*SIGNS\s+OF\s+THE\s+ZODIAC\s*$/i,
-  /^\s*ASTROLOGY\s*$/i,
+  /^\s*(?:THE\s+)?ASTROLOGY\s*$/i,
   /^\s*\d{1,4}\s*$/, // bare page numbers
   /^[\s\W\d]{0,8}$/, // empty / pure punctuation-glyph lines
 ];
