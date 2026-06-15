@@ -3,7 +3,11 @@
  * synastry panel, the bi-wheel). Pure presentation: aspect glyphs and colours,
  * the inter-chart aspect test, the aspectable body order, and pattern labels.
  */
+import type { CSSProperties } from "react";
 import { ASPECTS, DEFAULT_ORBS, mod } from "caelus";
+
+/** Compact left-aligned table cell, shared by the playground data tables. */
+export const cell: CSSProperties = { padding: "0.18rem 0.9rem 0.18rem 0" };
 
 /** Aspectable planets in a fixed display order (nodes and Lilith excluded). */
 export const ASPECTABLE_ORDER = [

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
-  detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
+  detectPatterns, chartSignature, dignityScore, lots,
   nakshatra, vimshottariActive, profectionAt, varga,
   declinationAspects, outOfBounds, starParans,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
@@ -14,9 +14,13 @@ import accuracy from "caelus/accuracy.json";
 import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
 import Aspectarian from "./Aspectarian";
+import InsightsTab from "./InsightsTab";
+import VedicTab from "./VedicTab";
+import DeclinationTab from "./DeclinationTab";
+import StarsTab from "./StarsTab";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
 import fixedStars from "../lib/fixed-stars.json";
-import { crossAspect, PATTERN_LABEL } from "../lib/chart-display";
+import { crossAspect, cell } from "../lib/chart-display";
 
 // Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
 const STAR_MAG = (fixedStars as { stars: Record<string, { mag: number }> }).stars;
@@ -47,23 +51,8 @@ const PHASE_LABEL: Record<string, string> = {
   new: "New Moon", first_quarter: "First Quarter", full: "Full Moon", last_quarter: "Last Quarter",
 };
 
-// ---- Insights tab (Phase 4 symbolic layer) ----
+// The classical seven, used for the dignity scoring in the insights memo.
 const CLASSICAL = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"] as const;
-const ELEMENTS = ["fire", "earth", "air", "water"] as const;
-const MODALITIES = ["cardinal", "fixed", "mutable"] as const;
-
-type DigScore = ReturnType<typeof dignityScore>;
-function dignityLabel(d: DigScore): string {
-  if (d.rulership) return "domicile";
-  if (d.exaltation) return "exalted";
-  if (d.detriment) return "detriment";
-  if (d.fall) return "fall";
-  if (d.peregrine) return "peregrine";
-  const minor = [
-    d.triplicity && "triplicity", d.term && "term", d.face && "face",
-  ].filter(Boolean);
-  return minor.length ? minor.join(", ") : "—";
-}
 
 function houseOf(cusps: number[], lon: number) {
   for (let i = 0; i < 12; i++) {
@@ -430,8 +419,6 @@ export default function SkyNow() {
     borderColor: view === v ? "var(--accent)" : "var(--border-strong)",
     color: view === v ? "var(--text)" : "var(--text-dim)",
   });
-  const cell: React.CSSProperties = { padding: "0.18rem 0.9rem 0.18rem 0" };
-  const nowrapCell: React.CSSProperties = { ...cell, whiteSpace: "nowrap" };
 
   return (
     <div className="card" style={{ padding: "1.2rem" }}>
@@ -661,226 +648,14 @@ export default function SkyNow() {
                   {tab === "aspects" && <Aspectarian chart={chart} />}
 
                   {tab === "insights" && insights && (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem", fontSize: "0.82rem" }}>
-                      {/* Signature */}
-                      <div>
-                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>Signature</div>
-                        {ELEMENTS.map((e) => {
-                          const n = insights.signature.elements[e];
-                          const tot = ELEMENTS.reduce((s, el) => s + insights.signature.elements[el], 0) || 1;
-                          return (
-                            <div key={e} style={{ display: "flex", alignItems: "center", gap: "0.5rem", margin: "0.15rem 0" }}>
-                              <span className="mute" style={{ width: "3.4rem" }}>{e}</span>
-                              <div style={{ flex: 1, background: "var(--surface-2)", borderRadius: 2, height: "0.6rem", overflow: "hidden" }}>
-                                <div style={{ width: `${(n / tot) * 100}%`, background: "var(--accent)", height: "100%" }} />
-                              </div>
-                              <span className="mute" style={{ width: "1.2rem", textAlign: "right" }}>{n}</span>
-                            </div>
-                          );
-                        })}
-                        <p className="dim small" style={{ margin: "0.5rem 0 0" }}>
-                          {insights.signature.modalities.cardinal}c · {insights.signature.modalities.fixed}f · {insights.signature.modalities.mutable}m
-                          {" · dominant "}<strong style={{ color: "var(--text)" }}>{insights.signature.dominant.element} {insights.signature.dominant.modality}</strong>
-                          {insights.signature.dominant.sign && <> in {insights.signature.dominant.sign}</>}
-                          {insights.signature.ruler && <> · ruler {insights.signature.ruler}</>}
-                        </p>
-                      </div>
-
-                      {/* Patterns */}
-                      <div>
-                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>Configurations</div>
-                        {insights.patterns.length === 0 ? (
-                          <p className="dim small" style={{ margin: 0 }}>No major configurations.</p>
-                        ) : (
-                          <>
-                            <div className="mono" style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
-                              {insights.patterns.map((p, i) => {
-                                const active = focus?.key === `p${i}`;
-                                return (
-                                  <button
-                                    key={i}
-                                    type="button"
-                                    onClick={() => toggleFocus(`p${i}`, p.bodies)}
-                                    aria-pressed={active}
-                                    title="Isolate this configuration on the wheel"
-                                    style={{
-                                      textAlign: "left", font: "inherit", fontSize: "0.82rem", cursor: "pointer",
-                                      background: active ? "var(--surface-2)" : "transparent",
-                                      border: "1px solid", borderColor: active ? "var(--accent)" : "transparent",
-                                      borderRadius: "var(--radius-sm)", padding: "0.2rem 0.45rem", color: "var(--text)",
-                                    }}
-                                  >
-                                    {PATTERN_LABEL[p.kind] ?? p.kind}{" "}
-                                    <span className="mute">
-                                      {p.bodies.join(", ")}
-                                      {p.sign ? ` · ${p.sign}` : ""}
-                                      {p.apex ? ` · apex ${p.apex}` : ""}
-                                    </span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                            <p className="dim small" style={{ margin: "0.4rem 0 0" }}>
-                              {focusBodies ? "Showing one configuration on the wheel. " : ""}
-                              Click a configuration to isolate it on the wheel.
-                            </p>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Dignities */}
-                      <div>
-                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>
-                          Dignity ({insights.sect} chart)
-                        </div>
-                        <table className="mono" style={{ fontSize: "0.82rem" }}>
-                          <tbody>
-                            {insights.dignities.map((d) => (
-                              <tr key={d.planet}>
-                                <td className="mute" style={cell}>{d.planet}</td>
-                                <td style={{ ...cell, color: d.total > 0 ? "var(--good)" : d.total < 0 ? "var(--bad)" : "var(--text-dim)" }}>
-                                  {d.total > 0 ? "+" : ""}{d.total}
-                                </td>
-                                <td className="mute" style={cell}>{dignityLabel(d)}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Hermetic lots (sect-aware Arabic parts) */}
-                      <div>
-                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>
-                          Hermetic lots
-                        </div>
-                        <table className="mono" style={{ fontSize: "0.82rem" }}>
-                          <tbody>
-                            {HERMETIC_LOTS.map((name) => (
-                              <tr key={name}>
-                                <td className="mute" style={cell}>{name}</td>
-                                <td style={cell}>{fmtLon(insights.lots[name])}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Time-lords: annual profection (lord of the year), to today */}
-                      <div>
-                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>
-                          Time-lords (today)
-                        </div>
-                        <p className="small" style={{ margin: 0 }}>
-                          Age {insights.profection.age_years} · lord of the year{" "}
-                          <strong style={{ color: "var(--text)" }}>{insights.profection.annual.lord}</strong>{" "}
-                          <span className="mute">({insights.profection.annual.sign}, house {insights.profection.annual.house})</span>
-                        </p>
-                        <p className="dim small" style={{ margin: "0.2rem 0 0" }}>
-                          Month {insights.profection.month}: {insights.profection.monthly.lord} ({insights.profection.monthly.sign}).
-                          Also firdaria, zodiacal releasing, and primary directions.
-                        </p>
-                      </div>
-                    </div>
+                    <InsightsTab insights={insights} focus={focus} onToggle={toggleFocus} />
                   )}
 
-                  {tab === "vedic" && vedic && (
-                    <>
-                      <p className="dim small" style={{ marginTop: 0 }}>Sidereal · Lahiri. Nakshatra, then the navamsa (D9) and dasamsa (D10) signs:</p>
-                      <div style={{ overflowX: "auto" }}>
-                        <table className="mono" style={{ fontSize: "0.82rem" }}>
-                          <thead>
-                            <tr style={{ color: "var(--text-mute)" }}>
-                              <td style={cell} /><td style={nowrapCell}>nakshatra</td><td style={cell}>D9</td><td style={cell}>D10</td>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {vedic.bodies.map(({ body, nak, d9, d10 }) => (
-                              <tr key={body}>
-                                <td className="mute" style={nowrapCell}>{GLYPHS[body] ? `${GLYPHS[body]} ` : ""}{body}</td>
-                                <td style={nowrapCell}>{nak.name} <span className="mute">p{nak.pada}</span></td>
-                                <td className="mute" style={cell}>{d9}</td>
-                                <td className="mute" style={cell}>{d10}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      {vedic.dasha && (
-                        <p className="dim small" style={{ margin: "0.8rem 0 0" }}>
-                          Vimshottari dasha today:{" "}
-                          <strong style={{ color: "var(--text)" }}>{vedic.dasha.maha}</strong>
-                          {vedic.dasha.antar && <> › {vedic.dasha.antar}</>}
-                          {vedic.dasha.pratyantar && <> › {vedic.dasha.pratyantar}</>}
-                        </p>
-                      )}
-                      <p className="dim small" style={{ margin: "0.4rem 0 0" }}>
-                        Reading the chart as a birth moment. Also: Yogini and Ashtottari dashas, the vargas, and the yogas.
-                      </p>
-                    </>
-                  )}
+                  {tab === "vedic" && vedic && <VedicTab vedic={vedic} />}
 
-                  {tab === "declination" && decl && (
-                    <>
-                      <p className="dim small" style={{ marginTop: 0 }}>Declination (°), with out-of-bounds flagged (beyond the Sun&rsquo;s ±23.4°):</p>
-                      <table className="mono" style={{ fontSize: "0.82rem" }}>
-                        <tbody>
-                          {decl.bodies.map(({ body, dec, oob }) => (
-                            <tr key={body}>
-                              <td className="mute" style={cell}>{GLYPHS[body] ? `${GLYPHS[body]} ` : ""}{body}</td>
-                              <td style={cell}>{dec >= 0 ? "+" : ""}{dec.toFixed(2)}°</td>
-                              <td style={{ ...cell, color: oob ? "var(--warm)" : "var(--text-mute)" }}>{oob ? "out of bounds" : ""}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <p className="dim small" style={{ margin: "0.8rem 0 0.3rem" }}>Parallels (=) and contraparallels (≠), within 1°:</p>
-                      {decl.pairs.length === 0 ? (
-                        <p className="dim small" style={{ margin: 0 }}>None.</p>
-                      ) : (
-                        <ul className="mono" style={{ lineHeight: 1.7, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: 0 }}>
-                          {decl.pairs.map((p, i) => (
-                            <li key={i}>{p.a} {p.kind === "parallel" ? "∥" : "⊼"} {p.b} <span className="mute">({p.kind})</span></li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  )}
+                  {tab === "declination" && decl && <DeclinationTab decl={decl} />}
 
-                  {tab === "stars" && stars && (
-                    <>
-                      <p className="dim small" style={{ marginTop: 0 }}>Bright fixed stars (mag ≤ 2.5) within 1° of a body, by longitude:</p>
-                      {stars.conjunctions.length === 0 ? (
-                        <p className="dim small" style={{ margin: 0 }}>No close conjunctions.</p>
-                      ) : (
-                        <table className="mono" style={{ fontSize: "0.82rem" }}>
-                          <tbody>
-                            {stars.conjunctions.map((h, i) => (
-                              <tr key={i}>
-                                <td className="mute" style={cell}>{GLYPHS[h.body] ? `${GLYPHS[h.body]} ` : ""}{h.body}</td>
-                                <td style={cell}>{h.star}</td>
-                                <td className="mute" style={cell}>{h.orb}°</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      )}
-                      <p className="dim small" style={{ margin: "0.8rem 0 0.3rem" }}>
-                        Parans (Brady): a bright star and a body on the angles at once, this day and latitude (tightest, within 12 min):
-                      </p>
-                      {stars.parans.length === 0 ? (
-                        <p className="dim small" style={{ margin: 0 }}>No parans.</p>
-                      ) : (
-                        <ul className="mono" style={{ lineHeight: 1.7, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: 0 }}>
-                          {stars.parans.map((p, i) => (
-                            <li key={i}>
-                              {p.star} <span className="mute">({p.star_angle})</span> {GLYPHS[p.body] ?? p.body} <span className="mute">({p.body_angle}) · {Math.round(p.gap_min)}m</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      <p className="dim small" style={{ margin: "0.5rem 0 0" }}>From the 319-star catalogue (Node tier), bundled here for the demo.</p>
-                    </>
-                  )}
+                  {tab === "stars" && stars && <StarsTab stars={stars} />}
 
                   {tab === "events" && (
                     <>
