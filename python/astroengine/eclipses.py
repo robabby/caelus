@@ -315,3 +315,85 @@ def solar_eclipse_local(engine, jd, lat_deg, lon_east_deg, alt_m=0.0):
             "max_time": t_max,
             "c1": _contact(g_outer, t_max, -1), "c2": c2, "c3": c3,
             "c4": _contact(g_outer, t_max, +1)}
+
+
+R_MEAN = 6371.0  # mean Earth radius (km) for short surface offsets
+
+
+def _dest_point(lat, lon, bearing_deg, dist_km):
+    """Geodetic destination point dist_km from (lat, lon) along bearing_deg."""
+    d = dist_km / R_MEAN
+    br = bearing_deg * DEG
+    p1 = lat * DEG
+    l1 = lon * DEG
+    p2 = math.asin(math.sin(p1) * math.cos(d)
+                   + math.cos(p1) * math.sin(d) * math.cos(br))
+    l2 = l1 + math.atan2(math.sin(br) * math.sin(d) * math.cos(p1),
+                         math.cos(d) - math.sin(p1) * math.sin(p2))
+    return p2 / DEG, (l2 / DEG + 540) % 360 - 180
+
+
+def _bearing(a, b):
+    """Initial great-circle bearing (deg) from a to b (each (lat, lon))."""
+    p1 = a[0] * DEG
+    p2 = b[0] * DEG
+    dl = (b[1] - a[1]) * DEG
+    return math.atan2(math.sin(dl) * math.cos(p2),
+                      math.cos(p1) * math.sin(p2)
+                      - math.sin(p1) * math.cos(p2) * math.cos(dl)) / DEG % 360
+
+
+def _great_circle_km(a, b):
+    """Great-circle distance (km) between two (lat, lon) points."""
+    p1 = a[0] * DEG
+    p2 = b[0] * DEG
+    dp = (b[0] - a[0]) * DEG
+    dl = (b[1] - a[1]) * DEG
+    h = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return R_MEAN * 2 * math.atan2(math.sqrt(h), math.sqrt(1 - h))
+
+
+def solar_eclipse_limits(engine, jd):
+    """Ground path of a solar eclipse at jd (UT): dict with center (lat, lon),
+    north and south limits of totality/annularity (each (lat, lon) or None),
+    and the full path width_km. None when no central eclipse exists then.
+    Marches perpendicular to the shadow's ground track to the umbra edge."""
+    center = solar_eclipse_where(engine, jd)
+    if center is None:
+        return None
+    ahead = solar_eclipse_where(engine, jd + 1 / 86400)
+    track = _bearing(center, ahead) if ahead is not None else 0.0
+
+    def edge(lat, lon):
+        sep, s_s, s_m = _topo_circs(engine, jd, lat, lon, 0.0)
+        return sep - abs(s_m - s_s)
+
+    def march(brg):
+        g_prev = edge(*center)  # < 0 on the central line
+        s = 4.0
+        while s <= 400.0:
+            q = _dest_point(center[0], center[1], brg, s)
+            if g_prev * edge(*q) <= 0:
+                lo, hi = s - 4.0, s  # edge between lo (inside) and hi (outside)
+                for _ in range(40):
+                    mid = (lo + hi) / 2
+                    qm = _dest_point(center[0], center[1], brg, mid)
+                    if edge(*qm) <= 0:
+                        lo = mid
+                    else:
+                        hi = mid
+                return _dest_point(center[0], center[1], brg, (lo + hi) / 2)
+            g_prev = edge(*q)
+            s += 4.0
+        return None
+
+    a = march((track - 90) % 360)
+    b = march((track + 90) % 360)
+    # Label by latitude so north is always the higher-latitude edge.
+    if a is None or b is None:
+        north, south, width = a, b, None
+    else:
+        north, south = (a, b) if a[0] >= b[0] else (b, a)
+        width = _great_circle_km(north, south)
+    return {"center": center, "north": north, "south": south,
+            "width_km": width}

@@ -20,7 +20,7 @@ import { realpathSync } from "node:fs";
 import {
   Engine, BODIES, Body, AlwaysBody, julianDay, mod,
   riseSet, crossings, lunarPhases, stations, RiseKind,
-  lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal,
+  lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal, solarEclipseLimits,
   ASPECTS, DEFAULT_ORBS, SIGNS as SIGN_NAMES, dignities, normalizeHouseSystem,
   solarPhase, aspectPhase, planetaryHour, voidOfCourse,
   CAZIMI_DEG, COMBUST_DEG, UNDER_BEAMS_DEG,
@@ -902,7 +902,11 @@ export function buildServer(
       for (const e of solarEclipses(engine, jd0, jd1)) {
         const w = solarEclipseWhere(engine, e.tMax);
         let detail = `${e.type}, gamma ${e.gamma.toFixed(2)}`;
-        if (w) detail += `, greatest at ${fmtLat(w.lat)} ${fmtLon(w.lonEast)}`;
+        if (w) {
+          detail += `, greatest at ${fmtLat(w.lat)} ${fmtLon(w.lonEast)}`;
+          const path = solarEclipseLimits(engine, e.tMax);
+          if (path?.widthKm) detail += `, path ${path.widthKm.toFixed(0)} km wide`;
+        }
         const ev: (typeof events)[number] = { t: iso(e.tMax), kind: "solar_eclipse", detail };
         // Local circumstances at the observer, when a place was given.
         if (lat !== undefined && lon !== undefined) {

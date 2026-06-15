@@ -402,3 +402,96 @@ export function solarEclipseLocal(
     c4: contact(gOuter, tMax, 1),
   };
 }
+
+const R_MEAN = 6371.0; // mean Earth radius (km) for short surface offsets
+
+/** Geodetic destination point `distKm` from (lat, lon) along `bearingDeg`. */
+function destPoint(lat: number, lon: number, bearingDeg: number, distKm: number): GeoPoint {
+  const d = distKm / R_MEAN; const br = bearingDeg * DEG;
+  const p1 = lat * DEG; const l1 = lon * DEG;
+  const p2 = Math.asin(Math.sin(p1) * Math.cos(d) + Math.cos(p1) * Math.sin(d) * Math.cos(br));
+  const l2 = l1 + Math.atan2(
+    Math.sin(br) * Math.sin(d) * Math.cos(p1),
+    Math.cos(d) - Math.sin(p1) * Math.sin(p2),
+  );
+  return { lat: p2 / DEG, lonEast: mod(l2 / DEG + 540, 360) - 180 };
+}
+
+/** Initial great-circle bearing (deg) from `a` to `b`. */
+function bearing(a: GeoPoint, b: GeoPoint): number {
+  const p1 = a.lat * DEG; const p2 = b.lat * DEG; const dl = (b.lonEast - a.lonEast) * DEG;
+  return mod(Math.atan2(
+    Math.sin(dl) * Math.cos(p2),
+    Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl),
+  ) / DEG, 360);
+}
+
+/** Great-circle distance (km) between two geographic points. */
+function greatCircleKm(a: GeoPoint, b: GeoPoint): number {
+  const p1 = a.lat * DEG; const p2 = b.lat * DEG;
+  const dp = (b.lat - a.lat) * DEG; const dl = (b.lonEast - a.lonEast) * DEG;
+  const h = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  return R_MEAN * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+
+/** The umbra/antumbra path of a solar eclipse at one instant. */
+export interface EclipsePath {
+  /** Central line point (greatest coverage) at this instant. */
+  center: GeoPoint;
+  /** Northern edge of totality/annularity, or `null` if it runs off the Earth. */
+  north: GeoPoint | null;
+  /** Southern edge, or `null` if it runs off the Earth. */
+  south: GeoPoint | null;
+  /** Full path width (km) between the limits, or `null` when a limit is missing. */
+  widthKm: number | null;
+}
+
+/**
+ * Ground path of a solar eclipse at a Julian Day (UT): the central point and
+ * the north/south limits of totality (or annularity), with the path width.
+ * Marches perpendicular to the shadow's ground track out to the umbra edge --
+ * where the Moon just fully covers (or is covered by) the Sun. Sample across
+ * the eclipse to trace the full path of totality.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param jd Instant to evaluate, Julian Day (UT) -- typically a
+ *   {@link SolarEclipse.tMax} for the path at greatest eclipse.
+ * @returns The {@link EclipsePath}, or `null` when no central eclipse exists
+ *   then (only a partial eclipse, or the axis misses the Earth).
+ */
+export function solarEclipseLimits(engine: Engine, jd: number): EclipsePath | null {
+  const center = solarEclipseWhere(engine, jd);
+  if (center === null) return null;
+  const ahead = solarEclipseWhere(engine, jd + 1 / 86400);
+  const track = ahead ? bearing(center, ahead) : 0; // ground-track direction
+  // Inside the umbra/antumbra the centres are closer than |radii difference|.
+  const edge = (lat: number, lon: number): number => {
+    const c = topoCircs(engine, jd, lat, lon, 0);
+    return c.sep - Math.abs(c.sM - c.sS);
+  };
+  const march = (brg: number): GeoPoint | null => {
+    let gPrev = edge(center.lat, center.lonEast); // < 0 on the central line
+    for (let s = 4; s <= 400; s += 4) {
+      const q = destPoint(center.lat, center.lonEast, brg, s);
+      if (gPrev * edge(q.lat, q.lonEast) <= 0) {
+        let lo = s - 4; let hi = s; // edge is between lo (inside) and hi (outside)
+        for (let i = 0; i < 40; i++) {
+          const mid = (lo + hi) / 2;
+          const qm = destPoint(center.lat, center.lonEast, brg, mid);
+          if (edge(qm.lat, qm.lonEast) <= 0) lo = mid; else hi = mid;
+        }
+        return destPoint(center.lat, center.lonEast, brg, (lo + hi) / 2);
+      }
+      gPrev = edge(q.lat, q.lonEast);
+    }
+    return null;
+  };
+  const a = march(mod(track - 90, 360));
+  const b = march(mod(track + 90, 360));
+  // Label by latitude so `north` is always the higher-latitude edge.
+  const [north, south] = !a || !b ? [a, b] : a.lat >= b.lat ? [a, b] : [b, a];
+  return {
+    center, north, south,
+    widthKm: north && south ? greatCircleKm(north, south) : null,
+  };
+}

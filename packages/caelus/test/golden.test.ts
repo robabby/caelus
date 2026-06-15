@@ -15,6 +15,7 @@ import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
   lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal,
+  solarEclipseLimits,
 } from "../src/eclipses.js";
 import * as H from "../src/houses.js";
 import { loadNodeData } from "../src/node-loader.js";
@@ -300,8 +301,8 @@ for (const g of G.houses) {
   // (gated via `failures`, no `checks` inflation). Greatest-eclipse point to
   // ~0.02 deg (~2 km) and totality duration to a few seconds.
   for (const c of [
-    { y: 2017, m: 8, geLat: 36.974, geLon: -87.659, durS: 160 },
-    { y: 2024, m: 4, geLat: 25.298, geLon: -104.138, durS: 268 },
+    { y: 2017, m: 8, geLat: 36.974, geLon: -87.659, durS: 160, widthKm: 114.7 },
+    { y: 2024, m: 4, geLat: 25.298, geLon: -104.138, durS: 268, widthKm: 197.5 },
   ]) {
     const es = solarEclipses(eng, julianDay(c.y, c.m, 1), julianDay(c.y, c.m, 28));
     const e = es.find((x) => x.type === "total");
@@ -315,6 +316,11 @@ for (const g of G.houses) {
     if (!loc || loc.type !== "total" || Math.abs(loc.obscuration - 1) > 1e-6 || Math.abs(dur - c.durS) > 8) {
       failures++;
       console.error(`FAIL ${c.y} local@GE: type=${loc?.type} obsc=${loc?.obscuration.toFixed(3)} dur=${dur.toFixed(0)}s vs ${c.durS}s`);
+    }
+    const path = e ? solarEclipseLimits(eng, e.tMax) : null;
+    if (!path || path.widthKm === null || Math.abs(path.widthKm - c.widthKm) > 4) {
+      failures++;
+      console.error(`FAIL ${c.y} path width: ${path?.widthKm?.toFixed(1)} km vs ${c.widthKm} km`);
     }
   }
   for (const [b, want] of Object.entries({ ...g.asteroids, ...g.uranians }) as Array<[string, any]>) {
