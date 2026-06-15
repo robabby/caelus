@@ -51,6 +51,23 @@ registry (a `gazetteer` resolves `named`; `places` resolves `relative`).
 `none` place is exactly the heliocentric / archetypal case (no houses, no
 angles).
 
+## Counterfactuals
+
+The `counterfactual` realm -- a real chart, perturbed -- has its own operator
+(`src/counterfactual.ts`). `counterfactual(engine, base, edit, registry, opts)`
+realizes the base, applies a `CounterfactualEdit`, and `chartDiff`s the result:
+
+- `shiftTime` (`"1h"`, `"-30m"`, `"P1D"`) or `place` -- a real ephemeris
+  recompute. "Born an hour later" leaves the planets in their signs but rotates
+  every house and the angles.
+- `setLongitudes` -- a geometry what-if ("Mars in the next sign"): the body is
+  spliced to a new longitude, its house and the aspects it touches are
+  recomputed, and everything else (the angles, the other bodies) stays.
+
+`chartDiff` returns only what changed -- bodies that shifted sign/house, aspects
+gained/lost, angles that changed sign -- so the perturbation is legible. The MCP
+`counterfactual_chart` tool exposes it.
+
 ## Why it matters for interpretation
 
 Realm and certainty are an **accuracy guardrail**, extending the interpretation

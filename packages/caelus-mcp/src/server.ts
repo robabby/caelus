@@ -39,7 +39,7 @@ import {
   detectPatterns, detectPatternsIn, chartSignature,
   chartFeatures, searchConfigurations,
   dignityScore, aspectBetween,
-  interpretationContext, chartBrief, realize, realmFraming, isoToJd,
+  interpretationContext, chartBrief, realize, realmFraming, isoToJd, counterfactual,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -1498,6 +1498,29 @@ export function buildServer(
       });
     }
     return text({ realm, via: r.via, note: r.note });
+  });
+
+  server.registerTool("counterfactual_chart", {
+    description:
+      "A birth chart, perturbed — a 'what if'. Give a base chart (date+lat+lon) and an edit: `shift_time` (e.g. '1h', '-30m', 'P1D') moves the instant (\"born an hour later\"), `move_lat`+`move_lon` recompute at another place, and/or `set_longitudes` moves bodies to new ecliptic degrees (\"Mars in the next sign\"). Returns the diff vs the original: bodies that changed sign or house, aspects gained or lost, and angles that changed sign. A time/place edit rotates the houses and angles while planets stay put; a longitude splice moves only those bodies and recomputes their aspects.",
+    inputSchema: {
+      ...birth,
+      shift_time: z.string().optional().describe("Duration to shift the instant: '1h', '-30m', 'P1Y'"),
+      move_lat: latSchema.optional().describe("Recompute at this latitude instead of the birth latitude"),
+      move_lon: lonSchema.optional().describe("Recompute at this longitude instead of the birth longitude"),
+      set_longitudes: z.record(z.number()).optional()
+        .describe("Move bodies to these ecliptic longitudes in degrees, e.g. { \"mars\": 45 }"),
+      house_system: houseSys, zodiac: zodiacSchema,
+    },
+  }, async ({ date, lat, lon, shift_time, move_lat, move_lon, set_longitudes, house_system, zodiac }) => {
+    const cf = counterfactual(engine, {
+      realm: "counterfactual", when: { kind: "instant", utc: date }, where: { kind: "geo", lat, lonEast: lon },
+    }, {
+      ...(shift_time !== undefined ? { shiftTime: shift_time } : {}),
+      ...(move_lat !== undefined && move_lon !== undefined ? { place: { lat: move_lat, lonEast: move_lon } } : {}),
+      ...(set_longitudes ? { setLongitudes: set_longitudes } : {}),
+    }, {}, { houseSystem: normalizeHouseSystem(house_system), zodiac });
+    return text({ note: cf.note, diff: cf.diff });
   });
 
   server.registerTool("similar_skies", {

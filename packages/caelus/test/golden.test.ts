@@ -22,6 +22,7 @@ import {
   resolveTime, resolvePlace, parseOffset, isTimeAnchored, isoToJd,
 } from "../src/provenance.js";
 import { realize } from "../src/anchored.js";
+import { counterfactual } from "../src/counterfactual.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
@@ -706,6 +707,28 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error("FAIL framing/damping");
+  }
+
+  // Counterfactual: a time shift rotates the houses and angles (planets stay
+  // put); a longitude splice moves only that body and recomputes its aspects.
+  const cfBase = {
+    realm: "counterfactual" as const,
+    when: { kind: "instant" as const, utc: "1990-06-10T14:30:00Z" },
+    where: { kind: "geo" as const, lat: 27.95, lonEast: -82.46 },
+  };
+  const cfShift = counterfactual(eng, cfBase, { shiftTime: "3h" });
+  const marsLon = cfShift.original.chart!.bodies.mars!.lon;
+  const cfMove = counterfactual(eng, cfBase, { setLongitudes: { mars: marsLon + 30 } });
+  if (
+    cfShift.variant === null || cfShift.diff!.angles.length === 0 || cfShift.diff!.bodies.length === 0
+    || cfMove.diff!.bodies.length !== 1 // only Mars moved
+    || cfMove.diff!.bodies[0].body !== "mars"
+    || cfMove.diff!.bodies[0].signFrom === cfMove.diff!.bodies[0].signTo // changed sign
+    || cfMove.diff!.aspectsGained.length === 0 // squares became trines, etc.
+    || cfMove.diff!.angles.length !== 0 // geometry splice leaves the angles alone
+  ) {
+    failures++;
+    console.error(`FAIL counterfactual: shiftAngles=${cfShift.diff?.angles.length} moveBodies=${JSON.stringify(cfMove.diff?.bodies.map((b) => b.body))}`);
   }
 }
 
