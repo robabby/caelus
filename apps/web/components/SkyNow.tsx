@@ -13,11 +13,10 @@ import { ChartWheel, ChartSphere, AstroMap, GLYPHS } from "caelus-wheel";
 import accuracy from "caelus/accuracy.json";
 import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
+import Aspectarian from "./Aspectarian";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
 import fixedStars from "../lib/fixed-stars.json";
-import {
-  ASPECT_GLYPH, aspectColor, crossAspect, ASPECTABLE_ORDER, PATTERN_LABEL,
-} from "../lib/chart-display";
+import { crossAspect, PATTERN_LABEL } from "../lib/chart-display";
 
 // Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
 const BRIGHT_STARS = Object.entries((fixedStars as { stars: Record<string, { mag: number }> }).stars)
@@ -654,55 +653,7 @@ export default function SkyNow() {
                     </>
                   )}
 
-                  {tab === "aspects" && (() => {
-                    const present = ASPECTABLE_ORDER.filter((b) => chart.bodies[b]);
-                    const look: Record<string, { aspect: string; orb: number }> = {};
-                    for (const a of chart.aspects) look[[a.a, a.b].sort().join("|")] = { aspect: a.aspect, orb: a.orb };
-                    return (
-                      <>
-                        <div style={{ overflowX: "auto" }}>
-                          <table className="mono" style={{ borderCollapse: "collapse", fontSize: "0.95rem" }}>
-                            <tbody>
-                              {present.map((b, i) => (
-                                <tr key={b}>
-                                  {present.slice(0, i).map((other) => {
-                                    const a = look[[b, other].sort().join("|")];
-                                    return (
-                                      <td
-                                        key={other}
-                                        title={a ? `${b} ${a.aspect} ${other} · orb ${a.orb}°` : `${b} / ${other}`}
-                                        style={{
-                                          width: "1.5rem", height: "1.5rem", textAlign: "center",
-                                          border: "1px solid var(--border)", color: aspectColor(a?.aspect),
-                                        }}
-                                      >
-                                        {a ? ASPECT_GLYPH[a.aspect] ?? "" : ""}
-                                      </td>
-                                    );
-                                  })}
-                                  <td style={{ padding: "0 0.4rem", color: "var(--text-mute)", whiteSpace: "nowrap" }}>
-                                    {GLYPHS[b] ?? b.slice(0, 2)}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="dim small" style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", margin: "0.55rem 0 0" }}>
-                          {(["conjunction", "sextile", "square", "trine", "opposition"] as const).map((a) => (
-                            <span key={a}>
-                              <span style={{ color: aspectColor(a) }}>{ASPECT_GLYPH[a]}</span> {a}
-                            </span>
-                          ))}
-                        </div>
-                        <ul className="mono" style={{ lineHeight: 1.8, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: "0.8rem 0 0" }}>
-                          {chart.aspects.map((a, i) => (
-                            <li key={i}>{a.a} {a.aspect} {a.b} <span className="mute">(orb {a.orb}°)</span></li>
-                          ))}
-                        </ul>
-                      </>
-                    );
-                  })()}
+                  {tab === "aspects" && <Aspectarian chart={chart} />}
 
                   {tab === "insights" && insights && (
                     <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem", fontSize: "0.82rem" }}>
