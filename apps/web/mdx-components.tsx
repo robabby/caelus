@@ -1,6 +1,8 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import CodeBlock from "./components/CodeBlock";
+import Cta from "./components/Cta";
+import PageClose from "./components/PageClose";
 import { Note, Eyebrow } from "./components/Prose";
 import { Tabs, Tab } from "./components/Tabs";
 
@@ -22,6 +24,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       );
     },
     CodeBlock,
+    Cta,
+    PageClose,
     Note,
     Eyebrow,
     Tabs,

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import GlyphMark from "./GlyphMark";
+import InstallButton from "./InstallButton";
 import ThemeToggle from "./ThemeToggle";
 import { NAV, SITE } from "../lib/site";
 
@@ -29,6 +30,7 @@ export default function SiteHeader() {
             </Link>
           ))}
           <span className="site-nav__sep" aria-hidden />
+          <InstallButton label="install" className="btn-sm site-nav__install" />
           <a
             href={SITE.repo}
             className="site-nav__hide-sm"

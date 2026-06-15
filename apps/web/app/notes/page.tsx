@@ -1,4 +1,6 @@
-import { A, Eyebrow, H2, P, Code } from "../../components/Prose";
+import { A, H2, P, Code } from "../../components/Prose";
+import PageClose from "../../components/PageClose";
+import PageHero from "../../components/PageHero";
 
 export const metadata = {
   title: "Build Notes",
@@ -9,13 +11,13 @@ export const metadata = {
 export default function Notes() {
   return (
     <main className="container page">
-      <Eyebrow>Build Notes</Eyebrow>
-      <h1>Build Notes</h1>
-      <P>
-        VSOP87 evaluation is a few hundred lines and matched professional ephemerides
-        on the first pass. The bugs were in timescales, frames, and geometry: invisible
-        in a spot check, obvious in the golden suite.
-      </P>
+      <PageHero eyebrow="Build Notes" title="Build Notes">
+        <P>
+          VSOP87 evaluation is a few hundred lines and matched professional ephemerides
+          on the first pass. The bugs were in timescales, frames, and geometry: invisible
+          in a spot check, obvious in the golden suite.
+        </P>
+      </PageHero>
 
       <H2>ΔT: textbook extrapolation vs Earth since 2016</H2>
       <P>
@@ -82,6 +84,12 @@ export default function Notes() {
         <A href="/provenance">Provenance</A> · <A href="/validation">Validation</A> ·{" "}
         <A href="https://github.com/heavyblotto/caelus">GitHub</A>.
       </P>
+
+      <PageClose
+        title="Try the engine"
+        secondaryHref="/playground"
+        secondaryLabel="Playground →"
+      />
     </main>
   );
 }

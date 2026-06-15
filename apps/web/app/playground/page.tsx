@@ -3,8 +3,11 @@ import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel } from "caelus-wheel";
 import SkyNow from "../../components/SkyNow";
 import SynastryPanel from "../../components/SynastryPanel";
+import PageClose from "../../components/PageClose";
+import PageHero from "../../components/PageHero";
+import PlaygroundStickyBar from "../../components/PlaygroundStickyBar";
 import { WHEEL_THEME } from "../../lib/wheelTheme";
-import { A, Eyebrow, Lead, P, H2 } from "../../components/Prose";
+import { A, Lead, P, H2 } from "../../components/Prose";
 
 export const metadata = {
   title: "Playground",
@@ -24,24 +27,24 @@ const EXAMPLES: Array<[string, Parameters<Engine["chart"]>]> = [
 
 export default function Playground() {
   return (
-    <main className="container page">
-      <Eyebrow>Playground</Eyebrow>
-      <h1>Compute a chart in your browser</h1>
-      <Lead>
-        Every chart below is computed on this page by the <code>caelus</code> engine
-        with its embedded dataset. No server, no ephemeris files.
-      </Lead>
-      <P dim>
-        Search a birthplace and enter the local time: the city comes from an
-        offline gazetteer bundled with the page, and <code>caelus-birth</code>{" "}
-        resolves the time zone and historical daylight-saving rules to UT, all
-        without a network request. Then <strong>Copy share link</strong> to mint a
-        chart you can send to anyone: the link carries only the values you typed,
-        and the recipient&rsquo;s browser recomputes the chart with no server in
-        the loop. Or <strong>Add to my charts</strong> to build a labelled set
-        (you, partner, family) and share them all as one link. (Switch the time
-        mode to UTC for the current sky.)
-      </P>
+    <main className="container page page--sticky-cta">
+      <PageHero eyebrow="Playground" title="Compute a chart in your browser">
+        <Lead>
+          Every chart below is computed on this page by the <code>caelus</code> engine
+          with its embedded dataset. No server, no ephemeris files.
+        </Lead>
+        <P dim>
+          Search a birthplace and enter the local time: the city comes from an
+          offline gazetteer bundled with the page, and <code>caelus-birth</code>{" "}
+          resolves the time zone and historical daylight-saving rules to UT, all
+          without a network request. Then <strong>Copy share link</strong> to mint a
+          chart you can send to anyone: the link carries only the values you typed,
+          and the recipient&rsquo;s browser recomputes the chart with no server in
+          the loop. Or <strong>Add to my charts</strong> to build a labelled set
+          (you, partner, family) and share them all as one link. (Switch the time
+          mode to UTC for the current sky.)
+        </P>
+      </PageHero>
 
       <SkyNow />
 
@@ -69,6 +72,9 @@ export default function Playground() {
           </figure>
         ))}
       </div>
+
+      <PageClose title="Ship it in your app" />
+      <PlaygroundStickyBar />
     </main>
   );
 }

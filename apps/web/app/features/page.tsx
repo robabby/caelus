@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Engine, ephemeris, julianDay, type BodyId } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel, ChartSphere, EphemerisGraph } from "caelus-wheel";
-import { A, Eyebrow, P } from "../../components/Prose";
+import { A, P } from "../../components/Prose";
+import PageClose from "../../components/PageClose";
+import PageHero from "../../components/PageHero";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../../lib/wheelTheme";
 
 export const metadata = {
@@ -31,7 +33,7 @@ const STATS: Stat[] = [
   { num: "13", label: "Bodies in the default chart", href: "/validation" },
   { num: "12", label: "House systems", href: "/docs/houses-and-zodiacs" },
   { num: "8", label: "Zodiacs (tropical + 7 sidereal)", href: "/docs/houses-and-zodiacs" },
-  { num: "27", label: "MCP tools for AI clients", href: "/docs/mcp" },
+  { num: "29", label: "MCP tools for AI clients", href: "/docs/mcp" },
   { num: "3,218", label: "Golden checks in CI", href: "/validation" },
   { num: "0", label: "Runtime dependencies", href: "/docs/data-tiers" },
 ];
@@ -148,14 +150,14 @@ function ComparisonTable({ caption, rows }: { caption: string; rows: Row[] }) {
 export default function Features() {
   return (
     <main className="container page">
-      <Eyebrow>Validated · MIT · zero dependencies</Eyebrow>
-      <h1>Features</h1>
-      <P>
-        What the engine computes, in one place. The counts are exact. Positions
-        are checked against Swiss Ephemeris and JPL Horizons (see{" "}
-        <A href="/methods">Methods</A>), and per-body accuracy is published on{" "}
-        <A href="/validation">Validation</A>, not asserted.
-      </P>
+      <PageHero eyebrow="Validated · MIT · zero dependencies" title="Features" cta="compact">
+        <P>
+          What the engine computes, in one place. The counts are exact. Positions
+          are checked against Swiss Ephemeris and JPL Horizons (see{" "}
+          <A href="/methods">Methods</A>), and per-body accuracy is published on{" "}
+          <A href="/validation">Validation</A>, not asserted.
+        </P>
+      </PageHero>
 
       <div className="feature-stats">
         {STATS.map((s) => (
@@ -421,6 +423,8 @@ export default function Features() {
           </P>
         </div>
       </div>
+
+      <PageClose />
     </main>
   );
 }

@@ -1,7 +1,9 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import ApiMarkdown from "../../components/ApiMarkdown";
-import { Eyebrow, Lead, P } from "../../components/Prose";
+import PageClose from "../../components/PageClose";
+import PageHero from "../../components/PageHero";
+import { Lead, P } from "../../components/Prose";
 
 export const metadata = {
   title: "Changelog",
@@ -22,14 +24,15 @@ export default function Changelog() {
   const content = loadChangelog();
   return (
     <main className="container page">
-      <Eyebrow>Changelog</Eyebrow>
-      <h1>Changelog</h1>
-      <Lead>
-        All four packages version in lockstep. Numbers are as measured at release
-        time; current figures live in <code>accuracy.json</code> and on{" "}
-        <a href="/validation">Validation</a>.
-      </Lead>
+      <PageHero eyebrow="Changelog" title="Changelog">
+        <Lead>
+          All four packages version in lockstep. Numbers are as measured at release
+          time; current figures live in <code>accuracy.json</code> and on{" "}
+          <a href="/validation">Validation</a>.
+        </Lead>
+      </PageHero>
       {content ? <ApiMarkdown content={content} /> : <P>Changelog unavailable.</P>}
+      <PageClose title="Install the latest" />
     </main>
   );
 }

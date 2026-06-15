@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { Eyebrow, Lead, P } from "../../components/Prose";
+import PageClose from "../../components/PageClose";
+import PageHero from "../../components/PageHero";
+import { Lead, P } from "../../components/Prose";
 
 export const metadata = {
   title: "Documentation",
@@ -32,17 +34,17 @@ const CARDS: Array<[string, string, string]> = [
 export default function DocsHome() {
   return (
     <>
-      <Eyebrow>Documentation</Eyebrow>
-      <h1>Documentation</h1>
-      <Lead>
-        Caelus is an MIT ephemeris engine: planetary positions, houses, aspects,
-        and astronomical events, with no ephemeris files on disk.
-      </Lead>
-      <P>
-        New here? Start with the <Link href="/docs/quickstart">Quickstart</Link>, then
-        read <Link href="/docs/charts">Computing Charts</Link>. The full package surface
-        is in the <Link href="/docs/api">API Reference</Link>.
-      </P>
+      <PageHero eyebrow="Documentation" title="Documentation">
+        <Lead>
+          Caelus is an MIT ephemeris engine: planetary positions, houses, aspects,
+          and astronomical events, with no ephemeris files on disk.
+        </Lead>
+        <P>
+          New here? Start with the <Link href="/docs/quickstart">Quickstart</Link>, then
+          read <Link href="/docs/charts">Computing Charts</Link>. The full package surface
+          is in the <Link href="/docs/api">API Reference</Link>.
+        </P>
+      </PageHero>
       <div className="grid grid-2" style={{ marginTop: "1.5rem" }}>
         {CARDS.map(([href, title, desc]) => {
           const inner = (
@@ -62,6 +64,7 @@ export default function DocsHome() {
           );
         })}
       </div>
+      <PageClose />
     </>
   );
 }

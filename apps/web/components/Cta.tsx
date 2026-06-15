@@ -1,31 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import InstallButton from "./InstallButton";
 import { SITE } from "../lib/site";
 
-export default function Cta() {
-  const [copied, setCopied] = useState(false);
+type CtaProps = {
+  /** Hero shows tertiary doc/starter/MCP links; compact is install + quickstart only. */
+  variant?: "hero" | "compact";
+  secondaryHref?: string;
+  secondaryLabel?: string;
+};
 
-  const copy = () => {
-    navigator.clipboard.writeText("npm install caelus");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
-  };
-
+function CtaLinks() {
   return (
-    <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap", alignItems: "center" }}>
-      <button type="button" className="btn btn-primary mono" onClick={copy}>
-        {copied ? "copied ✓" : "$ npm install caelus"}
-      </button>
-      <a href="/docs/quickstart" className="btn btn-ghost">
-        Quickstart
+    <p className="cta__links">
+      <Link href="/docs">Docs</Link>
+      <span className="cta__sep" aria-hidden>
+        ·
+      </span>
+      <a href={SITE.starter} target="_blank" rel="noreferrer">
+        Starter template<span className="cta__external" aria-hidden> ↗</span>
       </a>
-      <a href={SITE.starter} className="btn btn-ghost" target="_blank" rel="noreferrer">
-        Starter template
-      </a>
-      <a href="/docs/mcp" className="btn btn-ghost">
-        MCP tools (29)
-      </a>
+      <span className="cta__sep" aria-hidden>
+        ·
+      </span>
+      <Link href="/docs/mcp">MCP tools</Link>
+    </p>
+  );
+}
+
+export default function Cta({
+  variant = "hero",
+  secondaryHref = "/docs/quickstart",
+  secondaryLabel = "Quickstart →",
+}: CtaProps) {
+  return (
+    <div className="cta">
+      <div className="cta__actions">
+        <InstallButton />
+        <Link href={secondaryHref} className="btn btn-secondary">
+          {secondaryLabel}
+        </Link>
+      </div>
+      {variant === "hero" ? <CtaLinks /> : null}
     </div>
   );
 }

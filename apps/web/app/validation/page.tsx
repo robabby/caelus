@@ -1,4 +1,6 @@
-import { A, Eyebrow, H2, P, Code } from "../../components/Prose";
+import { A, H2, P, Code } from "../../components/Prose";
+import PageClose from "../../components/PageClose";
+import PageHero from "../../components/PageHero";
 import accuracy from "caelus/accuracy.json";
 
 export const metadata = {
@@ -14,12 +16,12 @@ const fmt = (v: string) => (v === "—" ? "—" : `${v}″`);
 export default function Validation() {
   return (
     <main className="container page">
-      <Eyebrow>Validation</Eyebrow>
-      <h1>Validation</h1>
-      <P>
-        Reference engine checked against Swiss Ephemeris; TypeScript port checked
-        against golden fixtures. CI runs both on every commit.
-      </P>
+      <PageHero eyebrow="Validation" title="Validation">
+        <P>
+          Reference engine checked against Swiss Ephemeris; TypeScript port checked
+          against golden fixtures. CI runs both on every commit.
+        </P>
+      </PageHero>
 
       <H2>Reference vs Swiss Ephemeris 2.10</H2>
       <P>
@@ -80,6 +82,12 @@ export default function Validation() {
         polar circles: falls back to whole-sign and reports the fallback in the
         response. <A href="/methods">Methods →</A> <A href="/notes">Build notes →</A>
       </P>
+
+      <PageClose
+        title="Ship validated charts"
+        secondaryHref="/docs/quickstart"
+        secondaryLabel="Quickstart →"
+      />
     </main>
   );
 }

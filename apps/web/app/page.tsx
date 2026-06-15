@@ -3,10 +3,11 @@ import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel } from "caelus-wheel";
 import SkyRibbon from "../components/SkyRibbon";
-import Cta from "../components/Cta";
+import PageClose from "../components/PageClose";
+import PageHero from "../components/PageHero";
 import CodeBlock from "../components/CodeBlock";
 import FAQ from "../components/FAQ";
-import { A, Eyebrow, Lead, P, H2 } from "../components/Prose";
+import { A, Lead, P, H2 } from "../components/Prose";
 import { WHEEL_THEME } from "../lib/wheelTheme";
 import { NPM, SITE } from "../lib/site";
 
@@ -19,7 +20,7 @@ export const metadata = {
 
 const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
   ["caelus", "caelus", "Chart math: positions, houses, aspects. Zero dependencies, ~85 KB gzipped."],
-  ["mcp", "caelus-mcp", "Twenty-eight chart tools for AI agents: natal charts, transits, synastry, event search, electional, lots, time-lords, directions, and the Vedic layer (nakshatras, dashas, vargas, yogas)."],
+  ["mcp", "caelus-mcp", "Twenty-nine chart tools for AI agents: natal charts, transits, synastry, event search, electional, lots, time-lords, directions, and the Vedic layer (nakshatras, dashas, vargas, yogas)."],
   ["birth", "caelus-birth", "Local birth time and place to UT, with DST and historical timezone rules."],
   ["wheel", "caelus-wheel", "React SVG chart wheel. SSR-safe, ~3.4 KB gzipped."],
 ];
@@ -55,45 +56,49 @@ export default function Home() {
     <main className="container page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Eyebrow>TypeScript · browser, edge, and Node</Eyebrow>
-      <h1>A free, small, and complete Western and Vedic astrology engine</h1>
-      <Lead>
-        Caelus computes natal charts and the classical techniques built on them,
-        each convention validated against a named authority. The same TypeScript
-        runs in the browser, on edge runtimes, and in Node, with MCP tools for AI
-        clients. No Swiss Ephemeris, no AGPL, no ephemeris files on disk.
-      </Lead>
-      <Cta />
-
-      <div className="feature-stats" style={{ marginBottom: "0.5rem" }}>
-        {PROOF.map((s) =>
-          s.href.startsWith("/") ? (
-            <Link key={s.label} href={s.href} className="card stat">
-              <span className="stat__num">{s.num}</span>
-              <span className="stat__label">{s.label}</span>
-            </Link>
-          ) : (
-            <a key={s.label} href={s.href} className="card stat" target="_blank" rel="noreferrer">
-              <span className="stat__num">{s.num}</span>
-              <span className="stat__label">{s.label}</span>
-            </a>
-          ),
-        )}
-      </div>
+      <PageHero
+        eyebrow="TypeScript · browser, edge, and Node"
+        title="A free, small, and complete Western and Vedic astrology engine"
+        cta="hero"
+        after={
+          <div className="feature-stats" style={{ marginBottom: "0.5rem" }}>
+            {PROOF.map((s) =>
+              s.href.startsWith("/") ? (
+                <Link key={s.label} href={s.href} className="card stat">
+                  <span className="stat__num">{s.num}</span>
+                  <span className="stat__label">{s.label}</span>
+                </Link>
+              ) : (
+                <a key={s.label} href={s.href} className="card stat" target="_blank" rel="noreferrer">
+                  <span className="stat__num">{s.num}</span>
+                  <span className="stat__label">{s.label}</span>
+                </a>
+              ),
+            )}
+          </div>
+        }
+      >
+        <Lead>
+          Caelus computes natal charts and the classical techniques built on them,
+          each convention validated against a named authority. The same TypeScript
+          runs in the browser, on edge runtimes, and in Node, with MCP tools for AI
+          clients. No Swiss Ephemeris, no AGPL, no ephemeris files on disk.
+        </Lead>
+      </PageHero>
 
       <div style={{ margin: "1.5rem 0 0.5rem" }}>
         <SkyRibbon />
       </div>
 
-      <ul style={{ listStyle: "none", padding: 0, margin: "1.5rem 0", display: "grid", gap: "0.6rem", lineHeight: 1.5 }}>
-        <li>🪐 Sun through Pluto, Chiron, and nodes; twelve house systems; tropical and seven sidereal zodiacs</li>
-        <li>🧩 <A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
-        <li>⏳ <A href="/docs/hellenistic">Hellenistic time-lords</A>: lots, profections, firdaria, zodiacal releasing, and primary directions</li>
-        <li>🕉️ <A href="/docs/vedic">Vedic &amp; Jyotish</A>: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, divisional charts, and yogas</li>
-        <li>📖 <A href="/docs/interpretation">Interpretation layer</A>: ranked, citable fact atoms, a pluggable rule corpus, and LLM briefs with citation auditing</li>
-        <li>📍 <A href="/docs/provenance">Chart provenance</A>: declare what a chart is (forecast, mythic, archetypal) and route to the ephemeris or the compiler</li>
-        <li>🤖 <A href="/docs/mcp"><code>caelus-mcp</code></A> gives Claude, Cursor, and other MCP clients twenty-nine chart tools</li>
-        <li>🔒 Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>
+      <ul className="capability-list">
+        <li>Sun through Pluto, Chiron, and nodes; twelve house systems; tropical and seven sidereal zodiacs</li>
+        <li><A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
+        <li><A href="/docs/hellenistic">Hellenistic time-lords</A>: lots, profections, firdaria, zodiacal releasing, and primary directions</li>
+        <li><A href="/docs/vedic">Vedic &amp; Jyotish</A>: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, divisional charts, and yogas</li>
+        <li><A href="/docs/interpretation">Interpretation layer</A>: ranked, citable fact atoms, a pluggable rule corpus, and LLM briefs with citation auditing</li>
+        <li><A href="/docs/provenance">Chart provenance</A>: declare what a chart is (forecast, mythic, archetypal) and route to the ephemeris or the compiler</li>
+        <li><A href="/docs/mcp"><code>caelus-mcp</code></A> gives Claude, Cursor, and other MCP clients twenty-nine chart tools</li>
+        <li>Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>
       </ul>
 
       <P>
@@ -161,10 +166,7 @@ chart.bodies.saturn.retrograde; // true`}
 
       <FAQ />
 
-      <H2>Start building</H2>
-      <div style={{ marginBottom: "1rem" }}>
-        <Cta />
-      </div>
+      <PageClose />
     </main>
   );
 }
