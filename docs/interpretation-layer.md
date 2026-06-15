@@ -206,6 +206,12 @@ classical planet's sign, with the final-dispositor terminus flagged) and
 triplicity ruler -- `by` names the dignities, salience scales with the weaker
 link), with `hasDispositor` / `hasReception` selectors.
 
+A **star** atom (`hasStar`) records a body's conjunction with a catalog fixed
+star. The bare projection cannot compute it -- the star catalog lives in the
+data pack, not on the `Chart` -- so a caller supplies the conjunctions via
+`ContextOptions.stars`, typically from `Engine.starConjunctions(chart, { orb })`,
+and the projection turns each into a `star:<body>:<name>` atom.
+
 ## Follow-ons
 
 All the listed follow-ons have shipped: dispositor/reception atoms (now by

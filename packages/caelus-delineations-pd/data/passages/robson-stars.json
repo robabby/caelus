@@ -1,0 +1,202 @@
+[
+  {
+    "id": "robson-stars:aldebaran",
+    "when": { "kind": "star", "star": "Aldebaran" },
+    "atomIds": ["star:Aldebaran"],
+    "text": "Of the nature of Mars. One of the four Royal Stars of Persia, the Watcher of the East. It gives honour, intelligence, eloquence, steadfastness, integrity, popularity, courage, ferocity, a tendency to sedition, responsibility, public honours, and gain of power and wealth through others, though its benefits seldom prove lasting and there is danger of violence and sickness.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Aldebaran" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:antares",
+    "when": { "kind": "star", "star": "Antares" },
+    "atomIds": ["star:Antares"],
+    "text": "Of the nature of Mars and Jupiter. One of the four Royal Stars, the Watcher of the West. It is malevolent and destructive, giving martial honour and large enterprises but a rash, ungovernable, headstrong and obstinate nature, with danger of fatality through self-undoing and violence.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Antares" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:regulus",
+    "when": { "kind": "star", "star": "Regulus" },
+    "atomIds": ["star:Regulus"],
+    "text": "Of the nature of Mars and Jupiter. One of the four Royal Stars, the Watcher of the North, called Cor Leonis, the Lion's Heart. It gives violence, destructiveness, military honour of short duration with ultimate failure, high and lofty ideals and strength of spirit, and makes its natives magnanimous, generous and ambitious, but liable to a fall from high position.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Regulus" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:fomalhaut",
+    "when": { "kind": "star", "star": "Fomalhaut" },
+    "atomIds": ["star:Fomalhaut"],
+    "text": "Of the nature of Venus and Mercury. One of the four Royal Stars, the Watcher of the South. A fortunate and powerful star, yet causing malevolence of sublime scope and character and a change from a material to a spiritual expression. According to tradition it is either very good or very evil.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Fomalhaut" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:algol",
+    "when": { "kind": "star", "star": "Algol" },
+    "atomIds": ["star:Algol"],
+    "text": "Of the nature of Saturn and Jupiter. Called Caput Medusae, the Demon Star, it is the most evil star in the heavens, causing misfortune, violence, decapitation, hanging, electrocution and mob violence, and giving a dogged and violent nature that brings death or ruin to the native or to others.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Algol" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:spica",
+    "when": { "kind": "star", "star": "Spica" },
+    "atomIds": ["star:Spica"],
+    "text": "Of the nature of Venus and Mars. It gives success, renown, riches, a sweet disposition, love of art and science, unscrupulousness, unfruitfulness and injustice to innocence. It is one of the most fortunate and beneficent of the fixed stars.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Spica" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:sirius",
+    "when": { "kind": "star", "star": "Sirius" },
+    "atomIds": ["star:Sirius"],
+    "text": "Of the nature of Jupiter and Mars. It gives honour, renown, wealth, ardour, faithfulness, devotion, passion and resentment, and makes its natives custodians, curators and guardians. It is associated with high office under government and with great fame and honour.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Sirius" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:vega",
+    "when": { "kind": "star", "star": "Vega" },
+    "atomIds": ["star:Vega"],
+    "text": "Of the nature of Venus and Mercury. It gives beneficence, ideality, hopefulness, refinement and changeability, and makes its natives grave, sober and outwardly pretentious. It bestows artistic and especially musical talent.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Vega" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:capella",
+    "when": { "kind": "star", "star": "Capella" },
+    "atomIds": ["star:Capella"],
+    "text": "Of the nature of Mars and Mercury. It gives honour, wealth, eminence, prominence and a public position of trust, a love of learning, and an inquisitive, curious nature fond of novelty and research.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Capella" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:betelgeuse",
+    "when": { "kind": "star", "star": "Betelgeuse" },
+    "atomIds": ["star:Betelgeuse"],
+    "text": "Of the nature of Mars and Mercury. It gives martial honour, preferment, wealth, kingly attributes and lasting fame and success. It is one of the most fortunate stars in the heavens.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Betelgeuse" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:arcturus",
+    "when": { "kind": "star", "star": "Arcturus" },
+    "atomIds": ["star:Arcturus"],
+    "text": "Of the nature of Mars and Jupiter. It gives riches, honours, high renown, self-determination and prosperity through voyages and journeys, though its natives may meet trouble and disgrace through their own rashness and folly.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Arcturus" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:pollux",
+    "when": { "kind": "star", "star": "Pollux" },
+    "atomIds": ["star:Pollux"],
+    "text": "Of the nature of Mars. It is associated with a spirit of contest and rivalry, audacity, a brave but rash and cruel nature, fondness for boxing, and danger of violence, dishonour and ruin.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Pollux" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:castor",
+    "when": { "kind": "star", "star": "Castor" },
+    "atomIds": ["star:Castor"],
+    "text": "Of the nature of Mercury. It gives distinction, a keen and refined but sometimes violent nature, fondness for travel, sudden fame and honour followed by a precipitate fall, and trouble and sickness generally.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Castor" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:procyon",
+    "when": { "kind": "star", "star": "Procyon" },
+    "atomIds": ["star:Procyon"],
+    "text": "Of the nature of Mercury and Mars. It gives activity, violence, sudden and violent malevolence, a sudden rise followed by misfortune, anger and pride, and the loss of hard-won good through hasty and ill-considered action; the favour it brings is fleeting.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Procyon" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:rigel",
+    "when": { "kind": "star", "star": "Rigel" },
+    "atomIds": ["star:Rigel"],
+    "text": "Of the nature of Jupiter and Saturn. It gives benevolence, honour, riches, happiness, inventiveness, a keen mind, technical and artistic ability, and lasting honours and preferment.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Rigel" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:bellatrix",
+    "when": { "kind": "star", "star": "Bellatrix" },
+    "atomIds": ["star:Bellatrix"],
+    "text": "Of the nature of Mars and Mercury. It gives great civil or military honour but danger of sudden dishonour, renown and wealth, and a keen, quick mind.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Bellatrix" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:canopus",
+    "when": { "kind": "star", "star": "Canopus" },
+    "atomIds": ["star:Canopus"],
+    "text": "Of the nature of Saturn and Jupiter. It gives piety, conservatism, a wide and comprehensive knowledge, voyages and educational work, and changes evil to good, though it is associated with journeys and domestic troubles.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Canopus" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:alcyone",
+    "when": { "kind": "star", "star": "Alcyone" },
+    "atomIds": ["star:Alcyone"],
+    "text": "Brightest of the Pleiades, of the nature of the Moon and Mars. It is associated with the eyes and danger to the sight, with weeping and sorrow, ambition, accidents and disgrace, but also with eminence, love and a wanton nature.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Alcyone (Pleiades)" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:scheat",
+    "when": { "kind": "star", "star": "Scheat" },
+    "atomIds": ["star:Scheat"],
+    "text": "Of the nature of Mars and Mercury. It is associated with extreme misfortune, murder, suicide and drowning, and gives danger through and from water, accident and imprisonment.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Scheat" },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "robson-stars:markab",
+    "when": { "kind": "star", "star": "Markab" },
+    "atomIds": ["star:Markab"],
+    "text": "Of the nature of Mars and Mercury. It gives danger from fire, fever, cuts, blows and stabs, and a fatality akin to a violent death, together with honours that may end in ruin.",
+    "tradition": "modern",
+    "source": { "author": "Vivian E. Robson", "work": "The Fixed Stars and Constellations in Astrology", "locus": "Markab" },
+    "rights": "pd-us",
+    "embed": true
+  }
+]

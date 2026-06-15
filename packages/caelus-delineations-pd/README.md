@@ -76,8 +76,21 @@ passages across five sources today:
 | Planet in house | `placement{ body, house }` | Alan Leo Key 21 + How to Judge 63 |
 | Planet aspect planet | `aspect{ between, aspect }` | Heindel 118 (5 Ptolemaic aspects) |
 | Rising sign | `angle{ asc, sign }` | Heindel 12/12 |
+| Fixed-star conjunction | `star{ body, star }` | Robson 20 (curated) |
 | Mercury–Saturn in sign | `placement{ body, sign }` | pending (no clean PD scan in set) |
 | Dignities | `placement{ dignity }` | pending |
+
+Fixed-star rules need `star` atoms, which the bare projection cannot compute
+(the catalog lives in the data pack). Supply them when projecting:
+
+```ts
+const stars = engine.starConjunctions(chart, { orb: 1 });
+const reading = interpret(interpretationContext(chart, { stars }), sources);
+```
+
+The Robson star set is **hand-curated** from his documented attributions: his
+scan's star catalog is a garbled OCR table, so unlike every other source these
+records are transcribed, not auto-extracted (`data/passages/robson-stars.json`).
 
 Coverage is partial by design: an extractor emits only the cells it can lift
 cleanly from the OCR, and the harness reports the rest. Known gaps and why:

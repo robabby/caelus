@@ -106,6 +106,14 @@ export function hasReception(filter: { body?: string } = {}): Selector {
     && (filter.body === undefined || a.bodies.includes(filter.body))));
 }
 
+/** Matches a fixed-star conjunction by the catalog star and/or the body on it. */
+export function hasStar(filter: { body?: string; star?: string } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "star"
+    && (filter.body === undefined || a.body === filter.body)
+    && (filter.star === undefined || a.star === filter.star)));
+}
+
 // ----------------------------------------------------------------- combinators
 
 /** Matches only when every selector matches; returns the union of their atoms. */

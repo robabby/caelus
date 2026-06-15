@@ -78,6 +78,7 @@ const specs: SelectorSpec[] = [
   { kind: "pattern", pattern: "t_square", body: "mars" },
   { kind: "signature", facet: "element", value: "fire" },
   { kind: "angle", angle: "asc", sign: "leo" },
+  { kind: "star", body: "mars", star: "Aldebaran" },
 ];
 for (const s of specs) {
   try { check(typeof selectorFromSpec(s) === "function", `${s.kind} spec compiles`); }
@@ -171,6 +172,26 @@ for (const p of anglePassages) {
   check(!wrong, `${p.id}: does not fire for Ascendant in ${other}`);
 }
 
+// 4e. Each fixed-star rule fires for a body conjunct its star, and only that star.
+console.log("fixed-star rules fire");
+function starCtx(body: string, star: string): InterpretationContext {
+  const atom: FactAtom = {
+    id: `star:${body}:${star}`, kind: "star", bodies: [body], salience: 3,
+    text: `${body} conjunct ${star}`, body, star, orb: 0.3,
+  };
+  return { jdUt: 0, zodiac: "tropical", atoms: [atom] };
+}
+const starPassages = passages.filter((p) => p.when.kind === "star");
+check(starPassages.length > 0, "corpus has fixed-star passages");
+for (const p of starPassages) {
+  const w = p.when as { star: string };
+  const entry = interpret(starCtx("mars", w.star), sources).entries.find((e) => e.rule === p.id);
+  check(!!entry, `${p.id}: fires for a body conjunct ${w.star}`);
+  const other = w.star === "Algol" ? "Spica" : "Algol";
+  const wrong = interpret(starCtx("mars", other), sources).entries.find((e) => e.rule === p.id);
+  check(!wrong, `${p.id}: does not fire for ${other}`);
+}
+
 // 5. No reading ever cites an atom the projection did not contain.
 console.log("no dangling citations");
 for (const sign of ["aries", "scorpio", "pisces"]) {
@@ -191,14 +212,17 @@ try {
   const dataDir = join(PKG_ROOT, "../caelus/data");
   const engine = new Engine(loadNodeData(dataDir));
   const chart = engine.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
-  const ctx = interpretationContext(chart);
+  const stars = engine.starConjunctions(chart, { orb: 1.0 });
+  const ctx = interpretationContext(chart, { stars });
   const sun = ctx.atoms.find((a) => a.id === "placement:sun");
   check(!!sun, "engine projection contains placement:sun");
   const reading = interpret(ctx, sources);
   const signEntry = reading.entries.find((e) => /:[a-z]+-in-[a-z]+$/.test(e.rule));
   const houseEntry = reading.entries.find((e) => /-in-house-\d+$/.test(e.rule));
+  const starEntry = reading.entries.find((e) => e.rule.startsWith("robson-stars:"));
   check(!!signEntry, "a planet-in-sign rule fires on the real chart projection");
   check(!!houseEntry, "a planet-in-house rule fires on the real chart projection");
+  check(!!starEntry, "a fixed-star rule fires on the real chart projection (Jupiter on Sirius)");
   for (const e of reading.entries) {
     check(
       e.atomIds.every((id) => ctx.atoms.some((a) => a.id === id)),

@@ -11,6 +11,7 @@ import alanLeoJudge from "../data/passages/alan-leo-judge.json" with { type: "js
 import alanLeoSigns from "../data/passages/alan-leo-signs.json" with { type: "json" };
 import heindelAspects from "../data/passages/heindel-aspects.json" with { type: "json" };
 import heindelRising from "../data/passages/heindel-rising.json" with { type: "json" };
+import robsonStars from "../data/passages/robson-stars.json" with { type: "json" };
 import type { PassageRecord } from "./types.js";
 
 export interface PassageSet {
@@ -45,6 +46,11 @@ export const passageSets: PassageSet[] = [
     id: "heindel-message-of-the-stars",
     version: "0.1.0",
     passages: [...heindelAspects, ...heindelRising] as PassageRecord[],
+  },
+  {
+    id: "robson-fixed-stars",
+    version: "0.1.0",
+    passages: robsonStars as PassageRecord[],
   },
 ];
 
