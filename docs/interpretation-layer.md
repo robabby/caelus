@@ -19,7 +19,7 @@ Engine (validated)        chart(): bodies, aspects, angles, cusps        [shippe
   -> Fact projection      interpretationContext(chart): ranked atoms      [shipped]
   -> Matching             selectors over atoms (provenance)               [shipped]
   -> Interpretation       InterpretationSource plugins + resolver         [shipped]
-  -> Output               structured reading, or an LLM brief + citations [next]
+  -> Output               structured reading, or an LLM brief + citations [shipped]
 ```
 
 Each layer is independently useful and consumes only the layer below.
@@ -116,24 +116,26 @@ sorted by salience. The engine ships the mechanism; the rule *content* is always
 the developer's (a tradition, a house style, a third-party corpus). Contradiction
 reconciliation beyond ranking is left to the caller for now.
 
-## 4. Output: structured reading or LLM brief (next)
+## 4. Output: structured reading or LLM brief (shipped)
 
-Two consumers of the resolved reading:
+Two consumers of the projection (and an optional resolved {@link Reading}):
 
-- **Structured reading** -- the ranked entries with provenance, for a
-  rule-based product.
-- **LLM brief** -- a compact, salience-ranked, provenance-tagged rendering of
-  the atoms (and any matched entries) built as model input, plus a citation
-  schema so each generated sentence references the atom ids it rests on. The
-  citation loop is what makes a *novel* (LLM-written) interpretation also
-  *accurate* (auditable against validated facts). Pairs with the MCP app, where
-  the host LLM is already today's de-facto interpreter.
+- **Structured reading** -- the ranked `interpret(...)` entries with provenance,
+  for a rule-based product.
+- **LLM brief** (`src/brief.ts`) -- `chartBrief(ctx, opts)` renders the
+  salience-ranked, id-tagged facts (capped, kind-filtered, optionally folding a
+  `Reading`'s entries in) into a ready `prompt`. The model writes original prose
+  (*novel*) and cites the `[id]` each statement rests on; `auditCitations(claims,
+  ctx)` then checks those citations resolve, flagging any that invented a fact
+  (*accurate*). The chart math was never the model's to hallucinate. Pairs with
+  the MCP app, where the host model is already the interpreter.
 
 ## Follow-ons
 
-- Expose `interpretationContext` through the MCP server (a `chart_facts`-style
-  tool, or as an optional block on `natal_chart`) so LLM hosts consume the
-  ranked atoms directly instead of re-deriving them.
+- Expose `chartBrief` / `interpretationContext` through the MCP server (a
+  `chart_facts`-style tool, or an optional block on `natal_chart`) so LLM hosts
+  consume the ranked, citable atoms directly instead of re-deriving them.
 - Promote `phase` and `strength` onto `Chart.aspects` itself (needs the Python
   reference + golden regenerated, so it is a maintainer-environment change).
-- Reception and dispositor chains as additional atom kinds.
+- Reception and dispositor chains as additional atom kinds; richer contradiction
+  reconciliation in the resolver beyond salience ranking.

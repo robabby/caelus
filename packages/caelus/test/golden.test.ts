@@ -15,6 +15,7 @@ import { interpretationContext } from "../src/interpretation.js";
 import {
   interpret, hasPlacement, hasAspect, hasPattern, matchAll, matchNone,
 } from "../src/interpret.js";
+import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
@@ -523,6 +524,36 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error(`FAIL interpret: entries=${reading.entries.length} rules=${JSON.stringify(reading.entries.map((e) => e.rule))} sorted=${rsorted}`);
+  }
+
+  // LLM brief + citation audit: the "novel and accurate" loop. The brief is the
+  // top-N facts, id-tagged; the audit flags any citation that invents a fact.
+  const brief = chartBrief(ctx, { limit: 6 });
+  const briefSorted = brief.facts.every((f, i) => i === 0 || brief.facts[i - 1].salience >= f.salience);
+  if (
+    brief.facts.length !== 6
+    || !brief.prompt.startsWith(BRIEF_INSTRUCTIONS)
+    || !brief.prompt.includes(`[${brief.facts[0].id}]`)
+    || !briefSorted
+    || chartBrief(ctx, { header: false }).prompt.startsWith(BRIEF_INSTRUCTIONS) // header off
+  ) {
+    failures++;
+    console.error(`FAIL brief: facts=${brief.facts.length} sorted=${briefSorted}`);
+  }
+  const realId = ctx.atoms[0].id;
+  const audit = auditCitations([
+    { text: "honest", cites: [realId] },
+    { text: "invented", cites: ["aspect:mars~jupiter:trine:fake"] },
+    { text: "uncited", cites: [] },
+  ], ctx);
+  if (
+    audit.ok // must be false: one citation is fabricated
+    || !audit.unknown.includes("aspect:mars~jupiter:trine:fake")
+    || !audit.valid.includes(realId)
+    || audit.uncited !== 1 || audit.cited !== 2 || audit.claims !== 3
+  ) {
+    failures++;
+    console.error(`FAIL citation audit: ${JSON.stringify(audit)}`);
   }
 }
 
