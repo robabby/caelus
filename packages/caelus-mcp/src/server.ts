@@ -23,7 +23,7 @@ import {
   lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal, solarEclipseLimits,
   lunarEclipseLocal,
   ASPECTS, DEFAULT_ORBS, SIGNS as SIGN_NAMES, dignities, normalizeHouseSystem,
-  solarPhase, aspectPhase, planetaryHour, voidOfCourse,
+  solarPhase, planetaryHour, voidOfCourse,
   CAZIMI_DEG, COMBUST_DEG, UNDER_BEAMS_DEG,
   solarReturn, lunarReturn, progressedLongitude, directedLongitude,
   solarArc, progressedJd, compositeLongitudes, davisonParams, midpointLon,
@@ -219,19 +219,11 @@ function chartPayload(
     angles: { asc: r2(c.angles.asc), ascPos: fmt(c.angles.asc), mc: r2(c.angles.mc), mcPos: fmt(c.angles.mc) },
     cusps: cusps.map(r2),
     ...(c.unavailable.length ? { unavailable: c.unavailable } : {}),
-    // Engine Aspect objects ({a, b, aspect, orb}) plus an applying/separating
-    // phase from the two bodies' longitude speeds. The extra key is additive, so
-    // the payload still feeds caelus-wheel's <ChartWheel> without adaptation.
-    // Aspects only ever reference bodies present in the chart (the engine omits
-    // out-of-range ones before pairing), so these lookups are non-null.
-    aspects: c.aspects.map((a) => {
-      const ba = c.bodies[a.a]!;
-      const bb = c.bodies[a.b]!;
-      return {
-        ...a,
-        phase: aspectPhase(ba.lon, ba.speed, bb.lon, bb.speed, ASPECTS[a.aspect]),
-      };
-    }),
+    // Engine Aspect objects already carry an applying/separating/exact phase
+    // (from the two bodies' longitude speeds) and a normalized strength. The
+    // extra keys are additive, so the payload still feeds caelus-wheel's
+    // <ChartWheel> without adaptation.
+    aspects: c.aspects,
   };
 }
 
@@ -289,6 +281,7 @@ const aspectPhaseName = z.enum(["applying", "separating", "exact"]);
 const aspectOut = z.object({
   a: z.string(), b: z.string(), aspect: aspectName, orb: z.number(),
   phase: aspectPhaseName.optional(),
+  strength: z.number().optional(),
 });
 export const chartOut = z.object({
   utc: z.string(),
@@ -635,7 +628,7 @@ export function buildServer(
 
   server.registerTool("natal_chart", {
     description:
-      "A person's birth chart. Requires their exact birth date+time and birthplace (all three: date, lat, lon). Use this — not current_sky — whenever the question is about someone's natal/birth chart. Returns 13 bodies (sun–pluto, chiron, nodes) with sign, house, retrograde, speed; ASC/MC; cusps; major aspects with orbs. Vs Swiss Ephemeris (1850–2150): Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤3.4″ (Chebyshev pack), Chiron ≤1″, mean node ≤1″, true node ≤ 1′ vs SE's built-in ephemeris.",
+      "A person's birth chart. Requires their exact birth date+time and birthplace (all three: date, lat, lon). Use this — not current_sky — whenever the question is about someone's natal/birth chart. Returns 13 bodies (sun–pluto, chiron, nodes) with sign, house, retrograde, speed; ASC/MC; cusps; major aspects with orb, applying/separating phase, and strength (1=exact). Vs Swiss Ephemeris (1850–2150): Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤3.4″ (Chebyshev pack), Chiron ≤1″, mean node ≤1″, true node ≤ 1′ vs SE's built-in ephemeris.",
     inputSchema: { ...birth, house_system: houseSys, zodiac: zodiacSchema },
     _meta: CHART_TOOL_META,
   }, async ({ date, lat, lon, house_system, zodiac }) =>
