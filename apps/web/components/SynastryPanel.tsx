@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Engine, fmtLon, mod, ASPECTS, DEFAULT_ORBS, BODIES, compositeLongitudes,
   type BodyId, type Chart,
@@ -34,6 +34,18 @@ function crossAspect(lonA: number, lonB: number): { aspect: string; orb: number 
     }
   }
   return best;
+}
+
+// Both births live in the URL fragment (#s2=), never sent to a server.
+function b64urlEncode(value: unknown): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(value));
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64urlDecode(raw: string): unknown {
+  const bytes = Uint8Array.from(atob(raw.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
 }
 
 type Person = { iso: string; lat: string; lon: string; place: string; name: string };
@@ -93,6 +105,28 @@ function PersonInputs({ p, onChange }: { p: Person; onChange: (p: Person) => voi
 
 export default function SynastryPanel() {
   const [people, setPeople] = useState<[Person, Person]>(DEFAULTS);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("s2");
+      if (!raw) return;
+      const d = b64urlDecode(raw) as { a?: Person; b?: Person };
+      if (d?.a && d?.b) setPeople([{ ...DEFAULTS[0], ...d.a }, { ...DEFAULTS[1], ...d.b }]);
+    } catch {
+      /* ignore a malformed link */
+    }
+  }, []);
+
+  function share() {
+    const url = `${window.location.origin}${window.location.pathname}#s2=${b64urlEncode({ v: 1, a: people[0], b: people[1] })}`;
+    window.history.replaceState(null, "", url);
+    navigator.clipboard?.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => { /* clipboard blocked: the address bar still holds it */ });
+  }
+
   const a = useMemo(() => personChart(people[0]), [people]);
   const b = useMemo(() => personChart(people[1]), [people]);
   const composite = useMemo(
@@ -116,6 +150,16 @@ export default function SynastryPanel() {
         <div>
           <div className="dim small" style={{ marginBottom: "0.35rem" }}>Person B · local birth time</div>
           <PersonInputs p={people[1]} onChange={set(1)} />
+        </div>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <button
+            type="button"
+            className="mono"
+            style={{ ...inp, cursor: "pointer", borderColor: "var(--accent)", color: "var(--text)" }}
+            onClick={share}
+          >
+            {copied ? "Link copied ✓" : "Copy share link"}
+          </button>
         </div>
       </div>
 
