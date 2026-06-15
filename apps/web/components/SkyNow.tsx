@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
-  nakshatra, vimshottariActive, profectionAt,
+  nakshatra, vimshottariActive, profectionAt, varga,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -343,7 +343,11 @@ export default function SkyNow() {
   const vedic = useMemo(() => {
     if (!chart) return null;
     const sid = (b: string) => engine().longitude(b as BodyId, chart.jdUt, { zodiac: "sidereal:lahiri" });
-    const bodies = BODIES.flatMap((b) => (chart.bodies[b] ? [{ body: b, nak: nakshatra(sid(b)) }] : []));
+    const bodies = BODIES.flatMap((b) => {
+      if (!chart.bodies[b]) return [];
+      const l = sid(b);
+      return [{ body: b, nak: nakshatra(l), d9: varga(l, 9).sign, d10: varga(l, 10).sign }];
+    });
     const now = new Date();
     const nowJd = julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
     return { bodies, dasha: vimshottariActive(sid("moon"), chart.jdUt, nowJd) };
@@ -774,14 +778,20 @@ export default function SkyNow() {
 
                   {tab === "vedic" && vedic && (
                     <>
-                      <p className="dim small" style={{ marginTop: 0 }}>Sidereal · Lahiri ayanamsa. Nakshatra (lunar mansion) per body:</p>
+                      <p className="dim small" style={{ marginTop: 0 }}>Sidereal · Lahiri. Nakshatra, then the navamsa (D9) and dasamsa (D10) signs:</p>
                       <table className="mono" style={{ fontSize: "0.82rem" }}>
+                        <thead>
+                          <tr style={{ color: "var(--text-mute)" }}>
+                            <td style={cell} /><td style={cell}>nakshatra</td><td style={cell}>D9</td><td style={cell}>D10</td>
+                          </tr>
+                        </thead>
                         <tbody>
-                          {vedic.bodies.map(({ body, nak }) => (
+                          {vedic.bodies.map(({ body, nak, d9, d10 }) => (
                             <tr key={body}>
                               <td className="mute" style={cell}>{GLYPHS[body] ? `${GLYPHS[body]} ` : ""}{body}</td>
-                              <td style={cell}>{nak.name}</td>
-                              <td className="mute" style={cell}>pada {nak.pada} · {nak.lord}</td>
+                              <td style={cell}>{nak.name} <span className="mute">p{nak.pada}</span></td>
+                              <td className="mute" style={cell}>{d9}</td>
+                              <td className="mute" style={cell}>{d10}</td>
                             </tr>
                           ))}
                         </tbody>
