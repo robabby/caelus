@@ -369,6 +369,7 @@ report("solar eclipses (type+max)", wt if len(solar) == len(se2) and not bad els
 # for the central (non-partial) eclipses in the window.
 worst_km = 0.0
 worst_loc = 0.0
+worst_mag = 0.0
 n_central = 0
 for o, s in zip(solar, se2):
     if o["type"] == "partial":
@@ -392,8 +393,12 @@ for o, s in zip(solar, se2):
     for a, b in pairs:
         if a is not None and b:
             worst_loc = max(worst_loc, abs(a - b) * 86400)
+    # eclipse magnitude (Moon/Sun diameter ratio) at the central point
+    _, attr = swe.sol_eclipse_how(o["t_max"], geopos, FLG)
+    worst_mag = max(worst_mag, abs(loc["magnitude"] - attr[0]))
 report("solar eclipse where", worst_km, unit=" km", n=n_central)
 report("solar eclipse contacts (loc)", worst_loc, unit=" s", n=n_central)
+report("solar eclipse magnitude (loc)", worst_mag, unit=" mag", n=n_central)
 
 print()
 # az/alt and pheno phase angle carry ΔT-model and sun-moon-distance noise;

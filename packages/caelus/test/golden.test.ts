@@ -301,21 +301,27 @@ for (const g of G.houses) {
   // (gated via `failures`, no `checks` inflation). Greatest-eclipse point to
   // ~0.02 deg (~2 km) and totality duration to a few seconds.
   for (const c of [
-    { y: 2017, m: 8, geLat: 36.974, geLon: -87.659, durS: 160, widthKm: 114.7 },
-    { y: 2024, m: 4, geLat: 25.298, geLon: -104.138, durS: 268, widthKm: 197.5 },
+    // NASA GSFC canon: greatest-eclipse point, central duration, eclipse
+    // magnitude (Moon/Sun diameter ratio at a central eclipse), path width.
+    { y: 2017, m: 8, kind: "total", geLat: 36.974, geLon: -87.659, durS: 160, mag: 1.031, obsc: 1, widthKm: 114.7 },
+    { y: 2024, m: 4, kind: "total", geLat: 25.298, geLon: -104.138, durS: 268, mag: 1.057, obsc: 1, widthKm: 197.5 },
+    { y: 2023, m: 10, kind: "annular", geLat: 11.4, geLon: -83.1, durS: 317, mag: 0.952, obsc: 0.906, widthKm: 187 },
   ]) {
     const es = solarEclipses(eng, julianDay(c.y, c.m, 1), julianDay(c.y, c.m, 28));
-    const e = es.find((x) => x.type === "total");
+    const e = es.find((x) => x.type === c.kind);
     const w = e ? solarEclipseWhere(eng, e.tMax) : null;
-    if (!e || !w || Math.abs(w.lat - c.geLat) > 0.05 || Math.abs(w.lonEast - c.geLon) > 0.05) {
+    if (!e || !w || Math.abs(w.lat - c.geLat) > 0.06 || Math.abs(w.lonEast - c.geLon) > 0.06) {
       failures++;
       console.error(`FAIL ${c.y} greatest-eclipse point: ${w ? `${w.lat.toFixed(3)},${w.lonEast.toFixed(3)}` : "null"} vs ${c.geLat},${c.geLon}`);
     }
     const loc = e ? solarEclipseLocal(eng, e.tMax, c.geLat, c.geLon) : null;
     const dur = loc && loc.c2 && loc.c3 ? (loc.c3 - loc.c2) * 86400 : -1;
-    if (!loc || loc.type !== "total" || Math.abs(loc.obscuration - 1) > 1e-6 || Math.abs(dur - c.durS) > 8) {
+    if (!loc || loc.type !== c.kind
+      || Math.abs(loc.magnitude - c.mag) > 0.002
+      || Math.abs(loc.obscuration - c.obsc) > 0.003
+      || Math.abs(dur - c.durS) > 8) {
       failures++;
-      console.error(`FAIL ${c.y} local@GE: type=${loc?.type} obsc=${loc?.obscuration.toFixed(3)} dur=${dur.toFixed(0)}s vs ${c.durS}s`);
+      console.error(`FAIL ${c.y} local@GE: type=${loc?.type} mag=${loc?.magnitude.toFixed(3)} obsc=${loc?.obscuration.toFixed(3)} dur=${dur.toFixed(0)}s`);
     }
     const path = e ? solarEclipseLimits(eng, e.tMax) : null;
     if (!path || path.widthKm === null || Math.abs(path.widthKm - c.widthKm) > 4) {

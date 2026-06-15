@@ -310,8 +310,13 @@ def solar_eclipse_local(engine, jd, lat_deg, lon_east_deg, alt_m=0.0):
             return sep2 - abs(sm2 - ss2)
         c2 = _contact(g_inner, t_max, -1)
         c3 = _contact(g_inner, t_max, +1)
+    # Magnitude = fraction of the Sun's diameter covered. Partial: one Moon
+    # edge inside the Sun's disk; central (annular/total): the Moon/Sun diameter
+    # ratio -- < 1 in annularity, > 1 in totality.
+    mag = (s_m / s_s if sep <= abs(s_m - s_s)
+           else (s_s + s_m - sep) / (2 * s_s))
     return {"type": kind,
-            "magnitude": (s_s + s_m - sep) / (2 * s_s),
+            "magnitude": mag,
             "obscuration": _lens_area(sep, s_s, s_m) / (math.pi * s_s * s_s),
             "max_time": t_max,
             "c1": _contact(g_outer, t_max, -1), "c2": c2, "c3": c3,

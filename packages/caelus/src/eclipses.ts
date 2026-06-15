@@ -393,9 +393,12 @@ export function solarEclipseLocal(
     c2 = contact(gInner, tMax, -1);
     c3 = contact(gInner, tMax, 1);
   }
+  // Magnitude = fraction of the Sun's diameter covered. In the partial regime
+  // one Moon edge is inside the Sun's disk; once central (annular or total) it
+  // is the Moon/Sun diameter ratio -- < 1 in annularity, > 1 in totality.
   return {
     type,
-    magnitude: (sS + sM - sep) / (2 * sS),
+    magnitude: sep <= Math.abs(sM - sS) ? sM / sS : (sS + sM - sep) / (2 * sS),
     obscuration: lensArea(sep, sS, sM) / (Math.PI * sS * sS),
     maxTime: tMax,
     c1: contact(gOuter, tMax, -1),
