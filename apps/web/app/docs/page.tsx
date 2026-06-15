@@ -20,6 +20,7 @@ const CARDS: Array<[string, string, string]> = [
   ["/docs/mcp", "MCP Setup", "Add twenty-seven chart tools to Claude, Cursor, and other MCP clients."],
   ["/docs/recipes", "Recipes", "Transits, the when() query language, event search, and chart wheels."],
   ["/docs/electional", "Electional Search", "Scan a window with rankMoments, score each instant with the electional primitives, and render the winning chart."],
+  ["/docs/interpretation", "Interpretation Layer", "Turn validated facts into citable readings: fact atoms, selectors, a pluggable rule corpus, and an LLM brief with citation auditing."],
   ["/docs/visualizations", "Visualizations", "Beyond the flat wheel: a 3D chart sphere, an astrocartography world map, and a graphic ephemeris, rendered live."],
   ["/docs/api", "API Reference", "Generated reference for the caelus package surface."],
   ["/docs/edge-cases", "Edge Cases & Stability", "Date range, polar fallback, civil-time hazards, longitude convention, and the versioning contract."],

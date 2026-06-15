@@ -1,0 +1,307 @@
+export const metadata = {
+  title: "Interpretation Layer",
+  description: "Turn a validated chart into citable readings: project it into ranked fact atoms, match them with selectors, plug in a rule corpus, and hand an LLM a brief it must cite. The engine owns the facts; you own the meaning.",
+  alternates: { canonical: "/docs/interpretation" },
+};
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
+
+# Interpretation layer
+
+Caelus is a fact engine. Every module stops at validated geometry and says so:
+a chart gives you bodies, aspects, angles, cusps, dignities, and patterns, with
+no flavour text and no "what it means." That is deliberate — the numbers are
+correct and auditable, and astrology's meaning is a matter of tradition and
+taste, not arithmetic.
+
+But it leaves a gap. If you want to *generate* an interpretation — a rule-based
+reading, or an LLM that writes natal prose — you have nowhere clean to plug in.
+The interpretation layer is that seam. It does **not** interpret. It defines the
+contract between the facts the engine owns and the meaning you bring:
+
+> The engine owns the **facts**. A layer you plug in owns the **meaning**. The
+> framework owns the **contract** between them — never the content.
+
+```text
+Engine (validated)     chart(): bodies, aspects, angles, cusps
+  → Fact projection    interpretationContext(chart): ranked, citable atoms
+  → Matching           selectors over atoms (each match carries its provenance)
+  → Sources            your rule corpus + interpret() / reconcile()
+  → Output             a structured reading, or an LLM brief + citation audit
+```
+
+Each layer is independently useful and consumes only the one below it. Use as
+much of the stack as you need: stop at the atoms and feed your own model, or run
+the whole pipeline to a reconciled, cited reading.
+
+## What it's for
+
+- **Ground an LLM in correct math.** The hardest part of an AI astrologer is not
+  the prose — models write fluent prose — it is that they hallucinate positions.
+  Hand the model the validated facts, each tagged with a stable id, and require
+  it to cite the id behind every claim. The chart math was never the model's to
+  invent, and `auditCitations` proves it didn't.
+- **Build a rule-based reading engine.** Express a tradition or house style as
+  selectors over the fact model — "Mars in an angular house and part of a
+  T-square" — and get back ranked statements, each carrying the exact atoms that
+  justified it.
+- **Rank and reconcile.** Salience surfaces what is prominent; `reconcile`
+  groups everything said about the same placement and flags where your corpus
+  contradicts itself.
+
+## 1. Project the chart into fact atoms
+
+`interpretationContext(chart)` flattens a `Chart` into a flat, ranked list of
+typed **fact atoms**. An atom is the unit an interpreter reasons about and cites.
+
+<CodeBlock
+  lang="typescript"
+  label="atoms.ts"
+  code={`import { Engine, julianDay, interpretationContext } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+
+const engine = new Engine(embeddedData);
+const chart = engine.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
+
+const ctx = interpretationContext(chart);
+ctx.atoms.slice(0, 3).forEach((a) => console.log(a.id, "—", a.text));
+// pattern:t_square:mars-moon-saturn — T-square: Mars, Moon, Saturn (apex Saturn)
+// placement:moon — Moon in Capricorn, house 6
+// aspect:moon~neptune:conjunction — Moon conjunction Neptune (applying, orb 0.6°)`}
+/>
+
+Every atom carries five common fields:
+
+- **`id`** — a stable, content-addressable string (`placement:mars`,
+  `aspect:mars~saturn:square`, `pattern:t_square:mars-moon-saturn`,
+  `signature:element:fire`, `angle:asc`). A generated claim points at this id,
+  so it can always be traced back to the fact it rests on.
+- **`kind`** — `placement | aspect | pattern | signature | angle | dispositor |
+  reception`.
+- **`bodies`** — the body ids involved, for filtering and cross-reference.
+- **`salience`** — a transparent, overridable prominence score (below).
+- **`text`** — a plain-language statement of the fact, with no interpretation
+  (`"Moon conjunction Neptune (applying, orb 0.6°)"`).
+
+Kind-specific fields fill in the rest: placements add
+`sign`/`signDeg`/`house`/`retrograde`/`dignities`; aspects add
+`aspect`/`orb`/`phase`/`strength`; patterns add `pattern`/`apex`; signature
+facets add `facet`/`value`; dispositors add `dispositor`/`final`.
+
+Two enrichments that the bare `Chart.aspects` list omits are computed here (the
+engine now fills them onto the aspect, the projection carries them onto the atom):
+
+- **`phase`** — applying, separating, or exact, from the two bodies' speeds.
+- **`strength`** — closeness in `[0, 1]` (1 = exact, 0 = at the orb limit),
+  normalized against the orb policy used to find the aspect.
+
+### Salience
+
+Salience ranks atoms so a reader leads with what is prominent — without the
+engine asserting meaning. It is a sum of explicit, documented contributions,
+all overridable through `ContextOptions.salience`:
+
+| Contribution | Applies to |
+|---|---|
+| `base` | every atom |
+| `luminary` | the Sun or Moon is involved |
+| `angular` | an angular house (1/4/7/10), or an angle atom |
+| `chartRuler` | the Ascendant ruler's placement |
+| `dignity` | per essential dignity held |
+| `hardAspect` | conjunction / square / opposition |
+| `pattern` | a whole configuration |
+| `dispositor` / `reception` | a dispositor link / a mutual reception |
+
+No weight is magic. A caller who dislikes the defaults overrides any subset:
+
+<CodeBlock
+  lang="typescript"
+  label="salience-override.ts"
+  code={`// Lead with configurations, mute the luminary bump.
+const ctx = interpretationContext(chart, {
+  salience: { pattern: 8, luminary: 0 },
+});`}
+/>
+
+This is framework code, not ephemeris — there is no Swiss Ephemeris oracle for
+"which facts matter" — so it is unit-tested for structure (atoms tie back to the
+validated chart, ids are unique, salience is sorted) rather than pinned by a
+parity golden.
+
+## 2. Match atoms with selectors
+
+A **selector** tests the whole projection and reports the atoms that satisfied
+it. Because selectors read the atoms directly, they express the whole fact model
+— house, dignity, pattern membership, signature dominance, aspect phase and
+strength — which the geometric, time-only [`when()`](/docs/recipes) predicates
+cannot.
+
+<CodeBlock
+  lang="typescript"
+  label="selectors.ts"
+  code={`import {
+  hasPlacement, hasAspect, hasPattern, hasSignature, hasAngle,
+  hasDispositor, hasReception, matchAll, matchAny, matchNone,
+} from "caelus";
+
+// Atom selectors take a filter; any omitted field is a wildcard.
+hasPlacement({ body: "mars", house: 10 });        // Mars in the 10th
+hasAspect({ between: ["moon", "neptune"], aspect: "conjunction" });
+hasAspect({ a: "saturn", phase: "applying", minStrength: 0.5 });
+hasPattern({ kind: "t_square", body: "mars" });
+hasSignature("element", "fire");
+hasReception({ body: "venus" });
+
+// Combinators compose them. matchAll unions the atoms that justified the match.
+const angularMarsInTSquare = matchAll(
+  hasPlacement({ body: "mars", house: 10 }),
+  hasPattern({ kind: "t_square", body: "mars" }),
+);
+
+const m = angularMarsInTSquare(ctx);
+// m.matched === true; m.atoms holds the placement + pattern atoms (the provenance)`}
+/>
+
+`matchAll` requires every selector and unions their atoms; `matchAny` requires
+one and returns those that matched; `matchNone` is an absence test (matches when
+its selector does not, and carries no atoms).
+
+## 3. Plug in a rule corpus
+
+A **`Rule`** pairs a selector (`when`) with the `text` it licenses. An
+**`InterpretationSource`** bundles rules — a tradition, a house style, a
+third-party corpus. `interpret(ctx, sources)` runs every rule and, for each
+match, emits a `ReadingEntry` carrying the text, the matched `atomIds` (the
+audit trail), and a salience equal to the sum of those atoms' salience times the
+rule's `weight`. Entries come back sorted by salience.
+
+The engine ships the mechanism; **the rule content is always yours.** The corpus
+below is illustrative placeholder content, not authoritative astrology.
+
+<CodeBlock
+  lang="typescript"
+  label="corpus.ts"
+  code={`import { interpret, reconcile, hasPlacement, hasAspect, hasReception, matchAll, hasPattern } from "caelus";
+
+const source = {
+  id: "example",
+  version: "0.1",
+  rules: [
+    {
+      id: "moon-neptune",
+      when: hasAspect({ between: ["moon", "neptune"], aspect: "conjunction" }),
+      text: "Feeling and imagination blur together.",
+      weight: 1.5,
+      tags: ["water"],
+    },
+    {
+      id: "saturn-domicile",
+      when: hasPlacement({ body: "saturn", dignity: "domicile" }),
+      text: "Saturn is structurally strong here.",
+      tags: ["affirming"],
+    },
+    {
+      id: "venus-reception",
+      when: hasReception({ body: "venus" }),
+      // text can be a function of the match, for templating from the atoms
+      text: (m) => "Venus is in mutual reception (" + m.atoms[0].id + ").",
+    },
+  ],
+};
+
+const reading = interpret(ctx, [source]);
+reading.entries.forEach((e) => console.log(e.salience.toFixed(1), e.text, e.atomIds));`}
+/>
+
+### Reconcile
+
+A flat ranked list scatters everything said about one placement. `reconcile`
+groups entries by the facts they share (atoms in common), drops duplicate text,
+and marks a group `contested` when a declared conflicting tag-pair both appear in
+it. Semantic contradiction is the corpus author's to *declare* (via `tags` +
+`conflicts`); the resolver does the bookkeeping, not the judgement.
+
+<CodeBlock
+  lang="typescript"
+  label="reconcile.ts"
+  code={`const groups = reconcile(reading, {
+  dedupe: true,
+  conflicts: [["affirming", "challenging"]],
+});
+
+for (const g of groups) {
+  console.log(g.atomIds.join(", "), g.contested ? "(contested)" : "");
+  for (const e of g.entries) console.log("  -", e.text);
+}`}
+/>
+
+## 4. Output: a reading, or an LLM brief
+
+There are two consumers of the projection.
+
+**A structured reading** — the ranked `interpret(...)` entries (or reconciled
+groups), with provenance, for a rule-based product. You already have it from
+step 3.
+
+**An LLM brief** — `chartBrief(ctx, opts)` renders the salience-ranked,
+id-tagged facts into a ready-to-send `prompt`. The model writes original prose
+(*novel*) and cites the `[id]` each statement rests on; `auditCitations` then
+checks those citations resolve, flagging any that invented a fact (*accurate*).
+
+<CodeBlock
+  lang="typescript"
+  label="brief.ts"
+  code={`import { chartBrief, auditCitations } from "caelus";
+
+// Cap to the 20 most salient facts; optionally fold the rule reading in.
+const brief = chartBrief(ctx, { limit: 20, reading });
+console.log(brief.prompt);
+// Natal chart facts follow, each with a stable id in [brackets]. Interpret them
+// in your own words; after each statement, cite the id(s) it rests on as [id]...
+//
+// [pattern:t_square:mars-moon-saturn] T-square: Mars, Moon, Saturn (apex Saturn)
+// [placement:moon] Moon in Capricorn, house 6
+// [aspect:moon~neptune:conjunction] Moon conjunction Neptune (applying, orb 0.6°)
+// ...
+
+// ...send brief.prompt to your model, collect its claims + the ids each cited...
+const modelClaims = [
+  { text: "The Saturn T-square asks for discipline.", cites: ["pattern:t_square:mars-moon-saturn"] },
+  { text: "Venus square Pluto drives obsession.", cites: ["aspect:venus~pluto:square"] }, // invented
+];
+
+const audit = auditCitations(modelClaims, ctx);
+// audit.ok === false; audit.unknown === ["aspect:venus~pluto:square"]
+// the second claim cited a fact that is not in the chart`}
+/>
+
+`auditCitations` returns whether every cited id resolves (`ok`), how many claims
+were `cited` vs `uncited`, and the distinct `valid` and `unknown` ids. An
+`unknown` id is fabricated provenance — the model asserted a fact the chart never
+contained.
+
+## Over MCP
+
+The whole seam is wired into the [MCP server](/docs/mcp) as the `chart_facts`
+tool, for hosts where the model is already the interpreter (Claude, Cursor, …).
+It returns a chart's ranked, citable atoms plus a ready `brief`, so the host
+interprets from correct math and cites the `[id]` each statement rests on
+instead of re-deriving — and hallucinating — positions.
+
+```text
+"Read my natal chart: born June 10 1990, 2:30pm, Tampa FL."
+  → chart_facts → ranked facts + brief → the host writes prose, citing [ids]
+```
+
+## When to use which layer
+
+- **Just the atoms** (`interpretationContext`) — you have your own model or
+  ranking and only need the validated facts, normalized and addressable.
+- **Selectors + a rule corpus** (`interpret` / `reconcile`) — you are building a
+  deterministic, rule-based reading engine and want provenance and conflict
+  detection for free.
+- **The brief** (`chartBrief` / `auditCitations`) — you are using an LLM and
+  need it grounded: novel prose, accurate facts, citations you can verify.
+
+In every case the engine ships the contract and the math, never the meaning. The
+interpretation is yours, and it is always traceable to a validated fact.
