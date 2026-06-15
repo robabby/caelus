@@ -13,6 +13,8 @@ export interface FetchSpec {
   stripGutenberg?: boolean;
   stripArchive?: boolean;
   sacredTextsIndex?: string;
+  /** Source is a PDF needing a text-layer extraction (pdftotext), not HTTP text. */
+  pdf?: boolean;
 }
 
 export interface SourceManifestEntry {

@@ -176,6 +176,48 @@
     }
   },
   {
+    "id": "pearce-textbook",
+    "layer": 1,
+    "title": "The Text-Book of Astrology",
+    "author": "Alfred John Pearce",
+    "year": 1911,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/pearce-textbook.txt",
+    "fetch": {
+      "url": "http://www.iapsop.com/ssoc/1911__pearce___the_text-book_of_astrology.pdf",
+      "pdf": true
+    }
+  },
+  {
+    "id": "wilson-dictionary",
+    "layer": 1,
+    "title": "A Complete Dictionary of Astrology",
+    "author": "James Wilson",
+    "year": 1819,
+    "tradition": "renaissance",
+    "rights": "pd-us",
+    "file": "sources/text/wilson-dictionary.txt",
+    "fetch": {
+      "url": "https://archive.org/download/b29298180/b29298180_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "leo-art-of-synthesis",
+    "layer": 1,
+    "title": "The Art of Synthesis",
+    "author": "Alan Leo",
+    "year": 1912,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/leo-art-of-synthesis.txt",
+    "fetch": {
+      "url": "https://archive.org/download/artofsynthesis00leoa/artofsynthesis00leoa_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
     "id": "raphael-key-to-astrology",
     "layer": 1,
     "title": "The Guide to Astrology",
