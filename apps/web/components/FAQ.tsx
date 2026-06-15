@@ -112,6 +112,23 @@ const ITEMS: QA[] = [
     text:
       "It computes; you interpret. The engine stops at validated geometry and ships no flavour text. For generated readings it provides an interpretation layer: a chart projects into ranked, citable fact atoms that a rule corpus or an LLM plugs into, with citation auditing to keep an AI grounded in the real chart.",
   },
+  {
+    q: "Can it chart a forecast, a fictional character, or an archetype?",
+    a: (
+      <>
+        Yes. The{" "}
+        <A href="/docs/provenance">provenance layer</A> declares what the chart
+        is (<code>Realm</code>) and how its time and place are known.{" "}
+        <code>realize()</code> routes to the ephemeris or the geometric compiler,
+        and passes certainty into the{" "}
+        <A href="/docs/interpretation">interpretation layer</A> so a forecast
+        reads as provisional and an inexact birth time down-weights the Moon
+        and angles.
+      </>
+    ),
+    text:
+      "Yes. The provenance layer declares what the chart is (Realm) and how its time and place are known. realize() routes to the ephemeris or the geometric compiler, and passes certainty into the interpretation layer so a forecast reads as provisional and an inexact birth time down-weights the Moon and angles.",
+  },
 ];
 
 const faqJsonLd = {

@@ -83,6 +83,10 @@ Every atom carries five common fields:
 - **`text`**: a plain-language statement of the fact, with no interpretation
   (`"Moon conjunction Neptune (applying, orb 0.6°)"`).
 
+**Reception** atoms record mutual reception by **domicile**, **exaltation**, or
+the sect's **triplicity** ruler (or a mixed pair, e.g. `domicile-exaltation`).
+Use `hasReception({ body: "venus" })` to match any involving Venus.
+
 Kind-specific fields fill in the rest: placements add
 `sign`/`signDeg`/`house`/`retrograde`/`dignities`; aspects add
 `aspect`/`orb`/`phase`/`strength`; patterns add `pattern`/`apex`; signature
@@ -280,6 +284,47 @@ were `cited` vs `uncited`, and the distinct `valid` and `unknown` ids. An
 `unknown` id is fabricated provenance: the model asserted a fact the chart never
 contained.
 
+## 5. Provenance framing
+
+Charts are not always a verified birth instant. A forecast, a mythic subject, or
+a time known only to the hour need different interpretation framing than an
+observed event. The [provenance guide](/docs/provenance) declares what a chart
+**is** (`Realm`) and how firmly its instant is known (`Certainty`).
+
+Wire it from `realize()`:
+
+<CodeBlock
+  lang="typescript"
+  label="realize-to-brief.ts"
+  code={`import {
+  Engine, realize, interpretationContext, chartBrief,
+} from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+
+const engine = new Engine(embeddedData);
+const realized = realize(engine, {
+  realm: "forecast",
+  when: { kind: "range", earliest: "2030-01-01", latest: "2030-12-31" },
+  where: { kind: "geo", lat: 40.7, lonEast: -74.0 },
+});
+if (!realized.chart) throw new Error(realized.note);
+
+const ctx = interpretationContext(realized.chart, {
+  provenance: {
+    realm: realized.realm,
+    certainty: realized.time.certainty,
+  },
+});
+const brief = chartBrief(ctx, { limit: 20 });`}
+/>
+
+When `certainty` is not `exact`, **time-sensitive atoms are damped**: Moon and
+angle salience is scaled by 0.7 (`approximate`) or 0.6 (`representative`); slow
+planets keep full weight. `chartBrief` prepends a **realm framing** line when
+needed (a forecast reads as provisional; a mythic chart as a symbol, not a
+biography; an inexact time warns the model to distrust the Moon, angles, and
+houses).
+
 ## Over MCP
 
 The whole seam is wired into the [MCP server](/docs/mcp) as the `chart_facts`
@@ -302,6 +347,9 @@ on instead of re-deriving (and hallucinating) positions.
   detection for free.
 - **The brief** (`chartBrief` / `auditCitations`): you are using an LLM and
   need it grounded: novel prose, accurate facts, citations you can verify.
+- **Non-birth charts** ([provenance](/docs/provenance) + `realize`): forecasts,
+  fiction, archetypes, or inexact times. Declare the realm, route to ephemeris
+  or the compiler, and pass `certainty` so damping and framing stay honest.
 
 In every case the engine ships the contract and the math, never the meaning. The
 interpretation is yours, and it is always traceable to a validated fact.

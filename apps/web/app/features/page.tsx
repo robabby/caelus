@@ -307,13 +307,25 @@ export default function Features() {
         <Feature title="Interpretation layer">
           The engine stops at facts; this is the seam where meaning plugs in.
           <code>interpretationContext</code> projects a chart into ranked,
-          citable fact atoms; selectors and a pluggable rule corpus turn them
-          into a structured reading with provenance; and{" "}
+          citable fact atoms (including dispositors and mutual reception by
+          domicile, exaltation, or triplicity); selectors and a pluggable rule
+          corpus turn them into a structured reading; and{" "}
           <code>chartBrief</code> hands an LLM only the validated facts, each
-          tagged with a stable id, so it writes original prose and cites the fact
-          behind every claim, which <code>auditCitations</code> then verifies.
-          The math is never the model&apos;s to hallucinate; the content is
-          always yours. See <A href="/docs/interpretation">Interpretation</A>.
+          tagged with a stable id, with <code>auditCitations</code> to verify
+          what it cited. Pair with the{" "}
+          <A href="/docs/provenance">provenance layer</A> so forecasts, fiction,
+          and inexact times get realm framing and certainty damping. See{" "}
+          <A href="/docs/interpretation">Interpretation</A>.
+        </Feature>
+        <Feature title="Chart provenance">
+          A chart is not always a verified birth instant.{" "}
+          <code>Realm</code> declares what it is (observed, forecast, mythic,
+          archetypal, …); <code>TemporalAnchor</code> and{" "}
+          <code>SpatialAnchor</code> declare how time and place are known;
+          <code>realize()</code> routes to the ephemeris or the geometric
+          compiler. Certainty flows into interpretation so Moon and angles are
+          down-weighted when the time is approximate. See{" "}
+          <A href="/docs/provenance">Provenance</A>.
         </Feature>
       </Group>
 

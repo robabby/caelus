@@ -1,0 +1,211 @@
+export const metadata = {
+  title: "Chart Provenance",
+  description: "Declare what a chart is and how its time and place are known: realms, temporal and spatial anchors, routing to the ephemeris or the compiler, and honest framing for interpretation.",
+  alternates: { canonical: "/docs/provenance" },
+};
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
+
+# Chart provenance
+
+`chartAt(jd, lat, lon)` silently asserts a real instant at a real place. That
+is wrong for most interesting cases: a forecast, a fictional character, an
+archetype ("the chart of Aries"), a counterfactual, a birth time known only to
+the hour, or a narrative calendar (Stardate, a regnal year, a game epoch).
+
+The provenance layer makes a chart's grounding first-class: what it **is**
+(`Realm`), and how its time and place are **known** (`TemporalAnchor`,
+`SpatialAnchor`). It does not compute positions. It resolves anchors to a usable
+instant and place (or reports that none can be derived), routes to the right
+generator, and hands realm + certainty to the
+[interpretation layer](/docs/interpretation) so a reading stays honest.
+
+```text
+AnchoredChart { realm, when, where?, constraints? }
+  → resolveTime / resolvePlace (Certainty: exact | approximate | representative | none)
+  → realize(): ephemeris (chartAt) | compiler (compileForm) | none
+  → interpretationContext(chart, { provenance: { realm, certainty } })
+```
+
+## Realm: what the chart is
+
+| Realm | Meaning | Typical generator |
+|---|---|---|
+| `observed` | Verified firsthand | ephemeris |
+| `reported` | Attested second-hand (a quoted birth time) | ephemeris |
+| `planned` | A real future moment chosen deliberately | ephemeris |
+| `forecast` | A real future moment, predicted not chosen | ephemeris (often a range midpoint) |
+| `fictional` | A character or event in an invented world | ephemeris or compiler |
+| `mythic` | A deity, legend, or sacred narrative | ephemeris or compiler |
+| `counterfactual` | A real event, perturbed ("born an hour later") | ephemeris |
+| `archetypal` | A pure symbol ("the chart of Aries") | compiler (constraints) |
+| `conceptual` | An idea, organization, or abstraction | compiler (constraints) |
+
+`isTimeAnchored(realm)` splits the routing: the first five expect a resolvable
+instant and go to the ephemeris; `archetypal` and `conceptual` usually have no
+instant and go to the compiler when you supply constraints. `counterfactual` is
+the bridge: a real instant, then perturbed.
+
+## Temporal and spatial anchors
+
+A **`TemporalAnchor`** is not just a tagged value. `relative` and `narrative`
+kinds make it a small constraint graph (the temporal cousin of the geometric
+compiler).
+
+| kind | Resolves to | Certainty |
+|---|---|---|
+| `instant` | the parsed UT instant | `exact` |
+| `range` | the midpoint (+ bounds kept) | `representative` |
+| `relative` | a registry instant ± parsed offset | `approximate` |
+| `narrative` | a pluggable calendar resolver's output | `approximate` |
+| `symbolic` / `none` | null (rationale or reason kept) | `none` |
+
+Offsets accept compact units (`"3d"`, `"-2h"`, `"6mo"`) or ISO-8601 durations
+(`"P1Y2M10DT2H30M"`). Calendar units use mean lengths.
+
+**`SpatialAnchor`** mirrors time: `geo`, `named`, `region`, `relative`,
+`fictional`, or `none`. `resolvePlace` uses the same `AnchorRegistry` (a
+gazetteer for `named`, stored places for `relative`). `none` place is the
+heliocentric or purely symbolic case: no houses, no angles.
+
+## The anchor registry
+
+An **`AnchorRegistry`** holds the lookups anchors need:
+
+- **`instants`**: `anchorId → UT Julian Day` for `relative` time anchors
+- **`calendars`**: calendar name → `(value → jd | null)` for `narrative` times
+- **`places` / `gazetteer`**: named and relative place resolution
+
+Missing lookups resolve to `null` with a note, never a guessed instant.
+
+<CodeBlock
+  lang="typescript"
+  label="resolve.ts"
+  code={`import { resolveTime, resolvePlace, parseOffset } from "caelus";
+
+const reg = {
+  instants: { ev: 2110700.5 },
+  calendars: {
+    stardate: (v) => v === "41153.7" ? 2451545.0 : null,
+  },
+};
+
+// Exact instant
+resolveTime({ kind: "instant", utc: "1990-06-10T14:30:00Z" });
+// → { jd, certainty: "exact" }
+
+// Forecast window: midpoint, representative certainty
+resolveTime({
+  kind: "range", earliest: "2030-01-01", latest: "2030-12-31",
+});
+
+// Three days after a known event
+parseOffset("3d"); // days
+resolveTime(
+  { kind: "relative", relation: "after", anchorId: "ev", offset: "P3D" },
+  reg,
+);`}
+/>
+
+## Realize: route to the right generator
+
+**`realize(engine, anchored, registry, opts)`** is where provenance meets the
+two chart generators Caelus already had:
+
+1. **Ephemeris path** (`via: "ephemeris"`): a resolvable instant runs
+   `chartAt`. The realm rides along as interpretation framing only.
+2. **Compiler path** (`via: "compiler"`): no instant, but `constraints` are
+   supplied, so `compileForm` synthesizes a symbolic configuration.
+3. **None** (`via: "none"`): neither was possible; the `note` says why.
+
+A real instant always wins over constraints.
+
+<CodeBlock
+  lang="typescript"
+  label="realize.ts"
+  code={`import { Engine, realize, julianDay } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+
+const engine = new Engine(embeddedData);
+
+// Observed birth: ephemeris
+const birth = realize(engine, {
+  realm: "observed",
+  when: { kind: "instant", utc: "1990-06-10T14:30:00Z" },
+  where: { kind: "geo", lat: 27.95, lonEast: -82.46 },
+});
+// birth.via === "ephemeris"; birth.chart is the Chart
+
+// Archetypal symbol: compiler
+const aries = realize(engine, {
+  realm: "archetypal",
+  when: { kind: "symbolic", rationale: "the sign Aries" },
+  constraints: [
+    { kind: "sign", body: "sun", sign: 0 },
+    { kind: "aspect", a: "sun", b: "moon", angle: 120 },
+  ],
+});
+// aries.via === "compiler"; aries.form holds the synthesized form
+
+// Forecast range: ephemeris at the representative midpoint
+const outlook = realize(engine, {
+  realm: "forecast",
+  when: { kind: "range", earliest: "2030-01-01", latest: "2030-12-31" },
+});
+// outlook.time.certainty === "representative"`}
+/>
+
+## Why interpretation cares
+
+The interpretation layer's accuracy loop is "novel and accurate": the model
+writes original prose and cites real facts. Provenance extends that from **"the
+facts are right"** to **"the chart's status is right."**
+
+Pass realm and certainty from `realize`'s result into the projection:
+
+<CodeBlock
+  lang="typescript"
+  label="framing.ts"
+  code={`import { interpretationContext, chartBrief } from "caelus";
+
+const realized = /* ... realize() above ... */;
+if (!realized.chart) throw new Error(realized.note);
+
+const ctx = interpretationContext(realized.chart, {
+  provenance: {
+    realm: realized.realm,
+    certainty: realized.time.certainty,
+  },
+});
+
+const brief = chartBrief(ctx, { limit: 24 });
+// brief.prompt prepends realmFraming when needed:
+//   forecast → provisional language
+//   mythic → symbol, not biography
+//   representative time → distrust Moon, angles, houses`}
+/>
+
+When certainty is not `exact`, **time-sensitive atoms are damped** in salience:
+the Moon (~13°/day) and the angles (~15°/h) are multiplied by 0.7
+(`approximate`) or 0.6 (`representative`); slow planets keep full weight. An
+uncertain birth time automatically leans the reading on sign-level and slow-planet
+statements.
+
+See the [Interpretation guide](/docs/interpretation) for atoms, selectors, the
+rule corpus, and citation auditing.
+
+## When to use which path
+
+- **Known instant + place** (`observed`, `reported`): plain `chartAt`, or
+  `realize` when you also want certainty on the record.
+- **Election or forecast window** (`planned`, `forecast`): `range` anchor;
+  interpret at `representative` certainty.
+- **Fiction, myth, archetype** (`fictional`, `mythic`, `archetypal`): declare
+  the realm; use constraints when there is no instant.
+- **Counterfactual** (`counterfactual`): `relative` anchor off a real event.
+- **Narrative calendar** (`narrative`): plug a resolver into `AnchorRegistry.calendars`.
+- **Heliocentric / no location** (`where: { kind: "none" }`): positions only;
+  houses and angles are nominal or absent.
+
+In every case the engine ships the contract and the routing. You declare what
+the chart is; the system generates honestly and frames the interpretation to match.
