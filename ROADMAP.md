@@ -199,7 +199,17 @@ parallel with the MCP server. Next: the server-side UI-resource wiring (the
 tool-result `_meta`/`ui://` reference, in the MCP layer) and the Apps-SDK
 manifest / host registration. See `docs/mcp-app.md`.
 
-### Phase 4 — Symbolic computation layer, agent-native (planned)
+### Phase 4 — Symbolic computation layer, agent-native (done)
+
+All shipped reference-first, interpretation-free, golden-pinned, and surfaced in
+the cookbook and over MCP: **named pattern detection** (`detectPatterns`,
+`patterns-golden`, `aspect_patterns` tool), the **computed chart signature**
+(`chartSignature`, `signature-golden`, `chart_signature` tool), and **weighted
+essential-dignity scoring** (`dignityScore`/`almuten`, Lilly weights, Egyptian
+terms, Dorothean triplicities, Chaldean faces, `dignity-golden`, enriching the
+`dignities` tool). The agent cookbook (`/docs/cookbook`) covers the everyday
+tasks. The thin transit wrappers stayed as cookbook recipes over `stations`/
+`crossings` rather than new functions.
 
 Direction set after evaluating an external vision doc (Grok, 2026-06-14) against
 the actual surface. Most of that doc's "critical/missing" Phase 1–2 already
@@ -268,7 +278,15 @@ is mid-revision (sparse-body honesty: a packed body such as Chiron can be absent
 for historical dates) — start them only once that change has landed, to avoid
 editing `chart.ts` concurrently.
 
-### Phase 4b — Agent-native MCP surface (planned)
+### Phase 4b — Agent-native MCP surface (done)
+
+All shipped: **`similar_skies`** ("when did the sky look like this?", over the
+existing feature space), **`electional_search`** (rank a window by wanted
+body-to-body aspects, optional void-Moon penalty), **`cosmic_weather`** (the
+mundane sky: active configurations, stationing planets, void Moon), and
+**parans** (`parans`, co-angular bodies, reference-first + `parans-golden` + a
+cookbook recipe). The MCP server is now at twenty-seven tools; transit density
+remains a possible later count.
 
 Direction refined after a second external pass (Grok, 2026-06-14). Its strongest
 insight: two powerful, already-built, suite-pinned engine capabilities have no
