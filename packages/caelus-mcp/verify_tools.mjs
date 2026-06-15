@@ -26,6 +26,7 @@ import {
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
   detectPatterns, chartSignature,
   chartFeatures, configurationFit,
+  dignityScore,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -328,6 +329,9 @@ const assertExactHits = (hits, body, targetLonAt, angle, label, tolDeg = 0.02) =
   assert(res.sect === (day ? "day" : "night"), "dignities: chart sect");
   for (const b of ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"]) {
     assert(JSON.stringify(res.bodies[b].dignity) === JSON.stringify(dignityOf(eng, b, jd)), `dignities: ${b} dignity`);
+    const ds = dignityScore(b, eng.longitude(b, jd), day ? "day" : "night");
+    assert(res.bodies[b].score === ds.total, `dignities: ${b} weighted score`);
+    assert((res.bodies[b].peregrine ?? false) === ds.peregrine, `dignities: ${b} peregrine flag`);
     assert(res.bodies[b].planetary_sect === planetarySect(b), `dignities: ${b} planetary sect`);
     assert(res.bodies[b].in_sect === inSect(b, day), `dignities: ${b} in sect`);
   }

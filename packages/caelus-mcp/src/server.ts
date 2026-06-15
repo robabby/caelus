@@ -37,6 +37,7 @@ import {
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
   detectPatterns, chartSignature,
   chartFeatures, searchConfigurations,
+  dignityScore,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -383,6 +384,8 @@ export const compositeOut = z.object({
 const dignityBody = z.object({
   sign: z.string(),
   dignity: z.array(z.enum(["domicile", "exaltation", "detriment", "fall"])),
+  score: z.number(),
+  peregrine: z.boolean().optional(),
   planetary_sect: z.enum(["diurnal", "nocturnal"]).nullable(),
   in_sect: z.boolean().nullable(),
 });
@@ -1019,7 +1022,7 @@ export function buildServer(
 
   server.registerTool("dignities", {
     description:
-      "Essential dignity and sect for the seven traditional planets at a moment and place. Per planet: its sign, any essential dignity (domicile/exaltation/detriment/fall), its planetary sect (diurnal/nocturnal, null for Mercury), and whether it is in sect given a day or night chart. The chart is day when the Sun is above the horizon — so lat+lon are required.",
+      "Essential dignity and sect for the seven traditional planets at a moment and place. Per planet: its sign, any essential dignity (domicile/exaltation/detriment/fall), its weighted essential-dignity score (Lilly: rulership 5, exaltation 4, triplicity 3, term 2, face 1; detriment -5, fall -4) with a peregrine flag, its planetary sect (diurnal/nocturnal, null for Mercury), and whether it is in sect given a day or night chart. The chart is day when the Sun is above the horizon — so lat+lon are required.",
     inputSchema: { ...birth, zodiac: zodiacSchema },
   }, async ({ date, lat, lon, zodiac }) => {
     const jd = jdFromIso(date);
@@ -1027,9 +1030,13 @@ export function buildServer(
     const bodies: Record<string, unknown> = {};
     for (const b of TRADITIONAL) {
       const lonB = engine.longitude(b as Body, jd, { zodiac });
+      // Weighted essential-dignity score (Lilly) for this planet at its place.
+      const ds = dignityScore(b, lonB, dayChart ? "day" : "night");
       bodies[b] = {
         sign: SIGNS[Math.floor(lonB / 30)],
         dignity: dignityOf(engine, b as Body, jd, zodiac),
+        score: ds.total,
+        ...(ds.peregrine ? { peregrine: true } : {}),
         planetary_sect: planetarySect(b),
         in_sect: inSect(b, dayChart),
       };

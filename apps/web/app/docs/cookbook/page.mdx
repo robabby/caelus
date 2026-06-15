@@ -80,6 +80,24 @@ dignities("mars", "Aries");    // ["domicile"]
 dignities("sun", "Libra");     // ["fall"]`}
 />
 
+## Score essential dignities (traditional)
+
+For the full traditional treatment, `dignityScore()` weights all five dignities
+(Lilly: rulership 5, exaltation 4, triplicity 3, term 2, face 1; detriment -5,
+fall -4) for a planet at a longitude in a day or night chart, and `almuten()`
+finds the planet that rules a given degree most strongly.
+
+<CodeBlock
+  lang="typescript"
+  label="dignity-score.ts"
+  code={`import { dignityScore, almuten } from "caelus";
+
+dignityScore("venus", 32, "day"); // 2 Taurus, day
+// { rulership: 5, triplicity: 3, term: 2, total: 10, peregrine: false, ... }
+
+almuten(5, "day"); // ruler of 5 Aries by day -> { planet: "sun", score: 7 }`}
+/>
+
 ## The aspects in a chart
 
 `chart.aspects` is the list of aspects among the bodies, each with the two

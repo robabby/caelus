@@ -4346,6 +4346,8 @@
         "sun": {
           "sign": "Gem",
           "dignity": [],
+          "score": 0,
+          "peregrine": true,
           "planetary_sect": "diurnal",
           "in_sect": true
         },
@@ -4354,12 +4356,16 @@
           "dignity": [
             "detriment"
           ],
+          "score": -5,
+          "peregrine": true,
           "planetary_sect": "nocturnal",
           "in_sect": false
         },
         "mercury": {
           "sign": "Tau",
           "dignity": [],
+          "score": 0,
+          "peregrine": true,
           "planetary_sect": null,
           "in_sect": null
         },
@@ -4368,6 +4374,7 @@
           "dignity": [
             "domicile"
           ],
+          "score": 8,
           "planetary_sect": "nocturnal",
           "in_sect": false
         },
@@ -4376,6 +4383,7 @@
           "dignity": [
             "domicile"
           ],
+          "score": 6,
           "planetary_sect": "nocturnal",
           "in_sect": false
         },
@@ -4384,6 +4392,7 @@
           "dignity": [
             "exaltation"
           ],
+          "score": 4,
           "planetary_sect": "diurnal",
           "in_sect": true
         },
@@ -4392,6 +4401,7 @@
           "dignity": [
             "domicile"
           ],
+          "score": 7,
           "planetary_sect": "diurnal",
           "in_sect": true
         }
