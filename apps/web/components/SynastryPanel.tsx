@@ -7,8 +7,9 @@ import {
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import { toUT } from "caelus-birth";
-import { ChartWheel, GLYPHS } from "caelus-wheel";
+import { GLYPHS } from "caelus-wheel";
 import CityPicker, { type City } from "./CityPicker";
+import BiWheel, { type SynContact } from "./BiWheel";
 
 const engine = new Engine(embeddedData);
 
@@ -139,6 +140,13 @@ export default function SynastryPanel() {
 
   const aPlanets = a ? GRID.filter((g) => a.chart.bodies[g]) : [];
   const bPlanets = b ? GRID.filter((g) => b.chart.bodies[g]) : [];
+  const contacts: SynContact[] = [];
+  if (a && b) {
+    for (const ap of aPlanets) for (const bp of bPlanets) {
+      const asp = crossAspect(a.chart.bodies[ap]!.lon, b.chart.bodies[bp]!.lon);
+      if (asp) contacts.push({ aBody: ap, bBody: bp, aspect: asp.aspect, orb: asp.orb });
+    }
+  }
 
   return (
     <div className="card" style={{ padding: "1.2rem" }}>
@@ -171,16 +179,19 @@ export default function SynastryPanel() {
             {people[0].name || "A"} ({a.zone}) and {people[1].name || "B"} ({b.zone}), computed client-side.
           </p>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", marginTop: "1rem" }}>
-            <figure className="chart-fluid" style={{ margin: 0, flex: "1 1 260px", minWidth: 0 }}>
-              <ChartWheel chart={a.chart} size={300} />
-              <figcaption className="dim small" style={{ marginTop: "0.4rem" }}>{people[0].name || "A"}</figcaption>
-            </figure>
-            <figure className="chart-fluid" style={{ margin: 0, flex: "1 1 260px", minWidth: 0 }}>
-              <ChartWheel chart={b.chart} size={300} />
-              <figcaption className="dim small" style={{ marginTop: "0.4rem" }}>{people[1].name || "B"}</figcaption>
-            </figure>
-          </div>
+          <figure className="chart-fluid" style={{ margin: "1rem 0 0", textAlign: "center" }}>
+            <BiWheel
+              inner={a.chart}
+              outer={b.chart}
+              contacts={contacts}
+              size={420}
+              innerLabel={people[0].name || "A"}
+              outerLabel={people[1].name || "B"}
+            />
+            <figcaption className="dim small" style={{ marginTop: "0.3rem" }}>
+              {people[0].name || "A"} inner · {people[1].name || "B"} outer · the inter-chart aspect web
+            </figcaption>
+          </figure>
 
           {/* Synastry cross-aspect grid: A's planets (rows) to B's planets (columns) */}
           <h3 style={{ marginTop: "1.6rem", marginBottom: "0.3rem" }}>Synastry</h3>
