@@ -11,7 +11,9 @@ import { julianDay } from "../src/core.js";
 import { riseSet } from "../src/events.js";
 import { Engine } from "../src/chart.js";
 import { loadNodeData } from "../src/node-loader.js";
-import { parans } from "../src/parans.js";
+import { parans, starParans, starAngleTimes } from "../src/parans.js";
+import { gast } from "../src/houses.js";
+import { DEG, mod } from "../src/core.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const G = JSON.parse(readFileSync(join(here, "../../test/parans-golden.json"), "utf8"));
@@ -41,7 +43,10 @@ function deepCmp(id: string, got: any, want: any): void {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 for (const c of G.cases as any[]) {
-  deepCmp(c.id, parans(eng, c.spec.jd, c.spec.lat, undefined, c.spec.tolerance_min), c.result);
+  const got = c.spec.type === "star"
+    ? starParans(eng, c.spec.jd, c.spec.lat, c.spec.stars, undefined, c.spec.tolerance_min)
+    : parans(eng, c.spec.jd, c.spec.lat, undefined, c.spec.tolerance_min);
+  deepCmp(c.id, got, c.result);
 }
 
 // --- oracle: each reported paran's bodies really are on their angles together ---
@@ -61,6 +66,17 @@ const ok = () => { checks++; };
     if (Math.abs(ta - tb) * 1440 > 30 + 1e-6) consistent = false; // within tolerance
   }
   consistent ? ok() : fail("parans: reported gaps match rise/set times and the tolerance");
+}
+
+// --- oracle: a star's upper-meridian time is when sidereal time equals its RA ---
+{
+  const jd = julianDay(1990, 6, 10);
+  const at = starAngleTimes(eng, "Regulus", jd, 27.95);
+  const ra = mod(eng.fixedStar("Regulus", jd).ra * DEG, 2 * Math.PI);
+  Math.abs(mod(gast(eng.data, at.mtransit) - ra + Math.PI, 2 * Math.PI) - Math.PI) < 1e-6
+    ? ok() : fail("star mtransit: sidereal time equals the star's RA");
+  starParans(eng, jd, 27.95, ["Regulus", "Aldebaran", "Spica", "Sirius"]).length > 0
+    ? ok() : fail("star parans: found star-to-body pairs at Tampa");
 }
 
 console.log(`\n${checks} checks, ${failures} failures`);

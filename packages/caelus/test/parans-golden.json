@@ -1,10 +1,11 @@
 {
- "basis": "Python reference astroengine.parans; classical planets, lon-independent, stated tolerance",
+ "basis": "Python reference astroengine.parans; classical planets and fixed stars, lon-independent, stated tolerance",
  "cases": [
   {
    "id": "tampa_1990",
    "spec": {
     "id": "tampa_1990",
+    "type": "body",
     "jd": 2448052.5,
     "lat": 27.95,
     "tolerance_min": 30.0
@@ -104,6 +105,7 @@
    "id": "london_2026",
    "spec": {
     "id": "london_2026",
+    "type": "body",
     "jd": 2461119.5,
     "lat": 51.5,
     "tolerance_min": 20.0
@@ -187,6 +189,7 @@
    "id": "equator_2000",
    "spec": {
     "id": "equator_2000",
+    "type": "body",
     "jd": 2451544.5,
     "lat": 0.0,
     "tolerance_min": 45.0
@@ -279,6 +282,326 @@
      "b_angle": "mtransit",
      "jd": 2451545.338458,
      "gap_min": 30.9293
+    }
+   ]
+  },
+  {
+   "id": "stars_tampa_1990",
+   "spec": {
+    "id": "stars_tampa_1990",
+    "type": "star",
+    "jd": 2448052.5,
+    "lat": 27.95,
+    "stars": [
+     "Regulus",
+     "Aldebaran",
+     "Spica",
+     "Antares",
+     "Sirius",
+     "Algol"
+    ],
+    "tolerance_min": 30.0
+   },
+   "result": [
+    {
+     "star": "Aldebaran",
+     "star_angle": "rise",
+     "body": "sun",
+     "body_angle": "rise",
+     "jd": 2448052.70363,
+     "gap_min": 19.7333
+    },
+    {
+     "star": "Algol",
+     "star_angle": "rise",
+     "body": "jupiter",
+     "body_angle": "itransit",
+     "jd": 2448052.580839,
+     "gap_min": 10.1191
+    },
+    {
+     "star": "Algol",
+     "star_angle": "mtransit",
+     "body": "venus",
+     "body_angle": "mtransit",
+     "jd": 2448052.903992,
+     "gap_min": 23.5917
+    },
+    {
+     "star": "Algol",
+     "star_angle": "itransit",
+     "body": "venus",
+     "body_angle": "itransit",
+     "jd": 2448053.403422,
+     "gap_min": 21.3033
+    },
+    {
+     "star": "Antares",
+     "star_angle": "set",
+     "body": "mercury",
+     "body_angle": "rise",
+     "jd": 2448052.668932,
+     "gap_min": 28.7419
+    },
+    {
+     "star": "Regulus",
+     "star_angle": "rise",
+     "body": "mercury",
+     "body_angle": "mtransit",
+     "jd": 2448052.935699,
+     "gap_min": 4.3704
+    },
+    {
+     "star": "Regulus",
+     "star_angle": "mtransit",
+     "body": "mercury",
+     "body_angle": "set",
+     "jd": 2448053.209609,
+     "gap_min": 18.2006
+    },
+    {
+     "star": "Regulus",
+     "star_angle": "itransit",
+     "body": "sun",
+     "body_angle": "rise",
+     "jd": 2448052.707568,
+     "gap_min": 8.3916
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "itransit",
+     "body": "jupiter",
+     "body_angle": "itransit",
+     "jd": 2448052.570643,
+     "gap_min": 19.2462
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "mtransit",
+     "body": "jupiter",
+     "body_angle": "mtransit",
+     "jd": 2448053.069437,
+     "gap_min": 19.7048
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "itransit",
+     "body": "mars",
+     "body_angle": "rise",
+     "jd": 2448052.556951,
+     "gap_min": 20.1875
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "mtransit",
+     "body": "mars",
+     "body_angle": "set",
+     "jd": 2448053.059423,
+     "gap_min": 9.1351
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "set",
+     "body": "mars",
+     "body_angle": "itransit",
+     "jd": 2448053.295482,
+     "gap_min": 20.3591
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "itransit",
+     "body": "moon",
+     "body_angle": "mtransit",
+     "jd": 2448052.558622,
+     "gap_min": 15.3737
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "mtransit",
+     "body": "moon",
+     "body_angle": "itransit",
+     "jd": 2448053.066817,
+     "gap_min": 12.1597
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "rise",
+     "body": "saturn",
+     "body_angle": "set",
+     "jd": 2448052.830408,
+     "gap_min": 18.3439
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "set",
+     "body": "sun",
+     "body_angle": "set",
+     "jd": 2448053.28855,
+     "gap_min": 0.3967
+    },
+    {
+     "star": "Spica",
+     "star_angle": "set",
+     "body": "jupiter",
+     "body_angle": "itransit",
+     "jd": 2448052.577115,
+     "gap_min": 0.6072
+    },
+    {
+     "star": "Spica",
+     "star_angle": "itransit",
+     "body": "saturn",
+     "body_angle": "set",
+     "jd": 2448052.832508,
+     "gap_min": 24.3903
+    },
+    {
+     "star": "Spica",
+     "star_angle": "rise",
+     "body": "saturn",
+     "body_angle": "itransit",
+     "jd": 2448053.104609,
+     "gap_min": 1.2668
+    }
+   ]
+  },
+  {
+   "id": "stars_london_2026",
+   "spec": {
+    "id": "stars_london_2026",
+    "type": "star",
+    "jd": 2461119.5,
+    "lat": 51.5,
+    "stars": [
+     "Regulus",
+     "Aldebaran",
+     "Spica",
+     "Antares",
+     "Sirius",
+     "Algol"
+    ],
+    "tolerance_min": 20.0
+   },
+   "result": [
+    {
+     "star": "Aldebaran",
+     "star_angle": "mtransit",
+     "body": "mars",
+     "body_angle": "set",
+     "jd": 2461120.195278,
+     "gap_min": 6.6089
+    },
+    {
+     "star": "Aldebaran",
+     "star_angle": "set",
+     "body": "saturn",
+     "body_angle": "itransit",
+     "jd": 2461119.516365,
+     "gap_min": 8.8713
+    },
+    {
+     "star": "Aldebaran",
+     "star_angle": "set",
+     "body": "sun",
+     "body_angle": "itransit",
+     "jd": 2461119.509275,
+     "gap_min": 11.5484
+    },
+    {
+     "star": "Algol",
+     "star_angle": "itransit",
+     "body": "jupiter",
+     "body_angle": "set",
+     "jd": 2461119.641615,
+     "gap_min": 9.5457
+    },
+    {
+     "star": "Antares",
+     "star_angle": "itransit",
+     "body": "mars",
+     "body_angle": "set",
+     "jd": 2461120.193064,
+     "gap_min": 0.2328
+    },
+    {
+     "star": "Antares",
+     "star_angle": "rise",
+     "body": "venus",
+     "body_angle": "itransit",
+     "jd": 2461119.549974,
+     "gap_min": 2.5755
+    },
+    {
+     "star": "Regulus",
+     "star_angle": "set",
+     "body": "mercury",
+     "body_angle": "rise",
+     "jd": 2461119.723982,
+     "gap_min": 2.3479
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "itransit",
+     "body": "jupiter",
+     "body_angle": "itransit",
+     "jd": 2461119.795105,
+     "gap_min": 19.8918
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "mtransit",
+     "body": "jupiter",
+     "body_angle": "mtransit",
+     "jd": 2461120.293763,
+     "gap_min": 19.9571
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "set",
+     "body": "mars",
+     "body_angle": "itransit",
+     "jd": 2461120.471486,
+     "gap_min": 16.9633
+    },
+    {
+     "star": "Sirius",
+     "star_angle": "itransit",
+     "body": "venus",
+     "body_angle": "rise",
+     "jd": 2461119.782898,
+     "gap_min": 15.265
+    },
+    {
+     "star": "Spica",
+     "star_angle": "itransit",
+     "body": "moon",
+     "body_angle": "mtransit",
+     "jd": 2461120.058676,
+     "gap_min": 19.4148
+    },
+    {
+     "star": "Spica",
+     "star_angle": "rise",
+     "body": "moon",
+     "body_angle": "set",
+     "jd": 2461120.354928,
+     "gap_min": 7.3089
+    },
+    {
+     "star": "Spica",
+     "star_angle": "set",
+     "body": "saturn",
+     "body_angle": "rise",
+     "jd": 2461119.772961,
+     "gap_min": 15.794
+    },
+    {
+     "star": "Spica",
+     "star_angle": "set",
+     "body": "venus",
+     "body_angle": "rise",
+     "jd": 2461119.778021,
+     "gap_min": 1.2199
     }
    ]
   }
