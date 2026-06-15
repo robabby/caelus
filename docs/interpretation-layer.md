@@ -130,12 +130,18 @@ Two consumers of the projection (and an optional resolved {@link Reading}):
   (*accurate*). The chart math was never the model's to hallucinate. Pairs with
   the MCP app, where the host model is already the interpreter.
 
+## MCP exposure (shipped)
+
+The `chart_facts` tool (`caelus-mcp`) returns a chart's ranked, citable atoms
+plus a ready `brief`, so an LLM host interprets from correct math and cites the
+`[id]` each statement rests on instead of re-deriving (and hallucinating)
+positions. This is the interpretation seam wired into the chat product.
+
 ## Follow-ons
 
-- Expose `chartBrief` / `interpretationContext` through the MCP server (a
-  `chart_facts`-style tool, or an optional block on `natal_chart`) so LLM hosts
-  consume the ranked, citable atoms directly instead of re-deriving them.
 - Promote `phase` and `strength` onto `Chart.aspects` itself (needs the Python
   reference + golden regenerated, so it is a maintainer-environment change).
 - Reception and dispositor chains as additional atom kinds; richer contradiction
   reconciliation in the resolver beyond salience ranking.
+- A reference `InterpretationSource` (clearly labelled example content, shipped
+  separately from the engine) so the plugin path has a worked example.

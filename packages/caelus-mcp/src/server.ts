@@ -39,6 +39,7 @@ import {
   detectPatterns, detectPatternsIn, chartSignature,
   chartFeatures, searchConfigurations,
   dignityScore, aspectBetween,
+  interpretationContext, chartBrief,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -1433,6 +1434,33 @@ export function buildServer(
       utc: date, houses: c.houseSystem,
       ...(zodiac !== "tropical" ? { zodiac } : {}),
       signature: chartSignature(c),
+    });
+  });
+
+  server.registerTool("chart_facts", {
+    description:
+      "A chart's validated facts as ranked, citable atoms for interpretation. Each fact has a stable id (e.g. \"aspect:moon~neptune:conjunction\"), the bodies it concerns, a salience score (higher = more prominent: luminaries, angular placements, the chart ruler, tight and hard aspects, whole configurations), and a plain-language statement. Use this to write a natal interpretation grounded in correct math: read the facts, write in your own words, and cite the [id] each statement rests on — do not introduce facts not listed. Returns the ranked facts plus a ready-to-interpret `brief`. Needs date, lat, lon.",
+    inputSchema: {
+      ...birth, house_system: houseSys, zodiac: zodiacSchema,
+      limit: z.number().int().min(1).max(60).default(24)
+        .describe("max facts to return, highest salience first (default 24)"),
+    },
+  }, async ({ date, lat, lon, house_system, zodiac, limit }) => {
+    const d = new Date(date);
+    if (Number.isNaN(d.getTime())) throw new Error(`Invalid date: ${date}`);
+    const c = engine.chart(
+      d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
+      d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), lat, lon,
+      { houseSystem: normalizeHouseSystem(house_system), zodiac },
+    );
+    const ctx = interpretationContext(c);
+    const brief = chartBrief(ctx, { limit });
+    return text({
+      utc: date, houses: c.houseSystem,
+      ...(zodiac !== "tropical" ? { zodiac } : {}),
+      total_facts: ctx.atoms.length,
+      facts: brief.facts,
+      brief: brief.prompt,
     });
   });
 
