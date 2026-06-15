@@ -15,6 +15,8 @@ export interface FetchSpec {
   sacredTextsIndex?: string;
   /** Source is a PDF needing a text-layer extraction (pdftotext), not HTTP text. */
   pdf?: boolean;
+  /** Free-form acquisition note (e.g. for a source with no reachable URL). */
+  note?: string;
 }
 
 export interface SourceManifestEntry {

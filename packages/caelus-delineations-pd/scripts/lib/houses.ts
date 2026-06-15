@@ -5,7 +5,7 @@
 import { denoise, excerpt } from "./denoise.js";
 import { ordinalToNumber } from "./ordinal.js";
 import { PLANET_TO_BODY } from "./astro.js";
-import type { PassageRecord } from "../../src/types.js";
+import type { PassageRecord, CorpusRights } from "../../src/types.js";
 
 const planets = Object.keys(PLANET_TO_BODY).join("|");
 const HEADING = new RegExp(
@@ -21,6 +21,8 @@ export interface SourceMeta {
   idPrefix: string;
   author: string;
   work: string;
+  /** Defaults to "pd-us". Use "gratis-not-pd" for a rights-encumbered scan. */
+  rights?: CorpusRights;
 }
 
 /** Extract planet-in-house PassageRecords from `lines`. */
@@ -56,7 +58,7 @@ export function extractHouses(lines: string[], source: SourceMeta): PassageRecor
         work: source.work,
         locus: `${title(body)} in the ${m[2].toLowerCase()} house`,
       },
-      rights: "pd-us",
+      rights: source.rights ?? "pd-us",
       embed: true,
     });
   }

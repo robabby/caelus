@@ -18,4 +18,4 @@ export {
 export { passages, passageSets } from "./passages.js";
 export type { PassageSet } from "./passages.js";
 export { selectorFromSpec, ruleFromPassage, compileSource } from "./compile.js";
-export { sources, sourceById } from "./sources.js";
+export { sources, publicDomainSources, sourceById } from "./sources.js";

@@ -40,6 +40,29 @@ export function denoise(lines: string[]): string {
   return text.trim();
 }
 
+/** Sentence openers that mark where prose resumes after a glyph cipher. */
+const STARTERS = new Set([
+  "it", "he", "she", "this", "they", "its", "his", "her",
+  "these", "those", "such", "when", "here", "there", "gives", "denotes",
+  "represents", "describes",
+]);
+
+/**
+ * Drop a leading astrological-glyph cipher ("* T5", "tf 8", "D * A O") that an
+ * OCR leaves before the prose, stopping at the first real word (a sentence
+ * opener, or any token of four or more letters).
+ */
+export function stripCipher(s: string): string {
+  const toks = s.split(/\s+/).filter(Boolean);
+  let i = 0;
+  while (i < toks.length) {
+    const w = toks[i].toLowerCase().replace(/[^a-z]/g, "");
+    if (STARTERS.has(w) || w.length >= 4) break;
+    i++;
+  }
+  return toks.slice(i).join(" ");
+}
+
 /**
  * Trim a long passage to a representative excerpt: keep whole sentences up to
  * `max` characters so a citation is self-contained, never cut mid-word.

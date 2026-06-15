@@ -5,7 +5,7 @@
  * aspect that the engine knows). "parallel" is a declination aspect Caelus does
  * not model, so it is dropped.
  */
-import { denoise, excerpt } from "./denoise.js";
+import { denoise, excerpt, stripCipher } from "./denoise.js";
 import { PLANET_TO_BODY } from "./astro.js";
 import type { PassageRecord } from "../../src/types.js";
 import type { SourceMeta } from "./houses.js";
@@ -20,25 +20,6 @@ const HEADING = new RegExp(
   "i",
 );
 const title = (s: string): string => s[0].toUpperCase() + s.slice(1);
-
-/** Sentence openers that mark where prose resumes after the glyph cipher. */
-const STARTERS = new Set([
-  "it", "he", "she", "this", "they", "its", "his", "her",
-  "these", "those", "such", "when", "here", "there",
-]);
-
-/** Drop a leading astrological-glyph cipher ("D * A O", "$ * A U") left after
- *  the English header is removed, stopping at the first real prose token. */
-function stripCipher(s: string): string {
-  const toks = s.split(/\s+/).filter(Boolean);
-  let i = 0;
-  while (i < toks.length) {
-    const w = toks[i].toLowerCase().replace(/[^a-z]/g, "");
-    if (STARTERS.has(w) || w.length >= 4) break;
-    i++;
-  }
-  return toks.slice(i).join(" ");
-}
 
 /** Canonical aspects named in a phrase, in engine vocabulary, deduped. */
 function aspectsIn(p: string): string[] {

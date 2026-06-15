@@ -218,6 +218,19 @@
     }
   },
   {
+    "id": "sepharial-new-manual",
+    "layer": 1,
+    "title": "The New Manual of Astrology",
+    "author": "Sepharial",
+    "year": 1898,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/sepharial-new-manual.txt",
+    "fetch": {
+      "note": "1st ed., G. Redway, London. Not on a reachable host; supplied as RTF, stripped to text. Planet-in-sign entries are glyph-coded — not rule-extractable."
+    }
+  },
+  {
     "id": "raphael-key-to-astrology",
     "layer": 1,
     "title": "The Guide to Astrology",

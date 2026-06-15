@@ -66,20 +66,27 @@ and audits the manifest for rights and text integrity.
 
 ## Coverage
 
-The fact model is finite and enumerable, so the target is *cell coverage*. 241
-passages across five sources today:
+The fact model is finite and enumerable, so the target is *cell coverage*. 334
+passages across seven sources today:
 
 | Cell | Selector | Status |
 |---|---|---|
-| Sun in sign | `placement{ body, sign }` | Saint-Germain 12 + Alan Leo 12 |
-| Moon in sign | `placement{ body, sign }` | Alan Leo 3 (the scan's extent) |
+| Planet in sign | `placement{ body, sign }` | Sun 12, Moon 9, Mercury 8, Venus 7, Mars 9, Jupiter 9, Saturn 11, Uranus 10, Neptune 10 |
 | Planet in house | `placement{ body, house }` | Alan Leo Key 21 + How to Judge 63 |
 | Planet aspect planet | `aspect{ between, aspect }` | Heindel 118 (5 Ptolemaic aspects) |
 | Rising sign | `angle{ asc, sign }` | Heindel 12/12 |
 | Fixed-star conjunction | `star{ body, star }` | Robson 20 (curated) |
-| Mercury–Saturn in sign | `placement{ body, sign }` | pending (no clean PD scan in set) |
 | Dignities | `placement{ dignity }` | pending |
 | Hermetic lots | `lot{ lot, sign, house }` | selector ready; corpus pending |
+
+Sun/Moon-in-sign and the houses/aspects/rising cells are public domain. The
+Mercury–Saturn (and outer-planet) sign cells come from Llewellyn George's *A to
+Z* — the only spelled-out natal planet-in-sign source, since every other
+comprehensive book of the era glyph-codes the sign entries and OCR mangles them.
+Its text is core 1910 (first-edition, public-domain) content sourced from the
+1960 reprint scan, so those 73 records are tagged `gratis-not-pd` and isolated in
+their own source. Import `publicDomainSources` instead of `sources` for a reading
+that drops them and keeps strict public-domain provenance.
 
 The `lot` selector compiles, but no public-domain source in the set delineates
 the Part of Fortune by house or sign (Sepharial: it "has no qualities of its
@@ -102,9 +109,6 @@ records are transcribed, not auto-extracted (`data/passages/robson-stars.json`).
 Coverage is partial by design: an extractor emits only the cells it can lift
 cleanly from the OCR, and the harness reports the rest. Known gaps and why:
 
-- **Mercury–Saturn in sign**: the richest enumerated scan (Llewellyn George's
-  *A to Z*) is `gratis-not-pd`; the public-domain scans in the set don't head
-  these cells cleanly. Needs a cleaner PD source.
 - **Vedic** (Brihat Jataka): the translation is verse/sloka-structured with no
   "planet in rashi" headings, so it needs a verse-level parser, not heading
   extraction. Text is vendored.

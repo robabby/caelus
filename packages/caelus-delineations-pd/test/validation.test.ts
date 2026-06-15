@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
 import { interpret, SIGNS } from "caelus";
 import type { FactAtom, InterpretationContext } from "caelus";
 import {
-  sources, passages, selectorFromSpec, corpusManifest,
+  sources, publicDomainSources, passages, selectorFromSpec, corpusManifest,
 } from "../src/index.js";
 import type { CorpusRights, SelectorSpec } from "../src/index.js";
 
@@ -86,28 +86,27 @@ for (const s of specs) {
   catch (e) { check(false, `${s.kind} spec threw (${(e as Error).message})`); }
 }
 
-// 4. Each Sun-sign rule fires for its sign, cites the real atom, and stays
-//    isolated to that sign — the core "valid, testable" guarantee.
+// 4. Each planet-in-sign rule (any body) fires for its sign, cites the real
+//    atom, and stays isolated to that sign — the core "valid, testable"
+//    guarantee.
 console.log("rules fire and cite");
-const sunSignPassages = passages.filter(
-  (p) => p.when.kind === "placement" && p.when.body === "sun"
-    && (p.when as { sign?: string }).sign !== undefined,
+const signPassages = passages.filter(
+  (p) => p.when.kind === "placement" && (p.when as { sign?: string }).sign !== undefined,
 );
-for (const p of sunSignPassages) {
-  const sign = (p.when as { sign: string }).sign;
-  const reading = interpret(sunCtx(sign), sources);
-  const entry = reading.entries.find((e) => e.rule === p.id);
-  check(!!entry, `${p.id}: fires for Sun in ${sign}`);
+for (const p of signPassages) {
+  const { body, sign } = p.when as { body: string; sign: string };
+  const entry = interpret(placeCtx(body, sign, 5), sources).entries.find((e) => e.rule === p.id);
+  check(!!entry, `${p.id}: fires for ${body} in ${sign}`);
   if (!entry) continue;
   check(entry.text === p.text, `${p.id}: emits the passage text`);
   check(
-    entry.atomIds.every((id) => id === "placement:sun"),
-    `${p.id}: cites only placement:sun (no invented provenance)`,
+    entry.atomIds.every((id) => id === `placement:${body}`),
+    `${p.id}: cites only placement:${body} (no invented provenance)`,
   );
   // Isolation: this rule must NOT fire for a different sign.
   const other = sign === "Aries" ? "Taurus" : "Aries";
-  const wrong = interpret(sunCtx(other), sources).entries.find((e) => e.rule === p.id);
-  check(!wrong, `${p.id}: does not fire for Sun in ${other}`);
+  const wrong = interpret(placeCtx(body, other, 5), sources).entries.find((e) => e.rule === p.id);
+  check(!wrong, `${p.id}: does not fire for ${body} in ${other}`);
 }
 
 // 4b. Each planet-in-house rule fires for its body+house and cites the atom.
@@ -233,6 +232,15 @@ try {
 } catch (e) {
   warn(`engine data unavailable, skipped end-to-end (${(e as Error).message})`);
 }
+
+// 6b. publicDomainSources drops every gratis-not-pd passage but keeps the rest.
+console.log("public-domain filter");
+const pdRuleIds = new Set(publicDomainSources.flatMap((s) => s.rules.map((r) => r.id)));
+const gratisIds = new Set(passages.filter((p) => p.rights === "gratis-not-pd").map((p) => p.id));
+const pdIds = new Set(passages.filter((p) => p.rights !== "gratis-not-pd").map((p) => p.id));
+check(gratisIds.size > 0, "corpus has at least one gratis-not-pd passage to exclude");
+check([...gratisIds].every((id) => !pdRuleIds.has(id)), "publicDomainSources excludes every gratis-not-pd rule");
+check([...pdIds].every((id) => pdRuleIds.has(id)), "publicDomainSources keeps every public-domain rule");
 
 // 7. Corpus manifest audit: rights vocabulary + local-text integrity.
 console.log("manifest integrity");
