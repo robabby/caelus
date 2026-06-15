@@ -26,6 +26,7 @@ import type { AspectPhase } from "./electional.js";
 import { detectPatterns, ChartPattern } from "./patterns.js";
 import { chartSignature, ChartSignature } from "./signature.js";
 import { TRIPLICITY } from "./dignity-score.js";
+import type { Realm, Certainty } from "./provenance.js";
 
 const LUMINARIES = new Set(["sun", "moon"]);
 const ANGULAR_HOUSES = new Set([1, 4, 7, 10]);
@@ -146,6 +147,13 @@ export interface InterpretationContext {
   zodiac: Zodiac;
   /** Atoms sorted by descending {@link FactAtomBase.salience}, then `id`. */
   atoms: FactAtom[];
+  /** What the chart is, when supplied via {@link ContextOptions.provenance} --
+   *  framing for an interpreter (a forecast is provisional, a mythic chart is a
+   *  symbol, not a biography). */
+  realm?: Realm;
+  /** How firmly the instant is known. When not `"exact"`, time-sensitive atoms
+   *  (the Moon, the angles) are damped, since their positions are less certain. */
+  certainty?: Certainty;
 }
 
 /** Additive salience weights. Each contribution is documented at its use site;
@@ -182,6 +190,21 @@ export interface ContextOptions {
   /** Precomputed patterns/signature, to avoid recomputing them. */
   patterns?: ChartPattern[];
   signature?: ChartSignature;
+  /** The chart's grounding. Carried onto the context; an inexact `certainty`
+   *  damps time-sensitive atoms. Wire from {@link realize}'s result. */
+  provenance?: { realm?: Realm; certainty?: Certainty };
+}
+
+/** How much to keep of a time-sensitive atom's salience at each certainty -- the
+ *  Moon and the angles move fastest, so an uncertain instant trusts them least. */
+const TIME_SENSITIVE_KEEP: Record<Certainty, number> = {
+  exact: 1, approximate: 0.7, representative: 0.6, none: 0.5,
+};
+
+/** Time-sensitive atoms: the angles (rotate ~15°/h) and anything about the Moon
+ *  (~13°/day), the fastest-shifting facts under a time error. */
+function timeSensitive(atom: FactAtom): boolean {
+  return atom.kind === "angle" || atom.bodies.includes("moon");
 }
 
 function title(body: string): string {
@@ -350,6 +373,15 @@ export function interpretationContext(
   angleAtom("vertex", chart.angles.vertex);
   angleAtom("eastPoint", chart.angles.eastPoint);
 
+  // An inexact instant trusts the fast-moving facts least.
+  const prov = opts.provenance;
+  if (prov?.certainty && prov.certainty !== "exact") {
+    const keep = TIME_SENSITIVE_KEEP[prov.certainty];
+    for (const a of atoms) if (timeSensitive(a)) a.salience *= keep;
+  }
   atoms.sort((m, n) => n.salience - m.salience || (m.id < n.id ? -1 : 1));
-  return { jdUt: chart.jdUt, zodiac: chart.zodiac, atoms };
+  return {
+    jdUt: chart.jdUt, zodiac: chart.zodiac, atoms,
+    realm: prov?.realm, certainty: prov?.certainty,
+  };
 }

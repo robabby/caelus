@@ -689,6 +689,24 @@ for (const g of G.houses) {
     failures++;
     console.error(`FAIL realize: obs=${obs.via} arch=${arch.via} concept=${concept.via} fore=${fore.via}/${fore.time.certainty}`);
   }
+
+  // Framing + damping: an inexact certainty damps time-sensitive atoms (Moon,
+  // angles) but not the slow planets; realm/certainty ride onto context + brief.
+  const fchart = eng.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
+  const exactCtx = interpretationContext(fchart, { provenance: { realm: "observed", certainty: "exact" } });
+  const fuzzyCtx = interpretationContext(fchart, { provenance: { realm: "forecast", certainty: "representative" } });
+  const sal = (c: typeof exactCtx, id: string) => c.atoms.find((a) => a.id === id)!.salience;
+  const fbrief = chartBrief(fuzzyCtx, { limit: 1 }).prompt;
+  if (
+    fuzzyCtx.realm !== "forecast" || fuzzyCtx.certainty !== "representative"
+    || !(sal(fuzzyCtx, "placement:moon") < sal(exactCtx, "placement:moon")) // Moon damped
+    || !(sal(fuzzyCtx, "angle:asc") < sal(exactCtx, "angle:asc")) // angle damped
+    || sal(fuzzyCtx, "placement:sun") !== sal(exactCtx, "placement:sun") // slow planet unchanged
+    || !fbrief.includes("forecast") || !fbrief.includes("uncertain")
+  ) {
+    failures++;
+    console.error("FAIL framing/damping");
+  }
 }
 
 console.log(`\n${checks} checks, ${failures} failures`);

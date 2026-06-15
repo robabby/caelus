@@ -70,6 +70,13 @@ houses) automatically.
    that, constraints run the compiler (`compileForm`); failing both, it returns
    `via: "none"` with the reason. The result carries the realm, the resolved
    time/place, and the `chart` or `form`.
-3. **Interpretation integration:** thread `realm` + certainty into
-   `interpretationContext` / `chartBrief` -- framing notes, auto-widened orbs,
-   down-weighted time-sensitive atoms.
+3. **Interpretation integration (shipped):** `interpretationContext(chart, {
+   provenance: { realm, certainty } })` carries both onto the context and damps
+   time-sensitive atoms (the Moon, the angles) when the instant is inexact
+   (`approximate` 0.7, `representative` 0.6) while leaving the slow planets
+   alone. `chartBrief` prepends a realm + certainty framing line
+   (`realmFraming`), so a forecast reads as provisional and a mythic chart as a
+   symbol, not a biography -- the accuracy guardrail extended from "the facts are
+   right" to "the chart's status is right." Wire it from `realize`'s result:
+   `interpretationContext(realized.chart, { provenance: { realm: realized.realm,
+   certainty: realized.time.certainty } })`.

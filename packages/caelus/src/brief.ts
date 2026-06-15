@@ -15,12 +15,38 @@
 import type { FactKind, InterpretationContext } from "./interpretation.js";
 import type { Reading } from "./interpret.js";
 import type { Zodiac } from "./chart.js";
+import type { Realm, Certainty } from "./provenance.js";
 
 /** Default instruction header prepended to {@link Brief.prompt}. */
 export const BRIEF_INSTRUCTIONS =
   "Natal chart facts follow, each with a stable id in [brackets]. Interpret them "
   + "in your own words; after each statement, cite the id(s) it rests on as [id]. "
   + "Do not introduce astrological facts that are not listed here.";
+
+/** How to frame an interpretation given what the chart is. */
+const REALM_FRAMING: Record<Realm, string> = {
+  observed: "", reported: "",
+  planned: "This is a planned future moment; frame statements as potentials, not settled facts.",
+  forecast: "This is a forecast moment; frame statements as tendencies, not certainties.",
+  fictional: "This is a fictional subject; interpret the symbolism, not a real person's life.",
+  mythic: "This is a mythic subject; read it as a symbol or story, not a biography.",
+  counterfactual: "This is a hypothetical variant of a real event; keep it conditional.",
+  archetypal: "This is an archetype, not a person; interpret the configuration's meaning itself.",
+  conceptual: "This is a concept or organization, not a person; interpret it as such.",
+};
+
+/** A one-line framing for the realm and certainty, or `""` when neither needs it. */
+export function realmFraming(realm?: Realm, certainty?: Certainty): string {
+  const parts: string[] = [];
+  if (realm && REALM_FRAMING[realm]) parts.push(REALM_FRAMING[realm]);
+  if (certainty && certainty !== "exact") {
+    parts.push(
+      `The time is ${certainty}, so the Moon, the angles, and the houses are uncertain`
+      + " -- lean on the slower planets and sign-level statements.",
+    );
+  }
+  return parts.join(" ");
+}
 
 export interface BriefOptions {
   /** Keep only the top-N facts by salience. Default: all. */
@@ -74,7 +100,9 @@ export function chartBrief(
   }));
 
   const lines = facts.map((f) => `[${f.id}] ${f.text}`);
+  const framing = realmFraming(ctx.realm, ctx.certainty);
   let prompt = (opts.header === false ? "" : `${BRIEF_INSTRUCTIONS}\n\n`)
+    + (framing ? `${framing}\n\n` : "")
     + lines.join("\n");
   if (opts.reading && opts.reading.entries.length) {
     prompt += "\n\nSuggested readings (cite the same fact ids):\n"
