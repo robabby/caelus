@@ -51,17 +51,20 @@ export default function Features() {
       <H2>Events</H2>
       <P>
         Rise, set, and meridian transit; longitude crossings; lunar phases;
-        stations; Gauquelin sectors; and solar and lunar eclipses (global
-        circumstances, with types and times). Timing bounds are on{" "}
-        <A href="/validation">Validation</A>.
+        stations; Gauquelin sectors; parans (co-angular bodies, two on the
+        rising, setting, or meridian axis at once); and solar and lunar
+        eclipses (global circumstances, with types and times). Timing bounds
+        are on <A href="/validation">Validation</A>.
       </P>
 
       <H2>Derived charts</H2>
       <P>
         Solar and lunar returns, secondary progressions, solar arc directions,
         composite and Davison charts, harmonics, antiscia and contra-antiscia,
-        declination aspects and parallels, out-of-bounds, essential dignities,
-        and sect. See <A href="/docs/derived">Derived Charts</A>.
+        declination aspects and parallels, out-of-bounds, essential dignities
+        (qualitative, and William Lilly&apos;s weighted five-fold score with the
+        almuten of a degree), and sect. See{" "}
+        <A href="/docs/derived">Derived Charts</A>.
       </P>
 
       <H2>Hellenistic time-lords</H2>

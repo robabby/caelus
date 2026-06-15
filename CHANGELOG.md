@@ -6,6 +6,47 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## 0.16.0 — 2026-06-15
+
+A feature release across all four packages: the analytic synthesis layer
+(Roadmap Phase 4) and the mundane and search tools (Phase 4b). Everything reads
+off the validated positions and is pinned to the Python reference; no new
+ephemeris fits. The MCP server grows from twenty-two to twenty-seven tools.
+
+- `detectPatterns()` names the classical configurations as structured objects:
+  T-squares, grand trines, grand crosses, yods, kites, mystic rectangles, and
+  stelliums (by sign and by house). Reported patterns are maximal, so a grand
+  cross hides the T-squares inside it and a kite its grand trine. Surfaced over
+  MCP as `aspect_patterns`.
+- `chartSignature()` reduces a chart to plain counts: the element, modality,
+  quadrant, and hemisphere distributions, the dominant element, modality, and
+  sign, and the classical chart ruler. Surfaced over MCP as `chart_signature`.
+- `dignityScore()` and `almuten()` add the traditional five-fold essential
+  dignities with William Lilly's weights (rulership +5, exaltation +4,
+  triplicity +3, term +2, face +1; detriment -5, fall -4), reporting the
+  breakdown, the running `total`, and a `peregrine` flag. The triplicity (Dorothean),
+  term (Egyptian bounds), and face (Chaldean) tables are each pinned to a named
+  authority. The MCP `dignities` payload now carries this weighted score.
+- `parans()` computes paranatellonta (co-angular bodies): pairs whose rise,
+  set, or meridian crossings fall within a stated tolerance on a given day and
+  latitude, the relationship behind Brady's fixed-star parans, computed here for
+  the moving bodies. Longitude-independent; pinned by `parans-golden`.
+- Three search and mundane MCP tools over the existing math: `similar_skies`
+  (when the sky most resembled a reference moment, by cosine similarity over a
+  window), `electional_search` (rank moments in a window for a set of wanted
+  aspects, optionally avoiding a void-of-course Moon), and `cosmic_weather` (a
+  date's active configurations, stationing planets, and void-of-course Moon,
+  with no birth chart or location needed).
+
+### Web
+
+- A hand-drawn Caelus sky-god mark (`CaelusMark`) after the Carnuntum altar,
+  with a "Why the name Caelus?" note on `/how-it-was-built`, an off-the-chart
+  `404` page, a faint watermark on the OpenGraph image, and an ASCII banner on
+  `caelus-mcp` startup.
+- A homepage FAQ with `FAQPage` structured data, and an "MCP tools" call to
+  action linking the tool catalog.
+
 ## 0.15.0 — 2026-06-14
 
 API-feedback polish across all four packages, prompted by an external review of

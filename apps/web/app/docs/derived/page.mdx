@@ -145,6 +145,24 @@ const day = isDayChart(engine, natalJd, 27.95, -82.46);
 inSect("jupiter", day);   // true when Jupiter is in sect (diurnal by day)`}
 />
 
+For the traditional five-fold scoring, `dignityScore` applies William Lilly&apos;s
+weights (rulership +5, exaltation +4, triplicity +3, term +2, face +1;
+detriment -5, fall -4) and reports the breakdown, the running `total`, and a
+`peregrine` flag. `almuten` returns the planet with the greatest positive
+dignity at a degree. The triplicity, term (Egyptian bounds), and face tables
+are each pinned to a named authority.
+
+<CodeBlock
+  lang="typescript"
+  label="dignity-score.ts"
+  code={`import { dignityScore, almuten } from "caelus";
+
+dignityScore("mars", 5, "night");   // Mars at 5° Aries, night chart
+// { rulership: 5, triplicity: 3, term: 0, ... total: 8, peregrine: false }
+
+almuten(5);   // { planet: "mars", score: 8 }, strongest at that degree`}
+/>
+
 ## Timelines
 
 The derivations compose into timelines: the returns search is already a span,
