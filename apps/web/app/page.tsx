@@ -158,6 +158,11 @@ chart.bodies.saturn.retrograde; // true`}
       </P>
 
       <FAQ />
+
+      <H2>Start building</H2>
+      <div style={{ marginBottom: "1rem" }}>
+        <Cta />
+      </div>
     </main>
   );
 }
