@@ -218,5 +218,5 @@ payload. Twenty-seven tools total.
 ranked, citable fact atoms plus a ready-to-interpret `brief`, so an LLM host
 writes a reading grounded in correct math and cites the `[id]` each statement
 rests on instead of re-deriving (and hallucinating) positions. The engine ships
-the facts and the contract, never the interpretation content. Twenty-eight
+the facts and the contract, never the interpretation content. Twenty-nine
 tools total.

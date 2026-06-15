@@ -32,7 +32,11 @@ export default function Search() {
   const [index, setIndex] = useState<Entry[] | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
-  const isMac = typeof navigator !== "undefined" && /mac/i.test(navigator.platform);
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(/mac/i.test(navigator.platform));
+  }, []);
 
   const load = useCallback(() => {
     if (index) return;

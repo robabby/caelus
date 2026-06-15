@@ -3,6 +3,29 @@
  * header, footer, and metadata. Keeping the version here avoids drift across
  * the header tag, footer, and OpenGraph copy.
  */
+import accuracy from "caelus/accuracy.json";
+
+export const MCP_TOOL_COUNT = accuracy.counts.mcp_tools;
+
+const MCP_PROSE: Record<number, string> = {
+  29: "twenty-nine",
+};
+
+/** Anchor strings for scripts/check-claims.mjs — must cover every claim.render form. */
+export const MCP_TOOL_CLAIMS =
+  "29 chart tools, 29 MCP tools, MCP tools (29), twenty-nine chart tools, Twenty-nine chart tools, twenty-nine tools";
+
+/** Lowercase prose count for MCP tools, e.g. "twenty-nine". */
+export function formatMcpToolsProse(count = MCP_TOOL_COUNT): string {
+  return MCP_PROSE[count] ?? String(count);
+}
+
+/** Title-case prose count, e.g. "Twenty-nine". */
+export function formatMcpToolsTitle(count = MCP_TOOL_COUNT): string {
+  const word = formatMcpToolsProse(count);
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 export const SITE = {
   name: "Caelus",
   version: "0.18.0",

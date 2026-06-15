@@ -2,6 +2,7 @@ import Link from "next/link";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
 import { Lead, P } from "../../components/Prose";
+import { formatMcpToolsProse } from "../../lib/site";
 
 export const metadata = {
   title: "Documentation",
@@ -19,7 +20,7 @@ const CARDS: Array<[string, string, string]> = [
   ["/docs/hellenistic", "Hellenistic Time-Lords", "Lots, profections, firdaria, zodiacal releasing, and primary directions."],
   ["/docs/vedic", "Vedic & Jyotish", "Nakshatras, the Vimshottari/Yogini/Ashtottari dashas, the vargas, and the yogas."],
   ["/docs/data-tiers", "Data Tiers", "Embedded vs Node loader: what ships in the bundle and what loads lazily."],
-  ["/docs/mcp", "MCP Setup", "Add twenty-nine chart tools to Claude, Cursor, and other MCP clients."],
+  ["/docs/mcp", "MCP Setup", `Add ${formatMcpToolsProse()} chart tools to Claude, Cursor, and other MCP clients.`],
   ["/docs/recipes", "Recipes", "Transits, the when() query language, event search, and chart wheels."],
   ["/docs/electional", "Electional Search", "Scan a window with rankMoments, score each instant with the electional primitives, and render the winning chart."],
   ["/docs/interpretation", "Interpretation Layer", "Turn validated facts into citable readings: fact atoms, selectors, a pluggable rule corpus, and an LLM brief with citation auditing."],

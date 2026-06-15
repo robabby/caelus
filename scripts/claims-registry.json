@@ -109,18 +109,14 @@
         "twenty-nine tools"
       ],
       "appearsIn": [
-        "apps/web/app/features/page.tsx",
-        "apps/web/app/page.tsx",
+        "apps/web/lib/site.ts",
         "apps/web/app/docs/mcp/page.mdx",
-        "apps/web/app/docs/page.tsx",
         "llms.txt",
         "apps/web/public/llms.txt",
         "packages/caelus-mcp/README.md",
         "packages/caelus/README.md",
         "packages/wheel/README.md",
-        "packages/birth/README.md",
-        "apps/web/components/FAQ.tsx",
-        "apps/web/components/Cta.tsx"
+        "packages/birth/README.md"
       ]
     },
     {

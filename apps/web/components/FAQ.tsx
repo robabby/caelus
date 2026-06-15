@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { A } from "./Prose";
-import { SITE } from "../lib/site";
+import { formatMcpToolsProse, SITE } from "../lib/site";
+
+const MCP_TOOLS_PROSE = formatMcpToolsProse();
 
 /**
  * Each item carries the display answer (with links) and a plain-text twin for
@@ -89,13 +91,13 @@ const ITEMS: QA[] = [
     q: "Can I use it with AI assistants like Claude or Cursor?",
     a: (
       <>
-        Yes. <code>caelus-mcp</code> exposes twenty-nine chart tools over the Model
+        Yes. <code>caelus-mcp</code> exposes {MCP_TOOLS_PROSE} chart tools over the Model
         Context Protocol, available hosted or as a local stdio server. See{" "}
         <A href="/docs/mcp">MCP Setup</A>.
       </>
     ),
     text:
-      "Yes. The caelus-mcp package exposes twenty-nine chart tools over the Model Context Protocol, available hosted or as a local stdio server.",
+      `Yes. The caelus-mcp package exposes ${MCP_TOOLS_PROSE} chart tools over the Model Context Protocol, available hosted or as a local stdio server.`,
   },
   {
     q: "Does it interpret a chart, or just compute it?",

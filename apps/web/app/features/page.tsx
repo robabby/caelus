@@ -6,7 +6,10 @@ import { ChartWheel, ChartSphere, EphemerisGraph } from "caelus-wheel";
 import { A, P } from "../../components/Prose";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
+import { formatMcpToolsProse, MCP_TOOL_COUNT } from "../../lib/site";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../../lib/wheelTheme";
+
+const MCP_TOOLS_PROSE = formatMcpToolsProse();
 
 export const metadata = {
   title: "Features",
@@ -33,7 +36,7 @@ const STATS: Stat[] = [
   { num: "13", label: "Bodies in the default chart", href: "/validation" },
   { num: "12", label: "House systems", href: "/docs/houses-and-zodiacs" },
   { num: "8", label: "Zodiacs (tropical + 7 sidereal)", href: "/docs/houses-and-zodiacs" },
-  { num: "29", label: "MCP tools for AI clients", href: "/docs/mcp" },
+  { num: String(MCP_TOOL_COUNT), label: "MCP tools for AI clients", href: "/docs/mcp" },
   { num: "3,218", label: "Golden checks in CI", href: "/validation" },
   { num: "0", label: "Runtime dependencies", href: "/docs/data-tiers" },
 ];
@@ -364,7 +367,7 @@ export default function Features() {
           <A href="https://pypi.org/project/caelus-engine/">caelus-engine</A>.
         </Feature>
         <Feature title="Integration">
-          The MCP server exposes twenty-nine chart tools over stdio and
+          The MCP server exposes {MCP_TOOLS_PROSE} chart tools over stdio and
           Streamable HTTP at <A href="/api/mcp">/api/mcp</A>; a REST endpoint
           answers at <A href="/api/chart?lat=27.94&lon=-82.46">/api/chart</A>.
           The engine does no file or network I/O, ships an embedded data tier
@@ -405,7 +408,7 @@ export default function Features() {
               precision); Kerykeion and Immanuel build on it.
             </li>
             <li>
-              <sup>3</sup> <code>caelus-mcp</code> exposes twenty-nine tools over
+              <sup>3</sup> <code>caelus-mcp</code> exposes {MCP_TOOLS_PROSE} tools over
               the Model Context Protocol. Kerykeion serializes charts to XML for
               LLM prompts but ships no MCP server.
             </li>

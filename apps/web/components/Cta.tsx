@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import InstallButton from "./InstallButton";
-import { SITE } from "../lib/site";
+import { MCP_TOOL_COUNT, SITE } from "../lib/site";
 
 type CtaProps = {
   /** Hero shows tertiary doc/starter/MCP links; compact is install + quickstart only. */
@@ -24,7 +24,7 @@ function CtaLinks() {
       <span className="cta__sep" aria-hidden>
         ·
       </span>
-      <Link href="/docs/mcp">MCP tools</Link>
+      <Link href="/docs/mcp">MCP tools ({MCP_TOOL_COUNT})</Link>
     </p>
   );
 }
