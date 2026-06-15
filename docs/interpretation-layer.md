@@ -136,6 +136,58 @@ Two consumers of the projection (and an optional resolved {@link Reading}):
   (*accurate*). The chart math was never the model's to hallucinate. Pairs with
   the MCP app, where the host model is already the interpreter.
 
+## Worked example
+
+End to end, from a chart to a cited reading and an LLM brief. The rule text
+below is **illustrative placeholder content**, not authoritative astrology --
+the engine ships no interpretation content; a real corpus is the developer's.
+
+```ts
+import {
+  Engine, julianDay,
+  interpretationContext,
+  hasPlacement, hasAspect, hasPattern, hasReception, matchAll,
+  interpret, reconcile,
+  chartBrief, auditCitations,
+} from "caelus";
+import { loadNodeData } from "caelus/node";
+
+const engine = new Engine(loadNodeData(dataDir));
+const chart = engine.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
+
+// 1. Project the validated chart into ranked, citable fact atoms.
+const ctx = interpretationContext(chart);
+
+// 2. A developer's pluggable corpus (illustrative).
+const source = {
+  id: "example", version: "0.1",
+  rules: [
+    { id: "lunar-stellium",
+      when: matchAll(hasPlacement({ body: "moon" }), hasPattern({ kind: "stellium_sign", body: "moon" })),
+      text: "The Moon sits inside a sign stellium.", tags: ["emphasis"] },
+    { id: "moon-neptune",
+      when: hasAspect({ between: ["moon", "neptune"], aspect: "conjunction" }),
+      text: "Feeling and imagination blur together.", weight: 1.5 },
+    { id: "saturn-domicile",
+      when: hasPlacement({ body: "saturn", dignity: "domicile" }),
+      text: "Saturn is structurally strong.", tags: ["affirming"] },
+    { id: "venus-saturn-reception",
+      when: hasReception({ body: "venus" }),
+      text: "Venus and its dispositor exchange signs." },
+  ],
+};
+
+// 3. Resolve -> ranked entries, each citing the atom ids it rests on.
+const reading = interpret(ctx, [source]);
+const groups = reconcile(reading, { dedupe: true });
+
+// 4a. Rule-based output: reading.entries / groups, with provenance.
+// 4b. LLM output: a citable brief, then an audit of what the model cited.
+const brief = chartBrief(ctx, { limit: 20, reading });
+//   ...model writes prose citing [ids]...
+const audit = auditCitations(modelClaims, ctx); // audit.ok === false flags invented facts
+```
+
 ## MCP exposure (shipped)
 
 The `chart_facts` tool (`caelus-mcp`) returns a chart's ranked, citable atoms
