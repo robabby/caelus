@@ -18,6 +18,9 @@ import {
   hasDispositor, hasReception, reconcile,
 } from "../src/interpret.js";
 import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js";
+import {
+  resolveTime, resolvePlace, parseOffset, isTimeAnchored, isoToJd,
+} from "../src/provenance.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
@@ -619,6 +622,47 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error(`FAIL reconcile: sunContested=${sunGroup?.contested} moonEntries=${moonGroup?.entries.length}`);
+  }
+}
+
+// Provenance: temporal/spatial anchors resolve to instants/places with an
+// honest certainty, or null when none can be derived. Behavioural, gated via
+// `failures` (pure type-driven logic, no Swiss Ephemeris oracle).
+{
+  const reg = {
+    instants: { ev: 2110700.5 },
+    calendars: { stardate: (v: string) => 2440587.5 + Number(v) * 0.1 },
+    gazetteer: (id: string) => (id === "london" ? { lat: 51.5, lonEast: -0.12 } : null),
+  };
+  const approxEq = (a: number, b: number) => Math.abs(a - b) < 1e-6;
+  const checksProv = [
+    // offsets
+    parseOffset("3d") === 3,
+    approxEq(parseOffset("-2h"), -2 / 24),
+    approxEq(parseOffset("P1Y2M10DT2H30M"), 365.2425 + 2 * 30.436875 + 10 + 2.5 / 24),
+    Number.isNaN(parseOffset("junk")),
+    // temporal
+    resolveTime({ kind: "instant", utc: "2024-04-08T18:17:18Z" }).certainty === "exact",
+    approxEq(resolveTime({ kind: "instant", utc: "2024-04-08T18:17:18Z" }).jd!, isoToJd("2024-04-08T18:17:18Z")!),
+    resolveTime({ kind: "range", earliest: "1990-01-01", latest: "1990-12-31" }).certainty === "representative",
+    approxEq(resolveTime({ kind: "relative", relation: "after", anchorId: "ev", offset: "P3D" }, reg).jd!, 2110703.5),
+    resolveTime({ kind: "relative", relation: "after", anchorId: "missing", offset: "1d" }, reg).jd === null,
+    resolveTime({ kind: "narrative", calendar: "stardate", value: "41153.7", sequence: 1 }, reg).jd !== null,
+    resolveTime({ kind: "narrative", calendar: "middle_earth", value: "TA 3019" }, reg).jd === null,
+    resolveTime({ kind: "symbolic", rationale: "x" }).jd === null,
+    resolveTime({ kind: "none", reason: "atemporal" }).jd === null,
+    // spatial
+    resolvePlace({ kind: "geo", lat: 40.7, lonEast: -74 }).certainty === "exact",
+    resolvePlace({ kind: "named", placeId: "london" }, reg).place !== null,
+    resolvePlace({ kind: "named", placeId: "atlantis" }, reg).place === null,
+    resolvePlace({ kind: "fictional", value: "Minas Tirith" }).place === null,
+    // realm routing
+    isTimeAnchored("observed") && isTimeAnchored("forecast"),
+    !isTimeAnchored("archetypal") && !isTimeAnchored("conceptual"),
+  ];
+  if (checksProv.some((ok) => !ok)) {
+    failures++;
+    console.error(`FAIL provenance: ${checksProv.map((ok, i) => (ok ? "" : i)).filter((x) => x !== "").join(",")}`);
   }
 }
 
