@@ -17,8 +17,8 @@ content.
 ```
 Engine (validated)        chart(): bodies, aspects, angles, cusps        [shipped]
   -> Fact projection      interpretationContext(chart): ranked atoms      [shipped]
-  -> Matching             select/condition over atoms (provenance)        [next]
-  -> Interpretation       InterpretationSource plugins + resolver         [next]
+  -> Matching             selectors over atoms (provenance)               [shipped]
+  -> Interpretation       InterpretationSource plugins + resolver         [shipped]
   -> Output               structured reading, or an LLM brief + citations [next]
 ```
 
@@ -77,38 +77,44 @@ oracle for "which facts matter," so it is unit-tested for structure (atoms tie
 back to the validated chart, strengths are consistent, ids unique, salience
 sorted) rather than pinned by a parity golden.
 
-## 2. Matching (next)
+## 2. Matching (shipped)
 
-A selector/condition language that evaluates against the projection at one
-instant and returns the atoms that satisfied each condition. Today's `query`
-predicates are time-margin functions (`(engine, t) => number`) and geometric
-only; they cannot express house, dignity, pattern membership, or signature
-dominance, and they do not report which facts matched. The matching layer reads
-atoms directly, so a rule like "Mars in an angular house AND part of a T-square"
-is expressible and returns its supporting atoms for provenance.
+`src/interpret.ts` provides selectors that evaluate against the projection and
+report the atoms that satisfied them (`Match = { matched, atoms }`). Because
+they read atoms directly, they express the whole fact model -- house, dignity,
+pattern membership, signature dominance, aspect phase and strength -- which the
+geometric, time-only `query` predicates cannot.
 
-## 3. Interpretation sources + resolver (next)
+- atom selectors: `hasPlacement({ body, sign, house, retrograde, dignity })`,
+  `hasAspect({ a, b, between, aspect, phase, minStrength })`,
+  `hasPattern({ kind, body })`, `hasSignature(facet, value)`,
+  `hasAngle(angle, sign)`.
+- combinators: `matchAll(...)` (every selector; unions atoms), `matchAny(...)`
+  (any; unions the matched), `matchNone(sel)` (an absence test; no atoms).
 
-A typed plugin contract, sketch:
+So "Mars in an angular house AND part of a T-square" is
+`matchAll(hasPlacement({ body: "mars", house: 10 }), hasPattern({ kind: "t_square", body: "mars" }))`,
+and the match carries the atoms that justified it.
+
+## 3. Interpretation sources + resolver (shipped)
 
 ```ts
-interface InterpretationSource {
-  id: string;            // "traditional", "modern-psychological", a third party
-  version: string;
-  match(ctx: InterpretationContext): InterpretationEntry[];
+interface Rule {
+  id: string;
+  when: Selector;
+  text: string | ((m: Match, ctx) => string);  // template gets the matched atoms
+  weight?: number;
+  tags?: string[];
 }
-interface InterpretationEntry {
-  atomIds: string[];     // the facts this entry speaks to (provenance)
-  text: string;          // or a template
-  weight?: number;       // for ranking / conflict resolution
-  source: string;        // attribution
-}
+interface InterpretationSource { id: string; version: string; rules: Rule[]; }
 ```
 
-A resolver runs registered sources against the projection, collects entries with
-their atom provenance, ranks by salience x weight, reconciles contradictions,
-and returns a structured reading. The engine ships the contract and perhaps one
-reference source; the *content* is always the developer's.
+`interpret(ctx, sources)` runs every rule, and for each match emits a
+`ReadingEntry` carrying the text, the matched `atomIds` (the audit trail), and a
+salience = sum of those atoms' salience x the rule weight. Entries come back
+sorted by salience. The engine ships the mechanism; the rule *content* is always
+the developer's (a tradition, a house style, a third-party corpus). Contradiction
+reconciliation beyond ranking is left to the caller for now.
 
 ## 4. Output: structured reading or LLM brief (next)
 

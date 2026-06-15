@@ -12,6 +12,9 @@ import {
 } from "../src/core.js";
 import { Engine, BODIES, Body, DEFAULT_ORBS } from "../src/chart.js";
 import { interpretationContext } from "../src/interpretation.js";
+import {
+  interpret, hasPlacement, hasAspect, hasPattern, matchAll, matchNone,
+} from "../src/interpret.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
@@ -493,6 +496,33 @@ for (const g of G.houses) {
   if (sun?.sign !== "Gemini") {
     failures++;
     console.error(`FAIL interp sun placement: ${sun?.sign}`);
+  }
+
+  // Matching + resolver: a developer's rule corpus over the projection, with
+  // provenance. The engine ships the mechanism, never the content.
+  const source = {
+    id: "demo", version: "0.1", rules: [
+      { id: "sun-gemini", when: hasPlacement({ body: "sun", sign: "Gemini" }), text: "x" },
+      { id: "moon-neptune", when: hasAspect({ between: ["moon", "neptune"] as [string, string], aspect: "conjunction" }), text: "x", weight: 1.5 },
+      { id: "moon-stellium", when: matchAll(hasPlacement({ body: "moon" }), hasPattern({ kind: "stellium_sign", body: "moon" })), text: "x" },
+      { id: "no-aries-sun", when: matchNone(hasPlacement({ body: "sun", sign: "Aries" })), text: "x" },
+      { id: "miss", when: hasPlacement({ body: "sun", sign: "Aries" }), text: "x" },
+    ],
+  };
+  const reading = interpret(ctx, [source]);
+  const byRule = Object.fromEntries(reading.entries.map((e) => [e.rule, e]));
+  const rsorted = reading.entries.every((e, i) => i === 0 || reading.entries[i - 1].salience >= e.salience);
+  if (
+    reading.entries.length !== 4 // the four matching rules; "miss" omitted
+    || "miss" in byRule
+    || byRule["sun-gemini"]?.atomIds.join() !== "placement:sun" // provenance
+    || byRule["sun-gemini"]?.id !== "demo/sun-gemini"
+    || byRule["moon-stellium"]?.atomIds.length !== 2 // matchAll unions atoms
+    || byRule["no-aries-sun"]?.atomIds.length !== 0 // absence: matched, no atoms
+    || !rsorted
+  ) {
+    failures++;
+    console.error(`FAIL interpret: entries=${reading.entries.length} rules=${JSON.stringify(reading.entries.map((e) => e.rule))} sorted=${rsorted}`);
   }
 }
 
