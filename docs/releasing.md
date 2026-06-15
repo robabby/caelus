@@ -43,7 +43,9 @@ registered by the first publish itself. Re-check before tagging:
    (a metadata-only patch may bump a single package — see MCP Registry below):
    the four `package.json` files, `python/pyproject.toml`,
    `packages/caelus-mcp/server.json` (both the top-level `version` and the
-   `packages[].version`), and `llms.txt` + `apps/web/public/llms.txt`.
+   `packages[].version`), `llms.txt` + `apps/web/public/llms.txt`, and
+   `apps/web/lib/site.ts` (`SITE.version`, the header tag, footer, and OG
+   image). `check:versions` now asserts `SITE.version` too.
 2. Update `caelus-mcp`'s and `caelus-birth`'s dependency range on `caelus`
    (`^X.Y.Z`) to match.
 3. Run `npm run check:versions` — it asserts npm × PyPI × `server.json` all

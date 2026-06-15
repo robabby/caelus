@@ -35,6 +35,15 @@ for (const p of serverJson.packages ?? []) {
   sources.push({ label: `server.json packages[${p.identifier}]`, version: p.version });
 }
 
+// Web display version: SITE.version (header tag, footer, OG image, docs eyebrow)
+const siteTs = read("apps/web/lib/site.ts");
+const siteMatch = siteTs.match(/version:\s*"([^"]+)"/);
+if (!siteMatch) {
+  console.error("check-versions: could not find SITE.version in apps/web/lib/site.ts");
+  process.exit(1);
+}
+sources.push({ label: "apps/web/lib/site.ts (SITE.version)", version: siteMatch[1] });
+
 const canonical = sources[0].version;
 const mismatches = sources.filter((s) => s.version !== canonical);
 
