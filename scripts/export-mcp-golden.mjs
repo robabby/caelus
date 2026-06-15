@@ -54,6 +54,11 @@ export const GOLDEN_CASES = [
   { id: "similar-skies-1990", tool: "similar_skies",
     args: { reference_date: "1990-06-10T14:30:00Z", start: "1985-01-01T00:00:00Z",
             end: "1995-01-01T00:00:00Z", step_days: 5, limit: 5 } },
+  { id: "electional-moon-venus", tool: "electional_search",
+    args: { start: "2026-06-01T00:00:00Z", end: "2026-06-20T00:00:00Z",
+            wanted: [{ a: "moon", b: "venus", aspect: "trine" }], step_hours: 12, limit: 3 } },
+  { id: "cosmic-weather-2026", tool: "cosmic_weather",
+    args: { date: "2026-06-10T00:00:00Z" } },
 
   // --- edge cases (format must stay stable across these too) ---
   { id: "natal-polar-svalbard", tool: "natal_chart",

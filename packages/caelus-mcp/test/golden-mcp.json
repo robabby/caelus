@@ -2584,6 +2584,101 @@
       ]
     }
   },
+  "electional-moon-venus": {
+    "tool": "electional_search",
+    "args": {
+      "start": "2026-06-01T00:00:00Z",
+      "end": "2026-06-20T00:00:00Z",
+      "wanted": [
+        {
+          "a": "moon",
+          "b": "venus",
+          "aspect": "trine"
+        }
+      ],
+      "step_hours": 12,
+      "limit": 3
+    },
+    "payload": {
+      "start": "2026-06-01T00:00:00Z",
+      "end": "2026-06-20T00:00:00Z",
+      "moments": [
+        {
+          "utc": "2026-06-09T00:00:00Z",
+          "score": 0.93,
+          "matched": [
+            {
+              "a": "moon",
+              "b": "venus",
+              "aspect": "trine",
+              "orb": 0.46,
+              "applying": false
+            }
+          ]
+        },
+        {
+          "utc": "2026-06-08T12:00:00Z",
+          "score": 0.51,
+          "matched": [
+            {
+              "a": "moon",
+              "b": "venus",
+              "aspect": "trine",
+              "orb": 5.5,
+              "applying": true
+            }
+          ]
+        },
+        {
+          "utc": "2026-06-09T12:00:00Z",
+          "score": 0.07,
+          "matched": [
+            {
+              "a": "moon",
+              "b": "venus",
+              "aspect": "trine",
+              "orb": 6.53,
+              "applying": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cosmic-weather-2026": {
+    "tool": "cosmic_weather",
+    "args": {
+      "date": "2026-06-10T00:00:00Z"
+    },
+    "payload": {
+      "utc": "2026-06-10T00:00:00Z",
+      "patterns": [
+        {
+          "kind": "stellium_sign",
+          "bodies": [
+            "chiron",
+            "moon",
+            "neptune",
+            "saturn"
+          ],
+          "sign": "Aries",
+          "orb": 0
+        },
+        {
+          "kind": "stellium_sign",
+          "bodies": [
+            "jupiter",
+            "mercury",
+            "venus"
+          ],
+          "sign": "Cancer",
+          "orb": 0
+        }
+      ],
+      "stationing": [],
+      "moon_void_of_course": false
+    }
+  },
   "natal-polar-svalbard": {
     "tool": "natal_chart",
     "args": {

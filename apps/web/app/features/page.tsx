@@ -157,7 +157,7 @@ export default function Features() {
 
       <H2>Integration</H2>
       <P>
-        The MCP server exposes twenty-five chart tools over stdio and Streamable HTTP
+        The MCP server exposes twenty-seven chart tools over stdio and Streamable HTTP
         at <A href="/api/mcp">/api/mcp</A>; a REST endpoint answers at{" "}
         <A href="/api/chart?lat=27.94&lon=-82.46">/api/chart</A>. The engine does
         no file or network I/O, ships an embedded data tier and a Node loader, and

@@ -24,9 +24,9 @@ import {
   yoginiDashas, yoginiAt, ashtottariDashas, ashtottariAt,
   varga, VARGA_DIVISIONS,
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
-  detectPatterns, chartSignature,
+  detectPatterns, detectPatternsIn, chartSignature,
   chartFeatures, configurationFit,
-  dignityScore,
+  dignityScore, voidOfCourse,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -625,6 +625,35 @@ const assertExactHits = (hits, body, targetLonAt, angle, label, tolDeg = 0.02) =
   const d = new Date(top.utc);
   const topJd = julianDay(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds());
   assert(Math.abs(configurationFit(eng, topJd, target) - top.similarity) < 1e-3, "similar_skies: similarity matches configurationFit");
+}
+
+// ---------------------------------------------------------------- electional_search
+{
+  const res = await call("electional_search", {
+    start: "2026-06-01T00:00:00Z", end: "2026-06-20T00:00:00Z",
+    wanted: [{ a: "moon", b: "venus", aspect: "trine" }], step_hours: 6,
+  });
+  assert(res.moments.length > 0 && res.moments.length <= 10, "electional_search: returns ranked moments");
+  let sorted = true;
+  for (let i = 1; i < res.moments.length; i++) if (res.moments[i].score > res.moments[i - 1].score) sorted = false;
+  assert(sorted, "electional_search: moments sorted by score descending");
+  for (const mo of res.moments) {
+    assert(mo.matched.length > 0, "electional_search: each returned moment matched something");
+    for (const m of mo.matched) {
+      assert(m.a === "moon" && m.b === "venus" && m.aspect === "trine", "electional_search: matched the wanted aspect");
+    }
+  }
+}
+
+// ---------------------------------------------------------------- cosmic_weather
+{
+  const date = "2026-06-10T00:00:00Z";
+  const res = await call("cosmic_weather", { date });
+  const bodies = {};
+  for (const b of BODIES) bodies[b] = { lon: eng.longitude(b, jdFromIso(date)) };
+  assert(JSON.stringify(res.patterns) === JSON.stringify(detectPatternsIn(bodies)), "cosmic_weather: patterns match engine");
+  assert(res.patterns.every((p) => p.kind !== "stellium_house"), "cosmic_weather: no house-based patterns in a mundane snapshot");
+  assert(res.moon_void_of_course === voidOfCourse(eng, jdFromIso(date)).isVoid, "cosmic_weather: void Moon flag matches engine");
 }
 
 await client.close();

@@ -35,9 +35,9 @@ import {
   yoginiDashas, yoginiAt, ashtottariDashas, ashtottariAt,
   varga, VARGA_DIVISIONS,
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
-  detectPatterns, chartSignature,
+  detectPatterns, detectPatternsIn, chartSignature,
   chartFeatures, searchConfigurations,
-  dignityScore,
+  dignityScore, aspectBetween,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -562,6 +562,29 @@ export const similarSkiesOut = z.object({
   reference_utc: z.string(),
   matches: z.array(z.object({ utc: z.string(), similarity: z.number() })),
 });
+export const electionalOut = z.object({
+  start: z.string(),
+  end: z.string(),
+  moments: z.array(z.object({
+    utc: z.string(),
+    score: z.number(),
+    matched: z.array(z.object({
+      a: z.string(), b: z.string(), aspect: aspectName, orb: z.number(),
+      applying: z.boolean(),
+    })),
+  })),
+});
+const patternRow = z.object({
+  kind: z.string(), bodies: z.array(z.string()),
+  apex: z.string().optional(), sign: z.string().optional(),
+  house: z.number().int().optional(), orb: z.number(),
+});
+export const cosmicWeatherOut = z.object({
+  utc: z.string(),
+  patterns: z.array(patternRow),
+  stationing: z.array(z.object({ body: z.string(), utc: z.string(), direction: z.enum(["retrograde", "direct"]) })),
+  moon_void_of_course: z.boolean(),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -588,6 +611,8 @@ export const OUTPUT_SCHEMAS = {
   aspect_patterns: patternsOut,
   chart_signature: signatureOut,
   similar_skies: similarSkiesOut,
+  electional_search: electionalOut,
+  cosmic_weather: cosmicWeatherOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -1393,6 +1418,74 @@ export function buildServer(
     return text({
       reference_utc: reference_date,
       matches: matches.map((m) => ({ utc: isoFromJd(m.jd), similarity: Math.round(m.score * 1e4) / 1e4 })),
+    });
+  });
+
+  server.registerTool("electional_search", {
+    description:
+      "Rank moments in a window for an electional aim. Samples the window and scores each instant by how closely a set of wanted body-to-body aspects is satisfied (tighter and applying aspects score higher), optionally penalizing a void-of-course Moon. Returns the top moments with the aspects that matched. Body-to-body only; for aspects to the angles, compute the chart at a candidate moment.",
+    inputSchema: {
+      start: z.string().describe("UTC ISO start of the window"),
+      end: z.string().describe("UTC ISO end of the window"),
+      wanted: z.array(z.object({
+        a: z.string().describe("first body, snake_case"),
+        b: z.string().describe("second body, snake_case"),
+        aspect: aspectName,
+      })).min(1).describe("aspects to reward when close to exact"),
+      step_hours: z.number().positive().default(6).describe("sampling step in hours (default 6)"),
+      avoid_void_moon: z.boolean().default(false).describe("penalize a void-of-course Moon"),
+      limit: z.number().int().positive().default(10).describe("max moments to return (default 10)"),
+      zodiac: zodiacSchema,
+    },
+  }, async ({ start, end, wanted, step_hours, avoid_void_moon, limit, zodiac }) => {
+    const startJd = jdFromIso(start);
+    const endJd = jdFromIso(end);
+    const stepJd = step_hours / 24;
+    const moments: Array<{ utc: string; score: number; matched: unknown[] }> = [];
+    for (let jd = startJd; jd <= endJd + 1e-9; jd += stepJd) {
+      const matched: Array<{ a: string; b: string; aspect: string; orb: number; applying: boolean }> = [];
+      let score = 0;
+      for (const w of wanted) {
+        const m = aspectBetween(engine, w.a as Body, w.b as Body, jd, zodiac);
+        if (m && m.aspect === w.aspect) {
+          const maxOrb = DEFAULT_ORBS[w.aspect] ?? 6;
+          const orb = Math.abs(m.orb); // aspectBetween returns a signed orb
+          const applying = m.phase === "applying";
+          score += Math.max(0, 1 - orb / maxOrb) + (applying ? 0.3 : 0);
+          matched.push({ a: w.a, b: w.b, aspect: w.aspect, orb: r2(orb), applying });
+        }
+      }
+      if (avoid_void_moon && voidOfCourse(engine, jd, zodiac).isVoid) score -= 1;
+      if (matched.length > 0) moments.push({ utc: isoFromJd(jd), score: r2(score), matched });
+    }
+    moments.sort((a, b) => b.score - a.score);
+    return text({ start, end, moments: moments.slice(0, limit) });
+  });
+
+  server.registerTool("cosmic_weather", {
+    description:
+      "The mundane sky on a date: the active aspect configurations among the transiting planets (T-squares, grand trines, grand crosses, yods, kites, mystic rectangles, stelliums by sign), any planet stationing within a window, and whether the Moon is void of course. A 'cosmic weather' snapshot; no birth chart or location needed.",
+    inputSchema: {
+      date: z.string().describe("UTC ISO date"),
+      window_days: z.number().positive().default(7).describe("days either side to scan for stations (default 7)"),
+      zodiac: zodiacSchema,
+    },
+  }, async ({ date, window_days, zodiac }) => {
+    const jd = jdFromIso(date);
+    const bodies: Record<string, { lon: number }> = {};
+    for (const b of BODIES) bodies[b] = { lon: engine.longitude(b as Body, jd, { zodiac }) };
+    const stationing: Array<{ body: string; utc: string; direction: string }> = [];
+    for (const b of ["mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto"]) {
+      for (const [sjd, direction] of stations(engine, b as Body, jd - window_days, jd + window_days, 2)) {
+        stationing.push({ body: b, utc: isoFromJd(sjd), direction });
+      }
+    }
+    stationing.sort((x, y) => (x.utc < y.utc ? -1 : 1));
+    return text({
+      utc: date,
+      patterns: detectPatternsIn(bodies),
+      stationing,
+      moon_void_of_course: voidOfCourse(engine, jd, zodiac).isVoid,
     });
   });
 
