@@ -1,0 +1,265 @@
+{
+ "basis": "Python reference astroengine.signature; aspectable bodies, unweighted counts; classical chart ruler",
+ "cases": [
+  {
+   "id": "aries_stellium",
+   "spec": {
+    "id": "aries_stellium",
+    "type": "sig",
+    "asc_sign": 0,
+    "bodies": {
+     "sun": {
+      "lon": 5
+     },
+     "moon": {
+      "lon": 15
+     },
+     "mars": {
+      "lon": 25
+     }
+    }
+   },
+   "result": {
+    "elements": {
+     "fire": 3,
+     "earth": 0,
+     "air": 0,
+     "water": 0
+    },
+    "modalities": {
+     "cardinal": 3,
+     "fixed": 0,
+     "mutable": 0
+    },
+    "angularity": {
+     "angular": 0,
+     "succedent": 0,
+     "cadent": 0
+    },
+    "quadrants": {
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0
+    },
+    "hemispheres": {
+     "above": 0,
+     "below": 0,
+     "eastern": 0,
+     "western": 0
+    },
+    "dominant": {
+     "element": "fire",
+     "modality": "cardinal",
+     "sign": "Aries"
+    },
+    "ruler": "mars",
+    "bodies": [
+     "mars",
+     "moon",
+     "sun"
+    ]
+   }
+  },
+  {
+   "id": "angular_cross",
+   "spec": {
+    "id": "angular_cross",
+    "type": "sig",
+    "bodies": {
+     "sun": {
+      "lon": 5,
+      "house": 1
+     },
+     "moon": {
+      "lon": 100,
+      "house": 4
+     },
+     "mercury": {
+      "lon": 200,
+      "house": 7
+     },
+     "venus": {
+      "lon": 280,
+      "house": 10
+     }
+    }
+   },
+   "result": {
+    "elements": {
+     "fire": 1,
+     "earth": 1,
+     "air": 1,
+     "water": 1
+    },
+    "modalities": {
+     "cardinal": 4,
+     "fixed": 0,
+     "mutable": 0
+    },
+    "angularity": {
+     "angular": 4,
+     "succedent": 0,
+     "cadent": 0
+    },
+    "quadrants": {
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1
+    },
+    "hemispheres": {
+     "above": 2,
+     "below": 2,
+     "eastern": 2,
+     "western": 2
+    },
+    "dominant": {
+     "element": "fire",
+     "modality": "cardinal",
+     "sign": null
+    },
+    "ruler": null,
+    "bodies": [
+     "mercury",
+     "moon",
+     "sun",
+     "venus"
+    ]
+   }
+  },
+  {
+   "id": "fixed_water",
+   "spec": {
+    "id": "fixed_water",
+    "type": "sig",
+    "asc_sign": 7,
+    "bodies": {
+     "sun": {
+      "lon": 215,
+      "house": 1
+     },
+     "moon": {
+      "lon": 225,
+      "house": 1
+     },
+     "mars": {
+      "lon": 130,
+      "house": 10
+     },
+     "venus": {
+      "lon": 320,
+      "house": 5
+     }
+    }
+   },
+   "result": {
+    "elements": {
+     "fire": 1,
+     "earth": 0,
+     "air": 1,
+     "water": 2
+    },
+    "modalities": {
+     "cardinal": 0,
+     "fixed": 4,
+     "mutable": 0
+    },
+    "angularity": {
+     "angular": 3,
+     "succedent": 1,
+     "cadent": 0
+    },
+    "quadrants": {
+     "1": 2,
+     "2": 1,
+     "3": 0,
+     "4": 1
+    },
+    "hemispheres": {
+     "above": 1,
+     "below": 3,
+     "eastern": 3,
+     "western": 1
+    },
+    "dominant": {
+     "element": "water",
+     "modality": "fixed",
+     "sign": "Scorpio"
+    },
+    "ruler": "mars",
+    "bodies": [
+     "mars",
+     "moon",
+     "sun",
+     "venus"
+    ]
+   }
+  },
+  {
+   "id": "natal_tampa",
+   "spec": {
+    "id": "natal_tampa",
+    "type": "at",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "lat": 27.95,
+    "lon": -82.46
+   },
+   "result": {
+    "elements": {
+     "fire": 1,
+     "earth": 6,
+     "air": 1,
+     "water": 3
+    },
+    "modalities": {
+     "cardinal": 7,
+     "fixed": 3,
+     "mutable": 1
+    },
+    "angularity": {
+     "angular": 3,
+     "succedent": 2,
+     "cadent": 6
+    },
+    "quadrants": {
+     "1": 0,
+     "2": 5,
+     "3": 1,
+     "4": 5
+    },
+    "hemispheres": {
+     "above": 6,
+     "below": 5,
+     "eastern": 5,
+     "western": 6
+    },
+    "dominant": {
+     "element": "earth",
+     "modality": "cardinal",
+     "sign": "Capricorn"
+    },
+    "ruler": "sun",
+    "bodies": [
+     "chiron",
+     "jupiter",
+     "mars",
+     "mercury",
+     "moon",
+     "neptune",
+     "pluto",
+     "saturn",
+     "sun",
+     "uranus",
+     "venus"
+    ]
+   }
+  }
+ ]
+}
