@@ -103,6 +103,7 @@
       "render": [
         "{value} chart tools",
         "{value} MCP tools",
+        "MCP tools ({value})",
         "twenty-five chart tools",
         "Twenty-five chart tools",
         "twenty-five tools"

@@ -24,7 +24,7 @@ export default function Cta() {
         Starter template
       </a>
       <a href="/docs/mcp" className="btn btn-ghost">
-        25 MCP tools
+        MCP tools (25)
       </a>
     </div>
   );
