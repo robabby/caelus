@@ -46,13 +46,14 @@ Atom-specific fields fill in the rest: placements add `sign`/`signDeg`/`house`/
 `retrograde`/`dignities`; aspects add `aspect`/`orb`/`phase`/`strength`;
 patterns add `pattern`/`apex`; signature facets add `facet`/`value`.
 
-Two enrichments live here rather than on the bare `Chart`, because every
-interpreter needs them and neither is in `Chart.aspects`:
+Two enrichments every interpreter needs now live on `Chart.aspects` itself (the
+engine fills them; the projection just carries them onto the aspect atom):
 
-- **phase** (applying / separating / exact), from the two bodies' speeds via the
-  validated `aspectPhase` in `electional.ts`.
+- **phase** (applying / separating / exact), from the two bodies' speeds (the
+  same formula as `aspectPhase` in `electional.ts`, validated equal in the
+  golden run).
 - **strength** in `[0, 1]` (1 = exact, 0 = at the orb limit), normalized against
-  the orb policy.
+  the orb policy actually used to find the aspect.
 
 ### Salience
 
@@ -202,7 +203,13 @@ classical planet's sign, with the final-dispositor terminus flagged) and
 
 ## Follow-ons
 
-- Promote `phase` and `strength` onto `Chart.aspects` itself (needs the Python
-  reference + golden regenerated, so it is a maintainer-environment change).
-- A reference `InterpretationSource` (clearly labelled example content, shipped
-  separately from the engine) so the plugin path has a worked example.
+All the originally-listed follow-ons have shipped (dispositor/reception atoms,
+reconciliation, the worked example, and `phase`/`strength` promoted onto
+`Chart.aspects`). The one maintainer-environment step that remains is to
+regenerate the golden fixtures and the Python reference's stored output so the
+new aspect fields appear in `golden.json` (the TS engine fills them now, and the
+golden run pins aspect *count*, so nothing is red in the meantime). Open ideas
+beyond the original list:
+
+- Surface `phase` / `strength` on the MCP `natal_chart` aspect output too.
+- Exaltation/triplicity reception in addition to domicile.

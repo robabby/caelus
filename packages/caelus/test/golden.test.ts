@@ -10,7 +10,8 @@ import { fileURLToPath } from "node:url";
 import {
   julianDay, deltaT, jdTT, nutation, meanObliquity, DEG, mod, ayanamsa,
 } from "../src/core.js";
-import { Engine, BODIES, Body, DEFAULT_ORBS } from "../src/chart.js";
+import { Engine, BODIES, Body, DEFAULT_ORBS, ASPECTS } from "../src/chart.js";
+import { aspectPhase } from "../src/electional.js";
 import { interpretationContext } from "../src/interpretation.js";
 import {
   interpret, hasPlacement, hasAspect, hasPattern, matchAll, matchNone,
@@ -380,6 +381,18 @@ for (const g of G.houses) {
   if (c.aspects.length !== g.aspects.length) {
     failures++;
     console.error(`FAIL aspect count: ${c.aspects.length} vs ${g.aspects.length}`);
+  }
+  // aspects carry phase + strength; phase must match the canonical aspectPhase
+  // and strength sits in [0,1]. (Golden pins count only, so this guards the
+  // enrichment via `failures` without a regenerated fixture.)
+  for (const ap of c.aspects) {
+    const pa = c.bodies[ap.a]!; const pb = c.bodies[ap.b]!;
+    const want = aspectPhase(pa.lon, pa.speed, pb.lon, pb.speed, ASPECTS[ap.aspect]);
+    if (ap.phase !== want || ap.strength < 0 || ap.strength > 1) {
+      failures++;
+      console.error(`FAIL aspect enrich ${ap.a}~${ap.b} ${ap.aspect}: phase=${ap.phase} vs ${want} strength=${ap.strength}`);
+      break;
+    }
   }
   // chartAt(jd) must be byte-for-byte identical to chart(calendar fields).
   // A TS-internal invariant (not a Python-pinned golden), so it guards

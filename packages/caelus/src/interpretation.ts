@@ -20,9 +20,9 @@
  * than pinned by a parity golden.
  */
 import { mod } from "./core.js";
-import { SIGNS, ASPECTS, DEFAULT_ORBS, DOMICILE } from "./chart.js";
+import { SIGNS, DOMICILE } from "./chart.js";
 import type { Chart, Zodiac } from "./chart.js";
-import { aspectPhase, AspectPhase } from "./electional.js";
+import type { AspectPhase } from "./electional.js";
 import { detectPatterns, ChartPattern } from "./patterns.js";
 import { chartSignature, ChartSignature } from "./signature.js";
 
@@ -164,9 +164,6 @@ export const DEFAULT_SALIENCE: SalienceWeights = {
 export interface ContextOptions {
   /** Salience weights to override (merged over {@link DEFAULT_SALIENCE}). */
   salience?: Partial<SalienceWeights>;
-  /** Per-aspect orb limits used to normalize aspect strength; defaults to
-   *  {@link DEFAULT_ORBS}. */
-  orbs?: Record<string, number>;
   /** Precomputed patterns/signature, to avoid recomputing them. */
   patterns?: ChartPattern[];
   signature?: ChartSignature;
@@ -199,7 +196,6 @@ export function interpretationContext(
   chart: Chart, opts: ContextOptions = {},
 ): InterpretationContext {
   const w = { ...DEFAULT_SALIENCE, ...opts.salience };
-  const orbs = opts.orbs ?? DEFAULT_ORBS;
   const sig = opts.signature ?? chartSignature(chart);
   const patterns = opts.patterns ?? detectPatterns(chart);
   const atoms: FactAtom[] = [];
@@ -225,22 +221,18 @@ export function interpretationContext(
     });
   }
 
-  // Aspects: enriched with phase and strength.
+  // Aspects: phase and strength come straight from the enriched chart aspect.
   for (const asp of chart.aspects) {
-    const pa = chart.bodies[asp.a]; const pb = chart.bodies[asp.b];
-    if (!pa || !pb) continue;
-    const phase = aspectPhase(pa.lon, pa.speed, pb.lon, pb.speed, ASPECTS[asp.aspect] ?? 0);
-    const limit = orbs[asp.aspect] ?? 8;
-    const strength = Math.max(0, 1 - Math.abs(asp.orb) / limit);
-    let salience = w.base + strength;
+    let salience = w.base + asp.strength;
     if (HARD_ASPECTS.has(asp.aspect)) salience += w.hardAspect;
     if (LUMINARIES.has(asp.a) || LUMINARIES.has(asp.b)) salience += w.luminary;
     const [x, y] = [asp.a, asp.b].sort();
     atoms.push({
       id: `aspect:${x}~${y}:${asp.aspect}`, kind: "aspect", bodies: [asp.a, asp.b],
-      salience, a: asp.a, b: asp.b, aspect: asp.aspect, orb: asp.orb, phase, strength,
+      salience, a: asp.a, b: asp.b, aspect: asp.aspect, orb: asp.orb,
+      phase: asp.phase, strength: asp.strength,
       text: `${title(asp.a)} ${asp.aspect} ${title(asp.b)} `
-        + `(${phase}, orb ${Math.abs(asp.orb).toFixed(1)}°)`,
+        + `(${asp.phase}, orb ${Math.abs(asp.orb).toFixed(1)}°)`,
     });
   }
 

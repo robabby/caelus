@@ -10,6 +10,7 @@ import {
 } from "./core.js";
 import { starApparent } from "./stars.js";
 import * as H from "./houses.js";
+import type { AspectPhase } from "./electional.js"; // type-only: no runtime cycle
 
 const TWO_PI = 2 * Math.PI;
 
@@ -223,6 +224,10 @@ export interface Aspect {
   aspect: string;
   /** Orb from exact, in degrees. */
   orb: number;
+  /** Applying, separating, or exact -- from the two bodies' longitude speeds. */
+  phase: AspectPhase;
+  /** Closeness in `[0, 1]`: `1` exact, `0` at the orb limit. */
+  strength: number;
 }
 
 /** A full natal chart, as returned by {@link Engine.chart} and
@@ -781,11 +786,24 @@ export function findAspects(
     for (let j = i + 1; j < names.length; j++) {
       const a = names[i];
       const b = names[j];
-      const sep = Math.abs(mod(bodies[a].lon - bodies[b].lon + 180, 360) - 180);
+      const e = mod(bodies[a].lon - bodies[b].lon + 180, 360) - 180; // signed gap
+      const sep = Math.abs(e);
       for (const [asp, angle] of Object.entries(ASPECTS)) {
         const orb = Math.abs(sep - angle);
         if (orb <= orbs[asp]) {
-          out.push({ a, b, aspect: asp, orb: Math.round(orb * 100) / 100 });
+          const orbRounded = Math.round(orb * 100) / 100;
+          // Applying/separating from the closing of the signed orb (matches
+          // electional.aspectPhase); strength from the same rounded orb so a
+          // consumer can reproduce it from .orb and the orb policy.
+          const signedOrb = sep - angle;
+          const dAbsOrbDt = (signedOrb >= 0 ? 1 : -1) * (e >= 0 ? 1 : -1)
+            * (bodies[a].speed - bodies[b].speed);
+          const phase: AspectPhase = Math.abs(signedOrb) < 1e-9
+            ? "exact" : dAbsOrbDt < 0 ? "applying" : "separating";
+          out.push({
+            a, b, aspect: asp, orb: orbRounded,
+            phase, strength: Math.max(0, 1 - orbRounded / orbs[asp]),
+          });
         }
       }
     }

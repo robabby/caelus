@@ -299,11 +299,22 @@ def find_aspects(bodies, orbs=DEFAULT_ORBS):
     names = [b for b in bodies if b not in NOT_ASPECTABLE]
     for i, a in enumerate(names):
         for b in names[i + 1:]:
-            sep = abs((bodies[a]["lon"] - bodies[b]["lon"] + 180) % 360 - 180)
+            e = (bodies[a]["lon"] - bodies[b]["lon"] + 180) % 360 - 180  # signed
+            sep = abs(e)
             for asp, angle in ASPECTS.items():
                 orb = abs(sep - angle)
                 if orb <= orbs[asp]:
-                    out.append({"a": a, "b": b, "aspect": asp, "orb": round(orb, 2)})
+                    orb_r = round(orb, 2)
+                    # applying/separating from the closing of the signed orb;
+                    # strength from the same rounded orb (mirrors TS findAspects).
+                    signed_orb = sep - angle
+                    d = ((1 if signed_orb >= 0 else -1) * (1 if e >= 0 else -1)
+                         * (bodies[a]["speed"] - bodies[b]["speed"]))
+                    phase = ("exact" if abs(signed_orb) < 1e-9
+                             else "applying" if d < 0 else "separating")
+                    out.append({"a": a, "b": b, "aspect": asp, "orb": orb_r,
+                                "phase": phase,
+                                "strength": max(0.0, 1 - orb_r / orbs[asp])})
     return out
 
 
