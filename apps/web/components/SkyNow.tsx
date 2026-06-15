@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
+  nakshatra, vimshottariActive,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -154,7 +155,7 @@ export default function SkyNow() {
   const [tzMode, setTzMode] = useState<"utc" | "local">("utc");
   const [place, setPlace] = useState("");
   const [label, setLabel] = useState("");
-  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "events" | "json">("positions");
+  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "vedic" | "events" | "json">("positions");
   const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
   const [focus, setFocus] = useState<{ key: string; bodies: string[] } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -332,6 +333,17 @@ export default function SkyNow() {
       lots: lots(engine(), chart.jdUt, Number(lat), Number(lon), zodiac),
       sect,
     };
+  }, [chart]);
+
+  // The Vedic (sidereal) layer: each body's nakshatra, and the Vimshottari dasha
+  // active today, reading the chart as a natal moment.
+  const vedic = useMemo(() => {
+    if (!chart) return null;
+    const sid = (b: string) => engine().longitude(b as BodyId, chart.jdUt, { zodiac: "sidereal:lahiri" });
+    const bodies = BODIES.flatMap((b) => (chart.bodies[b] ? [{ body: b, nak: nakshatra(sid(b)) }] : []));
+    const now = new Date();
+    const nowJd = julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
+    return { bodies, dasha: vimshottariActive(sid("moon"), chart.jdUt, nowJd) };
   }, [chart]);
 
   // A new chart clears any isolated selection on the wheel.
@@ -541,7 +553,7 @@ export default function SkyNow() {
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
-                    {(["positions", "aspects", "insights", "events", "json"] as const).map((t) => (
+                    {(["positions", "aspects", "insights", "vedic", "events", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
                         {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
                       </button>
@@ -739,6 +751,34 @@ export default function SkyNow() {
                         </table>
                       </div>
                     </div>
+                  )}
+
+                  {tab === "vedic" && vedic && (
+                    <>
+                      <p className="dim small" style={{ marginTop: 0 }}>Sidereal · Lahiri ayanamsa. Nakshatra (lunar mansion) per body:</p>
+                      <table className="mono" style={{ fontSize: "0.82rem" }}>
+                        <tbody>
+                          {vedic.bodies.map(({ body, nak }) => (
+                            <tr key={body}>
+                              <td className="mute" style={cell}>{GLYPHS[body] ? `${GLYPHS[body]} ` : ""}{body}</td>
+                              <td style={cell}>{nak.name}</td>
+                              <td className="mute" style={cell}>pada {nak.pada} · {nak.lord}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {vedic.dasha && (
+                        <p className="dim small" style={{ margin: "0.8rem 0 0" }}>
+                          Vimshottari dasha today:{" "}
+                          <strong style={{ color: "var(--text)" }}>{vedic.dasha.maha}</strong>
+                          {vedic.dasha.antar && <> › {vedic.dasha.antar}</>}
+                          {vedic.dasha.pratyantar && <> › {vedic.dasha.pratyantar}</>}
+                        </p>
+                      )}
+                      <p className="dim small" style={{ margin: "0.4rem 0 0" }}>
+                        Reading the chart as a birth moment. Also: Yogini and Ashtottari dashas, the vargas, and the yogas.
+                      </p>
+                    </>
                   )}
 
                   {tab === "events" && (
