@@ -94,6 +94,25 @@ chart.aspects;
 // [{ a: "sun", b: "moon", aspect: "trine", orb: 2.13 }, ...]`}
 />
 
+## Detect aspect patterns
+
+`detectPatterns()` finds the classical configurations, T-squares, grand trines,
+grand crosses, yods, kites, mystic rectangles, and stelliums by sign and house,
+as structured objects. Reported patterns are maximal: a grand cross hides the
+T-squares it contains. Orbs follow the engine defaults (plus a quincunx for
+yods) and are overridable.
+
+<CodeBlock
+  lang="typescript"
+  label="patterns.ts"
+  code={`import { detectPatterns } from "caelus";
+
+const chart = engine.chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
+
+detectPatterns(chart);
+// [{ kind: "mystic_rectangle", bodies: ["chiron","moon","pluto","venus"], orb: 2.54 }, ...]`}
+/>
+
 ## When does a planet next station?
 
 `stations()` returns the retrograde and direct stations in a window, each as
