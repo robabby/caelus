@@ -1,3 +1,5 @@
+import { SolarReturnChart, ReturnsTimeline, DeclinationTable } from "../../../components/docs/DerivedDemo";
+
 export const metadata = {
   title: "Derived Charts",
   description: "Returns, secondary progressions, solar arc, composite and Davison charts, harmonics, antiscia, declination aspects, out-of-bounds, dignities, and sect, built on the validated positions.",
@@ -50,6 +52,8 @@ lunarReturn(engine, natalJd, targetJd, targetJd + 30);
 // Any body, e.g. the Saturn return:
 returns(engine, "saturn", natalJd, natalJd, natalJd + 365 * 30);`}
 />
+
+<SolarReturnChart />
 
 ## Secondary progressions and solar arc
 
@@ -128,6 +132,8 @@ outOfBounds(engine, "moon", natalJd);        // true | false
 outOfBoundsMargin(engine, "moon", natalJd);  // degrees past the obliquity`}
 />
 
+<DeclinationTable />
+
 ## Dignities and sect
 
 Essential dignities classify a body in a sign as domicile, exaltation,
@@ -184,6 +190,8 @@ const toDate = (jd: number) =>
 const from = julianDay(2026, 1, 1, 0, 0, 0);
 solarReturn(engine, natalJd, from, from + 365.25 * 10).map(toDate);
 // ["2026-06-10", "2027-06-11", ...]
+//
+// rendered below from this exact call:
 
 // Progressed-Moon sign at each birthday for the next twelve years:
 for (let year = 2026; year < 2038; year++) {
@@ -192,6 +200,8 @@ for (let year = 2026; year < 2038; year++) {
   console.log(year, SIGNS[Math.floor(lon / 30)]);
 }`}
 />
+
+<ReturnsTimeline />
 
 The same shape drives a transit timeline (sample `engine.longitude` over a
 range) or a directed-aspect scan (`directedLongitude` against natal points).

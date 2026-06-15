@@ -1,3 +1,5 @@
+import { NakshatraTable, DashaTree, YogasList } from "../../../components/docs/VedicDemo";
+
 export const metadata = {
   title: "Vedic & Jyotish",
   description: "The Vedic layer in caelus: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, the Parashari vargas, and the yogas, on the validated sidereal chart, each convention pinned to a named authority.",
@@ -42,6 +44,8 @@ n.pada;   // 1..4
 n.lord;   // the dasha lord of the nakshatra`}
 />
 
+<NakshatraTable />
+
 ## Dashas
 
 Three nakshatra-based dasha systems, each started from the Moon's birth
@@ -62,6 +66,8 @@ vimshottariAt(engine, natal, target);   // { maha, antar, pratyantar, ... }
 yoginiAt(engine, natal, target);        // { maha, antar, ... }
 ashtottariAt(engine, natal, target);    // { maha, antar, ... }`}
 />
+
+<DashaTree />
 
 ## Vargas (divisional charts)
 
@@ -95,6 +101,8 @@ yogasAt(engine, natal, 27.95, -82.46);       // the placement yogas present
 rajaYogasAt(engine, natal, 27.95, -82.46);   // { raja: [...], yogakarakas: [...] }
 kemadrumaAt(engine, natal, 27.95, -82.46);   // { present, planets_checked }`}
 />
+
+<YogasList />
 
 Full signatures are in the [API Reference](/docs/api). For the Western time-lord
 techniques, see [Hellenistic Time-Lords](/docs/hellenistic).

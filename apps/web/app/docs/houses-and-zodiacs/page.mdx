@@ -1,3 +1,5 @@
+import { CuspComparison, ZodiacComparison } from "../../../components/docs/HousesDemo";
+
 export const metadata = {
   title: "Houses & Zodiacs",
   description: "Twelve house systems, tropical and sidereal zodiac modes, and polar fallbacks.",
@@ -21,6 +23,8 @@ Twelve systems are built in: `placidus`, `whole_sign`, `equal`, `porphyry`,
   <code> chart.houseSystemRequested</code>.
 </Note>
 
+<CuspComparison />
+
 ## Tropical and sidereal
 
 The default zodiac is tropical. Sidereal modes subtract an ayanamsa:
@@ -37,6 +41,8 @@ Embedded ayanamsas: `lahiri`, `fagan_bradley`, `krishnamurti`, `raman`, and
 `yukteshwar`. Two star-anchored modes (`galcent_0sag`, `true_citra`) need the
 fixed-star catalog from the Node data tier; see
 <a href="/docs/data-tiers">Data Tiers</a>.
+
+<ZodiacComparison />
 
 ## Angles
 

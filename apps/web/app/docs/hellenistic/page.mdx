@@ -1,3 +1,5 @@
+import { LotsTable, ProfectionPanel, FirdariaTimeline, ReleasingPanel, DirectionsTable } from "../../../components/docs/HellenisticDemo";
+
 export const metadata = {
   title: "Hellenistic Time-Lords",
   description: "The traditional time-lord techniques in caelus: lots (Arabic parts), profections, firdaria, zodiacal releasing, and primary directions. Deterministic arithmetic on the validated positions, each convention documented.",
@@ -41,6 +43,8 @@ l.fortune;   // longitude of the Lot of Fortune
 l.spirit;    // Spirit is Fortune reflected across the Ascendant`}
 />
 
+<LotsTable />
+
 ## Profections
 
 The Ascendant advances one whole sign per year of life; the profected sign's
@@ -57,6 +61,8 @@ p.age_years;        // completed years
 p.annual.lord;      // lord of the year`}
 />
 
+<ProfectionPanel />
+
 ## Firdaria
 
 The Persian firdaria divides life into nine periods totalling seventy-five
@@ -72,6 +78,8 @@ const f = firdariaAt(engine, natal, julianDay(2025, 6, 10), 27.95, -82.46);
 f.major;   // the major-period lord active now
 f.sub;     // the sub-period lord`}
 />
+
+<FirdariaTimeline />
 
 ## Zodiacal releasing
 
@@ -90,6 +98,8 @@ z.l1;   // the major (L1) sign active now
 z.l2;   // the L2 sub-period sign`}
 />
 
+<ReleasingPanel />
+
 ## Primary directions
 
 The diurnal rotation of the sphere carries a planet to an angle or to another
@@ -107,6 +117,8 @@ primaryDirections(engine, natal, 27.95, -82.46);
 // planet-to-planet (mundane) directions
 mundaneDirections(engine, natal, 27.95, -82.46);`}
 />
+
+<DirectionsTable />
 
 The full signatures are in the [API Reference](/docs/api). For the Vedic
 time-lord systems (the Vimshottari, Yogini, and Ashtottari dashas), see
