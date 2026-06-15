@@ -4,7 +4,7 @@ import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
   nakshatra, vimshottariActive, profectionAt, varga,
-  declinationAspects, outOfBounds,
+  declinationAspects, outOfBounds, starParans,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -19,8 +19,10 @@ import fixedStars from "../lib/fixed-stars.json";
 import { crossAspect, PATTERN_LABEL } from "../lib/chart-display";
 
 // Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
-const BRIGHT_STARS = Object.entries((fixedStars as { stars: Record<string, { mag: number }> }).stars)
-  .filter(([, s]) => s.mag <= 2.5).map(([name]) => name);
+const STAR_MAG = (fixedStars as { stars: Record<string, { mag: number }> }).stars;
+const BRIGHT_STARS = Object.entries(STAR_MAG).filter(([, s]) => s.mag <= 2.5).map(([name]) => name);
+// The brightest stars (mag <= 1.5) for parans, to keep the list legible.
+const PARAN_STARS = Object.entries(STAR_MAG).filter(([, s]) => s.mag <= 1.5).map(([name]) => name);
 
 const pad = (n: number, w = 2) => String(Math.abs(n)).padStart(w, "0");
 const fmtIso = (y: number, mo: number, d: number, h: number, mi: number) =>
@@ -391,7 +393,10 @@ export default function SkyNow() {
         if (sep <= 1.0) hits.push({ body: b, star: s.name, orb: Math.round(sep * 100) / 100 });
       }
     }
-    return hits.sort((x, y) => x.orb - y.orb);
+    // Brady parans: a bright star co-angular with a body; show the tightest.
+    const parans = starParans(engine(), chart.jdUt, Number(lat), PARAN_STARS, undefined, 12)
+      .sort((x, y) => x.gap_min - y.gap_min).slice(0, 15);
+    return { conjunctions: hits.sort((x, y) => x.orb - y.orb), parans };
   }, [chart]);
 
   // A new chart clears any isolated selection on the wheel.
@@ -844,12 +849,12 @@ export default function SkyNow() {
                   {tab === "stars" && stars && (
                     <>
                       <p className="dim small" style={{ marginTop: 0 }}>Bright fixed stars (mag ≤ 2.5) within 1° of a body, by longitude:</p>
-                      {stars.length === 0 ? (
+                      {stars.conjunctions.length === 0 ? (
                         <p className="dim small" style={{ margin: 0 }}>No close conjunctions.</p>
                       ) : (
                         <table className="mono" style={{ fontSize: "0.82rem" }}>
                           <tbody>
-                            {stars.map((h, i) => (
+                            {stars.conjunctions.map((h, i) => (
                               <tr key={i}>
                                 <td className="mute" style={cell}>{GLYPHS[h.body] ? `${GLYPHS[h.body]} ` : ""}{h.body}</td>
                                 <td style={cell}>{h.star}</td>
@@ -858,6 +863,20 @@ export default function SkyNow() {
                             ))}
                           </tbody>
                         </table>
+                      )}
+                      <p className="dim small" style={{ margin: "0.8rem 0 0.3rem" }}>
+                        Parans (Brady): a bright star and a body on the angles at once, this day and latitude (tightest, within 12 min):
+                      </p>
+                      {stars.parans.length === 0 ? (
+                        <p className="dim small" style={{ margin: 0 }}>No parans.</p>
+                      ) : (
+                        <ul className="mono" style={{ lineHeight: 1.7, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: 0 }}>
+                          {stars.parans.map((p, i) => (
+                            <li key={i}>
+                              {p.star} <span className="mute">({p.star_angle})</span> {GLYPHS[p.body] ?? p.body} <span className="mute">({p.body_angle}) · {Math.round(p.gap_min)}m</span>
+                            </li>
+                          ))}
+                        </ul>
                       )}
                       <p className="dim small" style={{ margin: "0.5rem 0 0" }}>From the 319-star catalogue (Node tier), bundled here for the demo.</p>
                     </>
