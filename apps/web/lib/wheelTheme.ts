@@ -1,0 +1,32 @@
+import type { WheelTheme } from "caelus-wheel";
+
+/**
+ * The caelus-wheel renderers ship a fixed dark palette. On the site we instead
+ * feed them the live design tokens as CSS-variable strings, so every SVG colour
+ * resolves against the page's current `data-theme` and tracks the light/dark
+ * toggle with no JS, no flash, and no hydration mismatch (the values are literal
+ * strings on both server and client). Planet glyphs map to --text and the axes
+ * to --accent so they stay legible on either surface; the structural inks have
+ * their own --wheel-* tokens tuned per mode.
+ */
+export const WHEEL_THEME: Partial<WheelTheme> = {
+  ring: "var(--wheel-ring)",
+  axis: "var(--accent)",
+  signText: "var(--wheel-sign)",
+  planetText: "var(--text)",
+  labelText: "var(--wheel-label)",
+  houseText: "var(--wheel-house)",
+  // Only conjunction is theme-sensitive (a near-neutral); the coloured aspects
+  // read on both surfaces and inherit the renderer's defaults via deep-merge.
+  aspectColors: { conjunction: "var(--wheel-conj)" },
+};
+
+/**
+ * AstroMap / EphemerisGraph draw each body in a distinct hue. Two of them
+ * (moon, saturn) are pale greys that vanish on a light surface, so override just
+ * those with mode-aware tokens; every other body colour reads on both.
+ */
+export const WHEEL_LINE_COLORS: Record<string, string> = {
+  moon: "var(--wheel-line-moon)",
+  saturn: "var(--wheel-line-saturn)",
+};

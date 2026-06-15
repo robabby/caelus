@@ -3,6 +3,7 @@ import { embeddedData } from "caelus/data-embedded";
 import { ChartSphere, AstroMap, EphemerisGraph } from "caelus-wheel";
 import { Eyebrow, Lead, P, H2 } from "../../../components/Prose";
 import CodeBlock from "../../../components/CodeBlock";
+import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../../../lib/wheelTheme";
 
 export const metadata = {
   title: "Visualizations",
@@ -106,7 +107,7 @@ export default function Visualizations() {
         longitude alone.
       </P>
       <div style={figure}>
-        <ChartSphere chart={sphereChart} size={360} tilt={64} />
+        <ChartSphere chart={sphereChart} size={360} tilt={64} theme={WHEEL_THEME} />
       </div>
       <CodeBlock lang="tsx" label="ChartSphere.tsx" code={SPHERE_CODE} />
 
@@ -120,7 +121,7 @@ export default function Visualizations() {
         layer your own coastline paths under the lines as children.
       </P>
       <div style={figure}>
-        <AstroMap lines={mapLines} width={680} height={340} />
+        <AstroMap lines={mapLines} width={680} height={340} theme={WHEEL_THEME} colors={WHEEL_LINE_COLORS} />
       </div>
       <CodeBlock lang="tsx" label="AstroMap.tsx" code={MAP_CODE} />
 
@@ -134,7 +135,7 @@ export default function Visualizations() {
         steps.
       </P>
       <div style={figure}>
-        <EphemerisGraph series={graphSeries} width={680} height={340} wrap={360} />
+        <EphemerisGraph series={graphSeries} width={680} height={340} wrap={360} theme={WHEEL_THEME} colors={WHEEL_LINE_COLORS} />
       </div>
       <CodeBlock lang="tsx" label="EphemerisGraph.tsx" code={GRAPH_CODE} />
 

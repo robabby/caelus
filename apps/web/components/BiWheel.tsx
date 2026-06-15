@@ -38,7 +38,7 @@ export default function BiWheel({
   };
   const fix = (v: number) => Math.round(v * 100) / 100;
   const ring = (r: number, key: string, w = 1) => (
-    <circle key={key} cx={c} cy={c} r={fix(r * R)} fill="none" stroke="var(--border-strong)" strokeWidth={w} />
+    <circle key={key} cx={c} cy={c} r={fix(r * R)} fill="none" stroke="var(--wheel-ring)" strokeWidth={w} />
   );
   const lineEl = (l0: [number, number], l1: [number, number], props: object, key: string) => (
     <line key={key} x1={fix(l0[0])} y1={fix(l0[1])} x2={fix(l1[0])} y2={fix(l1[1])} {...props} />
@@ -57,8 +57,8 @@ export default function BiWheel({
 
   // zodiac signs
   for (let s = 0; s < 12; s++) {
-    el.push(lineEl(pt(s * 30, 0.86), pt(s * 30, 1.0), { stroke: "var(--border-strong)", strokeWidth: 1 }, `sb-${s}`));
-    el.push(glyphEl(s * 30 + 15, 0.93, SIGN_GLYPHS[s], size * 0.045, "var(--text-faint)", `sg-${s}`));
+    el.push(lineEl(pt(s * 30, 0.86), pt(s * 30, 1.0), { stroke: "var(--wheel-ring)", strokeWidth: 1 }, `sb-${s}`));
+    el.push(glyphEl(s * 30 + 15, 0.93, SIGN_GLYPHS[s], size * 0.045, "var(--wheel-sign)", `sg-${s}`));
   }
 
   // inner-chart Ascendant / MC axes

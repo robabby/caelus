@@ -3,6 +3,7 @@ import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel } from "caelus-wheel";
 import SkyNow from "../../components/SkyNow";
 import SynastryPanel from "../../components/SynastryPanel";
+import { WHEEL_THEME } from "../../lib/wheelTheme";
 import { A, Eyebrow, Lead, P, H2 } from "../../components/Prose";
 
 export const metadata = {
@@ -62,7 +63,7 @@ export default function Playground() {
         {EXAMPLES.map(([label, args]) => (
           <figure key={label} className="card" style={{ margin: 0 }}>
             <div className="chart-fluid">
-              <ChartWheel chart={engine.chart(...args)} size={420} />
+              <ChartWheel chart={engine.chart(...args)} size={420} theme={WHEEL_THEME} />
             </div>
             <figcaption className="dim small" style={{ marginTop: "0.6rem" }}>{label}</figcaption>
           </figure>

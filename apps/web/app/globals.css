@@ -31,6 +31,15 @@
   --good: #9fdc9f;
   --bad: #e08a8a;
 
+  /* chart-wheel ink (caelus-wheel theme; planet/axis reuse --text / --accent) */
+  --wheel-ring: #3a3a44;
+  --wheel-sign: #9a93c4;
+  --wheel-label: #8d8a99;
+  --wheel-house: #6a6775;
+  --wheel-conj: #b8b4c8;
+  --wheel-line-moon: #c8c8d0;
+  --wheel-line-saturn: #8d8a99;
+
   /* syntax (mirrors lib/highlight.tsx) */
   --syntax-text: #d8d4e8;
   --syntax-muted: #8b849e;
@@ -1110,6 +1119,14 @@ a.card:hover,
   --warm: #b5651d;
   --good: #1f8a4c;
   --bad: #c0392b;
+
+  --wheel-ring: #a89ec6;
+  --wheel-sign: #6e66a0;
+  --wheel-label: #6c6786;
+  --wheel-house: #908aa6;
+  --wheel-conj: #8f88a8;
+  --wheel-line-moon: #6b6580;
+  --wheel-line-saturn: #6a6580;
 
   --syntax-text: #2f2942;
   --syntax-muted: #6b6580;

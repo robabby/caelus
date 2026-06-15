@@ -13,6 +13,7 @@ import { ChartWheel, ChartSphere, AstroMap, GLYPHS } from "caelus-wheel";
 import accuracy from "caelus/accuracy.json";
 import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
+import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
 import fixedStars from "../lib/fixed-stars.json";
 
 // The cross-chart aspect between two longitudes (natal vs transit), or null.
@@ -612,9 +613,9 @@ export default function SkyNow() {
                       </button>
                     ))}
                   </div>
-                  {view === "wheel" && <ChartWheel chart={chart} size={460} bodies={focusBodies} />}
-                  {view === "sphere" && <ChartSphere chart={chart} size={460} />}
-                  {view === "map" && mapLines && <AstroMap lines={mapLines} width={460} height={230} />}
+                  {view === "wheel" && <ChartWheel chart={chart} size={460} bodies={focusBodies} theme={WHEEL_THEME} />}
+                  {view === "sphere" && <ChartSphere chart={chart} size={460} theme={WHEEL_THEME} />}
+                  {view === "map" && mapLines && <AstroMap lines={mapLines} width={460} height={230} theme={WHEEL_THEME} colors={WHEEL_LINE_COLORS} />}
                   {view === "transits" && transit && (
                     <BiWheel inner={chart} outer={transit.chart} contacts={transit.contacts} size={460} innerLabel="natal" outerLabel="transit" />
                   )}
