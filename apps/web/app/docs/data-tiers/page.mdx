@@ -56,9 +56,10 @@ const engine = new Engine(embeddedData);`}
 ## Node loader (extended)
 
 `loadNodeData` reads the larger JSON packs from disk: higher-precision VSOP
-tiers, the precise Moon pack, the asteroids and Uranian points, and the
-318-star catalog. Use it when you need extended bodies, fixed stars, or event
-search.
+tiers, the precise Moon pack, a wide-range Pluto pack (a Chebyshev fit to the
+JPL Horizons barycenter that supersedes the embedded Meeus series and holds
+across 1850&ndash;2150), the asteroids and Uranian points, and the 318-star
+catalog. Use it when you need extended bodies, fixed stars, or event search.
 
 <CodeBlock
   lang="typescript"

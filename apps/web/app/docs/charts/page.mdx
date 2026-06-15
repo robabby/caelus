@@ -82,7 +82,9 @@ chart.bodies.sun.ra;         // right ascension (true equinox of date)
 chart.angles.asc;            // ascendant
 chart.angles.mc;             // midheaven
 chart.cusps;                 // twelve house cusps, degrees
-chart.aspects;               // [{ a, b, aspect, orb }, ...]
+chart.aspects;               // [{ a, b, aspect, orb, phase, strength }, ...]
+                             //   phase: applying | separating | exact
+                             //   strength: 1 exact ... 0 at the orb limit
 chart.houseSystem;           // the system actually used
 chart.houseSystemRequested;  // what you asked for (differs on polar fallback)`}
 />

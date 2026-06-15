@@ -43,7 +43,7 @@ export default function Methods() {
         </A>{" "}
         2.10 is the calibration oracle. It shares the apparent-place definition
         used here, geocentric ecliptic longitude at the true equinox of date, so
-        a comparison at random instants across 1900&ndash;2099 shows whether the
+        a comparison at random instants across 1850&ndash;2150 shows whether the
         model matches the field standard. No Swiss Ephemeris code or coefficient
         ships in Caelus. It is a test target only.
       </P>
@@ -122,7 +122,7 @@ export default function Methods() {
         <tbody>
           <tr>
             <td>Planet and Moon longitudes</td>
-            <td>Swiss across 1900&ndash;2099, plus JPL Horizons at independent epochs</td>
+            <td>Swiss across 1850&ndash;2150, plus JPL Horizons at independent epochs</td>
           </tr>
           <tr>
             <td>House cusps, 8 added systems</td>

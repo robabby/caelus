@@ -104,9 +104,9 @@
         "{value} chart tools",
         "{value} MCP tools",
         "MCP tools ({value})",
-        "twenty-seven chart tools",
-        "Twenty-seven chart tools",
-        "twenty-seven tools"
+        "twenty-eight chart tools",
+        "Twenty-eight chart tools",
+        "twenty-eight tools"
       ],
       "appearsIn": [
         "apps/web/app/features/page.tsx",

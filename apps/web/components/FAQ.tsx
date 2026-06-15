@@ -89,13 +89,28 @@ const ITEMS: QA[] = [
     q: "Can I use it with AI assistants like Claude or Cursor?",
     a: (
       <>
-        Yes. <code>caelus-mcp</code> exposes twenty-seven chart tools over the Model
+        Yes. <code>caelus-mcp</code> exposes twenty-eight chart tools over the Model
         Context Protocol, available hosted or as a local stdio server. See{" "}
         <A href="/docs/mcp">MCP Setup</A>.
       </>
     ),
     text:
-      "Yes. The caelus-mcp package exposes twenty-seven chart tools over the Model Context Protocol, available hosted or as a local stdio server.",
+      "Yes. The caelus-mcp package exposes twenty-eight chart tools over the Model Context Protocol, available hosted or as a local stdio server.",
+  },
+  {
+    q: "Does it interpret a chart, or just compute it?",
+    a: (
+      <>
+        It computes; you interpret. The engine stops at validated geometry and
+        ships no flavour text. For generated readings it provides an{" "}
+        <A href="/docs/interpretation">interpretation layer</A>: a chart projects
+        into ranked, citable fact atoms that a rule corpus or an LLM plugs into,
+        with citation auditing to keep an AI grounded in the real chart. The
+        meaning is always yours and always traceable to a fact.
+      </>
+    ),
+    text:
+      "It computes; you interpret. The engine stops at validated geometry and ships no flavour text. For generated readings it provides an interpretation layer: a chart projects into ranked, citable fact atoms that a rule corpus or an LLM plugs into, with citation auditing to keep an AI grounded in the real chart.",
   },
 ];
 

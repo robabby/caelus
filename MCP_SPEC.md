@@ -201,3 +201,22 @@ engine-oracle checks — nakshatra/pada/lord exactness, dasha timeline contiguit
 and active-lord agreement with the engine, the D1 = rasi reduction and navamsa
 match for vargas, and the conjunction/aspect/exchange association invariant for
 raja/dhana yogas — and a frozen `golden-mcp` payload. Twenty-two tools total.
+
+## Synthesis + search harvest (Roadmap Phase 4, shipped in caelus-mcp 0.16.0)
+Analytic synthesis and mundane/search layer: `aspect_patterns` (the classical
+configurations as maximal structured objects), `chart_signature` (element,
+modality, quadrant, and hemisphere distributions, the dominant facets and the
+classical chart ruler), `similar_skies` (cosine-similarity search for when the
+sky most resembled a reference moment), `electional_search` (rank moments in a
+window for a set of wanted aspects, void-of-course-aware), and `cosmic_weather`
+(the day's active configurations with no birth chart needed). No engine change;
+each gains `verify_tools` engine-oracle checks and a frozen `golden-mcp`
+payload. Twenty-seven tools total.
+
+## Interpretation harvest (shipped in caelus-mcp 0.18.0)
+`chart_facts` exposes the interpretation seam: a chart's validated facts as
+ranked, citable fact atoms plus a ready-to-interpret `brief`, so an LLM host
+writes a reading grounded in correct math and cites the `[id]` each statement
+rests on instead of re-deriving (and hallucinating) positions. The engine ships
+the facts and the contract, never the interpretation content. Twenty-eight
+tools total.

@@ -12,7 +12,7 @@ export const metadata = {
 computed by the engine on each call, never recalled from training data, so every
 answer is deterministic.
 
-There are two ways to connect, with the same twenty-seven tools either way:
+There are two ways to connect, with the same twenty-eight tools either way:
 
 - **Hosted (Streamable HTTP)**: point your client at
   `https://www.ephemengine.com/api/mcp`. Nothing to install.
@@ -194,7 +194,7 @@ Any stdio MCP client takes the same command and arguments:
 
 ## Verify the tools appeared
 
-After the client reloads, it should list **twenty-seven** tools. Ask it to enumerate
+After the client reloads, it should list **twenty-eight** tools. Ask it to enumerate
 them, or check the client's MCP panel:
 
 `natal_chart`, `current_sky`, `transits`, `synastry`, `find_aspect_dates`,
@@ -218,13 +218,21 @@ distributions, the dominant element, modality, and sign, and the classical
 chart ruler), `similar_skies` (when the sky most resembled a reference moment,
 by cosine similarity over a window), `electional_search` (rank moments in a
 window for a set of wanted aspects, optionally avoiding a void-of-course Moon),
-and `cosmic_weather` (the day's active configurations, stations, and
-void-of-course Moon, with no birth chart needed).
+`cosmic_weather` (the day's active configurations, stations, and
+void-of-course Moon, with no birth chart needed), and `chart_facts` (the
+chart's validated facts as ranked, citable atoms plus a ready-to-interpret
+brief, so the host model writes a reading grounded in correct math and cites
+the fact behind each claim — see the
+[Interpretation guide](/docs/interpretation)).
+
+`sky_events` also reports eclipse geography: the sub-solar point of greatest
+eclipse, the path-of-totality width, and, given a place, local circumstances.
 
 `natal_chart` and `current_sky` also tag each body with its solar phase
-(cazimi, combust, under the beams) and each aspect as applying or separating.
+(cazimi, combust, under the beams) and each aspect as applying or separating,
+with a normalized strength.
 
-If you see all twenty-seven, the server is wired correctly. The server also exposes two
+If you see all twenty-eight, the server is wired correctly. The server also exposes two
 **resources**: `caelus://glossary` (aspect angles and orbs, signs, bodies,
 house systems, essential dignities) and `caelus://accuracy` (the validation
 table), plus a **prompt**, `rectification_session`, a guided flow around

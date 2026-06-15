@@ -207,8 +207,11 @@ export default function Features() {
           Rise, set, and meridian transit; longitude crossings; lunar phases;
           stations; Gauquelin sectors; parans (co-angular bodies, two on the
           rising, setting, or meridian axis at once); and solar and lunar
-          eclipses (global circumstances, with types and times). Timing bounds
-          are on <A href="/validation">Validation</A>.
+          eclipses, with types, times, and geography: the sub-solar point of
+          greatest eclipse, the path of totality (north and south limits and
+          width), and local circumstances (magnitude, obscuration, and contact
+          times) for any observer. Timing bounds are on{" "}
+          <A href="/validation">Validation</A>.
         </Feature>
       </Group>
 
@@ -301,6 +304,17 @@ export default function Features() {
           classical chart ruler. Both are pure geometry, interpretation-free,
           and exposed over MCP. See <A href="/docs/cookbook">Common Tasks</A>.
         </Feature>
+        <Feature title="Interpretation layer">
+          The engine stops at facts; this is the seam where meaning plugs in.
+          <code>interpretationContext</code> projects a chart into ranked,
+          citable fact atoms; selectors and a pluggable rule corpus turn them
+          into a structured reading with provenance; and{" "}
+          <code>chartBrief</code> hands an LLM only the validated facts, each
+          tagged with a stable id, so it writes original prose and cites the fact
+          behind every claim, which <code>auditCitations</code> then verifies.
+          The math is never the model&apos;s to hallucinate; the content is
+          always yours. See <A href="/docs/interpretation">Interpretation</A>.
+        </Feature>
       </Group>
 
       <Group
@@ -336,7 +350,7 @@ export default function Features() {
           <A href="https://pypi.org/project/caelus-engine/">caelus-engine</A>.
         </Feature>
         <Feature title="Integration">
-          The MCP server exposes twenty-seven chart tools over stdio and
+          The MCP server exposes twenty-eight chart tools over stdio and
           Streamable HTTP at <A href="/api/mcp">/api/mcp</A>; a REST endpoint
           answers at <A href="/api/chart?lat=27.94&lon=-82.46">/api/chart</A>.
           The engine does no file or network I/O, ships an embedded data tier
@@ -377,7 +391,7 @@ export default function Features() {
               precision); Kerykeion and Immanuel build on it.
             </li>
             <li>
-              <sup>3</sup> <code>caelus-mcp</code> exposes twenty-seven tools over
+              <sup>3</sup> <code>caelus-mcp</code> exposes twenty-eight tools over
               the Model Context Protocol. Kerykeion serializes charts to XML for
               LLM prompts but ships no MCP server.
             </li>

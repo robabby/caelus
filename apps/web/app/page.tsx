@@ -90,7 +90,7 @@ export default function Home() {
         <li>🧩 <A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
         <li>⏳ <A href="/docs/hellenistic">Hellenistic time-lords</A>: lots, profections, firdaria, zodiacal releasing, and primary directions</li>
         <li>🕉️ <A href="/docs/vedic">Vedic &amp; Jyotish</A>: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, divisional charts, and yogas</li>
-        <li>🤖 <A href="/docs/mcp"><code>caelus-mcp</code></A> gives Claude, Cursor, and other MCP clients twenty-seven chart tools</li>
+        <li>🤖 <A href="/docs/mcp"><code>caelus-mcp</code></A> gives Claude, Cursor, and other MCP clients twenty-eight chart tools</li>
         <li>🔒 Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>
       </ul>
 

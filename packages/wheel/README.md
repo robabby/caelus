@@ -55,4 +55,4 @@ counterclockwise.
 - [caelus](https://www.npmjs.com/package/caelus) — the engine
 - [caelus-birth](https://www.npmjs.com/package/caelus-birth) — local birth time + place → UT
 - caelus-wheel — this package
-- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, twenty-seven chart tools over stdio
+- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, twenty-eight chart tools over stdio
