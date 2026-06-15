@@ -52,7 +52,9 @@ export default function SiteFooter() {
           <span>v{SITE.version}</span>
           <span aria-hidden>·</span>
           <span>Positions computed from published math, not recalled.</span>
-          <span style={{ marginLeft: "auto" }}>© {year} Caelus</span>
+          <span style={{ marginLeft: "auto" }} suppressHydrationWarning>
+            © {year} Caelus
+          </span>
         </div>
       </div>
     </footer>
