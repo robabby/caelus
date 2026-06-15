@@ -34,10 +34,15 @@ def planet_lines(ra, dec, gast_deg, lat_min=-85.0, lat_max=85.0, lat_step=1.0):
     asc = []
     dsc = []
     n = int((lat_max - lat_min) / lat_step + 1e-9)  # floor; never exceed lat_max
+    # Skip the degenerate near-tangent point where |x| -> 1 (h0 -> 0 or 180): the
+    # body grazes the horizon at the meridian, acos' is singular there, and
+    # cross-platform libm rounding would swing the longitude by ~mas. Trimming it
+    # costs <0.003 deg of line length and makes the track deterministic.
+    edge = 1.0 - 1e-9
     for i in range(n + 1):
         phi = lat_min + i * lat_step
         x = -math.tan(phi * DEG) * td
-        if -1.0 <= x <= 1.0:
+        if -edge <= x <= edge:
             h0 = math.acos(x) / DEG   # hour-angle half-width, degrees
             asc.append([_map_lon(ra - h0 - gast_deg), phi])  # eastern horizon
             dsc.append([_map_lon(ra + h0 - gast_deg), phi])  # western horizon

@@ -41,10 +41,15 @@ export function planetLines(
   const asc: [number, number][] = [];
   const dsc: [number, number][] = [];
   const n = Math.floor((latMax - latMin) / latStep + 1e-9); // never exceed latMax
+  // Skip the degenerate near-tangent point where |x| -> 1 (h0 -> 0 or 180): the
+  // body grazes the horizon at the meridian, acos' is singular there, and
+  // cross-platform libm rounding would swing the longitude by ~mas. Trimming it
+  // costs <0.003 deg of line length and makes the track deterministic.
+  const EDGE = 1.0 - 1e-9;
   for (let i = 0; i <= n; i++) {
     const phi = latMin + i * latStep;
     const x = -Math.tan(phi * DEG) * td;
-    if (x >= -1.0 && x <= 1.0) {
+    if (x >= -EDGE && x <= EDGE) {
       const h0 = Math.acos(x) / DEG; // hour-angle half-width, degrees
       asc.push([mapLon(ra - h0 - gastDeg), phi]); // eastern horizon
       dsc.push([mapLon(ra + h0 - gastDeg), phi]); // western horizon
