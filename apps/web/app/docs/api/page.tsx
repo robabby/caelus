@@ -32,6 +32,8 @@ const TIERS: ReadonlyArray<{
       ["interpretationContext", "Function.interpretationContext"],
       ["chartBrief", "Function.chartBrief"],
       ["realize", "Function.realize"],
+      ["counterfactual", "Function.counterfactual"],
+      ["chartDiff", "Function.chartDiff"],
       ["Chart", "Interface.Chart"],
       ["Position", "Interface.Position"],
     ],

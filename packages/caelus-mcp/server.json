@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.heavyblotto/caelus-mcp",
-  "description": "Astrology/ephemeris MCP server: 28 chart tools — natal, transits, time-lords, Vedic dasha/yoga, interpretation facts.",
+  "description": "Astrology/ephemeris MCP server: 29 chart tools — natal, transits, time-lords, Vedic dasha/yoga, interpretation facts.",
   "repository": {
     "url": "https://github.com/heavyblotto/caelus",
     "source": "github"
   },
-  "version": "0.17.0",
+  "version": "0.18.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "caelus-mcp",
-      "version": "0.17.0",
+      "version": "0.18.0",
       "transport": {
         "type": "stdio"
       }

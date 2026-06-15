@@ -88,11 +88,9 @@ const call = async (name, args) => {
     assert((c.bodies[b].rx === true) === p.retrograde, `natal_chart: ${b} retrograde flag`);
     assert(c.bodies[b].house === houseFromCusps(g.cusps, p.lon), `natal_chart: ${b} house`);
   }
-  // Aspect core fields ({a,b,aspect,orb}) still pass the engine objects through
-  // unchanged; the MCP layer adds an applying/separating phase on top.
-  const coreOnly = c.aspects.map(({ phase, ...rest }) => rest);
-  assert(JSON.stringify(coreOnly) === JSON.stringify(g.aspects),
-    "natal_chart: aspect core fields pass the engine Aspect objects through unchanged");
+  // Engine Aspect objects (including phase and strength) pass through unchanged.
+  assert(JSON.stringify(c.aspects) === JSON.stringify(g.aspects),
+    "natal_chart: aspect objects pass the engine Aspect objects through unchanged");
   const jd = jdFromIso(iso);
   for (const a of c.aspects) {
     const expected = aspectPhase(

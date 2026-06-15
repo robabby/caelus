@@ -331,7 +331,9 @@ The whole seam is wired into the [MCP server](/docs/mcp) as the `chart_facts`
 tool, for hosts where the model is already the interpreter (Claude, Cursor, and
 the rest). It returns a chart's ranked, citable atoms plus a ready `brief`, so
 the host interprets from correct math and cites the `[id]` each statement rests
-on instead of re-deriving (and hallucinating) positions.
+on instead of re-deriving (and hallucinating) positions. Pass structured
+`when` (instant, range, relative, narrative), an optional in-request `anchors`
+registry, `realm`, and `constraints` when the chart is not a plain birth instant.
 
 ```text
 "Read my natal chart: born June 10 1990, 2:30pm, Tampa FL."

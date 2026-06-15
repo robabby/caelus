@@ -1,7 +1,7 @@
 # caelus-mcp
 
 MCP server for the [caelus](https://github.com/heavyblotto/caelus) ephemeris
-engine: twenty-eight chart tools over stdio. Computation only — positions, houses,
+engine: twenty-nine chart tools over stdio. Computation only — positions, houses,
 aspects with orbs, event search, electional, returns, progressions, composite,
 dignities, Hermetic lots, the Hellenistic time-lords (profections, firdaria,
 zodiacal releasing), primary directions, the Vedic layer (nakshatras,

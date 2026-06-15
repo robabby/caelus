@@ -6,6 +6,58 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## v0.18.0 — interpretation, provenance, and the wider sky (27→29 MCP tools)
+
+*2026-06-15*
+
+A feature release across all four packages. The engine gains an interpretation
+layer (ranked, citable chart atoms), a provenance contract (realm, time certainty,
+and honest routing between ephemeris and compiler), eclipse geography, a Pluto
+barycenter Chebyshev pack that extends the validated range to **1850–2150**, and
+counterfactual charts with legible diffs. The MCP server grows from twenty-seven
+to twenty-nine tools.
+
+### Engine (`caelus`)
+
+- **Interpretation layer**: `interpretationContext()` normalizes a chart into
+  ranked, addressable **atoms** (placements, aspects with phase and strength,
+  receptions, configurations, sect, dignities). `interpret()` runs a rule corpus
+  with conflict detection; `chartBrief()` and `auditCitations()` ground LLM prose
+  in those facts.
+- **Provenance layer**: `realize()` routes an **anchored chart** (realm, `when`,
+  `where`) to ephemeris (`chartAt`), the geometric compiler (`compileForm`), or
+  an honest refusal. Time **certainty** (`exact`, `approximate`, `representative`)
+  damps Moon/angle salience in briefs; `realmFraming()` sets the interpretive tone.
+- **Counterfactuals**: `counterfactual()` perturbs a resolved chart (shift time,
+  move place, or splice body longitudes); `chartDiff()` reports sign/house/aspect
+  and angle changes without burying the edit in two full charts.
+- **Eclipse geography**: `solarEclipseWhere`, `solarEclipseLocal`,
+  `solarEclipseLimits`, and `lunarEclipseLocal` report sub-solar points, path
+  width, and local circumstances from the validated eclipse search.
+- **Chart aspects** now carry **phase** (applying/separating) and normalized
+  **strength** on `Chart.aspects`.
+- **Range expansion**: Pluto fitted to JPL Horizons **barycenter** (body 9), not
+  Charon-wobble body 999; validated **1850–2150** with Pluto ≤3.4″, mean Lilith
+  ≤1.6″. `HorizonsCache.ensure()` now guards on cached body label, not just JD span.
+
+### MCP (`caelus-mcp`)
+
+- **`chart_facts`**: ranked facts plus a ready `brief`; structured **`when`**
+  anchors, in-request **`anchors`** registry, **`realm`**, and **`constraints`**
+  for archetypal or uncertain charts.
+- **`counterfactual_chart`**: birth chart perturbed with a legible diff
+  (bodies, aspects gained/lost, angles).
+- **`natal_chart`** aspects include strength; **`sky_events`** reports eclipse
+  geography.
+
+### Web
+
+- New guides: [Interpretation](/docs/interpretation), [Provenance](/docs/provenance).
+- Docs, features, FAQ, and claims synced to twenty-nine MCP tools and the new
+  surface.
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at 0.18.0.
+
 ## v0.17.0 — fixed-star parans (Brady)
 
 *2026-06-15*

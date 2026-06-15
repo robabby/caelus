@@ -52,7 +52,7 @@ impossible ones (`compileForm`) (0.11.0); a JD-first chart entry point that
 builds a full chart directly from a Julian Day, no calendar round-trip
 (`chartAt`) (0.12.0); conformance suite;
 MCP server over stdio and hosted Streamable HTTP (`ephemengine.com/api/mcp`,
-stateless) exposing twenty-eight chart tools, with golden payloads, resources
+stateless) exposing twenty-nine chart tools, with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
 prompt, listed on the official MCP Registry as `io.github.heavyblotto/caelus-mcp`
 (0.12.1); JPL-direct validation tier.
@@ -285,7 +285,7 @@ existing feature space), **`electional_search`** (rank a window by wanted
 body-to-body aspects, optional void-Moon penalty), **`cosmic_weather`** (the
 mundane sky: active configurations, stationing planets, void Moon), and
 **parans** (`parans`, co-angular bodies, reference-first + `parans-golden` + a
-cookbook recipe). The MCP server is now at twenty-eight tools (the interpretation
+cookbook recipe). The MCP server is now at twenty-nine tools (the interpretation
 `chart_facts` projection lands the latest); transit density remains a possible
 later count.
 

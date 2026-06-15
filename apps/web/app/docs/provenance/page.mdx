@@ -202,7 +202,10 @@ rule corpus, and citation auditing.
   interpret at `representative` certainty.
 - **Fiction, myth, archetype** (`fictional`, `mythic`, `archetypal`): declare
   the realm; use constraints when there is no instant.
-- **Counterfactual** (`counterfactual`): `relative` anchor off a real event.
+- **Counterfactual** (`counterfactual`): `relative` anchor off a real event, or
+  **`counterfactual()`** / **`chartDiff()`** to perturb a resolved chart (shift
+  time, move place, splice longitudes) and report what changed. Over MCP as
+  `counterfactual_chart`.
 - **Narrative calendar** (`narrative`): plug a resolver into `AnchorRegistry.calendars`.
 - **Heliocentric / no location** (`where: { kind: "none" }`): positions only;
   houses and angles are nominal or absent.

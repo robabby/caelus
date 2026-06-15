@@ -362,7 +362,7 @@ export default function Features() {
           <A href="https://pypi.org/project/caelus-engine/">caelus-engine</A>.
         </Feature>
         <Feature title="Integration">
-          The MCP server exposes twenty-eight chart tools over stdio and
+          The MCP server exposes twenty-nine chart tools over stdio and
           Streamable HTTP at <A href="/api/mcp">/api/mcp</A>; a REST endpoint
           answers at <A href="/api/chart?lat=27.94&lon=-82.46">/api/chart</A>.
           The engine does no file or network I/O, ships an embedded data tier
@@ -403,7 +403,7 @@ export default function Features() {
               precision); Kerykeion and Immanuel build on it.
             </li>
             <li>
-              <sup>3</sup> <code>caelus-mcp</code> exposes twenty-eight tools over
+              <sup>3</sup> <code>caelus-mcp</code> exposes twenty-nine tools over
               the Model Context Protocol. Kerykeion serializes charts to XML for
               LLM prompts but ships no MCP server.
             </li>
