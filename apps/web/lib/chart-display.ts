@@ -9,6 +9,12 @@ import { ASPECTS, DEFAULT_ORBS, mod } from "caelus";
 /** Compact left-aligned table cell, shared by the playground data tables. */
 export const cell: CSSProperties = { padding: "0.18rem 0.9rem 0.18rem 0" };
 
+/** The base style for a playground form control (input, select, button). */
+export const control: CSSProperties = {
+  background: "var(--surface-3)", color: "var(--text)", border: "1px solid var(--border-strong)",
+  borderRadius: "var(--radius-sm)", padding: "0.35rem 0.55rem", font: "inherit", fontSize: "0.85rem",
+};
+
 /** Aspectable planets in a fixed display order (nodes and Lilith excluded). */
 export const ASPECTABLE_ORDER = [
   "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",

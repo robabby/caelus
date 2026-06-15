@@ -11,16 +11,17 @@ import { embeddedData } from "caelus/data-embedded";
 import { toUT, type UTResult } from "caelus-birth";
 import { ChartWheel, ChartSphere, AstroMap, GLYPHS } from "caelus-wheel";
 import accuracy from "caelus/accuracy.json";
-import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
 import Aspectarian from "./Aspectarian";
+import ChartControls from "./ChartControls";
 import InsightsTab from "./InsightsTab";
 import VedicTab from "./VedicTab";
 import DeclinationTab from "./DeclinationTab";
 import StarsTab from "./StarsTab";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
 import fixedStars from "../lib/fixed-stars.json";
-import { crossAspect, cell } from "../lib/chart-display";
+import { crossAspect, cell, control } from "../lib/chart-display";
+import { type Share, b64urlEncode, readUrlState } from "../lib/share";
 
 // Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
 const STAR_MAG = (fixedStars as { stars: Record<string, { mag: number }> }).stars;
@@ -34,18 +35,6 @@ const fmtIso = (y: number, mo: number, d: number, h: number, mi: number) =>
 
 const MAP_BODIES: BodyId[] = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
 
-const SYSTEMS: HouseSystem[] = [
-  "placidus", "whole_sign", "equal", "porphyry",
-  "koch", "regiomontanus", "campanus", "alcabitius",
-  "morinus", "meridian", "polich_page", "vehlow",
-];
-const ZODIACS: Array<[string, Zodiac]> = [
-  ["tropical", "tropical"],
-  ["sidereal · lahiri", "sidereal:lahiri"],
-  ["sidereal · fagan/bradley", "sidereal:fagan_bradley"],
-  ["sidereal · krishnamurti", "sidereal:krishnamurti"],
-  ["sidereal · raman", "sidereal:raman"],
-];
 const ACCURACY: Array<[string, string]> = accuracy.summary.map((s) => [s.label, s.bound]);
 const PHASE_LABEL: Record<string, string> = {
   new: "New Moon", first_quarter: "First Quarter", full: "Full Moon", last_quarter: "Last Quarter",
@@ -63,67 +52,6 @@ function houseOf(cusps: number[], lon: number) {
 
 function jdToUtc(jd: number): string {
   return new Date((jd - 2440587.5) * 86400000).toISOString().slice(0, 16).replace("T", " ");
-}
-
-/**
- * A shareable chart is just the inputs the user typed, encoded into the URL.
- * Nothing is computed, transmitted, or stored server-side: whoever opens the
- * link recomputes the chart locally from these numbers. Keys are short to keep
- * the link compact; `n` is an optional, user-chosen nickname (not PII unless
- * the minter puts it there). `t` is the UT instant, so a link is tz-unambiguous.
- */
-type Share = { v: 1; t: string; la: string; lo: string; h: HouseSystem; z: Zodiac; n?: string };
-
-/** base64url of any JSON value, so it is URL- and fragment-safe. */
-function b64urlEncode(value: unknown): string {
-  const bytes = new TextEncoder().encode(JSON.stringify(value));
-  let bin = "";
-  for (const b of bytes) bin += String.fromCharCode(b);
-  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function b64urlDecode(raw: string): unknown {
-  const b64 = raw.replace(/-/g, "+").replace(/_/g, "/");
-  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-  return JSON.parse(new TextDecoder().decode(bytes));
-}
-
-const isShare = (v: unknown): v is Share =>
-  !!v && typeof v === "object" && typeof (v as Share).t === "string";
-
-function decShare(raw: string): Share | null {
-  try {
-    const s = b64urlDecode(raw);
-    return isShare(s) ? s : null;
-  } catch {
-    return null;
-  }
-}
-
-/** A set of charts ("my charts"), shared as one link. */
-function decSet(raw: string): Share[] | null {
-  try {
-    const s = b64urlDecode(raw) as { c?: unknown };
-    return s && Array.isArray(s.c) ? (s.c.filter(isShare) as Share[]) : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Read the encoded chart(s) from the URL. We prefer the fragment (`#...`):
- * browsers never transmit the fragment to the server, so the inputs stay out of
- * request lines, access logs, and any infra in between. `#s=` is a set, `#c=` a
- * single chart; the query string (`?c=`) is read only as back-compat.
- */
-function readUrlState(): { set: Share[] | null; single: Share | null } {
-  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  const setRaw = hash.get("s");
-  const singleRaw = hash.get("c") ?? new URLSearchParams(window.location.search).get("c");
-  return {
-    set: setRaw ? decSet(setRaw) : null,
-    single: singleRaw ? decShare(singleRaw) : null,
-  };
 }
 
 export default function SkyNow() {
@@ -405,17 +333,13 @@ export default function SkyNow() {
     setView("wheel");
   };
 
-  const inp: React.CSSProperties = {
-    background: "var(--surface-3)", color: "var(--text)", border: "1px solid var(--border-strong)",
-    borderRadius: "var(--radius-sm)", padding: "0.35rem 0.55rem", font: "inherit", fontSize: "0.85rem",
-  };
   const tabBtn = (t: typeof tab): React.CSSProperties => ({
-    ...inp, cursor: "pointer", opacity: tab === t ? 1 : 0.55,
+    ...control, cursor: "pointer", opacity: tab === t ? 1 : 0.55,
     borderColor: tab === t ? "var(--accent)" : "var(--border-strong)",
     color: tab === t ? "var(--text)" : "var(--text-dim)",
   });
   const viewBtn = (v: typeof view): React.CSSProperties => ({
-    ...inp, cursor: "pointer", opacity: view === v ? 1 : 0.55,
+    ...control, cursor: "pointer", opacity: view === v ? 1 : 0.55,
     borderColor: view === v ? "var(--accent)" : "var(--border-strong)",
     color: view === v ? "var(--text)" : "var(--text-dim)",
   });
@@ -426,117 +350,25 @@ export default function SkyNow() {
         <p className="dim small" style={{ margin: 0 }}>loading playground…</p>
       ) : (
         <>
-          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
-            <CityPicker
-              onSelect={(c: City) => {
-                setLat(String(c.lat));
-                setLon(String(c.lon));
-                setPlace(`${c.name}, ${c.country}`);
-                setTzMode("local"); // picking a place means the typed time is local there
-              }}
-            />
-            <label className="small mute" style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
-              <select
-                style={inp}
-                value={tzMode}
-                onChange={(e) => setTzMode(e.target.value as "utc" | "local")}
-                aria-label="how to read the time"
-              >
-                <option value="utc">UTC</option>
-                <option value="local">local</option>
-              </select>
-              <input
-                style={inp}
-                type="datetime-local"
-                value={iso}
-                onChange={(e) => setIso(e.target.value)}
-                aria-label={tzMode === "local" ? "local birth time" : "time in UTC"}
-              />
-            </label>
-            <label className="small mute" style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
-              lat <input style={{ ...inp, width: "5.5rem" }} value={lat} onChange={(e) => { setLat(e.target.value); setPlace(""); }} />
-            </label>
-            <label className="small mute" style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
-              lon <input style={{ ...inp, width: "5.5rem" }} value={lon} onChange={(e) => { setLon(e.target.value); setPlace(""); }} />
-            </label>
-            <select style={inp} value={sys} onChange={(e) => setSys(e.target.value as HouseSystem)} aria-label="house system">
-              {SYSTEMS.map((s) => <option key={s}>{s}</option>)}
-            </select>
-            <select style={inp} value={zodiac} onChange={(e) => setZodiac(e.target.value as Zodiac)} aria-label="zodiac">
-              {ZODIACS.map(([zlabel, value]) => <option key={value} value={value}>{zlabel}</option>)}
-            </select>
-            <label className="small mute" style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
-              name
-              <input
-                style={{ ...inp, width: "8rem" }}
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-                placeholder="optional nickname"
-                aria-label="chart nickname"
-              />
-            </label>
-            <button
-              type="button"
-              className="mono"
-              style={{ ...inp, cursor: "pointer", borderColor: "var(--accent)", color: "var(--text)" }}
-              onClick={share}
-            >
-              {copied ? "Link copied ✓" : "Copy share link"}
-            </button>
-            <button
-              type="button"
-              className="mono"
-              style={{ ...inp, cursor: "pointer" }}
-              onClick={addToSet}
-              disabled={!chart}
-              title="Add this chart to a labelled set you can share as one link"
-            >
-              + Add to my charts
-            </button>
-          </div>
-
-          <p className="dim small" style={{ margin: "0.55rem 0 0" }}>
-            The share link encodes only the values above: date, place, and any
-            nickname you type. It lives in the URL fragment (after the
-            <code style={{ margin: "0 0.2rem" }}>#</code>), which browsers never
-            send over the network, so the chart is recomputed in the
-            recipient&rsquo;s browser and the inputs never reach a server at all.
-          </p>
-
-          {set.length > 0 && (
-            <div className="chart-tray" aria-label="My charts">
-              <span className="mute small" style={{ alignSelf: "center" }}>My charts:</span>
-              {set.map((s, i) => (
-                <span key={i} className="chart-chip">
-                  <button
-                    type="button"
-                    className="chart-chip__load"
-                    onClick={() => loadShare(s)}
-                    title="Load this chart"
-                  >
-                    {s.n || `Chart ${i + 1}`}
-                  </button>
-                  <button
-                    type="button"
-                    className="chart-chip__remove"
-                    onClick={() => removeFromSet(i)}
-                    aria-label={`Remove ${s.n || `chart ${i + 1}`}`}
-                    title="Remove"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-              <button
-                type="button"
-                className="mono"
-                style={{ ...inp, cursor: "pointer", borderColor: "var(--accent)", color: "var(--text)" }}
-                onClick={shareSet}
-              >
-                {collectionCopied ? "Set link copied ✓" : `Copy link to ${set.length} chart${set.length > 1 ? "s" : ""}`}
-              </button>
-            </div>
-          )}
+          <ChartControls
+            iso={iso} setIso={setIso}
+            lat={lat} setLat={setLat}
+            lon={lon} setLon={setLon}
+            sys={sys} setSys={setSys}
+            zodiac={zodiac} setZodiac={setZodiac}
+            tzMode={tzMode} setTzMode={setTzMode}
+            label={label} setLabel={setLabel}
+            setPlace={setPlace}
+            set={set}
+            hasChart={!!chart}
+            copied={copied}
+            collectionCopied={collectionCopied}
+            onShare={share}
+            onAddToSet={addToSet}
+            onShareSet={shareSet}
+            onLoadShare={loadShare}
+            onRemoveFromSet={removeFromSet}
+          />
 
           {error && <p style={{ color: "var(--bad)", marginTop: "0.8rem" }}>{error}</p>}
 
