@@ -312,9 +312,10 @@ export default function Features() {
         <Feature title="Interpretation layer">
           The engine stops at facts; this is the seam where meaning plugs in.
           <code>interpretationContext</code> projects a chart into ranked,
-          citable fact atoms (including dispositors and mutual reception by
-          domicile, exaltation, or triplicity); selectors and a pluggable rule
-          corpus turn them into a structured reading; and{" "}
+          citable fact atoms (placements, aspects, configurations, dispositors
+          and receptions, fixed-star conjunctions, and the Part of Fortune);
+          selectors and a pluggable rule corpus turn them into a structured
+          reading; and{" "}
           <code>chartBrief</code> hands an LLM only the validated facts, each
           tagged with a stable id, with <code>auditCitations</code> to verify
           what it cited. Pair with the{" "}

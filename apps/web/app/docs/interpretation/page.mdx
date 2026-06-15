@@ -77,7 +77,7 @@ Every atom carries five common fields:
   `signature:element:fire`, `angle:asc`). A generated claim points at this id,
   so it can always be traced back to the fact it rests on.
 - **`kind`**: `placement | aspect | pattern | signature | angle | dispositor |
-  reception`.
+  reception | star | lot`.
 - **`bodies`**: the body ids involved, for filtering and cross-reference.
 - **`salience`**: a transparent, overridable prominence score (below).
 - **`text`**: a plain-language statement of the fact, with no interpretation
@@ -87,10 +87,19 @@ Every atom carries five common fields:
 the sect's **triplicity** ruler (or a mixed pair, e.g. `domicile-exaltation`).
 Use `hasReception({ body: "venus" })` to match any involving Venus.
 
+**Star** and **lot** atoms are not computed from a bare `Chart` (the star
+catalog lives in the data pack, and lots derive from the points and sect), so a
+caller supplies them through `ContextOptions`: a body's tight conjunction with a
+fixed star (`star:jupiter:Sirius`, from `Engine.starConjunctions`), and the
+Hermetic lots — the Part of Fortune and its companions (`lot:fortune`, from
+`Engine.lots`). Match them with `hasStar({ star: "Algol" })` and
+`hasLot({ lot: "fortune" })`.
+
 Kind-specific fields fill in the rest: placements add
 `sign`/`signDeg`/`house`/`retrograde`/`dignities`; aspects add
 `aspect`/`orb`/`phase`/`strength`; patterns add `pattern`/`apex`; signature
-facets add `facet`/`value`; dispositors add `dispositor`/`final`.
+facets add `facet`/`value`; dispositors add `dispositor`/`final`; stars add
+`body`/`star`/`orb`; lots add `lot`/`sign`/`house`.
 
 Two enrichments that the bare `Chart.aspects` list omits are computed here (the
 engine now fills them onto the aspect, the projection carries them onto the atom):
@@ -115,6 +124,7 @@ all overridable through `ContextOptions.salience`:
 | `hardAspect` | conjunction / square / opposition |
 | `pattern` | a whole configuration |
 | `dispositor` / `reception` | a dispositor link / a mutual reception |
+| `star` / `lot` | a fixed-star conjunction / a Hermetic lot |
 
 No weight is magic. A caller who dislikes the defaults overrides any subset:
 
@@ -145,7 +155,7 @@ cannot.
   label="selectors.ts"
   code={`import {
   hasPlacement, hasAspect, hasPattern, hasSignature, hasAngle,
-  hasDispositor, hasReception, matchAll, matchAny, matchNone,
+  hasDispositor, hasReception, hasStar, hasLot, matchAll, matchAny, matchNone,
 } from "caelus";
 
 // Atom selectors take a filter; any omitted field is a wildcard.
@@ -155,6 +165,8 @@ hasAspect({ a: "saturn", phase: "applying", minStrength: 0.5 });
 hasPattern({ kind: "t_square", body: "mars" });
 hasSignature("element", "fire");
 hasReception({ body: "venus" });
+hasStar({ star: "Algol" });                       // any body conjunct Algol
+hasLot({ lot: "fortune", house: 1 });             // Part of Fortune rising
 
 // Combinators compose them. matchAll unions the atoms that justified the match.
 const angularMarsInTSquare = matchAll(
@@ -181,6 +193,13 @@ rule's `weight`. Entries come back sorted by salience.
 
 The engine ships the mechanism; **the rule content is always yours.** The corpus
 below is illustrative placeholder content, not authoritative astrology.
+
+If you would rather not start from scratch, the companion package
+**`caelus-delineations-pd`** is a ready default and validation corpus: hundreds
+of cited delineations (planet-in-sign and house, aspects, rising signs, fixed
+stars) decomposed from public-domain texts into these selectors. Drop its
+`sources` straight into `interpret(ctx, sources)`, or import `publicDomainSources`
+for a strictly public-domain reading. It is a separate package, never the engine.
 
 <CodeBlock
   lang="typescript"

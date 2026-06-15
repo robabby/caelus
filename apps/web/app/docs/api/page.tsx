@@ -101,6 +101,8 @@ const ENGINE_METHODS: ReadonlyArray<{
     methods: [
       ["fixedStar()", "fixedstar", "Apparent place of a catalog star: lon/lat/ra/dec, sign, magnitude."],
       ["starNames()", "starnames", "Names in the loaded fixed-star catalog."],
+      ["starConjunctions()", "starconjunctions", "A chart's bodies within orb of catalog stars; feeds star fact atoms."],
+      ["lots()", "lots", "The seven Hermetic lots placed by sign and house; feeds lot fact atoms."],
       ["bodies()", "bodies", "Body ids this engine can compute, given its data."],
     ],
   },

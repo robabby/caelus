@@ -12,6 +12,7 @@ a product plan.
 ```
 packages/caelus        TypeScript engine (MIT). Zero deps, no I/O in core.
 packages/caelus-mcp     Model Context Protocol server over the engine.
+packages/caelus-delineations-pd  Public-domain interpretation corpus + validation set (content, not engine).
 packages/birth          Birth time + place -> UT (timezone lookup).
 packages/wheel          React SVG chart-wheel renderer.
 apps/web                Next.js site (landing, playground, docs + API reference, validation, provenance, changelog).

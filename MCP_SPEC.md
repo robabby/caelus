@@ -217,6 +217,9 @@ payload. Twenty-seven tools total.
 `chart_facts` exposes the interpretation seam: a chart's validated facts as
 ranked, citable fact atoms plus a ready-to-interpret `brief`, so an LLM host
 writes a reading grounded in correct math and cites the `[id]` each statement
-rests on instead of re-deriving (and hallucinating) positions. The engine ships
-the facts and the contract, never the interpretation content. Twenty-nine
-tools total.
+rests on instead of re-deriving (and hallucinating) positions. The atoms span
+placements, aspects, configurations, the structural signature, dispositors and
+receptions, a body's tight conjunction with a bright fixed star
+(`star:jupiter:Sirius`), and the Part of Fortune and Spirit (`lot:fortune`). The
+engine ships the facts and the contract, never the interpretation content.
+Twenty-nine tools total.
