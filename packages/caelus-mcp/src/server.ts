@@ -39,7 +39,7 @@ import {
   detectPatterns, detectPatternsIn, chartSignature,
   chartFeatures, searchConfigurations,
   dignityScore, aspectBetween,
-  interpretationContext, chartBrief, realize, realmFraming,
+  interpretationContext, chartBrief, realize, realmFraming, isoToJd,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -1432,11 +1432,21 @@ export function buildServer(
 
   server.registerTool("chart_facts", {
     description:
-      "A chart's validated facts as ranked, citable atoms for interpretation. Each fact has a stable id (e.g. \"aspect:moon~neptune:conjunction\"), the bodies it concerns, a salience score (luminaries, angular placements, the chart ruler, tight/hard aspects, configurations rank high), and a plain-language statement. Read the facts, write the interpretation in your own words, and cite the [id] each statement rests on — do not introduce facts not listed. Returns the ranked facts plus a ready-to-interpret `brief`.\n\nBy default a real birth chart: pass date+lat+lon. The chart's grounding is first-class via `realm` (what it is: observed/forecast/fictional/mythic/archetypal/…) and the time: an exact `date`, or an uncertain `earliest`+`latest` range (the brief then frames it as provisional and trusts the Moon/angles/houses less), or `constraints` for an archetypal chart with no time (synthesized via the compiler). Omit lat+lon for a placeless chart (nominal houses).",
+      "A chart's validated facts as ranked, citable atoms for interpretation. Each fact has a stable id (e.g. \"aspect:moon~neptune:conjunction\"), the bodies it concerns, a salience score (luminaries, angular placements, the chart ruler, tight/hard aspects, configurations rank high), and a plain-language statement. Read the facts, write the interpretation in your own words, and cite the [id] each statement rests on — do not introduce facts not listed. Returns the ranked facts plus a ready-to-interpret `brief`.\n\nBy default a real birth chart: pass date+lat+lon. The chart's grounding is first-class via `realm` (what it is: observed/forecast/fictional/mythic/archetypal/…) and the time: an exact `date`, an uncertain `earliest`+`latest` range (the brief then frames it as provisional and trusts the Moon/angles/houses less), `constraints` for an archetypal chart with no time (synthesized via the compiler), or a full structured `when` (relative-to-another-event or a narrative calendar). A `when` of kind `relative` looks its `anchorId` up in `anchors` (a map of id → UTC instant supplied in the request). Omit lat+lon for a placeless chart (nominal houses).",
     inputSchema: {
       date: z.string().optional().describe("Exact UTC instant, ISO 8601 (e.g. 1990-06-10T14:30:00Z); convert local to UTC first"),
       earliest: z.string().optional().describe("Start of an uncertain-time range (UTC ISO); use with `latest` instead of `date`"),
       latest: z.string().optional().describe("End of an uncertain-time range (UTC ISO)"),
+      when: z.discriminatedUnion("kind", [
+        z.object({ kind: z.literal("instant"), utc: z.string() }),
+        z.object({ kind: z.literal("range"), earliest: z.string(), latest: z.string() }),
+        z.object({ kind: z.literal("relative"), relation: z.enum(["before", "after", "during"]), anchorId: z.string(), offset: z.string().optional() }),
+        z.object({ kind: z.literal("narrative"), calendar: z.string().optional(), value: z.string(), sequence: z.number().optional() }),
+        z.object({ kind: z.literal("symbolic"), rationale: z.string() }),
+        z.object({ kind: z.literal("none"), reason: z.enum(["atemporal", "time_irrelevant", "intentionally_unset"]) }),
+      ]).optional().describe("Full structured temporal anchor; overrides date/earliest/latest. Use for relative or narrative time."),
+      anchors: z.record(z.string()).optional()
+        .describe("Reference instants for a `relative` when: { anchorId: UTC ISO }"),
       lat: latSchema.optional(),
       lon: lonSchema.optional(),
       realm: z.enum(["observed", "reported", "planned", "forecast", "fictional",
@@ -1451,16 +1461,22 @@ export function buildServer(
       limit: z.number().int().min(1).max(60).default(24)
         .describe("max facts to return, highest salience first (default 24)"),
     },
-  }, async ({ date, earliest, latest, lat, lon, realm, constraints, house_system, zodiac, limit }) => {
-    const when = date ? { kind: "instant" as const, utc: date }
-      : earliest && latest ? { kind: "range" as const, earliest, latest }
-      : constraints?.length ? { kind: "symbolic" as const, rationale: "synthesized from constraints" }
-      : null;
-    if (when === null) throw new Error("Provide date, or earliest+latest, or constraints");
+  }, async ({ date, earliest, latest, when: whenInput, anchors, lat, lon, realm, constraints, house_system, zodiac, limit }) => {
+    const when = whenInput
+      ?? (date ? { kind: "instant" as const, utc: date }
+        : earliest && latest ? { kind: "range" as const, earliest, latest }
+        : constraints?.length ? { kind: "symbolic" as const, rationale: "synthesized from constraints" }
+        : null);
+    if (when === null) throw new Error("Provide date, earliest+latest, when, or constraints");
+    const instants: Record<string, number> = {};
+    for (const [id, utc] of Object.entries(anchors ?? {})) {
+      const jd = isoToJd(utc);
+      if (jd !== null) instants[id] = jd;
+    }
     const where = lat !== undefined && lon !== undefined
       ? { kind: "geo" as const, lat, lonEast: lon }
       : { kind: "none" as const, reason: "intentionally_unset" as const };
-    const r = realize(engine, { realm, when, where, constraints }, {},
+    const r = realize(engine, { realm, when, where, constraints }, { instants },
       { houseSystem: normalizeHouseSystem(house_system), zodiac });
     if (r.via === "ephemeris" && r.chart) {
       const ctx = interpretationContext(r.chart, { provenance: { realm, certainty: r.time.certainty } });
