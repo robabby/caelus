@@ -1,6 +1,6 @@
 {
   "name": "caelus-mcp",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "mcpName": "io.github.heavyblotto/caelus-mcp",
   "description": "MCP server for caelus chart computation.",
   "type": "module",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
     "zod": "^3.24.0",
-    "caelus": "^0.16.0"
+    "caelus": "^0.17.0"
   },
   "devDependencies": {
     "ajv": "^8.17.1"

@@ -6,6 +6,44 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## v0.17.0 — fixed-star parans (Brady)
+
+*2026-06-15*
+
+A feature release across all four packages. The engine gains the fixed-star
+parans — the star-to-body half of the paranatellonta — extending the
+moving-body `parans()` that shipped in 0.16.0. Reads off the validated
+positions; no new ephemeris fits.
+
+### Engine (`caelus`)
+
+- **`starParans(engine, jd, lat, stars)`** finds the classic fixed-star parans
+  of Brady's tradition: a catalog star and a moving body simultaneously on one
+  of the four angles (rising, setting, or either meridian) within a stated
+  tolerance, on a given day and latitude. A star's four angle crossings come
+  analytically from its apparent RA/Dec and the sidereal-time condition (H=0 at
+  the meridian, H=±H₀ at rise/set), inverted to UT through `gast`; body times
+  reuse the existing rise/set path. `starAngleTimes()` exposes the per-star
+  crossings. Standard 34′ refraction at rise/set, matching the engine's
+  rise/set. Reference-first (`astroengine.parans.star_parans`), the TS port
+  pinned by `parans-golden` (400 checks), with an oracle that a star's upper
+  transit is when sidereal time equals its right ascension.
+
+### Web
+
+- The playground stars tab surfaces the tightest fixed-star parans (a bright
+  star and a body on the angles at once, this day and latitude) alongside the
+  longitude conjunctions.
+- The docs guides (charts, houses-and-zodiacs, hellenistic, vedic, derived,
+  electional) are illustrated with server-rendered, build-time figures computed
+  from one canonical sample natal, so the prose, code samples, and rendered
+  output agree and the pages stay deterministic.
+- The home and features pages are refreshed: a linked proof strip of the
+  validation numbers above the fold, the worked example promoted ahead of the
+  package list, and a comparison against the other engines on `/features`.
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at 0.17.0.
+
 ## v0.16.0 — chart synthesis: patterns, dignities, parans + search (22→27 MCP tools)
 
 *2026-06-15*
