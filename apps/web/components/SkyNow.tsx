@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
-  detectPatterns, chartSignature, dignityScore,
+  detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -325,7 +325,13 @@ export default function SkyNow() {
       const b = chart.bodies[p];
       return b ? [dignityScore(p, b.lon, sect)] : [];
     });
-    return { patterns: detectPatterns(chart), signature: chartSignature(chart), dignities, sect };
+    return {
+      patterns: detectPatterns(chart),
+      signature: chartSignature(chart),
+      dignities,
+      lots: lots(engine(), chart.jdUt, Number(lat), Number(lon), zodiac),
+      sect,
+    };
   }, [chart]);
 
   // A new chart clears any isolated selection on the wheel.
@@ -612,6 +618,13 @@ export default function SkyNow() {
                             </tbody>
                           </table>
                         </div>
+                        <div className="dim small" style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", margin: "0.55rem 0 0" }}>
+                          {(["conjunction", "sextile", "square", "trine", "opposition"] as const).map((a) => (
+                            <span key={a}>
+                              <span style={{ color: aspectColor(a) }}>{ASPECT_GLYPH[a]}</span> {a}
+                            </span>
+                          ))}
+                        </div>
                         <ul className="mono" style={{ lineHeight: 1.8, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: "0.8rem 0 0" }}>
                           {chart.aspects.map((a, i) => (
                             <li key={i}>{a.a} {a.aspect} {a.b} <span className="mute">(orb {a.orb}°)</span></li>
@@ -703,6 +716,23 @@ export default function SkyNow() {
                                   {d.total > 0 ? "+" : ""}{d.total}
                                 </td>
                                 <td className="mute" style={cell}>{dignityLabel(d)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Hermetic lots (sect-aware Arabic parts) */}
+                      <div>
+                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>
+                          Hermetic lots
+                        </div>
+                        <table className="mono" style={{ fontSize: "0.82rem" }}>
+                          <tbody>
+                            {HERMETIC_LOTS.map((name) => (
+                              <tr key={name}>
+                                <td className="mute" style={cell}>{name}</td>
+                                <td style={cell}>{fmtLon(insights.lots[name])}</td>
                               </tr>
                             ))}
                           </tbody>
