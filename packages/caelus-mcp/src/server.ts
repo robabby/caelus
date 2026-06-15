@@ -39,7 +39,7 @@ import {
   detectPatterns, detectPatternsIn, chartSignature,
   chartFeatures, searchConfigurations,
   dignityScore, aspectBetween,
-  interpretationContext, chartBrief,
+  interpretationContext, chartBrief, realize, realmFraming,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -1432,29 +1432,56 @@ export function buildServer(
 
   server.registerTool("chart_facts", {
     description:
-      "A chart's validated facts as ranked, citable atoms for interpretation. Each fact has a stable id (e.g. \"aspect:moon~neptune:conjunction\"), the bodies it concerns, a salience score (higher = more prominent: luminaries, angular placements, the chart ruler, tight and hard aspects, whole configurations), and a plain-language statement. Use this to write a natal interpretation grounded in correct math: read the facts, write in your own words, and cite the [id] each statement rests on — do not introduce facts not listed. Returns the ranked facts plus a ready-to-interpret `brief`. Needs date, lat, lon.",
+      "A chart's validated facts as ranked, citable atoms for interpretation. Each fact has a stable id (e.g. \"aspect:moon~neptune:conjunction\"), the bodies it concerns, a salience score (luminaries, angular placements, the chart ruler, tight/hard aspects, configurations rank high), and a plain-language statement. Read the facts, write the interpretation in your own words, and cite the [id] each statement rests on — do not introduce facts not listed. Returns the ranked facts plus a ready-to-interpret `brief`.\n\nBy default a real birth chart: pass date+lat+lon. The chart's grounding is first-class via `realm` (what it is: observed/forecast/fictional/mythic/archetypal/…) and the time: an exact `date`, or an uncertain `earliest`+`latest` range (the brief then frames it as provisional and trusts the Moon/angles/houses less), or `constraints` for an archetypal chart with no time (synthesized via the compiler). Omit lat+lon for a placeless chart (nominal houses).",
     inputSchema: {
-      ...birth, house_system: houseSys, zodiac: zodiacSchema,
+      date: z.string().optional().describe("Exact UTC instant, ISO 8601 (e.g. 1990-06-10T14:30:00Z); convert local to UTC first"),
+      earliest: z.string().optional().describe("Start of an uncertain-time range (UTC ISO); use with `latest` instead of `date`"),
+      latest: z.string().optional().describe("End of an uncertain-time range (UTC ISO)"),
+      lat: latSchema.optional(),
+      lon: lonSchema.optional(),
+      realm: z.enum(["observed", "reported", "planned", "forecast", "fictional",
+        "mythic", "counterfactual", "archetypal", "conceptual"]).default("observed")
+        .describe("What the chart is; frames the interpretation (default observed)"),
+      constraints: z.array(z.discriminatedUnion("kind", [
+        z.object({ kind: z.literal("aspect"), a: z.string(), b: z.string(), angle: z.number(), weight: z.number().optional() }),
+        z.object({ kind: z.literal("sign"), body: z.string(), sign: z.number().int().min(0).max(11), weight: z.number().optional() }),
+        z.object({ kind: z.literal("degree"), body: z.string(), degree: z.number(), weight: z.number().optional() }),
+      ])).optional().describe("Geometric constraints for an archetypal/conceptual chart with no time (compiler synthesis)"),
+      house_system: houseSys, zodiac: zodiacSchema,
       limit: z.number().int().min(1).max(60).default(24)
         .describe("max facts to return, highest salience first (default 24)"),
     },
-  }, async ({ date, lat, lon, house_system, zodiac, limit }) => {
-    const d = new Date(date);
-    if (Number.isNaN(d.getTime())) throw new Error(`Invalid date: ${date}`);
-    const c = engine.chart(
-      d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
-      d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), lat, lon,
-      { houseSystem: normalizeHouseSystem(house_system), zodiac },
-    );
-    const ctx = interpretationContext(c);
-    const brief = chartBrief(ctx, { limit });
-    return text({
-      utc: date, houses: c.houseSystem,
-      ...(zodiac !== "tropical" ? { zodiac } : {}),
-      total_facts: ctx.atoms.length,
-      facts: brief.facts,
-      brief: brief.prompt,
-    });
+  }, async ({ date, earliest, latest, lat, lon, realm, constraints, house_system, zodiac, limit }) => {
+    const when = date ? { kind: "instant" as const, utc: date }
+      : earliest && latest ? { kind: "range" as const, earliest, latest }
+      : constraints?.length ? { kind: "symbolic" as const, rationale: "synthesized from constraints" }
+      : null;
+    if (when === null) throw new Error("Provide date, or earliest+latest, or constraints");
+    const where = lat !== undefined && lon !== undefined
+      ? { kind: "geo" as const, lat, lonEast: lon }
+      : { kind: "none" as const, reason: "intentionally_unset" as const };
+    const r = realize(engine, { realm, when, where, constraints }, {},
+      { houseSystem: normalizeHouseSystem(house_system), zodiac });
+    if (r.via === "ephemeris" && r.chart) {
+      const ctx = interpretationContext(r.chart, { provenance: { realm, certainty: r.time.certainty } });
+      const brief = chartBrief(ctx, { limit });
+      const framing = realmFraming(realm, r.time.certainty);
+      return text({
+        realm, via: r.via, certainty: r.time.certainty,
+        utc: isoFromJd(r.time.jd!), houses: r.chart.houseSystem,
+        ...(r.time.earliest !== undefined ? { range: { earliest: isoFromJd(r.time.earliest), latest: isoFromJd(r.time.latest!) } } : {}),
+        ...(zodiac !== "tropical" ? { zodiac } : {}),
+        ...(framing ? { framing } : {}),
+        total_facts: ctx.atoms.length, facts: brief.facts, brief: brief.prompt,
+      });
+    }
+    if (r.via === "compiler" && r.form) {
+      return text({
+        realm, via: r.via, note: r.note,
+        longitudes: r.form.longitudes, residual: r.form.residual, impossible: r.form.impossible,
+      });
+    }
+    return text({ realm, via: r.via, note: r.note });
   });
 
   server.registerTool("similar_skies", {

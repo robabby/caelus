@@ -194,7 +194,11 @@ const audit = auditCitations(modelClaims, ctx); // audit.ok === false flags inve
 The `chart_facts` tool (`caelus-mcp`) returns a chart's ranked, citable atoms
 plus a ready `brief`, so an LLM host interprets from correct math and cites the
 `[id]` each statement rests on instead of re-deriving (and hallucinating)
-positions. This is the interpretation seam wired into the chat product.
+positions. It is `realize`-backed and provenance-aware: alongside `date`+`lat`+
+`lon` it takes a `realm`, an uncertain `earliest`+`latest` range (the brief then
+frames it provisionally and damps the time-sensitive atoms), or `constraints`
+for an archetypal chart with no time (compiler synthesis). This is the
+interpretation seam wired into the chat product.
 
 Atom kinds now also include **dispositor** (the classical ruler of each
 classical planet's sign, with the final-dispositor terminus flagged) and

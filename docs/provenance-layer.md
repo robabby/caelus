@@ -80,3 +80,7 @@ houses) automatically.
    right" to "the chart's status is right." Wire it from `realize`'s result:
    `interpretationContext(realized.chart, { provenance: { realm: realized.realm,
    certainty: realized.time.certainty } })`.
+4. **MCP exposure (shipped):** the `chart_facts` tool is `realize`-backed and
+   takes `realm`, an `earliest`+`latest` range, or `constraints` (compiler path)
+   beside the plain `date`/`lat`/`lon`, so a host gets the framed, damped brief
+   for forecast / fictional / archetypal charts -- not just verified births.
