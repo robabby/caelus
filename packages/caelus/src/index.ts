@@ -26,3 +26,4 @@ export * from "./yogini.js";
 export * from "./yogas.js";
 export * from "./ashtottari.js";
 export * from "./rajayoga.js";
+export * from "./patterns.js";

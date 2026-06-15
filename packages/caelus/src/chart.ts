@@ -26,7 +26,7 @@ export const EXTRA_BODIES = ["mean_lilith", "true_lilith"] as const;
 export type BodyId = Body | (typeof EXTRA_BODIES)[number] | (string & {});
 
 /** Points: excluded from aspect search by default. */
-const NOT_ASPECTABLE = new Set([
+export const NOT_ASPECTABLE = new Set([
   "mean_node", "true_node", "mean_lilith", "true_lilith",
 ]);
 

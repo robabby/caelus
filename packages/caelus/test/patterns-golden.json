@@ -1,0 +1,355 @@
+{
+ "basis": "Python reference astroengine.patterns; default orbs (Ptolemaic DEFAULT_ORBS plus quincunx 3 deg); aspectable bodies",
+ "cases": [
+  {
+   "id": "grand_trine",
+   "spec": {
+    "id": "grand_trine",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 0
+     },
+     "moon": {
+      "lon": 120
+     },
+     "mars": {
+      "lon": 240
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "grand_trine",
+     "bodies": [
+      "mars",
+      "moon",
+      "sun"
+     ],
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "t_square",
+   "spec": {
+    "id": "t_square",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 0
+     },
+     "moon": {
+      "lon": 180
+     },
+     "mars": {
+      "lon": 90
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "t_square",
+     "bodies": [
+      "mars",
+      "moon",
+      "sun"
+     ],
+     "apex": "mars",
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "grand_cross",
+   "spec": {
+    "id": "grand_cross",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 0
+     },
+     "moon": {
+      "lon": 180
+     },
+     "mars": {
+      "lon": 90
+     },
+     "venus": {
+      "lon": 270
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "grand_cross",
+     "bodies": [
+      "mars",
+      "moon",
+      "sun",
+      "venus"
+     ],
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "yod",
+   "spec": {
+    "id": "yod",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 0
+     },
+     "moon": {
+      "lon": 60
+     },
+     "saturn": {
+      "lon": 210
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "yod",
+     "bodies": [
+      "moon",
+      "saturn",
+      "sun"
+     ],
+     "apex": "saturn",
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "kite",
+   "spec": {
+    "id": "kite",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 0
+     },
+     "moon": {
+      "lon": 120
+     },
+     "mars": {
+      "lon": 240
+     },
+     "venus": {
+      "lon": 180
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "kite",
+     "bodies": [
+      "mars",
+      "moon",
+      "sun",
+      "venus"
+     ],
+     "apex": "sun",
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "mystic_rectangle",
+   "spec": {
+    "id": "mystic_rectangle",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 0
+     },
+     "moon": {
+      "lon": 180
+     },
+     "mars": {
+      "lon": 60
+     },
+     "venus": {
+      "lon": 240
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "mystic_rectangle",
+     "bodies": [
+      "mars",
+      "moon",
+      "sun",
+      "venus"
+     ],
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "stellium_sign",
+   "spec": {
+    "id": "stellium_sign",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 2
+     },
+     "moon": {
+      "lon": 12
+     },
+     "mercury": {
+      "lon": 25
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "stellium_sign",
+     "bodies": [
+      "mercury",
+      "moon",
+      "sun"
+     ],
+     "sign": "Aries",
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "stellium_house",
+   "spec": {
+    "id": "stellium_house",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 5,
+      "house": 1
+     },
+     "moon": {
+      "lon": 40,
+      "house": 1
+     },
+     "mercury": {
+      "lon": 200,
+      "house": 1
+     }
+    }
+   },
+   "result": [
+    {
+     "kind": "stellium_house",
+     "bodies": [
+      "mercury",
+      "moon",
+      "sun"
+     ],
+     "house": 1,
+     "orb": 0.0
+    }
+   ]
+  },
+  {
+   "id": "none",
+   "spec": {
+    "id": "none",
+    "type": "detect",
+    "bodies": {
+     "sun": {
+      "lon": 0
+     },
+     "moon": {
+      "lon": 45
+     },
+     "mars": {
+      "lon": 200
+     }
+    }
+   },
+   "result": []
+  },
+  {
+   "id": "natal_tampa",
+   "spec": {
+    "id": "natal_tampa",
+    "type": "at",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "lat": 27.95,
+    "lon": -82.46
+   },
+   "result": [
+    {
+     "kind": "mystic_rectangle",
+     "bodies": [
+      "chiron",
+      "moon",
+      "pluto",
+      "venus"
+     ],
+     "orb": 2.5391
+    },
+    {
+     "kind": "mystic_rectangle",
+     "bodies": [
+      "chiron",
+      "neptune",
+      "pluto",
+      "venus"
+     ],
+     "orb": 2.5391
+    },
+    {
+     "kind": "mystic_rectangle",
+     "bodies": [
+      "jupiter",
+      "moon",
+      "pluto",
+      "venus"
+     ],
+     "orb": 2.4733
+    },
+    {
+     "kind": "mystic_rectangle",
+     "bodies": [
+      "jupiter",
+      "neptune",
+      "pluto",
+      "venus"
+     ],
+     "orb": 2.4733
+    },
+    {
+     "kind": "stellium_sign",
+     "bodies": [
+      "moon",
+      "neptune",
+      "saturn",
+      "uranus"
+     ],
+     "sign": "Capricorn",
+     "orb": 0.0
+    },
+    {
+     "kind": "stellium_house",
+     "bodies": [
+      "moon",
+      "neptune",
+      "saturn"
+     ],
+     "house": 6,
+     "orb": 0.0
+    }
+   ]
+  }
+ ]
+}
