@@ -40,6 +40,9 @@ python/*.egg-info/
 STRATEGY.md
 STRATEGY*.md
 
+# MCP Registry CLI — per-machine download (see docs/releasing.md), never committed
+mcp-publisher
+
 # logs
 *.log
 npm-debug.log*
