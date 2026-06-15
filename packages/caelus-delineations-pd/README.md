@@ -66,26 +66,32 @@ and audits the manifest for rights and text integrity.
 
 ## Coverage
 
-The fact model is finite and enumerable, so the target is *cell coverage*. 111
-passages across four sources today:
+The fact model is finite and enumerable, so the target is *cell coverage*. 241
+passages across five sources today:
 
 | Cell | Selector | Status |
 |---|---|---|
-| Sun in sign | `placement{ body, sign }` | Saint-Germain 12/12; Alan Leo 12/12 |
-| Moon in sign | `placement{ body, sign }` | Alan Leo 3/12 (partial) |
+| Sun in sign | `placement{ body, sign }` | Saint-Germain 12 + Alan Leo 12 |
+| Moon in sign | `placement{ body, sign }` | Alan Leo 3 (the scan's extent) |
 | Planet in house | `placement{ body, house }` | Alan Leo Key 21 + How to Judge 63 |
-| Other planet in sign | `placement{ body, sign }` | pending |
-| Planet aspect planet | `aspect{ between, aspect }` | pending (Heindel) |
-| Rising sign | `angle{ asc, sign }` | pending (Heindel, Alan Leo) |
+| Planet aspect planet | `aspect{ between, aspect }` | Heindel 118 (5 Ptolemaic aspects) |
+| Rising sign | `angle{ asc, sign }` | Heindel 12/12 |
+| Mercury–Saturn in sign | `placement{ body, sign }` | pending (no clean PD scan in set) |
 | Dignities | `placement{ dignity }` | pending |
 
 Coverage is partial by design: an extractor emits only the cells it can lift
-cleanly from the OCR, and the harness reports the rest. Vedic
-planet-in-rashi / planet-in-bhava map onto the same `placement` atoms, but the
-Brihat Jataka translation uses Sanskrit rashi names, so its extractor needs a
-rashi-name map (pending). Varga, yoga, dasha, fixed-star, and lot delineations
-have **no atom kind yet** — binding them needs a Caelus-core extension to
-`FactKind`.
+cleanly from the OCR, and the harness reports the rest. Known gaps and why:
+
+- **Mercury–Saturn in sign**: the richest enumerated scan (Llewellyn George's
+  *A to Z*) is `gratis-not-pd`; the public-domain scans in the set don't head
+  these cells cleanly. Needs a cleaner PD source.
+- **Vedic** (Brihat Jataka): the translation is verse/sloka-structured with no
+  "planet in rashi" headings, so it needs a verse-level parser, not heading
+  extraction. Text is vendored.
+- **Fixed-star, lot, varga, yoga, dasha**: these have **no atom kind yet** —
+  binding them needs a Caelus-core extension to `FactKind` *and* a cleanly
+  enumerable corpus (Robson's star catalog, the one PD candidate in the set, is
+  a garbled OCR table). Both are required, so they remain follow-ons.
 
 ## Corpus and licensing
 

@@ -151,6 +151,26 @@ for (const p of aspectPassages) {
   }
 }
 
+// 4d. Each rising-sign rule fires for its ascendant sign and only that sign.
+console.log("rising-sign rules fire");
+function ascCtx(sign: string): InterpretationContext {
+  const atom: FactAtom = {
+    id: "angle:asc", kind: "angle", bodies: [], salience: 2,
+    text: `Ascendant in ${sign}`, angle: "asc", sign, signDeg: 10,
+  };
+  return { jdUt: 0, zodiac: "tropical", atoms: [atom] };
+}
+const anglePassages = passages.filter((p) => p.when.kind === "angle");
+check(anglePassages.length > 0, "corpus has rising-sign passages");
+for (const p of anglePassages) {
+  const w = p.when as { sign: string };
+  const entry = interpret(ascCtx(w.sign), sources).entries.find((e) => e.rule === p.id);
+  check(!!entry, `${p.id}: fires for Ascendant in ${w.sign}`);
+  const other = w.sign === "Aries" ? "Taurus" : "Aries";
+  const wrong = interpret(ascCtx(other), sources).entries.find((e) => e.rule === p.id);
+  check(!wrong, `${p.id}: does not fire for Ascendant in ${other}`);
+}
+
 // 5. No reading ever cites an atom the projection did not contain.
 console.log("no dangling citations");
 for (const sign of ["aries", "scorpio", "pisces"]) {
