@@ -23,6 +23,7 @@
 import { ARCSEC, DEG, jdTT, mod, trueObliquity, equatorial, topocentricEcl } from "./core.js";
 import { Engine } from "./chart.js";
 import { gast } from "./houses.js";
+import { azAlt } from "./pheno.js";
 
 const KM_PER_AU = 149597870.7;
 const R_EARTH = 6378.14;
@@ -494,4 +495,33 @@ export function solarEclipseLimits(engine: Engine, jd: number): EclipsePath | nu
     center, north, south,
     widthKm: north && south ? greatCircleKm(north, south) : null,
   };
+}
+
+/** Whether a lunar eclipse is up at a place, and how high the Moon stands. */
+export interface LunarLocal {
+  /** Moon's true altitude in degrees at the given instant (negative = below
+   *  the horizon). */
+  altitude: number;
+  /** Whether the Moon is above the horizon (the eclipse is visible there). */
+  visible: boolean;
+}
+
+/**
+ * Local visibility of a lunar eclipse: a lunar eclipse happens at the same
+ * instant for the whole Earth, so "local circumstances" is simply whether the
+ * Moon is up. Pass a contact time (e.g. {@link LunarEclipse.tMax} or a phase
+ * boundary) to learn whether that phase is visible from a place.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param jd Instant to evaluate, Julian Day (UT).
+ * @param latDeg Observer latitude in degrees (north positive).
+ * @param lonEastDeg Observer longitude in degrees (east positive).
+ * @returns {@link LunarLocal} with the Moon's altitude and a visibility flag.
+ */
+export function lunarEclipseLocal(
+  engine: Engine, jd: number, latDeg: number, lonEastDeg: number,
+): LunarLocal {
+  const [mlon, mlat] = engine.ecliptic("moon", jdTT(jd));
+  const [, altitude] = azAlt(engine.data, mlon / DEG, mlat / DEG, jd, latDeg, lonEastDeg);
+  return { altitude, visible: altitude > 0 };
 }

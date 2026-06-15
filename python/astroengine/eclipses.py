@@ -19,6 +19,7 @@ the contact times, magnitude, and obscuration as seen from that point.
 """
 import math
 from . import houses as H
+from . import pheno as PH
 from .core import (ARCSEC, DEG, jd_tt, true_obliquity, equatorial,
                    topocentric_ecl)
 
@@ -397,3 +398,13 @@ def solar_eclipse_limits(engine, jd):
         width = _great_circle_km(north, south)
     return {"center": center, "north": north, "south": south,
             "width_km": width}
+
+
+def lunar_eclipse_local(engine, jd, lat_deg, lon_east_deg):
+    """Local visibility of a lunar eclipse: dict with the Moon's altitude (deg,
+    negative = below horizon) at jd (UT) and a visible flag. A lunar eclipse is
+    simultaneous for the whole Earth, so visibility is just whether the Moon is
+    up; pass a contact time to test that phase."""
+    mlon, mlat, _ = engine._ecliptic("moon", jd_tt(jd))
+    _, alt = PH.az_alt(mlon / DEG, mlat / DEG, jd, lat_deg, lon_east_deg)
+    return {"altitude": alt, "visible": alt > 0}

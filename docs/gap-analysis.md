@@ -97,13 +97,17 @@ for the sub-shadow geographic point (sample it across the eclipse to draw
 the central line); `solarEclipseLocal` gives an observer's contact times
 (C1–C4), magnitude, and obscuration from topocentric Sun/Moon disks;
 `solarEclipseLimits` marches perpendicular to the ground track to the umbra
-edge for the north/south limits of totality and the path width. All ride on
-the `sky_events` MCP tool (solar eclipses now report the greatest-eclipse
-location and path width, and local circumstances when a lat/lon is given).
-Validated in-repo against the NASA GSFC five-millennium canon: the
-greatest-eclipse point lands within ~2 km, totality duration within a few
-seconds, and the path width within ~2 km for 2017-08-21 and 2024-04-08. The
-Swiss Ephemeris sweep (`validate_swiss.py`, against
+edge for the north/south limits of totality and the path width;
+`lunarEclipseLocal` reports whether the Moon is above the horizon at a place
+(a lunar eclipse is simultaneous worldwide, so visibility is the only local
+question). All ride on the `sky_events` MCP tool (solar eclipses now report
+the greatest-eclipse location and path width, lunar eclipses report Moon
+altitude, and local circumstances come with a lat/lon). Validated in-repo
+against the NASA GSFC five-millennium canon: the greatest-eclipse point
+lands within ~2 km, totality duration within a few seconds, and the path
+width within ~2 km for 2017-08-21 and 2024-04-08; the 2025-03-14 total lunar
+eclipse reads as up over the Americas and below the horizon in East Asia.
+The Swiss Ephemeris sweep (`validate_swiss.py`, against
 `swe_sol_eclipse_where`/`_when_loc`) runs where pyswisseph is installed.
 
 Solar and lunar eclipse search (when, where, how) via Besselian elements

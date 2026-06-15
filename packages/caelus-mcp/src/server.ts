@@ -21,6 +21,7 @@ import {
   Engine, BODIES, Body, AlwaysBody, julianDay, mod,
   riseSet, crossings, lunarPhases, stations, RiseKind,
   lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal, solarEclipseLimits,
+  lunarEclipseLocal,
   ASPECTS, DEFAULT_ORBS, SIGNS as SIGN_NAMES, dignities, normalizeHouseSystem,
   solarPhase, aspectPhase, planetaryHour, voidOfCourse,
   CAZIMI_DEG, COMBUST_DEG, UNDER_BEAMS_DEG,
@@ -837,7 +838,7 @@ export function buildServer(
 
   server.registerTool("sky_events", {
     description:
-      "Sky events in a UTC date range: rise/set/meridian transits (need lat+lon+body), lunar phases (new/quarters/full), solar and lunar eclipses, stations (body turns retrograde/direct; needs body), zodiac degree crossings (needs body + target_lon). Solar eclipses report global circumstances (type, magnitude, gamma) plus the greatest-eclipse location; add lat+lon to also get local circumstances (type seen, magnitude, obscuration, contact times C1-C4). Times to the second vs Swiss Ephemeris (stations to ~1 min: ill-conditioned by nature). Range <= 370 days.",
+      "Sky events in a UTC date range: rise/set/meridian transits (need lat+lon+body), lunar phases (new/quarters/full), solar and lunar eclipses, stations (body turns retrograde/direct; needs body), zodiac degree crossings (needs body + target_lon). Solar eclipses report global circumstances (type, magnitude, gamma) plus the greatest-eclipse location and path width; add lat+lon to also get local circumstances (type seen, magnitude, obscuration, contact times C1-C4). Lunar eclipses report type and magnitude; add lat+lon to learn whether the Moon is above the horizon there. Times to the second vs Swiss Ephemeris (stations to ~1 min: ill-conditioned by nature). Range <= 370 days.",
     inputSchema: {
       start: z.string().describe("UTC ISO start date (convert from local first)"),
       end: z.string().describe("UTC ISO end date; range <= 370 days"),
@@ -892,8 +893,14 @@ export function buildServer(
     }
     if (kinds.includes("lunar_eclipse")) {
       for (const e of lunarEclipses(engine, jd0, jd1)) {
-        events.push({ t: iso(e.tMax), kind: "lunar_eclipse",
-          detail: `${e.type}, mag ${e.magUmbral > 0 ? e.magUmbral.toFixed(2) : e.magPenumbral.toFixed(2) + " penumbral"}` });
+        let detail = `${e.type}, mag ${e.magUmbral > 0 ? e.magUmbral.toFixed(2) : e.magPenumbral.toFixed(2) + " penumbral"}`;
+        // A lunar eclipse is simultaneous worldwide; with a place, say whether
+        // the Moon is up to see it.
+        if (lat !== undefined && lon !== undefined) {
+          const ll = lunarEclipseLocal(engine, e.tMax, lat, lon);
+          detail += ll.visible ? `, Moon ${ll.altitude.toFixed(0)}° up` : ", Moon below horizon";
+        }
+        events.push({ t: iso(e.tMax), kind: "lunar_eclipse", detail });
       }
     }
     if (kinds.includes("solar_eclipse")) {

@@ -15,7 +15,7 @@ import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
   lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal,
-  solarEclipseLimits,
+  solarEclipseLimits, lunarEclipseLocal,
 } from "../src/eclipses.js";
 import * as H from "../src/houses.js";
 import { loadNodeData } from "../src/node-loader.js";
@@ -321,6 +321,18 @@ for (const g of G.houses) {
     if (!path || path.widthKm === null || Math.abs(path.widthKm - c.widthKm) > 4) {
       failures++;
       console.error(`FAIL ${c.y} path width: ${path?.widthKm?.toFixed(1)} km vs ${c.widthKm} km`);
+    }
+  }
+  // Lunar eclipse local visibility: the 2025-03-14 total lunar eclipse was up
+  // over the Americas (night) and below the horizon in East Asia (daytime).
+  {
+    const le = lunarEclipses(eng, julianDay(2025, 3, 1), julianDay(2025, 3, 31))
+      .find((x) => x.type === "total");
+    const la = le ? lunarEclipseLocal(eng, le.tMax, 34.05, -118.24) : null; // Los Angeles
+    const tk = le ? lunarEclipseLocal(eng, le.tMax, 35.68, 139.69) : null; // Tokyo
+    if (!le || !la?.visible || tk?.visible !== false) {
+      failures++;
+      console.error(`FAIL 2025 lunar visibility: LA alt=${la?.altitude.toFixed(1)} Tokyo alt=${tk?.altitude.toFixed(1)}`);
     }
   }
   for (const [b, want] of Object.entries({ ...g.asteroids, ...g.uranians }) as Array<[string, any]>) {
