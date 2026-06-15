@@ -142,6 +142,7 @@ export default function SkyNow() {
   const [label, setLabel] = useState("");
   const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "events" | "json">("positions");
   const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
+  const [focusPattern, setFocusPattern] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [fromLink, setFromLink] = useState(false);
   const [set, setSet] = useState<Share[]>([]);
@@ -312,6 +313,12 @@ export default function SkyNow() {
     });
     return { patterns: detectPatterns(chart), signature: chartSignature(chart), dignities, sect };
   }, [chart]);
+
+  // A new chart clears any isolated configuration.
+  useEffect(() => { setFocusPattern(null); }, [chart]);
+  const focusBodies = focusPattern !== null && insights?.patterns[focusPattern]
+    ? insights.patterns[focusPattern].bodies
+    : undefined;
 
   const inp: React.CSSProperties = {
     background: "var(--surface-3)", color: "var(--text)", border: "1px solid var(--border-strong)",
@@ -487,7 +494,7 @@ export default function SkyNow() {
                       </button>
                     ))}
                   </div>
-                  {view === "wheel" && <ChartWheel chart={chart} size={460} />}
+                  {view === "wheel" && <ChartWheel chart={chart} size={460} bodies={focusBodies} />}
                   {view === "sphere" && <ChartSphere chart={chart} size={460} />}
                   {view === "map" && mapLines && <AstroMap lines={mapLines} width={460} height={230} />}
                   {view === "sphere" && (
@@ -575,18 +582,39 @@ export default function SkyNow() {
                         {insights.patterns.length === 0 ? (
                           <p className="dim small" style={{ margin: 0 }}>No major configurations.</p>
                         ) : (
-                          <ul className="mono" style={{ lineHeight: 1.7, paddingLeft: "1.1rem", margin: 0 }}>
-                            {insights.patterns.map((p, i) => (
-                              <li key={i}>
-                                {PATTERN_LABEL[p.kind] ?? p.kind}{" "}
-                                <span className="mute">
-                                  {p.bodies.join(", ")}
-                                  {p.sign ? ` · ${p.sign}` : ""}
-                                  {p.apex ? ` · apex ${p.apex}` : ""}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
+                          <>
+                            <div className="mono" style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
+                              {insights.patterns.map((p, i) => {
+                                const active = focusPattern === i;
+                                return (
+                                  <button
+                                    key={i}
+                                    type="button"
+                                    onClick={() => { setFocusPattern(active ? null : i); setView("wheel"); }}
+                                    aria-pressed={active}
+                                    title="Isolate this configuration on the wheel"
+                                    style={{
+                                      textAlign: "left", font: "inherit", fontSize: "0.82rem", cursor: "pointer",
+                                      background: active ? "var(--surface-2)" : "transparent",
+                                      border: "1px solid", borderColor: active ? "var(--accent)" : "transparent",
+                                      borderRadius: "var(--radius-sm)", padding: "0.2rem 0.45rem", color: "var(--text)",
+                                    }}
+                                  >
+                                    {PATTERN_LABEL[p.kind] ?? p.kind}{" "}
+                                    <span className="mute">
+                                      {p.bodies.join(", ")}
+                                      {p.sign ? ` · ${p.sign}` : ""}
+                                      {p.apex ? ` · apex ${p.apex}` : ""}
+                                    </span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <p className="dim small" style={{ margin: "0.4rem 0 0" }}>
+                              {focusBodies ? "Showing one configuration on the wheel. " : ""}
+                              Click a configuration to isolate it on the wheel.
+                            </p>
+                          </>
                         )}
                       </div>
 
