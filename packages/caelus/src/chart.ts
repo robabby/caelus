@@ -9,6 +9,7 @@ import {
   J2000,
 } from "./core.js";
 import { starApparent } from "./stars.js";
+import { hermeticLots, HERMETIC_LOTS } from "./lots.js";
 import * as H from "./houses.js";
 import type { AspectPhase } from "./electional.js"; // type-only: no runtime cycle
 
@@ -453,6 +454,73 @@ export class Engine {
    */
   starNames(): string[] {
     return Object.keys(this.data.fixedStars?.stars ?? {}).sort();
+  }
+
+  /**
+   * Fixed-star conjunctions in a chart: each body within `orb` of a catalog
+   * star, in the chart's own zodiac. Feed the result to
+   * {@link interpretationContext} as `stars` to project `star` fact atoms (the
+   * Chart itself carries no star catalog).
+   *
+   * @param chart A chart from {@link Engine.chart} / {@link Engine.chartAt}.
+   * @param opts `orb` (default 1°); `stars` to restrict to named stars (then no
+   *   magnitude filter); else `maxMag` keeps only stars brighter than it
+   *   (default 2.5) so obscure catalog entries do not flood the result.
+   * @returns Conjunctions sorted by increasing orb.
+   */
+  starConjunctions(
+    chart: Chart,
+    opts: { orb?: number; maxMag?: number; stars?: string[] } = {},
+  ): { body: string; star: string; orb: number }[] {
+    const catalog = this.data.fixedStars?.stars;
+    if (!catalog) return [];
+    const orbLimit = opts.orb ?? 1.0;
+    const names = opts.stars ?? Object.keys(catalog);
+    const useMag = opts.stars === undefined;
+    const maxMag = opts.maxMag ?? 2.5;
+    const out: { body: string; star: string; orb: number }[] = [];
+    for (const name of names) {
+      const s = catalog[name];
+      if (!s || (useMag && s.mag > maxMag)) continue;
+      const starLon = this.fixedStar(name, chart.jdUt, { zodiac: chart.zodiac }).lon;
+      for (const [body, p] of Object.entries(chart.bodies)) {
+        if (!p) continue;
+        const sep = Math.abs(mod(p.lon - starLon + 180, 360) - 180);
+        if (sep <= orbLimit) out.push({ body, star: name, orb: sep });
+      }
+    }
+    out.sort((a, b) => a.orb - b.orb);
+    return out;
+  }
+
+  /**
+   * The seven Hermetic lots of a chart, each placed by sign and house. Sect is
+   * read from the Sun (above the horizon -> a day chart). Feed the result to
+   * {@link interpretationContext} as `lots` to project `lot` fact atoms.
+   *
+   * @param chart A chart from {@link Engine.chart} / {@link Engine.chartAt}; it
+   *   must carry the seven classical planets.
+   * @returns One entry per lot with its longitude, sign, `signDeg`, and house,
+   *   or an empty array if a required planet is absent.
+   */
+  lots(chart: Chart): {
+    lot: string; lon: number; sign: string; signDeg: number; house: number;
+  }[] {
+    const b = chart.bodies;
+    const need = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"] as const;
+    if (need.some((k) => !b[k])) return [];
+    const day = (b.sun!.house >= 7); // Sun above the horizon (houses 7-12)
+    const h = hermeticLots(
+      chart.angles.asc, day, b.sun!.lon, b.moon!.lon, b.mercury!.lon,
+      b.venus!.lon, b.mars!.lon, b.jupiter!.lon, b.saturn!.lon,
+    );
+    return HERMETIC_LOTS.map((lot) => {
+      const lon = mod(h[lot], 360);
+      return {
+        lot, lon, sign: SIGNS[Math.floor(lon / 30)], signDeg: mod(lon, 30),
+        house: houseIndex(lon, chart.cusps),
+      };
+    });
   }
 
   private lonOnly(

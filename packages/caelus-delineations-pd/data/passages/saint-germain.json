@@ -1,0 +1,242 @@
+[
+  {
+    "id": "saint-germain:sun-in-aquarius",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Aquarius"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "This Constellation, \"Aquarius'' — the eleventh sign of the Zodiac — exerts its in fluence from January 20 to February 18. It endows the persons born under it with a special aptitude for the fine arts and secures popular recognition for their remarkable works. Besides, it gives them a long life and lofty position, and makes of them orators and authors. However, they will have none but them s e 1 V e s to blame if they are ^persecuted or even exiled. They will have graceful, gentle, simple, and straightforward natures. Although violent when driven to wrath, they quiet down quickly and bear no grudge. The will-power will be firm, but lacking in logic and be apt to rush to its goal un^ mindful of obstacles over which it will ride rough shod. The Aquarius subjects will be fond of solitude, laborious and diligent, patient and persevering.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Aquarius (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-aries",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Aries"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "The Constellation \"Aries\" — the first Sign of the Zodiac — exerts its i n f^ u e n c e from March 21 to April 19, the period coinciding with the first month of the Roman Year. It endows. those born during this period with sir^gle. unaffected Qianners^^with an obedient disposition and yetwith a capacity for com.manding (a duality of qualities frequently met with); with plenty of enterprising audacity; with a lofty, charitable soul; with a generous heart, that will meet with few grateful returns; with a firm will, a superior mind, quick, brilliant, courageous. but not lacking In prudence; with religious tendencies; often with artistic talents, with plenty of clever ingenuity; a natural gift for business; a rather combative spirit, tempered, however, by eclecticism (the power of learning from others). The will, although steadfast, may vary in its object, in its plans.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Aries (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-cancer",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Cancer"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "The Constellation \"Cancer\" — the fourth of the Zodiac — exerts its influence from June 19 to July 23 (including the ''5 Epagomenes,\" or supplementary degrees). It always gives to the subject a most agitated, restless existence, but a life of power and incessant activity. Cancer endows the subjects it inflnpnrpc; with a taciturn disposition, with a seai::alung mind and good morals, pure even to austerity. 1 heir imagmation, or a rich, creative character, will be In love with the fantastic; added to It will be a great aptitude for assimilation, so that the subject will be ever ready to act in real life the part of the particular hero for whom his imagination, his dreams, or his readings will have given him a temporary fancy.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Cancer (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-capricorn",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Capricorn"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "This Constellation, \"Capricorn\" — the tenth sign of the Zodiac — exerts its influence from December 21 to January 19. J^he p e r s o n s_ born under i ts influen£e„ will~^-b^ self-nm^e nien,_tlie builders of th^JiLQwn fortime^nd they will know how to remain prosperous. Capricorn alscL^endpws its subje^^tf^ ^^'^^ a strong taste for destroying thlngs^an active disposj^tion. a vigorous body, especially if born between midnight and noon, for, if born between noon and midnight they may have a few physical defects and suffer from accidents. They will show themselves aggressive, warlike, enthusiastic, vehement, and yet, inclined to melancholy and saving habits. Their mind will be shrewd, fair and clever in business matters, and decidedly versatile. Their will-power, although strong, may vary in its object, but will finally succeed in reaching the desired goal.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Capricorn (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-gemini",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Gemini"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "The Constellation \"Gemini\" — the third of the Zodiac — exerts its influence from May 20 to June 18. ' It endows the subject born during this period with probity, a pleasing, accommodating disposition, a temper quickly irritated but just as quickly calmed down, showing Fu t little violence in its outbursts and a great promptitude in manifesting repefttance.- The sign of Gemini often_ promises some kind of celebrity. It gives the subject natural, inventive genius, and, with it, a love of science for its own sake; it urges him to follow scientific researches, especially in the line of mathematics, and often makes him an orator or an author. It endows him, also, with some talents for commerce, with a saving disposition and moderation in the use of all things. It renders him scrupulously honest, fairminded, and noble-hearted;",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Gemini (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-leo",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Leo"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "Thfrongff^]1at-ion \"Leo\" — the fifth of the Zodiac — exerts its influence from July 24 to August 22. Ptolemy, of Pelusa, surnamed the King of Astrologers, said that the subjects born under this beneficent influence will reach positions of honor and trust. Leo jgi ves to those born under' its influence a loftyjmndi a spirit of fair play, an unbending dignity and a warm and geruerojjs heart. Th£_j;yilL-power of the subjee^will be firm, enterprising and persevering; it will aim straight at the object desired, but secure it only by honest and above-board methods. The mind will be steadfast, virile, proud, simple and liberal, with great brilliancy that may render it sometimes egotistic and presumptuous but never lacking in gratitude for an act of helpful kindness. The impulses and instincts will be always held within control.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Leo (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-libra",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Libra"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "This Constellation, \"Libra\" — the seventh of the signs of the Zodiac — also called \"the Scales\" — exerts its i n fl u e n c e from September 22 to October 21. It endows those V b o r n under its influence with ^ great gentleness, straight forwardness and puxe moral principles; ]t renders the soul merciful and the heart affectionate and constant. The disposition is frank, op-^n, confiding, slightly melancholy; anger is easily aroused and rapidly qi lie ted..down agalrT 'This sign causes indecision in opinions and in actions; it bestows upon one inventive genius, a special aptitude for mechanical arts and sciences and for navigation; but all these gifts, will not profit the subject. The will-power, although plentiful, knows not how to bring about final results.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Libra (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-pisces",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Pisces"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "This Constellation, \"Pisces\" — the twelfth sign of the Zodiac — exerts its influence from February 19 to March 20. Those born under this sign will be the artisans of their own celebrity and will attain it in the realm of the fine arts, sciences or literature. Popularity will come to them unbidden, as a reward of unwearying efforts in developing their natural talents. Pisces endows its subjects with a certain degree of restlessness, with a constant disposition to find fault with the results of their own labor, thus inciting them to further efforts; they are somewhat pessimistic and inclined to alter their views to reach the goal more rapidly. They have a kind of duplex moral nature difficult to fathom, but withal strictly honest, fair in all its dealings, poetical, dreamy and mystical.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Pisces (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-sagittarius",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Sagittarius"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "This Constellation, \"Sagittariijs\" — the ninth sign of the Zodiac — exerts its influence from November 21 to December 20. lL_eiKljcws th^^^^^^ this period with an ingenuous, strictly honest nature, with a generous heart, that does kindly_a£ls ^'.with without a thought of reward or even gratitude. The ancient Magi claimed that the subjects of Sagittarius would prove exceptionally good, or radically bad. Tlie mind_xif_jhe_subiecLis-3^ tie, easy-going, peaceable; _guick to anger and quicker to quiej down, very -libe r al andjippartial,in_lnsjO£inions^ and a gift for rapid assimilation. But it worries a great deal about trifles and shows anxiety out of proportion with the trouble in prospect. The temper does not grow heated, except when unjustly attacked, or if placed in the presence of dangerous people.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Sagittarius (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-scorpio",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Scorpio"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "This Constellation, \"Scorpio\" — the-eighth of the Zodiac — exerts its influence from October 22 to November 20. It endows the subject^ J)orn during this period with \"\"aTjiiiind at the — same- -time shrewd, persuasive, fickle, capricious, dreamy, poet-^ ical and often religiously inclined. ' — ff eTias a firm hold upon himself and his will-power is steadfast and persevering. The temper is fiery, b e TTi cose and easily aroused, somewhat rough and even viqlenjt, but never unkindly so; there IS a lovp of danger for its own sake. This sign renders those born under it phlegmatic, taciturn and close mouthed; they are often tinged with misanthropy. Slow to move to anger, they are also sjpw to forgive; they keej^_a deep feeling of r£S£iiLiii£ntj__and as their wrath cools down it becomes almost more dangerous, for in their revengeful spirit, they are relentless and act quickly and recklessly.",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Scorpio (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-taurus",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Taurus"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "The Constellation \"Taurus\" — the second sign of the Zodiac — exerts Its Influence from April 20 to May 19. It endows the persons born during this period with a stubboxa diapQsItlo^^ It makes the m' rebel lious — to advice, exaggerately g^rou-d, difficult of approach, and fond of opposItIon_ to^ the p o i n_t of startTng j^ contro versy, __ o r„„ a fight forthejole. \"purpose of coming out yictorlous. Slow to get excited and slow to calm down, the subjects of Taurus will harbor a grudge for a long time and will be hard to reconcile. Of course, all these Idiosyncrasies may be modified, even overcome by surroundings, education, etc. We are only enumerating here inborn tendencies or instincts that can always be fought against and triumphed over. -This sign gives the subject a mind straightforward, just, inquisitive and shrewd;",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Taurus (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "saint-germain:sun-in-virgo",
+    "when": {
+      "kind": "placement",
+      "body": "sun",
+      "sign": "Virgo"
+    },
+    "atomIds": [
+      "placement:sun"
+    ],
+    "text": "The Constellation of \"Virgo\" — the sixth of the signs of the Zodiac — exerts its Influence from August 23 to September 21. Those born within this period will r;each honors through their personal merit. This sign bestows on them a cool reason, a spirit of equity, a merciful disposition and a taste for everything that Is honest and rstraIghtforwar3. The moral nature of the subject will be tnild, modest, amiable, confiding, and yet not easily fathomed. His will-power, although comparatively firm may be influenced through sentimental motives. He will be intelligent, ingenious, but above all, moved by his feelings to which he will remain passionately attached. He will be slow to anger and slow to quiet down, although h i s wrath will never harm any one. He will be moved to repentance quickly and deepl}^ Virgo gives people born under it a taste for cloister life, a love of divine thoughts;",
+    "tradition": "modern",
+    "source": {
+      "author": "Comte de Saint-Germain",
+      "work": "Practical Astrology",
+      "locus": "Sun in Virgo (sign section)"
+    },
+    "rights": "pd-us",
+    "embed": true
+  }
+]

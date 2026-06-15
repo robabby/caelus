@@ -1,0 +1,65 @@
+{
+  "name": "caelus-delineations-pd",
+  "version": "0.1.0",
+  "description": "Public-domain astrology delineations and correspondence data for the Caelus interpretation layer.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/src",
+    "data",
+    "sources/manifest.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node dist/test/validation.test.js",
+    "fetch": "tsx scripts/fetch-sources.ts",
+    "extract": "tsx scripts/extract/saint-germain.ts && tsx scripts/extract/alan-leo-signs.ts && tsx scripts/extract/alan-leo-key.ts && tsx scripts/extract/alan-leo-judge.ts && tsx scripts/extract/heindel-aspects.ts && tsx scripts/extract/heindel-rising.ts && tsx scripts/extract/george-signs.ts",
+    "build:correspondences": "tsx scripts/build-correspondences.ts",
+    "prepare:data": "npm run fetch && npm run extract && npm run build:correspondences"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "dependencies": {
+    "caelus": "^0.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./manifest": {
+      "types": "./dist/src/manifest.d.ts",
+      "default": "./dist/src/manifest.js"
+    },
+    "./correspondences": {
+      "types": "./dist/src/correspondences.d.ts",
+      "default": "./dist/src/correspondences.js"
+    },
+    "./data/correspondences.json": "./data/correspondences.json",
+    "./sources/manifest.json": "./sources/manifest.json",
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heavyblotto/caelus.git",
+    "directory": "packages/caelus-delineations-pd"
+  },
+  "homepage": "https://ephemengine.com",
+  "keywords": [
+    "astrology",
+    "delineations",
+    "public-domain",
+    "caelus",
+    "interpretation"
+  ],
+  "sideEffects": false
+}

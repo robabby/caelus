@@ -1,0 +1,463 @@
+{
+  "version": "0.1.0",
+  "derivedFrom": {
+    "repo": "adamblvck/open_777",
+    "url": "https://github.com/adamblvck/open_777",
+    "note": "CSV transcription of Crowley's Liber 777 (public domain); transcription license unspecified — attributed, not relicensed."
+  },
+  "correspondences": [
+    {
+      "path": "0",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 0"
+      },
+      "sephirah": "Ain (אין) - Ain Soph (אין סוף) - Ain Soph Aur (אין סוף אור)",
+      "greekGod": "Pan"
+    },
+    {
+      "path": "1",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 1"
+      },
+      "sephirah": "(כתר) Kether",
+      "tarot": "The 4 Aces",
+      "greekGod": "Zeus, Ikarus",
+      "romanGod": "Jupiter",
+      "element": "Root of 🜁",
+      "color": "Brilliance"
+    },
+    {
+      "path": "10",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 10"
+      },
+      "sephirah": "Malkuth ()",
+      "tarot": "The 4 Tens - Empresses or Princesses",
+      "element": "🜃",
+      "color": "Yellow"
+    },
+    {
+      "path": "11",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 11"
+      },
+      "sephirah": "(אלף) Aleph",
+      "tarot": "The Fool - Swords - Emperors of Princes",
+      "greekGod": "Zeus",
+      "romanGod": "Jupiter",
+      "element": "Hot & Moist 🜁",
+      "color": "Bright pale yellow"
+    },
+    {
+      "path": "12",
+      "body": "mercury",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 12"
+      },
+      "sephirah": "Beth ()",
+      "tarot": "The Juggler",
+      "greekGod": "Hermes",
+      "romanGod": "Mercury",
+      "color": "Yellow"
+    },
+    {
+      "path": "13",
+      "body": "moon",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 13"
+      },
+      "sephirah": "(גמל) Gimel",
+      "tarot": "The High Priestess",
+      "greekGod": "Artemis, Hekate",
+      "romanGod": "Diana (as Water)",
+      "color": "Blue"
+    },
+    {
+      "path": "14",
+      "body": "venus",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 14"
+      },
+      "sephirah": "Daleth ()",
+      "tarot": "The Empress",
+      "greekGod": "Aphrodite",
+      "romanGod": "Venus",
+      "color": "Emerald green"
+    },
+    {
+      "path": "15",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 15"
+      },
+      "sephirah": "(הה) Hé",
+      "tarot": "The Emperor",
+      "greekGod": "Athena",
+      "romanGod": "Mars, Minerva",
+      "element": "Sun - 🜂 - Jupiter",
+      "color": "Scarlet"
+    },
+    {
+      "path": "16",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 16"
+      },
+      "sephirah": "Vau ()",
+      "tarot": "The Hierophant",
+      "element": "Venus - 🜃 - Moon",
+      "color": "Red orange"
+    },
+    {
+      "path": "17",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 17"
+      },
+      "sephirah": "(זין) Zain",
+      "tarot": "The Lovers",
+      "greekGod": "Castor and Pollux, Apollo the Diviner, Eros",
+      "romanGod": "Castor and Pollux, [Janus]",
+      "element": "Saturn - 🜁 - Mercury",
+      "color": "Orange"
+    },
+    {
+      "path": "18",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 18"
+      },
+      "sephirah": "Cheth ()",
+      "tarot": "The Chariot",
+      "greekGod": "Apollo The Charioteer",
+      "romanGod": "Mercury",
+      "element": "Mars - 🜁",
+      "color": "Amber"
+    },
+    {
+      "path": "19",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 19"
+      },
+      "sephirah": "(טית) Teth",
+      "tarot": "Strength",
+      "greekGod": "Demeter",
+      "romanGod": "Venus (Repressing Fire of Vulcan)",
+      "element": "Sun - 🜂 - Jupiter",
+      "color": "Yellow, greenish"
+    },
+    {
+      "path": "2",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 2"
+      },
+      "sephirah": "Chokmah ()",
+      "tarot": "The 4 Twos - Kings / Knights",
+      "greekGod": "Athena, Uranus",
+      "romanGod": "Janus",
+      "element": "Root of 🜁",
+      "color": "Pure soft blue"
+    },
+    {
+      "path": "20",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 20"
+      },
+      "sephirah": "Yod ()",
+      "tarot": "Hermit",
+      "greekGod": "Attis",
+      "romanGod": "[Attis], Ceres, Adonis",
+      "element": "Venus - 🜃 - Moon",
+      "color": "Green, yellowish"
+    },
+    {
+      "path": "21",
+      "body": "jupiter",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 21"
+      },
+      "sephirah": "(כף) Kaph",
+      "tarot": "Wheel of Fortune",
+      "greekGod": "Zeus",
+      "romanGod": "Jupiter, [Pluto]",
+      "color": "Violet"
+    },
+    {
+      "path": "22",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 22"
+      },
+      "sephirah": "Lamed ()",
+      "tarot": "Justice",
+      "greekGod": "Themis, Minos, Aecus and Rhadamanthus",
+      "romanGod": "Vulcan",
+      "element": "Saturn - 🜁 - Mercury",
+      "color": "Emerald green"
+    },
+    {
+      "path": "23",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 23"
+      },
+      "sephirah": "(מים) Maim",
+      "tarot": "The Hanged Man - Cups - Queens",
+      "greekGod": "Poseidon",
+      "romanGod": "Neptune",
+      "element": "Cold & Moist 🜄",
+      "color": "Deep blue"
+    },
+    {
+      "path": "24",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 24"
+      },
+      "sephirah": "Nun ()",
+      "tarot": "Death",
+      "greekGod": "Ares",
+      "romanGod": "Mars",
+      "element": "Mars - 🜄",
+      "color": "Green blue"
+    },
+    {
+      "path": "25",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 25"
+      },
+      "sephirah": "(סמך) Samekh",
+      "tarot": "Temperence",
+      "greekGod": "Apollo, Artemis (hunters)",
+      "romanGod": "Diana (Archer)",
+      "element": "Sun - 🜂 - Jupiter",
+      "color": "Blue"
+    },
+    {
+      "path": "26",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 26"
+      },
+      "sephirah": "Ayin ()",
+      "tarot": "The Devil",
+      "greekGod": "Pan, Priapus",
+      "romanGod": "Pan, Vesta, Bacchus",
+      "element": "Venus - 🜃 - Moon",
+      "color": "Indigo"
+    },
+    {
+      "path": "27",
+      "body": "mars",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 27"
+      },
+      "sephirah": "(פה) Pé",
+      "tarot": "The House of God",
+      "greekGod": "Ares",
+      "romanGod": "Mars",
+      "color": "Scarlet"
+    },
+    {
+      "path": "28",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 28"
+      },
+      "sephirah": "(צדי) Tzaddi",
+      "tarot": "The Star",
+      "greekGod": "Ganymede",
+      "romanGod": "Juno",
+      "element": "Saturn - 🜁 - Mercury",
+      "color": "Violet"
+    },
+    {
+      "path": "29",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 29"
+      },
+      "sephirah": "(קוף) Qoph",
+      "tarot": "The Moon",
+      "greekGod": "Poseidon",
+      "romanGod": "Neptune",
+      "element": "Mars - 🜄",
+      "color": "Crimson (ultra violet)"
+    },
+    {
+      "path": "3",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 3"
+      },
+      "sephirah": "(בינה) Binah",
+      "tarot": "The 4 Threes - Queens",
+      "greekGod": "Cybele, Demeter, Rhea, Heré, Kronos, Pyché",
+      "romanGod": "Juno, Cybele, Hecate",
+      "element": "Root of 🜁",
+      "color": "Crimson"
+    },
+    {
+      "path": "30",
+      "body": "sun",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 30"
+      },
+      "sephirah": "(ריש) Resh",
+      "tarot": "The Sun",
+      "greekGod": "Helios, Apollo",
+      "romanGod": "Apollo",
+      "color": "Orange"
+    },
+    {
+      "path": "31",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 31"
+      },
+      "sephirah": "(שין) Shin",
+      "tarot": "All 22 Trumps",
+      "element": "Hot & Dry 🜂",
+      "color": "White, merging Grey",
+      "greekGod": "Ikarus",
+      "romanGod": "[Liber]"
+    },
+    {
+      "path": "32",
+      "body": "saturn",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 32"
+      },
+      "sephirah": "(תו) Tau",
+      "tarot": "Empresses - Coins",
+      "greekGod": "[Demeter]",
+      "romanGod": "Ceres",
+      "color": "Citrine, Russet, Olive, Black",
+      "element": "Cold & Dry 🜃"
+    },
+    {
+      "path": "4",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 4"
+      },
+      "sephirah": "Chesed ()",
+      "tarot": "The 4 Fours",
+      "greekGod": "Poseidon",
+      "romanGod": "Jupiter",
+      "element": "🜄",
+      "color": "Deep violet"
+    },
+    {
+      "path": "5",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 5"
+      },
+      "sephirah": "(גבורה) Geburah",
+      "tarot": "The 4 Fives",
+      "greekGod": "Ares, Hades",
+      "romanGod": "Mars",
+      "element": "🜂",
+      "color": "Orange"
+    },
+    {
+      "path": "6",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 6"
+      },
+      "sephirah": "Tiphareth ()",
+      "tarot": "The 4 Sixes - Emperor or Princes",
+      "greekGod": "Ikarus, Apollo, Adonis",
+      "romanGod": "Apollo",
+      "element": "🜁",
+      "color": "Clear pink rose"
+    },
+    {
+      "path": "7",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 7"
+      },
+      "sephirah": "(נצח) Netzach",
+      "tarot": "The 4 Sevens",
+      "greekGod": "Aphrodite, Nike",
+      "romanGod": "Venus",
+      "element": "🜂",
+      "color": "Amber"
+    },
+    {
+      "path": "8",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 8"
+      },
+      "sephirah": "Hod ()",
+      "tarot": "The 4 Eights",
+      "greekGod": "Hermes",
+      "romanGod": "Mercury",
+      "element": "🜄",
+      "color": "Violet purple"
+    },
+    {
+      "path": "9",
+      "source": {
+        "author": "Aleister Crowley",
+        "work": "Liber 777",
+        "locus": "path 9"
+      },
+      "sephirah": "(יסוד) Yesod",
+      "tarot": "The 4 Nines",
+      "element": "🜁",
+      "color": "Indigo"
+    }
+  ]
+}

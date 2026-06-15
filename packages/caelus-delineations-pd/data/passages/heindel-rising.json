@@ -1,0 +1,242 @@
+[
+  {
+    "id": "heindel-rising:asc-in-aquarius",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Aquarius"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "The stateliness and pride of those born under the sign of Leo are not missing in the typical Aquarian, but while in the Leo these qualities are of a lower, more beastly nature agreeable to the sign, they are manly pride and stateliness in the true Aquarian. Libra generates a beautiful body but more effeminate as it were, whereas the Aquarian beauty is truly manly or womanly, the fearless eye is kindly and drooping eyelashes are peculiar to this sign. The forehead is square, and the well developed poise tells of intellect, the large domed head shows the spiritual side of the nature and the chin is sufficiently developed to give purpose to all actions. Thus the typical Aquarian is the highest grade of humanity;",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Aquarius rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-aries",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Aries"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "ARIES is mythologically represented as a ram and the symbol describes most accurately those born under its influence, a pointed and protruding sheeplike nose, wide forehead, pointed chin and the resultant triangular face noted in many people, are unmistakable indications of their rising sign, light brown or reddish tint of the hair is a pronounced characteristic of the Arian, the body is slender and well formed, if the first part of the sign is rising the body is shorter, and the complexion darker than given by the latter degrees. Planets in the rising sign will modify the description, however, and the student must use his knowledge of the character of the planets in conjunction with the description of the Sign. The Sun and Mars make the complexion more florid, the Moon and Saturn make it paler and darker, Jupiter and Venus make the body more portly.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Aries rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-cancer",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Cancer"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "The chief peculiarities of the crab are a clumsy body, slender limbs and powerful claws; people born with Cancer rising express them all. They have a large upper body, augmented in later years by a prominence of the abdomen acquired by overeating. The mandible or lower jaw is powerfully hinged to the cranium, the face is therefore widest between the ears, the mouth is also large, and the whole construction similar to the crab's claw. The face is full, the hair brown, the eyes blue, complexion pale and sickly, for the Cancer person has the least vitality of any. The limbs are extremely slender in proportion to the large upper body, so the structure appears \"top heavy,\" and they walk with a \"rolling\" gait.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Cancer rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-capricorn",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Capricorn"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "know that animal, but part fish and part goat. Its Saturnine rulership, and the fact that it receives the Sun as the dawn of each New Year, naturally by analogy associates it with the beginning of precessional epochs. It represents the stage in evolution covering transition from fish, through amphibia to the mammalian form. The belligerency of the goat is well known, and an apt symbol of the struggle for existence, in which the weak perish unless able to outdistance their foes. This phase of the matter is sometime? expressed in the symbol, when drawn as part fish and part antelope. Jacob, in the thirtythird chapter of Deuteronomy, pronounces blessings upon his children, which symbolize the twelve signs. There he speaks of Naphtali as a 'Und' let loose;",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Capricorn rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-gemini",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Gemini"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "When Gemini is rising the body generated is tall and slender; the arms and limbs are particularly long, fingers slender, hair dark, eyes hazel. Gemini people are quick, active and alert in all their movements, habitual restlessness is noticeable in the expression of the eyes, which differs in that respect from more fixed tendencies of the eyes of those born under the two preceding signs, although of course we do not mean that the Arian always looks angry and the Taurian stubborn, nevertheless, there is a settled tendency in those directions noticeable when these people are not occupied in a certain direction, but the Gemini person has an expression which Ls much more vivid, changeable and past finding out. They have acutely enquiring minds, always want to know the reason why, but often lack persistence to follow clews to the end, and thus meet disappointment.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Gemini rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-leo",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Leo"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "human figure of Aquarius, the Waterbearer, shows us the ideal towards which this class must strive. Instead of fighting, preying upon, or poisoning others in the struggle for existence they must learn to become humane, to be friends instead of foes to all. The influence of the fixed signs rouses the desire nature, giving stamina and persistence in action. When fixed signs are on the angles (the first, fourth, seventh and tenth houses), they exert a well nigh irresistible force, impelling the individual along a certain line. He may be slow and plodding, but is sure to be persistent in whatever he undertakes, and whatever talent he may possess in a certain direction will be exploited to its fullest extent.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Leo rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-libra",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Libra"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "Elegance may be said to express in one word the physical peculiarities of the Libran. The body is slender and graceful in youth; it becomes more plump as life advances, but even the portliness of the Libra body is pleasing. The complexion is smooth and clear, eyes are soft and blue with a kind expression; the mouth is unusually well formed and the teeth particularly fine and even. Libra people have extremely strong conjugal affection, so strong, in fact, that it overshadows all other considerations. The. Leos love their families, but their hearts take in all the world besides; not so the Librans, they are ready for any sacrifice to give comforts to those in their own immediate home circle, but they are also prepared to sacrifice anyone else's family for their own, if necessary.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Libra rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-pisces",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Pisces"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "The typical Piscean is short, flabby and fleshy with a waddling gait not unlike those born under the sign Cancer, but differs from them by having a stouter body. The feet are often turned in, but larger than those born under Virgo. The body is weak and deficient in recuperative force. The complexion is medium, the eyes blue, watery and expressionless, the ncse is large and flat. There is a strong tendency to mediumship among the Pisces people, and therein is a danger greater than any other on earth. No one should \"sit for development\" and degenerate into the tool of low spirits, but a Pisces person in particular is \"lost\" if taken control of. They cannot free themselves, neither in this life or the next, because generally inert and devoid of will power. They are timid, and even the men are tearful on the slightest provocation;",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Pisces rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-sagittarius",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Sagittarius"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "People born with Sagittarius rising are even taller than those born under the opposite sign, Gemini, the men in particular have large hands and feet. The size and weight of the bony frame is often too much for the ligaments of the spine to support,.and so these people develop a decided stoop in later years The face is long and well formed, the nose well proportioned, dark kindly eyes, with dark chestnut hair. The body is very active, but requires much rest, as the recuperative powers are below the requisite. The symbol of this sign shows that there are two widely different classes born therein.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Sagittarius rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-scorpio",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Scorpio"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "The nose is the most prominent feature of the Scorpio; it is large, heavy, and hooked, resembling the bill of the eagle; the brows are bushy, the eyes sharp and piercing; the jaw is very heavy; the glint of the eye, and the set of the jaw indicate the great determination which is the most prominent characteristic of the Scorpio. The face is angular, complexion murky, and hair dark, with a peculiar ruddy tinge noticeable when the sun shines on it. The teeth are large and subject to early decay. The body is short and thickset, with a short, thick neck resembling that of the opposite sign: Taurus. Scorpio people always stand up for their rights, and never submit to imposition, though prone to ride roughshod over others. They are full of worries over things that may happen, but never do, and thus make life a burden to those around them.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Scorpio rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-taurus",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Taurus"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "even the Mosaic phase of the Aryan religion of the Lamb, demanded a sacrificial victim for every transgression of that law. But the Sun is exalted in Aries, and when the great Sun spirit, Christ, came as High Priest of the Aryan religion, He abrogated sacrifice of others by offering up Himself as a perpetual sacrifice for sin. By looking to the mother ideal of Virgo during the Piscean Age, and following the Christ's example of sacrificial service, the immaculate conception becomes an actual experience to each of us, and Christ, the Son of Man, Aquarius, is born within us. Thus, gradually, the third phase of the Aryan religion will be ushered in and a new ideal will be found in the Lion of Judah, Leo.",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Taurus rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  },
+  {
+    "id": "heindel-rising:asc-in-virgo",
+    "when": {
+      "kind": "angle",
+      "angle": "asc",
+      "sign": "Virgo"
+    },
+    "atomIds": [
+      "angle:asc"
+    ],
+    "text": "People born when Virgo is rising are above middle stature. The upper part of the head is much more developed than the lower, the weak chin, showing lack of will and the large brain indicating greatness of intellect, are therefore earmarks of the Virgo. The face is thin, the complexion sallow, the hair brown and the eyes hazel or grey. The feet are small, the toes turn inwards and give these people a peculiar labored walk. Virgo people are very quick and active in youth, they learn with facility, but do not work hard for knowledge; they seem to breathe it in without an effort. They acquire linguistic and elocutionary powers most readily, are fluent writers but often cynical, cold and unforgiving when they have been injured. They are extreme in their food, and make hygiene a fad;",
+    "tradition": "modern",
+    "source": {
+      "author": "Max Heindel and Augusta Foss Heindel",
+      "work": "The Message of the Stars",
+      "locus": "Virgo rising"
+    },
+    "rights": "pd-us",
+    "embed": true
+  }
+]

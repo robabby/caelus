@@ -206,6 +206,18 @@ classical planet's sign, with the final-dispositor terminus flagged) and
 triplicity ruler -- `by` names the dignities, salience scales with the weaker
 link), with `hasDispositor` / `hasReception` selectors.
 
+A **star** atom (`hasStar`) records a body's conjunction with a catalog fixed
+star. The bare projection cannot compute it -- the star catalog lives in the
+data pack, not on the `Chart` -- so a caller supplies the conjunctions via
+`ContextOptions.stars`, typically from `Engine.starConjunctions(chart, { orb })`,
+and the projection turns each into a `star:<body>:<name>` atom.
+
+A **lot** atom (`hasLot`) records a Hermetic lot -- the Part of Fortune and its
+six companions -- placed by sign and house. Supply them via `ContextOptions.lots`
+from `Engine.lots(chart)`; the projection emits a `lot:<name>` atom for each.
+Lots are time-sensitive (they derive from the Ascendant and Moon), so an inexact
+instant damps them like the angles.
+
 ## Follow-ons
 
 All the listed follow-ons have shipped: dispositor/reception atoms (now by

@@ -106,6 +106,23 @@ export function hasReception(filter: { body?: string } = {}): Selector {
     && (filter.body === undefined || a.bodies.includes(filter.body))));
 }
 
+/** Matches a fixed-star conjunction by the catalog star and/or the body on it. */
+export function hasStar(filter: { body?: string; star?: string } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "star"
+    && (filter.body === undefined || a.body === filter.body)
+    && (filter.star === undefined || a.star === filter.star)));
+}
+
+/** Matches a Hermetic lot by name, and/or its sign or house. */
+export function hasLot(filter: { lot?: string; sign?: string; house?: number } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "lot"
+    && (filter.lot === undefined || a.lot === filter.lot)
+    && (filter.sign === undefined || a.sign === filter.sign)
+    && (filter.house === undefined || a.house === filter.house)));
+}
+
 // ----------------------------------------------------------------- combinators
 
 /** Matches only when every selector matches; returns the union of their atoms. */

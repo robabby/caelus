@@ -10,11 +10,11 @@ import { fileURLToPath } from "node:url";
 import {
   julianDay, deltaT, jdTT, nutation, meanObliquity, DEG, mod, ayanamsa,
 } from "../src/core.js";
-import { Engine, BODIES, Body, DEFAULT_ORBS, ASPECTS } from "../src/chart.js";
+import { Engine, BODIES, Body, DEFAULT_ORBS, ASPECTS, SIGNS } from "../src/chart.js";
 import { aspectPhase } from "../src/electional.js";
 import { interpretationContext } from "../src/interpretation.js";
 import {
-  interpret, hasPlacement, hasAspect, hasPattern, matchAll, matchNone,
+  interpret, hasPlacement, hasAspect, hasPattern, hasStar, hasLot, matchAll, matchNone,
   hasDispositor, hasReception, reconcile,
 } from "../src/interpret.js";
 import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js";
@@ -516,6 +516,46 @@ for (const g of G.houses) {
   if (sun?.sign !== "Gemini") {
     failures++;
     console.error(`FAIL interp sun placement: ${sun?.sign}`);
+  }
+
+  // Fixed-star atoms: caller-supplied conjunctions project as `star` atoms and
+  // a hasStar rule resolves against them. 1990-06-10 has Jupiter on Sirius.
+  const conj = eng.starConjunctions(c, { orb: 1.0 });
+  const sctx = interpretationContext(c, { stars: conj });
+  const starAtoms = sctx.atoms.filter((a) => a.kind === "star");
+  const sirius = eng.starConjunctions(c, { orb: 1.0, stars: ["Sirius"] });
+  const sr = interpret(sctx, [{
+    id: "stars", version: "0.1",
+    rules: [{ id: "sirius", when: hasStar({ star: "Sirius" }), text: "x" }],
+  }]);
+  if (
+    starAtoms.length !== conj.length
+    || starAtoms.length === 0
+    || !starAtoms.every((a) => a.id === `star:${(a as { body: string }).body}:${(a as { star: string }).star}`)
+    || !sirius.some((x) => x.body === "jupiter")
+    || !sr.entries.some((e) => e.rule === "sirius" && e.atomIds.includes("star:jupiter:Sirius"))
+  ) {
+    failures++;
+    console.error(`FAIL interp stars: atoms=${starAtoms.length}/${conj.length} sirius=${JSON.stringify(sirius)}`);
+  }
+
+  // Lot atoms: the seven Hermetic lots project, Fortune and Spirit mirror the
+  // Ascendant, and a hasLot rule resolves.
+  const chartLots = eng.lots(c);
+  const lctx = interpretationContext(c, { lots: chartLots });
+  const lotAtoms = lctx.atoms.filter((a) => a.kind === "lot");
+  const fortune = chartLots.find((l) => l.lot === "fortune");
+  const lr = interpret(lctx, [{
+    id: "lots", version: "0.1",
+    rules: [{ id: "fortune", when: hasLot({ lot: "fortune" }), text: "x" }],
+  }]);
+  if (
+    lotAtoms.length !== 7 || chartLots.length !== 7
+    || !fortune || SIGNS[Math.floor(fortune.lon / 30)] !== fortune.sign
+    || !lr.entries.some((e) => e.rule === "fortune" && e.atomIds.includes("lot:fortune"))
+  ) {
+    failures++;
+    console.error(`FAIL interp lots: atoms=${lotAtoms.length} fortune=${JSON.stringify(fortune)}`);
   }
 
   // Matching + resolver: a developer's rule corpus over the projection, with

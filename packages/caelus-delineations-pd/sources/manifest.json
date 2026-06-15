@@ -1,0 +1,348 @@
+[
+  {
+    "id": "ptolemy-tetrabiblos",
+    "layer": 1,
+    "title": "Tetrabiblos (Quadripartite)",
+    "author": "Claudius Ptolemy (trans. J.M. Ashmand)",
+    "year": 1822,
+    "tradition": "hellenistic",
+    "rights": "pd-us",
+    "file": "sources/text/ptolemy-tetrabiblos.txt",
+    "fetch": {
+      "url": "https://www.gutenberg.org/cache/epub/70850/pg70850.txt",
+      "stripGutenberg": true
+    }
+  },
+  {
+    "id": "lilly-christian-astrology",
+    "layer": 1,
+    "title": "Christian Astrology",
+    "author": "William Lilly",
+    "year": 1647,
+    "tradition": "renaissance",
+    "rights": "pd-us",
+    "file": "sources/text/lilly-christian-astrology.txt",
+    "fetch": {
+      "urls": [
+        "https://archive.org/download/b30338724/b30338724_djvu.txt",
+        "https://archive.org/stream/b30338724/b30338724_djvu.txt"
+      ],
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "ramesey-astrologia-restaurata",
+    "layer": 1,
+    "title": "Astrologia Restaurata",
+    "author": "William Ramesey",
+    "year": 1653,
+    "tradition": "renaissance",
+    "rights": "cc0",
+    "file": "sources/text/ramesey-astrologia-restaurata.txt",
+    "fetch": {
+      "urls": [
+        "https://archive.org/download/bim_early-english-books-1641-1700_astrologia-restaurata-_ramesay-william_1653/bim_early-english-books-1641-1700_astrologia-restaurata-_ramesay-william_1653_djvu.txt",
+        "https://archive.org/stream/bim_early-english-books-1641-1700_astrologia-restaurata-_ramesay-william_1653/bim_early-english-books-1641-1700_astrologia-restaurata-_ramesay-william_1653_djvu.txt"
+      ],
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "sepharial-horoscope",
+    "layer": 1,
+    "title": "Astrology: How to Make and Read Your Own Horoscope",
+    "author": "Sepharial",
+    "year": 1914,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/sepharial-horoscope.txt",
+    "fetch": {
+      "url": "https://www.gutenberg.org/cache/epub/46963/pg46963.txt",
+      "stripGutenberg": true
+    }
+  },
+  {
+    "id": "alan-leo-astrology-for-all",
+    "layer": 1,
+    "title": "Astrology for All",
+    "author": "Alan Leo",
+    "year": 1910,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/alan-leo-astrology-for-all.txt",
+    "fetch": {
+      "urls": [
+        "https://archive.org/download/bub_gb_8CwSAAAAYAAJ/bub_gb_8CwSAAAAYAAJ_djvu.txt"
+      ],
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "alan-leo-key-to-own-nativity",
+    "layer": 1,
+    "title": "The Key to Your Own Nativity",
+    "author": "Alan Leo",
+    "year": 1910,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/alan-leo-key-to-own-nativity.txt",
+    "fetch": {
+      "url": "https://archive.org/download/dli.ernet.128062/128062_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "alan-leo-how-to-judge-nativity",
+    "layer": 1,
+    "title": "How to Judge a Nativity",
+    "author": "Alan Leo",
+    "year": 1908,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/alan-leo-how-to-judge-nativity.txt",
+    "fetch": {
+      "url": "https://archive.org/download/howtojudgenativi00leoa/howtojudgenativi00leoa_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "robson-students-textbook",
+    "layer": 1,
+    "title": "A Student's Text-Book of Astrology",
+    "author": "Vivian E. Robson",
+    "year": 1922,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/robson-students-textbook.txt",
+    "fetch": {
+      "url": "https://archive.org/download/bwb_S0-DTL-301/bwb_S0-DTL-301_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "heindel-message-of-the-stars",
+    "layer": 1,
+    "title": "The Message of the Stars",
+    "author": "Max Heindel and Augusta Foss Heindel",
+    "year": 1919,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/heindel-message-of-the-stars.txt",
+    "fetch": {
+      "url": "https://archive.org/download/messageofstarses00heiniala/messageofstarses00heiniala_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "sepharial-manual-of-astrology",
+    "layer": 1,
+    "title": "A Manual of Astrology",
+    "author": "Sepharial",
+    "year": 1898,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/sepharial-manual-of-astrology.txt",
+    "fetch": {
+      "url": "https://archive.org/download/in.ernet.dli.2015.128043/2015.128043_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "varahamihira-brihat-jataka",
+    "layer": 1,
+    "title": "Brihat Jataka (trans. N. Chidambaram Iyer)",
+    "author": "Varahamihira",
+    "year": 1885,
+    "tradition": "vedic",
+    "rights": "pd-us",
+    "file": "sources/text/varahamihira-brihat-jataka.txt",
+    "fetch": {
+      "url": "https://archive.org/download/b2488442x/b2488442x_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "george-az-horoscope-delineator",
+    "layer": 1,
+    "title": "A to Z Horoscope Maker and Delineator",
+    "author": "Llewellyn George",
+    "year": 1910,
+    "tradition": "modern",
+    "rights": "gratis-not-pd",
+    "file": "sources/text/george-az-horoscope-delineator.txt",
+    "fetch": {
+      "url": "https://archive.org/download/in.ernet.dli.2015.98183/2015.98183_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "pearce-textbook",
+    "layer": 1,
+    "title": "The Text-Book of Astrology",
+    "author": "Alfred John Pearce",
+    "year": 1911,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/pearce-textbook.txt",
+    "fetch": {
+      "url": "http://www.iapsop.com/ssoc/1911__pearce___the_text-book_of_astrology.pdf",
+      "pdf": true
+    }
+  },
+  {
+    "id": "wilson-dictionary",
+    "layer": 1,
+    "title": "A Complete Dictionary of Astrology",
+    "author": "James Wilson",
+    "year": 1819,
+    "tradition": "renaissance",
+    "rights": "pd-us",
+    "file": "sources/text/wilson-dictionary.txt",
+    "fetch": {
+      "url": "https://archive.org/download/b29298180/b29298180_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "leo-art-of-synthesis",
+    "layer": 1,
+    "title": "The Art of Synthesis",
+    "author": "Alan Leo",
+    "year": 1912,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/leo-art-of-synthesis.txt",
+    "fetch": {
+      "url": "https://archive.org/download/artofsynthesis00leoa/artofsynthesis00leoa_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "sepharial-new-manual",
+    "layer": 1,
+    "title": "The New Manual of Astrology",
+    "author": "Sepharial",
+    "year": 1898,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/sepharial-new-manual.txt",
+    "fetch": {
+      "note": "1st ed., G. Redway, London. Not on a reachable host; supplied as RTF, stripped to text. Planet-in-sign entries are glyph-coded — not rule-extractable."
+    }
+  },
+  {
+    "id": "raphael-key-to-astrology",
+    "layer": 1,
+    "title": "The Guide to Astrology",
+    "author": "Raphael (Robert Cross Smith)",
+    "year": 1828,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/raphael-key-to-astrology.txt",
+    "fetch": {
+      "urls": [
+        "https://archive.org/download/guidetoastrology00raphiala/guidetoastrology00raphiala_djvu.txt",
+        "https://archive.org/stream/guidetoastrology00raphiala/guidetoastrology00raphiala_djvu.txt"
+      ],
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "saint-germain-practical-astrology",
+    "layer": 1,
+    "title": "Practical Astrology",
+    "author": "Comte de Saint-Germain",
+    "year": 1901,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/saint-germain-practical-astrology.txt",
+    "fetch": {
+      "url": "https://archive.org/download/practicalastrolo00sain/practicalastrolo00sain_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "robson-fixed-stars",
+    "layer": 1,
+    "title": "The Fixed Stars and Constellations in Astrology",
+    "author": "Vivian E. Robson",
+    "year": 1923,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/robson-fixed-stars.txt",
+    "fetch": {
+      "url": "https://archive.org/download/in.ernet.dli.2015.128091/2015.128091.The-Fixed-Stars-And-Constellations-In-Astrology_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "sepharial-cosmic-symbolism",
+    "layer": 3,
+    "title": "Cosmic Symbolism",
+    "author": "Sepharial",
+    "year": 1912,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/sepharial-cosmic-symbolism.txt",
+    "fetch": {
+      "url": "https://www.gutenberg.org/cache/epub/70749/pg70749.txt",
+      "stripGutenberg": true
+    }
+  },
+  {
+    "id": "agrippa-occult-philosophy",
+    "layer": 2,
+    "title": "Three Books of Occult Philosophy (Book I–III)",
+    "author": "Heinrich Cornelius Agrippa (trans. J.F.)",
+    "year": 1898,
+    "tradition": "hermetic",
+    "rights": "pd-us",
+    "file": "sources/text/agrippa-occult-philosophy.txt",
+    "fetch": {
+      "url": "https://archive.org/download/threebooksofoccu00agri/threebooksofoccu00agri_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "thierens-general-book-tarot",
+    "layer": 2,
+    "title": "General Book of the Tarot",
+    "author": "A.E. Thierens",
+    "year": 1930,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/thierens-general-book-tarot.txt",
+    "fetch": {
+      "urls": [
+        "https://www.globalgreyebooks.com/online-ebooks/a-e-thierens_general-book-of-the-tarot_complete-text.html"
+      ]
+    }
+  },
+  {
+    "id": "sepher-yetzirah",
+    "layer": 2,
+    "title": "Sepher Yetzirah",
+    "author": "W.W. Westcott (trans.)",
+    "year": 1887,
+    "tradition": "kabbalistic",
+    "rights": "pd-us",
+    "file": "sources/text/sepher-yetzirah.txt",
+    "fetch": {
+      "url": "https://archive.org/download/WestcottWWSepherYetzirah/Westcott-WW-Sepher-Yetzirah_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "liber-777",
+    "layer": 2,
+    "title": "Liber 777",
+    "author": "Aleister Crowley",
+    "year": 1909,
+    "tradition": "golden-dawn",
+    "rights": "pd-us",
+    "file": "sources/correspondence/liber-777.csv",
+    "fetch": {
+      "url": "https://raw.githubusercontent.com/adamblvck/open_777/master/docs/liber_777.csv"
+    }
+  }
+]

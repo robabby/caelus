@@ -60,7 +60,7 @@ const DIGNITY_RANK: Record<string, number> = { domicile: 3, exaltation: 2, tripl
 /** Atom kinds in an {@link InterpretationContext}. */
 export type FactKind =
   | "placement" | "aspect" | "pattern" | "signature" | "angle"
-  | "dispositor" | "reception";
+  | "dispositor" | "reception" | "star" | "lot";
 
 interface FactAtomBase {
   /** Stable, content-addressable id, e.g. `"placement:mars"` or
@@ -137,9 +137,28 @@ export interface ReceptionAtom extends FactAtomBase {
   by: string;
 }
 
+export interface StarAtom extends FactAtomBase {
+  kind: "star";
+  /** The body conjunct the fixed star. */
+  body: string;
+  /** Catalog star name (see {@link Engine.starNames}). */
+  star: string;
+  /** Orb from exact conjunction, degrees. */
+  orb: number;
+}
+
+export interface LotAtom extends FactAtomBase {
+  kind: "lot";
+  /** Hermetic lot name, e.g. `"fortune"` (see {@link HERMETIC_LOTS}). */
+  lot: string;
+  sign: string;
+  signDeg: number;
+  house: number;
+}
+
 export type FactAtom =
   | PlacementAtom | AspectAtom | PatternAtom | SignatureAtom | AngleAtom
-  | DispositorAtom | ReceptionAtom;
+  | DispositorAtom | ReceptionAtom | StarAtom | LotAtom;
 
 /** A chart as a flat, ranked list of {@link FactAtom}s. */
 export interface InterpretationContext {
@@ -177,11 +196,16 @@ export interface SalienceWeights {
   dispositor: number;
   /** Added to a mutual reception. */
   reception: number;
+  /** Added to a body's conjunction with a fixed star. */
+  star: number;
+  /** Added to a Hermetic lot (the Part of Fortune and its companions). */
+  lot: number;
 }
 
 export const DEFAULT_SALIENCE: SalienceWeights = {
   base: 1, luminary: 1.5, angular: 1, chartRuler: 1,
   dignity: 0.5, hardAspect: 1, pattern: 4, dispositor: 0.5, reception: 2,
+  star: 2, lot: 2,
 };
 
 export interface ContextOptions {
@@ -193,6 +217,13 @@ export interface ContextOptions {
   /** The chart's grounding. Carried onto the context; an inexact `certainty`
    *  damps time-sensitive atoms. Wire from {@link realize}'s result. */
   provenance?: { realm?: Realm; certainty?: Certainty };
+  /** Fixed-star conjunctions to project as `star` atoms. The engine does not
+   *  compute these from a bare {@link Chart} (the star catalog lives in the
+   *  data pack), so a caller supplies them, e.g. from
+   *  {@link Engine.starConjunctions}. */
+  stars?: { body: string; star: string; orb: number }[];
+  /** Hermetic lots to project as `lot` atoms, e.g. from {@link Engine.lots}. */
+  lots?: { lot: string; sign: string; signDeg: number; house: number }[];
 }
 
 /** How much to keep of a time-sensitive atom's salience at each certainty -- the
@@ -204,7 +235,7 @@ const TIME_SENSITIVE_KEEP: Record<Certainty, number> = {
 /** Time-sensitive atoms: the angles (rotate ~15°/h) and anything about the Moon
  *  (~13°/day), the fastest-shifting facts under a time error. */
 function timeSensitive(atom: FactAtom): boolean {
-  return atom.kind === "angle" || atom.bodies.includes("moon");
+  return atom.kind === "angle" || atom.kind === "lot" || atom.bodies.includes("moon");
 }
 
 function title(body: string): string {
@@ -372,6 +403,26 @@ export function interpretationContext(
   angleAtom("mc", chart.angles.mc);
   angleAtom("vertex", chart.angles.vertex);
   angleAtom("eastPoint", chart.angles.eastPoint);
+
+  // Fixed-star conjunctions (caller-supplied; the catalog is not on the Chart).
+  for (const sc of opts.stars ?? []) {
+    let salience = w.base + w.star;
+    if (LUMINARIES.has(sc.body)) salience += w.luminary;
+    atoms.push({
+      id: `star:${sc.body}:${sc.star}`, kind: "star", bodies: [sc.body], salience,
+      body: sc.body, star: sc.star, orb: sc.orb,
+      text: `${title(sc.body)} conjunct ${sc.star} (orb ${sc.orb.toFixed(1)}°)`,
+    });
+  }
+
+  // Hermetic lots (caller-supplied; computed from the chart's points + sect).
+  for (const l of opts.lots ?? []) {
+    atoms.push({
+      id: `lot:${l.lot}`, kind: "lot", bodies: [], salience: w.base + w.lot,
+      lot: l.lot, sign: l.sign, signDeg: l.signDeg, house: l.house,
+      text: `Lot of ${title(l.lot)} in ${l.sign}, house ${l.house}`,
+    });
+  }
 
   // An inexact instant trusts the fast-moving facts least.
   const prov = opts.provenance;
