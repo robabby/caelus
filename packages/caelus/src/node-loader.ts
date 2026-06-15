@@ -43,8 +43,11 @@ export function loadNodeData(
   if (existsSync(join(dir, "fixed_stars.json"))) {
     data.fixedStars = j("fixed_stars.json");
   }
-  // asteroid packs (Horizons fits): loaded when present, ~380 KB total
-  for (const b of ["ceres", "pallas", "juno", "vesta", "pholus"]) {
+  // asteroid packs (Horizons fits): loaded when present, ~380 KB total.
+  // `pluto` is optional too: when a wide-range Chebyshev pack is present it
+  // supersedes the embedded Meeus ch.37 series (valid 1885-2099) above, so
+  // Pluto extends past that window at full precision; see fit_pluto.py.
+  for (const b of ["ceres", "pallas", "juno", "vesta", "pholus", "pluto"]) {
     if (existsSync(join(dir, `${b}_cheb.json`))) {
       (data.chebPacks ??= {})[b] = j(`${b}_cheb.json`);
     }

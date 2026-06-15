@@ -355,7 +355,10 @@ export class Engine {
         : moonApparentSeries(this.data, jde);
       return [lon, lat, km / KM_PER_AU];
     }
-    if (body === "pluto") return plutoApparent(this.data, jde);
+    // Pluto: a wide-range Chebyshev pack when one is loaded (same heliocentric
+    // pipeline as Chiron, via the generic packed-body path below), else the
+    // Meeus ch.37 series (valid 1885-2099, accuracy degrades outside).
+    if (body === "pluto" && !this.data.chebPacks?.pluto) return plutoApparent(this.data, jde);
     if (body === "chiron") {
       if (!this.chironCheb) throw new Error("chiron data not loaded");
       return chironApparent(this.data, this.chironCheb, jde);
@@ -505,7 +508,7 @@ export class Engine {
   heliocentric(body: BodyId, jdUt: number): { lon: number; lat: number; dist: number } {
     const jde = jdTT(jdUt);
     let l: number; let b: number; let r: number;
-    if (body === "pluto") {
+    if (body === "pluto" && !this.data.chebPacks?.pluto) {
       [l, b, r] = plutoHeliocentric(this.data, jde);
       [l, b] = precessEcliptic(l, b, J2000, jde);
     } else if (body === "chiron") {

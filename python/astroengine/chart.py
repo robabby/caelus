@@ -65,6 +65,11 @@ class Engine:
         self.vsop = Vsop(level)
         self._packs = {}
 
+    def _has_pluto_pack(self):
+        """True when a wide-range Pluto Chebyshev pack is available on disk."""
+        import os
+        return os.path.exists(os.path.join(core.DATA, "pluto_cheb.json"))
+
     def _pack(self, body):
         if body not in self._packs:
             import json
@@ -93,6 +98,11 @@ class Engine:
                 lon, lat, km = moon_apparent(jde)
             return lon, lat, km / KM_PER_AU
         if body == "pluto":
+            # A wide-range Chebyshev pack when one is present (same heliocentric
+            # pipeline as the small bodies), else the Meeus ch.37 series (valid
+            # 1885-2099, accuracy degrades outside).
+            if self._has_pluto_pack():
+                return core.smallbody_apparent(self.vsop, self._pack("pluto"), jde)
             return pluto_apparent(self.vsop, jde)
         if body == "chiron":
             return core.chiron_apparent(self.vsop, jde)
@@ -165,7 +175,7 @@ class Engine:
     def heliocentric(self, body, jd_ut):
         """Geometric heliocentric ecliptic of date (deg, deg, AU)."""
         jde = jd_tt(jd_ut)
-        if body == "pluto":
+        if body == "pluto" and not self._has_pluto_pack():
             l, b, r = core.pluto_heliocentric(jde)
             l, b = core._precess_ecliptic(l, b, core.J2000, jde)
         elif body == "chiron":
@@ -176,7 +186,7 @@ class Engine:
             l = math.atan2(y, x) % (2 * math.pi)
             b = math.atan2(z, math.hypot(x, y))
             l, b = core._precess_ecliptic(l, b, core.J2000, jde)
-        elif body in ASTEROIDS or body in URANIANS:
+        elif body in ASTEROIDS or body in URANIANS or body == "pluto":
             x, y, z = self._pack(body).xyz(jde)
             r = math.sqrt(x * x + y * y + z * z)
             l = math.atan2(y, x) % (2 * math.pi)
