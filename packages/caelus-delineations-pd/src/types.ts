@@ -37,7 +37,8 @@ export type SelectorSpec =
   | { kind: "pattern"; pattern: string; body?: string }
   | { kind: "signature"; facet: string; value: string }
   | { kind: "angle"; angle: string; sign?: string }
-  | { kind: "star"; body?: string; star?: string };
+  | { kind: "star"; body?: string; star?: string }
+  | { kind: "lot"; lot?: string; sign?: string; house?: number };
 
 export interface PassageRecord {
   id: string;

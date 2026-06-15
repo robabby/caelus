@@ -114,6 +114,15 @@ export function hasStar(filter: { body?: string; star?: string } = {}): Selector
     && (filter.star === undefined || a.star === filter.star)));
 }
 
+/** Matches a Hermetic lot by name, and/or its sign or house. */
+export function hasLot(filter: { lot?: string; sign?: string; house?: number } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "lot"
+    && (filter.lot === undefined || a.lot === filter.lot)
+    && (filter.sign === undefined || a.sign === filter.sign)
+    && (filter.house === undefined || a.house === filter.house)));
+}
+
 // ----------------------------------------------------------------- combinators
 
 /** Matches only when every selector matches; returns the union of their atoms. */

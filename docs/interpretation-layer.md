@@ -212,6 +212,12 @@ data pack, not on the `Chart` -- so a caller supplies the conjunctions via
 `ContextOptions.stars`, typically from `Engine.starConjunctions(chart, { orb })`,
 and the projection turns each into a `star:<body>:<name>` atom.
 
+A **lot** atom (`hasLot`) records a Hermetic lot -- the Part of Fortune and its
+six companions -- placed by sign and house. Supply them via `ContextOptions.lots`
+from `Engine.lots(chart)`; the projection emits a `lot:<name>` atom for each.
+Lots are time-sensitive (they derive from the Ascendant and Moon), so an inexact
+instant damps them like the angles.
+
 ## Follow-ons
 
 All the listed follow-ons have shipped: dispositor/reception atoms (now by

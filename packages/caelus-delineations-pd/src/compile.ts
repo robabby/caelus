@@ -9,7 +9,7 @@
  * stay auditable.
  */
 import {
-  hasPlacement, hasAspect, hasPattern, hasSignature, hasAngle, hasStar,
+  hasPlacement, hasAspect, hasPattern, hasSignature, hasAngle, hasStar, hasLot,
 } from "caelus";
 import type {
   Selector, Rule, InterpretationSource, AngleAtom,
@@ -33,6 +33,8 @@ export function selectorFromSpec(spec: SelectorSpec): Selector {
       return hasAngle(spec.angle as AngleAtom["angle"], spec.sign);
     case "star":
       return hasStar({ body: spec.body, star: spec.star });
+    case "lot":
+      return hasLot({ lot: spec.lot, sign: spec.sign, house: spec.house });
   }
 }
 

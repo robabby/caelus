@@ -60,7 +60,7 @@ const DIGNITY_RANK: Record<string, number> = { domicile: 3, exaltation: 2, tripl
 /** Atom kinds in an {@link InterpretationContext}. */
 export type FactKind =
   | "placement" | "aspect" | "pattern" | "signature" | "angle"
-  | "dispositor" | "reception" | "star";
+  | "dispositor" | "reception" | "star" | "lot";
 
 interface FactAtomBase {
   /** Stable, content-addressable id, e.g. `"placement:mars"` or
@@ -147,9 +147,18 @@ export interface StarAtom extends FactAtomBase {
   orb: number;
 }
 
+export interface LotAtom extends FactAtomBase {
+  kind: "lot";
+  /** Hermetic lot name, e.g. `"fortune"` (see {@link HERMETIC_LOTS}). */
+  lot: string;
+  sign: string;
+  signDeg: number;
+  house: number;
+}
+
 export type FactAtom =
   | PlacementAtom | AspectAtom | PatternAtom | SignatureAtom | AngleAtom
-  | DispositorAtom | ReceptionAtom | StarAtom;
+  | DispositorAtom | ReceptionAtom | StarAtom | LotAtom;
 
 /** A chart as a flat, ranked list of {@link FactAtom}s. */
 export interface InterpretationContext {
@@ -189,12 +198,14 @@ export interface SalienceWeights {
   reception: number;
   /** Added to a body's conjunction with a fixed star. */
   star: number;
+  /** Added to a Hermetic lot (the Part of Fortune and its companions). */
+  lot: number;
 }
 
 export const DEFAULT_SALIENCE: SalienceWeights = {
   base: 1, luminary: 1.5, angular: 1, chartRuler: 1,
   dignity: 0.5, hardAspect: 1, pattern: 4, dispositor: 0.5, reception: 2,
-  star: 2,
+  star: 2, lot: 1,
 };
 
 export interface ContextOptions {
@@ -211,6 +222,8 @@ export interface ContextOptions {
    *  data pack), so a caller supplies them, e.g. from
    *  {@link Engine.starConjunctions}. */
   stars?: { body: string; star: string; orb: number }[];
+  /** Hermetic lots to project as `lot` atoms, e.g. from {@link Engine.lots}. */
+  lots?: { lot: string; sign: string; signDeg: number; house: number }[];
 }
 
 /** How much to keep of a time-sensitive atom's salience at each certainty -- the
@@ -222,7 +235,7 @@ const TIME_SENSITIVE_KEEP: Record<Certainty, number> = {
 /** Time-sensitive atoms: the angles (rotate ~15°/h) and anything about the Moon
  *  (~13°/day), the fastest-shifting facts under a time error. */
 function timeSensitive(atom: FactAtom): boolean {
-  return atom.kind === "angle" || atom.bodies.includes("moon");
+  return atom.kind === "angle" || atom.kind === "lot" || atom.bodies.includes("moon");
 }
 
 function title(body: string): string {
@@ -399,6 +412,15 @@ export function interpretationContext(
       id: `star:${sc.body}:${sc.star}`, kind: "star", bodies: [sc.body], salience,
       body: sc.body, star: sc.star, orb: sc.orb,
       text: `${title(sc.body)} conjunct ${sc.star} (orb ${sc.orb.toFixed(1)}°)`,
+    });
+  }
+
+  // Hermetic lots (caller-supplied; computed from the chart's points + sect).
+  for (const l of opts.lots ?? []) {
+    atoms.push({
+      id: `lot:${l.lot}`, kind: "lot", bodies: [], salience: w.base + w.lot,
+      lot: l.lot, sign: l.sign, signDeg: l.signDeg, house: l.house,
+      text: `Lot of ${title(l.lot)} in ${l.sign}, house ${l.house}`,
     });
   }
 

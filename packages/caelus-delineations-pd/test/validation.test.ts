@@ -79,6 +79,7 @@ const specs: SelectorSpec[] = [
   { kind: "signature", facet: "element", value: "fire" },
   { kind: "angle", angle: "asc", sign: "leo" },
   { kind: "star", body: "mars", star: "Aldebaran" },
+  { kind: "lot", lot: "fortune", sign: "Leo", house: 5 },
 ];
 for (const s of specs) {
   try { check(typeof selectorFromSpec(s) === "function", `${s.kind} spec compiles`); }

@@ -79,6 +79,13 @@ passages across five sources today:
 | Fixed-star conjunction | `star{ body, star }` | Robson 20 (curated) |
 | Mercury–Saturn in sign | `placement{ body, sign }` | pending (no clean PD scan in set) |
 | Dignities | `placement{ dignity }` | pending |
+| Hermetic lots | `lot{ lot, sign, house }` | selector ready; corpus pending |
+
+The `lot` selector compiles, but no public-domain source in the set delineates
+the Part of Fortune by house or sign (Sepharial: it "has no qualities of its
+own"), so there are no lot rules yet. The lot atom is still useful on its own:
+fed via `Engine.lots(chart)`, it enriches the fact projection an LLM brief or
+the MCP `chart_facts` tool reads.
 
 Fixed-star rules need `star` atoms, which the bare projection cannot compute
 (the catalog lives in the data pack). Supply them when projecting:

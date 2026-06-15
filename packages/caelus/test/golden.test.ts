@@ -10,11 +10,11 @@ import { fileURLToPath } from "node:url";
 import {
   julianDay, deltaT, jdTT, nutation, meanObliquity, DEG, mod, ayanamsa,
 } from "../src/core.js";
-import { Engine, BODIES, Body, DEFAULT_ORBS, ASPECTS } from "../src/chart.js";
+import { Engine, BODIES, Body, DEFAULT_ORBS, ASPECTS, SIGNS } from "../src/chart.js";
 import { aspectPhase } from "../src/electional.js";
 import { interpretationContext } from "../src/interpretation.js";
 import {
-  interpret, hasPlacement, hasAspect, hasPattern, hasStar, matchAll, matchNone,
+  interpret, hasPlacement, hasAspect, hasPattern, hasStar, hasLot, matchAll, matchNone,
   hasDispositor, hasReception, reconcile,
 } from "../src/interpret.js";
 import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js";
@@ -537,6 +537,25 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error(`FAIL interp stars: atoms=${starAtoms.length}/${conj.length} sirius=${JSON.stringify(sirius)}`);
+  }
+
+  // Lot atoms: the seven Hermetic lots project, Fortune and Spirit mirror the
+  // Ascendant, and a hasLot rule resolves.
+  const chartLots = eng.lots(c);
+  const lctx = interpretationContext(c, { lots: chartLots });
+  const lotAtoms = lctx.atoms.filter((a) => a.kind === "lot");
+  const fortune = chartLots.find((l) => l.lot === "fortune");
+  const lr = interpret(lctx, [{
+    id: "lots", version: "0.1",
+    rules: [{ id: "fortune", when: hasLot({ lot: "fortune" }), text: "x" }],
+  }]);
+  if (
+    lotAtoms.length !== 7 || chartLots.length !== 7
+    || !fortune || SIGNS[Math.floor(fortune.lon / 30)] !== fortune.sign
+    || !lr.entries.some((e) => e.rule === "fortune" && e.atomIds.includes("lot:fortune"))
+  ) {
+    failures++;
+    console.error(`FAIL interp lots: atoms=${lotAtoms.length} fortune=${JSON.stringify(fortune)}`);
   }
 
   // Matching + resolver: a developer's rule corpus over the projection, with

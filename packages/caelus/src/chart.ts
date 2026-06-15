@@ -9,6 +9,7 @@ import {
   J2000,
 } from "./core.js";
 import { starApparent } from "./stars.js";
+import { hermeticLots, HERMETIC_LOTS } from "./lots.js";
 import * as H from "./houses.js";
 import type { AspectPhase } from "./electional.js"; // type-only: no runtime cycle
 
@@ -490,6 +491,36 @@ export class Engine {
     }
     out.sort((a, b) => a.orb - b.orb);
     return out;
+  }
+
+  /**
+   * The seven Hermetic lots of a chart, each placed by sign and house. Sect is
+   * read from the Sun (above the horizon -> a day chart). Feed the result to
+   * {@link interpretationContext} as `lots` to project `lot` fact atoms.
+   *
+   * @param chart A chart from {@link Engine.chart} / {@link Engine.chartAt}; it
+   *   must carry the seven classical planets.
+   * @returns One entry per lot with its longitude, sign, `signDeg`, and house,
+   *   or an empty array if a required planet is absent.
+   */
+  lots(chart: Chart): {
+    lot: string; lon: number; sign: string; signDeg: number; house: number;
+  }[] {
+    const b = chart.bodies;
+    const need = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"] as const;
+    if (need.some((k) => !b[k])) return [];
+    const day = (b.sun!.house >= 7); // Sun above the horizon (houses 7-12)
+    const h = hermeticLots(
+      chart.angles.asc, day, b.sun!.lon, b.moon!.lon, b.mercury!.lon,
+      b.venus!.lon, b.mars!.lon, b.jupiter!.lon, b.saturn!.lon,
+    );
+    return HERMETIC_LOTS.map((lot) => {
+      const lon = mod(h[lot], 360);
+      return {
+        lot, lon, sign: SIGNS[Math.floor(lon / 30)], signDeg: mod(lon, 30),
+        house: houseIndex(lon, chart.cusps),
+      };
+    });
   }
 
   private lonOnly(
