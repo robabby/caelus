@@ -1426,6 +1426,18 @@ if (isMain) {
     const server = buildServer();
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error("caelus-mcp listening on stdio");
+    // Caelus under the velificatio, in stderr's ASCII. stdout is the protocol
+    // channel, so the banner goes to stderr where hosts collect logs.
+    const arch = String.raw`
+       .-~~~~~-.
+     .'  *  .   '.
+    /  ( o   o )  \
+   |       >       |
+    \    \___/    /
+     '.         .'
+       '-_____-'`;
+    console.error(
+      `${arch}\n   caelus-mcp v${VERSION} · western + vedic ephemeris · MIT\n   listening on stdio\n`,
+    );
   })();
 }
