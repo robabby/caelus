@@ -10,8 +10,9 @@ import type { SourceMeta } from "./houses.js";
 
 const planets = Object.keys(PLANET_TO_BODY).join("|");
 const signs = Object.keys(SIGN_CANON).join("|");
+// Leading whitespace or stray OCR punctuation, then "Planet in Sign".
 const HEADING = new RegExp(
-  `^\\s*(?:The\\s+)?(${planets})\\s+in\\s+(${signs})\\b(.*)$`,
+  `^[\\s.,•\\-]*(?:The\\s+)?(${planets})\\s+in\\s+(${signs})\\b(.*)$`,
   "i",
 );
 

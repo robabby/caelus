@@ -400,6 +400,26 @@
     "embed": true
   },
   {
+    "id": "george-signs:mercury-in-capricorn",
+    "when": {
+      "kind": "placement",
+      "body": "mercury",
+      "sign": "Capricorn"
+    },
+    "atomIds": [
+      "placement:mercury"
+    ],
+    "text": "Acute, sharp,.penetrating, tactful, curious, diplomatic and critical. Somewhat suspicions, ^peevish, fickle, discontented or restless. Caneful, economical ant^ pain- ’ staking, especially towards perfecting the intellect. ConGENBTHLIACAL ASTROLOGY stantly busy about something. Interest and ability for literature, science, chemistry, philosophy aqd* the occult. Influenced only through kindness. Serious, thoughtful contemplative and practical nature. Observant, discriminating; organizing ability.",
+    "tradition": "modern",
+    "source": {
+      "author": "Llewellyn George",
+      "work": "A to Z Horoscope Maker and Delineator",
+      "locus": "Mercury in Capricorn"
+    },
+    "rights": "gratis-not-pd",
+    "embed": true
+  },
+  {
     "id": "george-signs:mercury-in-gemini",
     "when": {
       "kind": "placement",
@@ -449,7 +469,7 @@
     "atomIds": [
       "placement:mercury"
     ],
-    "text": "nature is ambitious, sincere, just* generous, very independent and often rebellious, with some tendency towards rashness or impulse. The* mind becomes prophetic, wise* and philosophical, inclining to freedom of thought and speech. Very actiure mentally or physically, somewhat changeable but progressive. Appreciation for the beautiful in nature, fond of change and travel, also of home and fanfily; lijces authority, also likes sports and animals. Inclination toward mental development through philosophy, religion, science, lai& or medicine..Mercury in Capricorn B V3 Acute, sharp,.penetrating, tactful, curious, diplomatic and critical. Somewhat suspicions, ^peevish, fickle, discontented or restless. Caneful, economical ant^ pain- ’ staking, especially towards perfecting the intellect. ConGENBTHLIACAL ASTROLOGY stantly busy about something.",
+    "text": "nature is ambitious, sincere, just* generous, very independent and often rebellious, with some tendency towards rashness or impulse. The* mind becomes prophetic, wise* and philosophical, inclining to freedom of thought and speech. Very actiure mentally or physically, somewhat changeable but progressive. Appreciation for the beautiful in nature, fond of change and travel, also of home and fanfily; lijces authority, also likes sports and animals. Inclination toward mental development through philosophy, religion, science, lai& or medicine.",
     "tradition": "modern",
     "source": {
       "author": "Llewellyn George",
@@ -529,7 +549,7 @@
     "atomIds": [
       "placement:moon"
     ],
-    "text": "Active, intuitional, agreeable, friendly and courteous disposition..The ^native is sociabU? and sympathetic in manner; broad, humane, independent an<j somewhat unconventional. Gives liking for the strange and curious with an inclination for subjects that are unusual, original or eccentric; inventive ability. It tends to political, educational' and scientific work, interest in • astrology, occult matters generally, secret societies, etc. It gives a good faculty for image-making; mental sensitiveness; sorrow and changes occasioned by friends. Troubles through women and liability to sorrow and wandering life, if badly aspected., Moon in Pisces * > X Kind, benevolent,, quiet, retiring, sympathq)ic, fond of luxury? comfort, diversity, ehange, beauty and harmony. Meets with many misfortupes and bbstades which tend * Sun. lloon. Mercury and rulers of third and ninth cuapj. 286 *.",
+    "text": "Active, intuitional, agreeable, friendly and courteous disposition..The ^native is sociabU? and sympathetic in manner; broad, humane, independent an<j somewhat unconventional. Gives liking for the strange and curious with an inclination for subjects that are unusual, original or eccentric; inventive ability. It tends to political, educational' and scientific work, interest in • astrology, occult matters generally, secret societies, etc. It gives a good faculty for image-making; mental sensitiveness; sorrow and changes occasioned by friends. Troubles through women and liability to sorrow and wandering life, if badly aspected.",
     "tradition": "modern",
     "source": {
       "author": "Llewellyn George",
@@ -615,6 +635,26 @@
       "author": "Llewellyn George",
       "work": "A to Z Horoscope Maker and Delineator",
       "locus": "Moon in Leo"
+    },
+    "rights": "gratis-not-pd",
+    "embed": true
+  },
+  {
+    "id": "george-signs:moon-in-pisces",
+    "when": {
+      "kind": "placement",
+      "body": "moon",
+      "sign": "Pisces"
+    },
+    "atomIds": [
+      "placement:moon"
+    ],
+    "text": "Kind, benevolent,, quiet, retiring, sympathq)ic, fond of luxury? comfort, diversity, ehange, beauty and harmony. Meets with many misfortupes and bbstades which tend * Sun. lloon. Mercury and rulers of third and ninth cuapj. 286 *. GgygTHLIACAL ASTROLOGY^ - to make the native ^eel irresolute, inert, ^downhearted and eisily discouraged at timps. It gives a taste for reading and keen perception of refinance, having a powerful and fruitful imagination. As speaker, writer or composer he is copious, flueAt, earnest and very correct in details. Inconstancy is indicated in the love affairs; generally has a hard time saving money. If the # Sun also is in a f watery sign or a watery sign ascending the native is likely to grow corpulent. With the Moon in this location, the native is often very receptive, mediumistic or inspirational and responsive to psychic conditions generally.",
+    "tradition": "modern",
+    "source": {
+      "author": "Llewellyn George",
+      "work": "A to Z Horoscope Maker and Delineator",
+      "locus": "Moon in Pisces"
     },
     "rights": "gratis-not-pd",
     "embed": true
@@ -1389,7 +1429,7 @@
     "atomIds": [
       "placement:venus"
     ],
-    "text": "singing, painting, drama, o^era and all refined, cultured amusements and social functions. Preference for friends and associates* among philosophical people and 'those -of gcfod social standing, also affection for cousins or relatives. The native may earn money througlf the things signified by Venus, and, if other testimonies in the chart permit, will gain through marriage and 'partnership;.Venus in Scorpio *Thtf native is free, generous an<J even lavish in expenditures. Money may be earned* through the watery. GENETHLIACAL ASTROLOGY elements, catering to the tastes or by 'matters connected with\" the dead and* if other testimonies in the chart warrant, gain by gifts, legacy? partnership or marriage, but there wifi be some delay or trouble in connection with them. This location of Venus increases the passions and emotions and gives a love of sensation, luxury and pleasure;",
+    "text": "singing, painting, drama, o^era and all refined, cultured amusements and social functions. Preference for friends and associates* among philosophical people and 'those -of gcfod social standing, also affection for cousins or relatives. The native may earn money througlf the things signified by Venus, and, if other testimonies in the chart permit, will gain through marriage and 'partnership;",
     "tradition": "modern",
     "source": {
       "author": "Llewellyn George",
@@ -1415,6 +1455,26 @@
       "author": "Llewellyn George",
       "work": "A to Z Horoscope Maker and Delineator",
       "locus": "Venus in Pisces"
+    },
+    "rights": "gratis-not-pd",
+    "embed": true
+  },
+  {
+    "id": "george-signs:venus-in-scorpio",
+    "when": {
+      "kind": "placement",
+      "body": "venus",
+      "sign": "Scorpio"
+    },
+    "atomIds": [
+      "placement:venus"
+    ],
+    "text": "*Thtf native is free, generous an<J even lavish in expenditures. Money may be earned* through the watery. GENETHLIACAL ASTROLOGY elements, catering to the tastes or by 'matters connected with\" the dead and* if other testimonies in the chart warrant, gain by gifts, legacy? partnership or marriage, but there wifi be some delay or trouble in connection with them. This location of Venus increases the passions and emotions and gives a love of sensation, luxury and pleasure; ardent in love, demonstrative in affection. It attracts to the opposite sex and brings trouble, disappointment, delay or loss in courtship or marriage, sorrow through disagreement or jealousy, attacks upon the honor, death of partner. Trouble or failure in social affairs; friends with mystical or occult tendencies, also friendships with some of doubtful repute.",
+    "tradition": "modern",
+    "source": {
+      "author": "Llewellyn George",
+      "work": "A to Z Horoscope Maker and Delineator",
+      "locus": "Venus in Scorpio"
     },
     "rights": "gratis-not-pd",
     "embed": true

@@ -205,7 +205,7 @@ export interface SalienceWeights {
 export const DEFAULT_SALIENCE: SalienceWeights = {
   base: 1, luminary: 1.5, angular: 1, chartRuler: 1,
   dignity: 0.5, hardAspect: 1, pattern: 4, dispositor: 0.5, reception: 2,
-  star: 2, lot: 1,
+  star: 2, lot: 2,
 };
 
 export interface ContextOptions {
