@@ -578,22 +578,24 @@ for (const g of G.houses) {
     disp.length !== 7
     || !hasDispositor({ body: "saturn", final: true })(ctx).matched
     || !hasDispositor({ body: "moon", dispositor: "saturn" })(ctx).matched
-    || ctx.atoms.some((a) => a.kind === "reception")
   ) {
     failures++;
     console.error(`FAIL dispositors: count=${disp.length}`);
   }
-  // Reception: 2000-02-01 has Mars<->Jupiter and Venus<->Saturn.
+  // Reception (domicile/exaltation/triplicity): 2000-02-01 has the Mars<->Jupiter
+  // and Venus<->Saturn domicile receptions plus a Venus<->Mars exaltation one.
   const ctx2000 = interpretationContext(eng.chartAt(julianDay(2000, 2, 1, 12, 0, 0), 51.5, 0, "whole_sign"));
-  const recs = ctx2000.atoms.filter((a) => a.kind === "reception");
+  const recs = ctx2000.atoms.filter((a) => a.kind === "reception") as Array<{ id: string; by: string }>;
+  const domicile = recs.filter((r) => r.by === "domicile").map((r) => r.id);
   if (
-    recs.length !== 2
+    !domicile.includes("reception:mars~jupiter")
+    || !domicile.includes("reception:venus~saturn")
+    || !recs.some((r) => r.by !== "domicile") // exaltation/triplicity now detected
     || !hasReception({ body: "mars" })(ctx2000).matched
-    || !hasReception({ body: "saturn" })(ctx2000).matched
-    || hasReception({ body: "sun" })(ctx2000).matched
+    || hasReception({ body: "sun" })(ctx2000).matched // the Sun is in no reception here
   ) {
     failures++;
-    console.error(`FAIL reception: ${JSON.stringify(recs.map((r) => r.id))}`);
+    console.error(`FAIL reception: ${JSON.stringify(recs.map((r) => `${r.id}:${r.by}`))}`);
   }
 
   // Reconcile: entries citing the same atom group together; opposing declared

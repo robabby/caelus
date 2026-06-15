@@ -20,11 +20,12 @@
  * than pinned by a parity golden.
  */
 import { mod } from "./core.js";
-import { SIGNS, DOMICILE } from "./chart.js";
+import { SIGNS, DOMICILE, EXALTATION } from "./chart.js";
 import type { Chart, Zodiac } from "./chart.js";
 import type { AspectPhase } from "./electional.js";
 import { detectPatterns, ChartPattern } from "./patterns.js";
 import { chartSignature, ChartSignature } from "./signature.js";
+import { TRIPLICITY } from "./dignity-score.js";
 
 const LUMINARIES = new Set(["sun", "moon"]);
 const ANGULAR_HOUSES = new Set([1, 4, 7, 10]);
@@ -42,6 +43,18 @@ const SIGN_RULER: string[] = (() => {
   }
   return r;
 })();
+
+/** Body exalted in each sign (index 0-11), or undefined; inverted from
+ *  {@link EXALTATION}. */
+const SIGN_EXALT: (string | undefined)[] = (() => {
+  const r: (string | undefined)[] = new Array(12);
+  for (const [body, sign] of Object.entries(EXALTATION)) r[sign] = body;
+  return r;
+})();
+
+/** How a reception's dignities rank (stronger = larger), for the salience
+ *  scaling and the `by` summary. */
+const DIGNITY_RANK: Record<string, number> = { domicile: 3, exaltation: 2, triplicity: 1 };
 
 /** Atom kinds in an {@link InterpretationContext}. */
 export type FactKind =
@@ -117,8 +130,10 @@ export interface DispositorAtom extends FactAtomBase {
 
 export interface ReceptionAtom extends FactAtomBase {
   kind: "reception";
-  /** The dignity the reception runs through (domicile here). */
-  by: "domicile";
+  /** The dignities the reception runs through: a single dignity when both
+   *  bodies receive by the same (`"domicile"`, `"exaltation"`, `"triplicity"`),
+   *  else a sorted pair for a mixed reception (e.g. `"domicile-exaltation"`). */
+  by: string;
 }
 
 export type FactAtom =
@@ -286,19 +301,37 @@ export function interpretationContext(
         : `${title(body)} is disposited by ${title(disp)}`,
     });
   }
+  // Reception (mutual): each body holds a dignity in the other's sign. Checked
+  // by domicile, exaltation, and the sect's triplicity ruler (sect = day when
+  // the Sun is above the horizon, houses 7-12). `by` names the strongest
+  // dignity each direction; salience scales with the weaker link.
+  const sunHouse = chart.bodies.sun?.house;
+  const sect = sunHouse !== undefined && sunHouse >= 7 ? 0 : 1; // 0 day, 1 night
+  const signOf = (body: string): number => Math.floor(mod(chart.bodies[body]!.lon, 360) / 30);
+  const receives = (a: string, otherSign: number): string[] => {
+    const ds: string[] = [];
+    if (SIGN_RULER[otherSign] === a) ds.push("domicile");
+    if (SIGN_EXALT[otherSign] === a) ds.push("exaltation");
+    if (TRIPLICITY[otherSign % 4][sect] === a) ds.push("triplicity");
+    return ds;
+  };
+  const strongest = (ds: string[]): string =>
+    ds.reduce((best, d) => (DIGNITY_RANK[d] > DIGNITY_RANK[best] ? d : best), ds[0]);
   for (let i = 0; i < CLASSICAL.length; i++) {
     for (let j = i + 1; j < CLASSICAL.length; j++) {
       const a = CLASSICAL[i]; const b = CLASSICAL[j];
       if (!chart.bodies[a] || !chart.bodies[b]) continue;
-      if (dispositorOf(a) === b && dispositorOf(b) === a) {
-        let salience = w.base + w.reception;
-        if (LUMINARIES.has(a) || LUMINARIES.has(b)) salience += w.luminary;
-        atoms.push({
-          id: `reception:${a}~${b}`, kind: "reception", bodies: [a, b], salience,
-          by: "domicile",
-          text: `Mutual reception: ${title(a)} and ${title(b)} (domicile)`,
-        });
-      }
+      const aRec = receives(a, signOf(b));
+      const bRec = receives(b, signOf(a));
+      if (!aRec.length || !bRec.length) continue;
+      const da = strongest(aRec); const db = strongest(bRec);
+      const by = da === db ? da : [da, db].sort().join("-");
+      let salience = w.base + w.reception * (Math.min(DIGNITY_RANK[da], DIGNITY_RANK[db]) / 3);
+      if (LUMINARIES.has(a) || LUMINARIES.has(b)) salience += w.luminary;
+      atoms.push({
+        id: `reception:${a}~${b}`, kind: "reception", bodies: [a, b], salience, by,
+        text: `Mutual reception: ${title(a)} and ${title(b)} (${by})`,
+      });
     }
   }
 

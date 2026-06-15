@@ -198,18 +198,16 @@ positions. This is the interpretation seam wired into the chat product.
 
 Atom kinds now also include **dispositor** (the classical ruler of each
 classical planet's sign, with the final-dispositor terminus flagged) and
-**reception** (mutual reception by domicile), with `hasDispositor` /
-`hasReception` selectors.
+**reception** (mutual reception by domicile, exaltation, or the chart's sect
+triplicity ruler -- `by` names the dignities, salience scales with the weaker
+link), with `hasDispositor` / `hasReception` selectors.
 
 ## Follow-ons
 
-All the originally-listed follow-ons have shipped (dispositor/reception atoms,
-reconciliation, the worked example, and `phase`/`strength` promoted onto
-`Chart.aspects`). The one maintainer-environment step that remains is to
-regenerate the golden fixtures and the Python reference's stored output so the
-new aspect fields appear in `golden.json` (the TS engine fills them now, and the
-golden run pins aspect *count*, so nothing is red in the meantime). Open ideas
-beyond the original list:
-
-- Surface `phase` / `strength` on the MCP `natal_chart` aspect output too.
-- Exaltation/triplicity reception in addition to domicile.
+All the listed follow-ons have shipped: dispositor/reception atoms (now by
+domicile, exaltation, and the sect triplicity ruler), reconciliation, the worked
+example, `phase`/`strength` promoted onto `Chart.aspects`, and those two surfaced
+through the MCP `natal_chart` aspect output. The one maintainer-environment step
+that remains is to regenerate `golden.json` so the new aspect fields are stored
+in it (the TS engine fills them now, and the golden run pins aspect *count*, so
+nothing is red in the meantime).
