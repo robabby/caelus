@@ -21,6 +21,7 @@ import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js"
 import {
   resolveTime, resolvePlace, parseOffset, isTimeAnchored, isoToJd,
 } from "../src/provenance.js";
+import { realize } from "../src/anchored.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
@@ -663,6 +664,30 @@ for (const g of G.houses) {
   if (checksProv.some((ok) => !ok)) {
     failures++;
     console.error(`FAIL provenance: ${checksProv.map((ok, i) => (ok ? "" : i)).filter((x) => x !== "").join(",")}`);
+  }
+
+  // Routing: a resolvable instant -> ephemeris; else constraints -> compiler;
+  // else nothing, with a reason. The realm rides along as framing.
+  const obs = realize(eng, {
+    realm: "observed", when: { kind: "instant", utc: "1990-06-10T14:30:00Z" },
+    where: { kind: "geo", lat: 27.95, lonEast: -82.46 },
+  });
+  const arch = realize(eng, {
+    realm: "archetypal", when: { kind: "symbolic", rationale: "the sign Aries" },
+    constraints: [{ kind: "sign", body: "sun", sign: 0 }, { kind: "aspect", a: "sun", b: "moon", angle: 120 }],
+  });
+  const concept = realize(eng, { realm: "conceptual", when: { kind: "none", reason: "atemporal" } });
+  const fore = realize(eng, {
+    realm: "forecast", when: { kind: "range", earliest: "2030-01-01", latest: "2030-12-31" },
+  });
+  if (
+    obs.via !== "ephemeris" || obs.chart === null || obs.chart.bodies.sun?.sign !== "Gemini"
+    || arch.via !== "compiler" || arch.form === null || arch.chart !== null
+    || concept.via !== "none" || concept.chart !== null || concept.form !== null
+    || fore.via !== "ephemeris" || fore.time.certainty !== "representative"
+  ) {
+    failures++;
+    console.error(`FAIL realize: obs=${obs.via} arch=${arch.via} concept=${concept.via} fore=${fore.via}/${fore.time.certainty}`);
   }
 }
 

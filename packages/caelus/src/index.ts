@@ -32,5 +32,6 @@ export * from "./interpretation.js";
 export * from "./interpret.js";
 export * from "./brief.js";
 export * from "./provenance.js";
+export * from "./anchored.js";
 export * from "./dignity-score.js";
 export * from "./parans.js";

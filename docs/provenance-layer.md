@@ -64,8 +64,12 @@ houses) automatically.
 
 1. **Foundation (shipped):** the types, `AnchorRegistry`, `resolveTime` /
    `resolvePlace` with offset parsing and per-kind certainty.
-2. **Routing:** an `AnchoredChart` envelope (`{ realm, when, where }`) and a
-   `resolve(engine, frame, registry)` that runs the ephemeris-vs-compiler split.
+2. **Routing (shipped):** `src/anchored.ts` -- an `AnchoredChart` envelope
+   (`{ realm, when, where, constraints? }`) and `realize(engine, anchored,
+   registry, opts)`. A resolvable instant runs the ephemeris (`chartAt`); failing
+   that, constraints run the compiler (`compileForm`); failing both, it returns
+   `via: "none"` with the reason. The result carries the realm, the resolved
+   time/place, and the `chart` or `form`.
 3. **Interpretation integration:** thread `realm` + certainty into
    `interpretationContext` / `chartBrief` -- framing notes, auto-widened orbs,
    down-weighted time-sensitive atoms.
