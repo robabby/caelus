@@ -454,6 +454,7 @@ export default function SkyNow() {
     color: view === v ? "var(--text)" : "var(--text-dim)",
   });
   const cell: React.CSSProperties = { padding: "0.18rem 0.9rem 0.18rem 0" };
+  const nowrapCell: React.CSSProperties = { ...cell, whiteSpace: "nowrap" };
 
   return (
     <div className="card" style={{ padding: "1.2rem" }}>
@@ -856,23 +857,25 @@ export default function SkyNow() {
                   {tab === "vedic" && vedic && (
                     <>
                       <p className="dim small" style={{ marginTop: 0 }}>Sidereal · Lahiri. Nakshatra, then the navamsa (D9) and dasamsa (D10) signs:</p>
-                      <table className="mono" style={{ fontSize: "0.82rem" }}>
-                        <thead>
-                          <tr style={{ color: "var(--text-mute)" }}>
-                            <td style={cell} /><td style={cell}>nakshatra</td><td style={cell}>D9</td><td style={cell}>D10</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {vedic.bodies.map(({ body, nak, d9, d10 }) => (
-                            <tr key={body}>
-                              <td className="mute" style={cell}>{GLYPHS[body] ? `${GLYPHS[body]} ` : ""}{body}</td>
-                              <td style={cell}>{nak.name} <span className="mute">p{nak.pada}</span></td>
-                              <td className="mute" style={cell}>{d9}</td>
-                              <td className="mute" style={cell}>{d10}</td>
+                      <div style={{ overflowX: "auto" }}>
+                        <table className="mono" style={{ fontSize: "0.82rem" }}>
+                          <thead>
+                            <tr style={{ color: "var(--text-mute)" }}>
+                              <td style={cell} /><td style={nowrapCell}>nakshatra</td><td style={cell}>D9</td><td style={cell}>D10</td>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {vedic.bodies.map(({ body, nak, d9, d10 }) => (
+                              <tr key={body}>
+                                <td className="mute" style={nowrapCell}>{GLYPHS[body] ? `${GLYPHS[body]} ` : ""}{body}</td>
+                                <td style={nowrapCell}>{nak.name} <span className="mute">p{nak.pada}</span></td>
+                                <td className="mute" style={cell}>{d9}</td>
+                                <td className="mute" style={cell}>{d10}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                       {vedic.dasha && (
                         <p className="dim small" style={{ margin: "0.8rem 0 0" }}>
                           Vimshottari dasha today:{" "}
