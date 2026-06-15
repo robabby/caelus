@@ -1,0 +1,353 @@
+{
+ "basis": "Python reference astroengine.dignity_score; Lilly weights, Egyptian terms, Dorothean triplicities, Chaldean faces",
+ "cases": [
+  {
+   "id": "sun_15leo_day",
+   "spec": {
+    "id": "sun_15leo_day",
+    "type": "score",
+    "planet": "sun",
+    "lon": 135.0,
+    "sect": "day"
+   },
+   "result": {
+    "planet": "sun",
+    "rulership": 5,
+    "exaltation": 0,
+    "triplicity": 3,
+    "term": 0,
+    "face": 0,
+    "detriment": 0,
+    "fall": 0,
+    "total": 8,
+    "peregrine": false,
+    "term_ruler": "saturn",
+    "face_ruler": "jupiter"
+   }
+  },
+  {
+   "id": "mars_5aries_day",
+   "spec": {
+    "id": "mars_5aries_day",
+    "type": "score",
+    "planet": "mars",
+    "lon": 5.0,
+    "sect": "day"
+   },
+   "result": {
+    "planet": "mars",
+    "rulership": 5,
+    "exaltation": 0,
+    "triplicity": 0,
+    "term": 0,
+    "face": 1,
+    "detriment": 0,
+    "fall": 0,
+    "total": 6,
+    "peregrine": false,
+    "term_ruler": "jupiter",
+    "face_ruler": "mars"
+   }
+  },
+  {
+   "id": "saturn_5aries_day",
+   "spec": {
+    "id": "saturn_5aries_day",
+    "type": "score",
+    "planet": "saturn",
+    "lon": 5.0,
+    "sect": "day"
+   },
+   "result": {
+    "planet": "saturn",
+    "rulership": 0,
+    "exaltation": 0,
+    "triplicity": 0,
+    "term": 0,
+    "face": 0,
+    "detriment": 0,
+    "fall": -4,
+    "total": -4,
+    "peregrine": true,
+    "term_ruler": "jupiter",
+    "face_ruler": "mars"
+   }
+  },
+  {
+   "id": "venus_2taurus_day",
+   "spec": {
+    "id": "venus_2taurus_day",
+    "type": "score",
+    "planet": "venus",
+    "lon": 32.0,
+    "sect": "day"
+   },
+   "result": {
+    "planet": "venus",
+    "rulership": 5,
+    "exaltation": 0,
+    "triplicity": 3,
+    "term": 2,
+    "face": 0,
+    "detriment": 0,
+    "fall": 0,
+    "total": 10,
+    "peregrine": false,
+    "term_ruler": "venus",
+    "face_ruler": "mercury"
+   }
+  },
+  {
+   "id": "jupiter_4pisces_night",
+   "spec": {
+    "id": "jupiter_4pisces_night",
+    "type": "score",
+    "planet": "jupiter",
+    "lon": 334.0,
+    "sect": "night"
+   },
+   "result": {
+    "planet": "jupiter",
+    "rulership": 5,
+    "exaltation": 0,
+    "triplicity": 0,
+    "term": 0,
+    "face": 0,
+    "detriment": 0,
+    "fall": 0,
+    "total": 5,
+    "peregrine": false,
+    "term_ruler": "venus",
+    "face_ruler": "saturn"
+   }
+  },
+  {
+   "id": "mercury_25gem_night",
+   "spec": {
+    "id": "mercury_25gem_night",
+    "type": "score",
+    "planet": "mercury",
+    "lon": 85.0,
+    "sect": "night"
+   },
+   "result": {
+    "planet": "mercury",
+    "rulership": 5,
+    "exaltation": 0,
+    "triplicity": 3,
+    "term": 0,
+    "face": 0,
+    "detriment": 0,
+    "fall": 0,
+    "total": 8,
+    "peregrine": false,
+    "term_ruler": "saturn",
+    "face_ruler": "sun"
+   }
+  },
+  {
+   "id": "moon_10cancer_night",
+   "spec": {
+    "id": "moon_10cancer_night",
+    "type": "score",
+    "planet": "moon",
+    "lon": 100.0,
+    "sect": "night"
+   },
+   "result": {
+    "planet": "moon",
+    "rulership": 5,
+    "exaltation": 0,
+    "triplicity": 0,
+    "term": 0,
+    "face": 0,
+    "detriment": 0,
+    "fall": 0,
+    "total": 5,
+    "peregrine": false,
+    "term_ruler": "venus",
+    "face_ruler": "mercury"
+   }
+  },
+  {
+   "id": "sun_15aqu_day",
+   "spec": {
+    "id": "sun_15aqu_day",
+    "type": "score",
+    "planet": "sun",
+    "lon": 315.0,
+    "sect": "day"
+   },
+   "result": {
+    "planet": "sun",
+    "rulership": 0,
+    "exaltation": 0,
+    "triplicity": 0,
+    "term": 0,
+    "face": 0,
+    "detriment": -5,
+    "fall": 0,
+    "total": -5,
+    "peregrine": true,
+    "term_ruler": "jupiter",
+    "face_ruler": "mercury"
+   }
+  },
+  {
+   "id": "alm_5aries_day",
+   "spec": {
+    "id": "alm_5aries_day",
+    "type": "almuten",
+    "lon": 5.0,
+    "sect": "day"
+   },
+   "result": {
+    "planet": "sun",
+    "score": 7
+   }
+  },
+  {
+   "id": "alm_15leo_day",
+   "spec": {
+    "id": "alm_15leo_day",
+    "type": "almuten",
+    "lon": 135.0,
+    "sect": "day"
+   },
+   "result": {
+    "planet": "sun",
+    "score": 8
+   }
+  },
+  {
+   "id": "alm_20libra_night",
+   "spec": {
+    "id": "alm_20libra_night",
+    "type": "almuten",
+    "lon": 200.0,
+    "sect": "night"
+   },
+   "result": {
+    "planet": "venus",
+    "score": 5
+   }
+  },
+  {
+   "id": "natal_tampa",
+   "spec": {
+    "id": "natal_tampa",
+    "type": "at",
+    "natal": [
+     1990,
+     6,
+     10,
+     14,
+     30
+    ],
+    "lat": 27.95,
+    "lon": -82.46,
+    "sect": "day"
+   },
+   "result": {
+    "sun": {
+     "planet": "sun",
+     "rulership": 0,
+     "exaltation": 0,
+     "triplicity": 0,
+     "term": 0,
+     "face": 0,
+     "detriment": 0,
+     "fall": 0,
+     "total": 0,
+     "peregrine": true,
+     "term_ruler": "mars",
+     "face_ruler": "mars"
+    },
+    "moon": {
+     "planet": "moon",
+     "rulership": 0,
+     "exaltation": 0,
+     "triplicity": 0,
+     "term": 0,
+     "face": 0,
+     "detriment": -5,
+     "fall": 0,
+     "total": -5,
+     "peregrine": true,
+     "term_ruler": "jupiter",
+     "face_ruler": "mars"
+    },
+    "mercury": {
+     "planet": "mercury",
+     "rulership": 0,
+     "exaltation": 0,
+     "triplicity": 0,
+     "term": 0,
+     "face": 0,
+     "detriment": 0,
+     "fall": 0,
+     "total": 0,
+     "peregrine": true,
+     "term_ruler": "mars",
+     "face_ruler": "saturn"
+    },
+    "venus": {
+     "planet": "venus",
+     "rulership": 5,
+     "exaltation": 0,
+     "triplicity": 3,
+     "term": 0,
+     "face": 0,
+     "detriment": 0,
+     "fall": 0,
+     "total": 8,
+     "peregrine": false,
+     "term_ruler": "mercury",
+     "face_ruler": "moon"
+    },
+    "mars": {
+     "planet": "mars",
+     "rulership": 5,
+     "exaltation": 0,
+     "triplicity": 0,
+     "term": 0,
+     "face": 1,
+     "detriment": 0,
+     "fall": 0,
+     "total": 6,
+     "peregrine": false,
+     "term_ruler": "venus",
+     "face_ruler": "mars"
+    },
+    "jupiter": {
+     "planet": "jupiter",
+     "rulership": 0,
+     "exaltation": 4,
+     "triplicity": 0,
+     "term": 0,
+     "face": 0,
+     "detriment": 0,
+     "fall": 0,
+     "total": 4,
+     "peregrine": false,
+     "term_ruler": "mercury",
+     "face_ruler": "mercury"
+    },
+    "saturn": {
+     "planet": "saturn",
+     "rulership": 5,
+     "exaltation": 0,
+     "triplicity": 0,
+     "term": 2,
+     "face": 0,
+     "detriment": 0,
+     "fall": 0,
+     "total": 7,
+     "peregrine": false,
+     "term_ruler": "saturn",
+     "face_ruler": "sun"
+    }
+   }
+  }
+ ]
+}

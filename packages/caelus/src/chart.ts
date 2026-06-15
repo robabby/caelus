@@ -98,11 +98,11 @@ export function quadrant(house: number): number {
 }
 
 // ----------------------------------------------------------- essential dignities
-const DOMICILE: Record<string, number[]> = {
+export const DOMICILE: Record<string, number[]> = {
   sun: [4], moon: [3], mercury: [2, 5], venus: [1, 6],
   mars: [0, 7], jupiter: [8, 11], saturn: [9, 10],
 };
-const EXALTATION: Record<string, number> = {
+export const EXALTATION: Record<string, number> = {
   sun: 0, moon: 1, mercury: 5, venus: 11, mars: 9, jupiter: 3, saturn: 6,
 };
 
