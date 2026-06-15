@@ -4,6 +4,7 @@ import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
   nakshatra, vimshottariActive, profectionAt, varga,
+  ASPECTS, DEFAULT_ORBS, declinationAspects, outOfBounds,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -11,6 +12,23 @@ import { toUT, type UTResult } from "caelus-birth";
 import { ChartWheel, ChartSphere, AstroMap, GLYPHS } from "caelus-wheel";
 import accuracy from "caelus/accuracy.json";
 import CityPicker, { type City } from "./CityPicker";
+import BiWheel, { type SynContact } from "./BiWheel";
+import fixedStars from "../lib/fixed-stars.json";
+
+// The cross-chart aspect between two longitudes (natal vs transit), or null.
+function crossAspect(lonA: number, lonB: number): { aspect: string; orb: number } | null {
+  const sep = Math.abs(mod(lonA - lonB + 180, 360) - 180);
+  let best: { aspect: string; orb: number } | null = null;
+  for (const [name, angle] of Object.entries(ASPECTS)) {
+    const orb = Math.abs(sep - angle);
+    if (orb <= (DEFAULT_ORBS[name] ?? 0) && (!best || orb < best.orb)) best = { aspect: name, orb: Math.round(orb * 100) / 100 };
+  }
+  return best;
+}
+
+// Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
+const BRIGHT_STARS = Object.entries((fixedStars as { stars: Record<string, { mag: number }> }).stars)
+  .filter(([, s]) => s.mag <= 2.5).map(([name]) => name);
 
 const pad = (n: number, w = 2) => String(Math.abs(n)).padStart(w, "0");
 const fmtIso = (y: number, mo: number, d: number, h: number, mi: number) =>
@@ -155,8 +173,8 @@ export default function SkyNow() {
   const [tzMode, setTzMode] = useState<"utc" | "local">("utc");
   const [place, setPlace] = useState("");
   const [label, setLabel] = useState("");
-  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "vedic" | "events" | "json">("positions");
-  const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
+  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("positions");
+  const [view, setView] = useState<"wheel" | "sphere" | "map" | "transits">("wheel");
   const [focus, setFocus] = useState<{ key: string; bodies: string[] } | null>(null);
   const [copied, setCopied] = useState(false);
   const [fromLink, setFromLink] = useState(false);
@@ -192,7 +210,8 @@ export default function SkyNow() {
     setMounted(true);
   }, [loadShare]);
 
-  const engine = () => (engineRef.current ??= new Engine(embeddedData));
+  // Embedded data plus the fixed-star catalog, so star conjunctions work in-browser.
+  const engine = () => (engineRef.current ??= new Engine({ ...embeddedData, fixedStars } as never));
 
   const { chart, ms, error, utIso, zone, tzStatus } = useMemo(() => {
     const none = { chart: null, ms: 0, error: null, utIso: iso, zone: "", tzStatus: "" as UTResult["status"] | "" };
@@ -351,6 +370,55 @@ export default function SkyNow() {
     const now = new Date();
     const nowJd = julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
     return { bodies, dasha: vimshottariActive(sid("moon"), chart.jdUt, nowJd) };
+  }, [chart]);
+
+  // Transits: the chart as natal (inner), the current sky (outer), with the
+  // cross-aspect web between them.
+  const transit = useMemo(() => {
+    if (!chart) return null;
+    const n = new Date();
+    const tjd = julianDay(n.getUTCFullYear(), n.getUTCMonth() + 1, n.getUTCDate(), n.getUTCHours(), n.getUTCMinutes());
+    const tchart = engine().chartAt(tjd, Number(lat), Number(lon), { houseSystem: sys, zodiac });
+    const contacts: SynContact[] = [];
+    for (const nb of BODIES) {
+      const np = chart.bodies[nb];
+      if (!np) continue;
+      for (const tb of BODIES) {
+        const tp = tchart.bodies[tb];
+        if (!tp) continue;
+        const asp = crossAspect(np.lon, tp.lon);
+        if (asp) contacts.push({ aBody: nb, bBody: tb, aspect: asp.aspect, orb: asp.orb });
+      }
+    }
+    return { chart: tchart, contacts };
+  }, [chart]);
+
+  // Declinations: each body's declination, out-of-bounds flag, and the
+  // parallels / contraparallels among them.
+  const decl = useMemo(() => {
+    if (!chart) return null;
+    const bodies = BODIES.flatMap((b) => {
+      const p = chart.bodies[b];
+      return p ? [{ body: b, dec: p.dec, oob: outOfBounds(engine(), b as BodyId, chart.jdUt) }] : [];
+    });
+    const present = BODIES.filter((b) => chart.bodies[b]) as BodyId[];
+    return { bodies, pairs: declinationAspects(engine(), present, chart.jdUt) };
+  }, [chart]);
+
+  // Fixed-star conjunctions: bright catalog stars within 1° of a body.
+  const stars = useMemo(() => {
+    if (!chart) return null;
+    const starLons = BRIGHT_STARS.map((name) => ({ name, lon: engine().fixedStar(name, chart.jdUt).lon }));
+    const hits: Array<{ body: string; star: string; orb: number }> = [];
+    for (const b of BODIES) {
+      const p = chart.bodies[b];
+      if (!p) continue;
+      for (const s of starLons) {
+        const sep = Math.abs(mod(p.lon - s.lon + 180, 360) - 180);
+        if (sep <= 1.0) hits.push({ body: b, star: s.name, orb: Math.round(sep * 100) / 100 });
+      }
+    }
+    return hits.sort((x, y) => x.orb - y.orb);
   }, [chart]);
 
   // A new chart clears any isolated selection on the wheel.
@@ -538,7 +606,7 @@ export default function SkyNow() {
               <div className="skynow-layout">
                 <div className="skynow-chart">
                   <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.6rem" }}>
-                    {(["wheel", "sphere", "map"] as const).map((v) => (
+                    {(["wheel", "sphere", "map", "transits"] as const).map((v) => (
                       <button key={v} type="button" className="mono" style={viewBtn(v)} onClick={() => setView(v)}>
                         {v.charAt(0).toUpperCase() + v.slice(1)}
                       </button>
@@ -547,6 +615,14 @@ export default function SkyNow() {
                   {view === "wheel" && <ChartWheel chart={chart} size={460} bodies={focusBodies} />}
                   {view === "sphere" && <ChartSphere chart={chart} size={460} />}
                   {view === "map" && mapLines && <AstroMap lines={mapLines} width={460} height={230} />}
+                  {view === "transits" && transit && (
+                    <BiWheel inner={chart} outer={transit.chart} contacts={transit.contacts} size={460} innerLabel="natal" outerLabel="transit" />
+                  )}
+                  {view === "transits" && (
+                    <p className="dim small" style={{ margin: "0.5rem 0 0" }}>
+                      The chart as natal (inner) and the sky right now (outer), with the transit aspects between them.
+                    </p>
+                  )}
                   {view === "sphere" && (
                     <p className="dim small" style={{ margin: "0.5rem 0 0" }}>
                       Planets at true ecliptic latitude. Solid ring is the ecliptic, dashed the equator.
@@ -560,7 +636,7 @@ export default function SkyNow() {
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
-                    {(["positions", "aspects", "insights", "vedic", "events", "json"] as const).map((t) => (
+                    {(["positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
                         {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
                       </button>
@@ -807,6 +883,55 @@ export default function SkyNow() {
                       <p className="dim small" style={{ margin: "0.4rem 0 0" }}>
                         Reading the chart as a birth moment. Also: Yogini and Ashtottari dashas, the vargas, and the yogas.
                       </p>
+                    </>
+                  )}
+
+                  {tab === "declination" && decl && (
+                    <>
+                      <p className="dim small" style={{ marginTop: 0 }}>Declination (°), with out-of-bounds flagged (beyond the Sun&rsquo;s ±23.4°):</p>
+                      <table className="mono" style={{ fontSize: "0.82rem" }}>
+                        <tbody>
+                          {decl.bodies.map(({ body, dec, oob }) => (
+                            <tr key={body}>
+                              <td className="mute" style={cell}>{GLYPHS[body] ? `${GLYPHS[body]} ` : ""}{body}</td>
+                              <td style={cell}>{dec >= 0 ? "+" : ""}{dec.toFixed(2)}°</td>
+                              <td style={{ ...cell, color: oob ? "var(--warm)" : "var(--text-mute)" }}>{oob ? "out of bounds" : ""}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <p className="dim small" style={{ margin: "0.8rem 0 0.3rem" }}>Parallels (=) and contraparallels (≠), within 1°:</p>
+                      {decl.pairs.length === 0 ? (
+                        <p className="dim small" style={{ margin: 0 }}>None.</p>
+                      ) : (
+                        <ul className="mono" style={{ lineHeight: 1.7, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: 0 }}>
+                          {decl.pairs.map((p, i) => (
+                            <li key={i}>{p.a} {p.kind === "parallel" ? "∥" : "⊼"} {p.b} <span className="mute">({p.kind})</span></li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  )}
+
+                  {tab === "stars" && stars && (
+                    <>
+                      <p className="dim small" style={{ marginTop: 0 }}>Bright fixed stars (mag ≤ 2.5) within 1° of a body, by longitude:</p>
+                      {stars.length === 0 ? (
+                        <p className="dim small" style={{ margin: 0 }}>No close conjunctions.</p>
+                      ) : (
+                        <table className="mono" style={{ fontSize: "0.82rem" }}>
+                          <tbody>
+                            {stars.map((h, i) => (
+                              <tr key={i}>
+                                <td className="mute" style={cell}>{GLYPHS[h.body] ? `${GLYPHS[h.body]} ` : ""}{h.body}</td>
+                                <td style={cell}>{h.star}</td>
+                                <td className="mute" style={cell}>{h.orb}°</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                      <p className="dim small" style={{ margin: "0.5rem 0 0" }}>From the 319-star catalogue (Node tier), bundled here for the demo.</p>
                     </>
                   )}
 
