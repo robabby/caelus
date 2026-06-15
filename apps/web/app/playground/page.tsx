@@ -2,6 +2,7 @@ import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel } from "caelus-wheel";
 import SkyNow from "../../components/SkyNow";
+import SynastryPanel from "../../components/SynastryPanel";
 import { A, Eyebrow, Lead, P, H2 } from "../../components/Prose";
 
 export const metadata = {
@@ -42,6 +43,14 @@ export default function Playground() {
       </P>
 
       <SkyNow />
+
+      <H2>Compare two charts</H2>
+      <P>
+        Synastry and the composite, both computed in your browser: two births in,
+        the inter-chart aspect grid and the midpoint chart out. Birth times are
+        local to each place (resolved to UT with <code>caelus-birth</code>).
+      </P>
+      <SynastryPanel />
 
       <H2>Example charts</H2>
       <P>
