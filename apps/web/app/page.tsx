@@ -1,6 +1,7 @@
 import SkyRibbon from "../components/SkyRibbon";
 import Cta from "../components/Cta";
 import CodeBlock from "../components/CodeBlock";
+import FAQ from "../components/FAQ";
 import { A, Eyebrow, Lead, P, H2 } from "../components/Prose";
 import { NPM, SITE } from "../lib/site";
 
@@ -114,6 +115,8 @@ chart.bodies.saturn.retrograde; // true`}
         methodology: <A href="/validation">Validation</A>. Bugs the suite caught:{" "}
         <A href="/notes">Build Notes</A>.
       </P>
+
+      <FAQ />
     </main>
   );
 }
