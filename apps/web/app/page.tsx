@@ -1,8 +1,12 @@
+import { Engine } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+import { ChartWheel } from "caelus-wheel";
 import SkyRibbon from "../components/SkyRibbon";
 import Cta from "../components/Cta";
 import CodeBlock from "../components/CodeBlock";
 import FAQ from "../components/FAQ";
 import { A, Eyebrow, Lead, P, H2 } from "../components/Prose";
+import { WHEEL_THEME } from "../lib/wheelTheme";
 import { NPM, SITE } from "../lib/site";
 
 export const metadata = {
@@ -18,6 +22,10 @@ const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
   ["birth", "caelus-birth", "Local birth time and place to UT, with DST and historical timezone rules."],
   ["wheel", "caelus-wheel", "React SVG chart wheel. SSR-safe, ~3.4 KB gzipped."],
 ];
+
+// The home page's worked example is the canonical fixture — the very chart the
+// code sample computes — rendered server-side as static SVG (no client JS).
+const homeChart = new Engine(embeddedData).chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -82,10 +90,11 @@ export default function Home() {
 
       <H2>Compute a chart</H2>
       <CodeBlock lang="bash" code="npm install caelus" />
-      <CodeBlock
-        lang="typescript"
-        label="chart.ts"
-        code={`import { Engine, fmtLon } from "caelus";
+      <div className="home-compute">
+        <CodeBlock
+          lang="typescript"
+          label="chart.ts"
+          code={`import { Engine, fmtLon } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 
 const engine = new Engine(embeddedData);
@@ -98,7 +107,16 @@ const chart = engine.chart(
 
 fmtLon(chart.bodies.sun.lon);   // "19°27' Gemini"
 chart.bodies.saturn.retrograde; // true`}
-      />
+        />
+        <figure className="home-compute__chart">
+          <div className="chart-fluid">
+            <ChartWheel chart={homeChart} size={360} theme={WHEEL_THEME} />
+          </div>
+          <figcaption className="dim small" style={{ marginTop: "0.5rem" }}>
+            The same chart, drawn by <code>caelus-wheel</code>: 1990-06-10 14:30 UT, Tampa.
+          </figcaption>
+        </figure>
+      </div>
       <P dim>
         Full walkthrough in the <A href="/docs/quickstart">Quickstart</A>, or try it live in the{" "}
         <A href="/playground">Playground</A>. For a complete app, the{" "}

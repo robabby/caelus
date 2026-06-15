@@ -279,6 +279,28 @@ th {
   max-width: 100%;
 }
 
+/* Home "Compute a chart": code sample beside the wheel it produces */
+.home-compute {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+  gap: 1.5rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+.home-compute__chart {
+  margin: 0;
+  text-align: center;
+}
+@media (max-width: 760px) {
+  .home-compute {
+    grid-template-columns: 1fr;
+  }
+  .home-compute__chart {
+    max-width: 22rem;
+    margin: 0 auto;
+  }
+}
+
 /* Playground: chart + data side by side, stacking on small screens */
 .skynow-layout {
   display: grid;
