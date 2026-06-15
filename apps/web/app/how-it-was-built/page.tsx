@@ -1,4 +1,5 @@
 import { A, Eyebrow, H2, P, Note } from "../../components/Prose";
+import CaelusMark from "../../components/CaelusMark";
 
 export const metadata = {
   title: "How this was built",
@@ -70,6 +71,27 @@ export default function HowItWasBuilt() {
         directing and reviewing, and it leans on a test harness and two ephemeris
         oracles to catch what review alone would miss.
       </Note>
+
+      <H2>Why the name Caelus?</H2>
+      <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start", flexWrap: "wrap", margin: "1rem 0" }}>
+        <figure style={{ margin: 0, flex: "none", textAlign: "center", color: "var(--accent)" }}>
+          <CaelusMark size={132} />
+          <figcaption className="dim small" style={{ marginTop: "0.4rem", maxWidth: 150 }}>
+            An original drawing, after the Carnuntum altar.
+          </figcaption>
+        </figure>
+        <div style={{ flex: "1 1 18rem" }}>
+          <P>
+            Caelus is the Roman god of the sky, the personification of the heavens.
+            Roman art shows him as a bearded figure holding his cloak in a
+            billowing arch above his head, a gesture called <em>velificatio</em>{" "}
+            that signals the vault of the firmament. The face here is drawn from one
+            such figure on a third-century altar from Carnuntum, where Caelus
+            kneels beneath the four seasons and their winds. The name suited an
+            engine whose whole task is to compute the positions on that vault.
+          </P>
+        </div>
+      </div>
 
       <P dim>
         <A href="/validation">Validation tables &rarr;</A>{" "}
