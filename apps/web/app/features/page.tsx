@@ -121,6 +121,20 @@ export default function Features() {
         pinned to the Python reference. See <A href="/docs/recipes">Recipes</A>.
       </P>
 
+      <H2>Patterns and chart signature</H2>
+      <P>
+        <code>detectPatterns</code> enumerates the classical configurations as
+        structured objects: T-squares, grand trines, grand crosses, yods, kites,
+        mystic rectangles, and stelliums by sign and by house. Reported patterns
+        are maximal, so a grand cross hides the T-squares inside it and a kite its
+        grand trine. <code>chartSignature</code> reduces a chart to plain counts:
+        the element, modality, quadrant, and hemisphere distributions, the
+        dominant element, modality, and sign, and the classical chart ruler.
+        Both are pure geometry over the chart, interpretation-free and pinned to
+        the Python reference, and both are exposed over MCP. See{" "}
+        <A href="/docs/cookbook">Common Tasks</A>.
+      </P>
+
       <H2>Visualization</H2>
       <P>
         The chart as a flat wheel, as a tilted celestial sphere with planets at
