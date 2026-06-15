@@ -157,8 +157,9 @@ recorded as non-goals:
 2. ~~v0.4: Tier 2~~ (0.4.0 shipped asteroids, Uranians, true Lilith,
    event search; fixed stars, star-anchored ayanamsas, and Gauquelin
    sectors landed 2026-06-13 and close the tier).
-3. ~~v0.5: Tier 3~~ (eclipse search shipped 2026-06-13; local
-   circumstances/ground paths remain open).
+3. ~~v0.5: Tier 3~~ (eclipse search shipped 2026-06-13; ground paths and
+   local circumstances -- solar where/local/limits, lunar visibility --
+   landed 2026-06-15 and close the tier).
 
 Every item inherits the validation chain: Python reference first, golden
 fixtures, then the TS port. Swiss Ephemeris remains the oracle, never the
