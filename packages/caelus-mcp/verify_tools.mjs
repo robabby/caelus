@@ -25,6 +25,7 @@ import {
   varga, VARGA_DIVISIONS,
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
   detectPatterns, chartSignature,
+  chartFeatures, configurationFit,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -600,6 +601,26 @@ const assertExactHits = (hits, body, targetLonAt, angle, label, tolDeg = 0.02) =
   const c = eng.chart(1990, 6, 10, 14, 30, 0, args.lat, args.lon, "placidus");
   assert(JSON.stringify(res.signature) === JSON.stringify(chartSignature(c)),
     "chart_signature: matches engine chartSignature");
+}
+
+// ---------------------------------------------------------------- similar_skies
+{
+  const ref = "1990-06-10T14:30:00Z";
+  const res = await call("similar_skies", { reference_date: ref, start: "1990-01-01T00:00:00Z", end: "1991-01-01T00:00:00Z" });
+  assert(res.matches.length > 0 && res.matches.length <= 10, "similar_skies: returns up to limit matches");
+  // sorted by similarity, highest first
+  let sorted = true;
+  for (let i = 1; i < res.matches.length; i++) if (res.matches[i].similarity > res.matches[i - 1].similarity) sorted = false;
+  assert(sorted, "similar_skies: matches sorted by similarity descending");
+  // the reference sky matches itself: the best match in a window containing it is near-identical
+  assert(res.matches[0].similarity > 0.99, "similar_skies: reference sky matches itself within the window");
+  // the reported similarity equals the engine's configurationFit at the top match
+  const refJd = julianDay(1990, 6, 10, 14, 30, 0);
+  const target = chartFeatures(eng, refJd);
+  const top = res.matches[0];
+  const d = new Date(top.utc);
+  const topJd = julianDay(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds());
+  assert(Math.abs(configurationFit(eng, topJd, target) - top.similarity) < 1e-3, "similar_skies: similarity matches configurationFit");
 }
 
 await client.close();

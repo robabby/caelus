@@ -103,9 +103,9 @@
       "render": [
         "{value} chart tools",
         "{value} MCP tools",
-        "twenty-four chart tools",
-        "Twenty-four chart tools",
-        "twenty-four tools"
+        "twenty-five chart tools",
+        "Twenty-five chart tools",
+        "twenty-five tools"
       ],
       "appearsIn": [
         "apps/web/app/features/page.tsx",

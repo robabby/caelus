@@ -2549,6 +2549,41 @@
       }
     }
   },
+  "similar-skies-1990": {
+    "tool": "similar_skies",
+    "args": {
+      "reference_date": "1990-06-10T14:30:00Z",
+      "start": "1985-01-01T00:00:00Z",
+      "end": "1995-01-01T00:00:00Z",
+      "step_days": 5,
+      "limit": 5
+    },
+    "payload": {
+      "reference_utc": "1990-06-10T14:30:00Z",
+      "matches": [
+        {
+          "utc": "1990-06-09T00:00:00Z",
+          "similarity": 0.9941
+        },
+        {
+          "utc": "1990-06-14T00:00:00Z",
+          "similarity": 0.9729
+        },
+        {
+          "utc": "1990-05-15T00:00:00Z",
+          "similarity": 0.9631
+        },
+        {
+          "utc": "1992-05-19T00:00:00Z",
+          "similarity": 0.9375
+        },
+        {
+          "utc": "1988-06-29T00:00:00Z",
+          "similarity": 0.9192
+        }
+      ]
+    }
+  },
   "natal-polar-svalbard": {
     "tool": "natal_chart",
     "args": {

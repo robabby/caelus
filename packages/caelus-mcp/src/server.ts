@@ -36,6 +36,7 @@ import {
   varga, VARGA_DIVISIONS,
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
   detectPatterns, chartSignature,
+  chartFeatures, searchConfigurations,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -554,6 +555,10 @@ export const signatureOut = z.object({
     bodies: z.array(z.string()),
   }),
 });
+export const similarSkiesOut = z.object({
+  reference_utc: z.string(),
+  matches: z.array(z.object({ utc: z.string(), similarity: z.number() })),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -579,6 +584,7 @@ export const OUTPUT_SCHEMAS = {
   yogas: yogasOut,
   aspect_patterns: patternsOut,
   chart_signature: signatureOut,
+  similar_skies: similarSkiesOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -1359,6 +1365,27 @@ export function buildServer(
       utc: date, houses: c.houseSystem,
       ...(zodiac !== "tropical" ? { zodiac } : {}),
       signature: chartSignature(c),
+    });
+  });
+
+  server.registerTool("similar_skies", {
+    description:
+      "Find when the sky most resembled a reference moment. Builds a feature vector for the reference date's planetary configuration and scans a window for the closest matches by cosine similarity (1.0 = identical configuration). Answers 'when did the sky last look like this?' for transit echoes and historical analogues. Returns the top matches with their similarity, highest first.",
+    inputSchema: {
+      reference_date: z.string().describe("UTC ISO date whose sky is the target to match"),
+      start: z.string().describe("UTC ISO start of the search window"),
+      end: z.string().describe("UTC ISO end of the search window"),
+      step_days: z.number().positive().default(1).describe("sampling step in days (default 1)"),
+      limit: z.number().int().positive().default(10).describe("max matches to return (default 10)"),
+    },
+  }, async ({ reference_date, start, end, step_days, limit }) => {
+    const target = chartFeatures(engine, jdFromIso(reference_date));
+    const matches = searchConfigurations(engine, target, {
+      start: jdFromIso(start), end: jdFromIso(end), step: step_days, limit,
+    });
+    return text({
+      reference_utc: reference_date,
+      matches: matches.map((m) => ({ utc: isoFromJd(m.jd), similarity: Math.round(m.score * 1e4) / 1e4 })),
     });
   });
 

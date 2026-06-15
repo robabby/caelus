@@ -51,6 +51,9 @@ export const GOLDEN_CASES = [
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
   { id: "signature-tampa", tool: "chart_signature",
     args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
+  { id: "similar-skies-1990", tool: "similar_skies",
+    args: { reference_date: "1990-06-10T14:30:00Z", start: "1985-01-01T00:00:00Z",
+            end: "1995-01-01T00:00:00Z", step_days: 5, limit: 5 } },
 
   // --- edge cases (format must stay stable across these too) ---
   { id: "natal-polar-svalbard", tool: "natal_chart",
