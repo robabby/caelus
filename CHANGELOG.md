@@ -6,7 +6,9 @@ package. Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## 0.16.0 — 2026-06-15
+## v0.16.0 — chart synthesis: patterns, dignities, parans + search (22→27 MCP tools)
+
+*2026-06-15*
 
 A feature release across all four packages: the analytic synthesis layer
 (Roadmap Phase 4) and the mundane and search tools (Phase 4b). Everything reads
@@ -47,7 +49,9 @@ ephemeris fits. The MCP server grows from twenty-two to twenty-seven tools.
 - A homepage FAQ with `FAQPage` structured data, and an "MCP tools" call to
   action linking the tool catalog.
 
-## 0.15.0 — 2026-06-14
+## v0.15.0 — enriched chart bodies + API polish
+
+*2026-06-14*
 
 API-feedback polish across all four packages, prompted by an external review of
 the chart contract. No new techniques; this tightens what a chart returns and
@@ -79,7 +83,9 @@ how its bodies are typed.
 - `fmtLon()` (and the MCP formatter) normalize their argument, so an exact 360
   or a small negative no longer renders an out-of-range sign.
 
-## 0.14.0 — 2026-06-14
+## v0.14.0 — Vedic completion + chat MCP App (18→22 MCP tools)
+
+*2026-06-14*
 
 A feature release across all four packages. The engine resolves the deferred
 Phase 2 techniques — the full Parashari varga set (adding hora D2 and the
@@ -182,7 +188,9 @@ gains an optional inter-planetary (mundane) block.
   needs only `resourceDomains`) with the legacy `openai/*` aliases for
   compatibility. See `docs/mcp-app-wiring.md`.
 
-## 0.13.0 — 2026-06-14
+## v0.13.0 — Hellenistic time-lords + Vedic layer (9→18 MCP tools)
+
+*2026-06-14*
 
 A feature release across all four packages. The engine completes Phase 1 — the
 Hellenistic time-lords (lots, profections, firdaria, zodiacal releasing) and
@@ -296,7 +304,9 @@ five Phase 1 time-lord and direction tools.
   the IC = MC + 180 and time-key invariants) and frozen payloads in
   `golden-mcp.json`; the tool surface is now eighteen.
 
-## 0.12.1 — 2026-06-14
+## v0.12.1 — caelus-mcp on the official MCP Registry
+
+*2026-06-14*
 
 A `caelus-mcp` metadata patch: registry listing only, no functional change.
 The other three packages stay at 0.12.0.
@@ -309,7 +319,9 @@ The other three packages stay at 0.12.0.
   discoverable from the Registry and the directories that sync from it. The
   README gains a one-line `claude mcp add` install.
 
-## 0.12.0 — 2026-06-14
+## v0.12.0 — chartAt + filled-out API reference
+
+*2026-06-14*
 
 A JD-first chart entry point. No breaking changes; the position conformance
 suite is unchanged at 3,218 checks.
@@ -342,7 +354,9 @@ suite is unchanged at 3,218 checks.
   (`/docs/api/Class.Engine#chartat`), the `/docs/api` index surfaces the Engine
   method set directly, and every generated heading is anchored.
 
-## 0.11.0 — 2026-06-14
+## v0.11.0 — chart feature space + geometric compiler
+
+*2026-06-14*
 
 Two engine layers that treat a chart as something to match and to synthesize.
 No breaking changes to the 0.10.x surface; the position conformance suite is
@@ -364,7 +378,9 @@ to the Python reference.
   when even the best fit is poor. `constraintLoss` and `formLoss` are the pure
   loss functions. Reference-first, pinned by `test/compiler-golden.json`.
 
-## 0.10.0 — 2026-06-14
+## v0.10.0 — 3D sphere, astrocartography, graphic ephemeris
+
+*2026-06-14*
 
 A visualization tranche: 3D chart spheres, astrocartography, and a graphic
 ephemeris, each landing engine math plus an SSR-safe render. No breaking changes
@@ -395,7 +411,9 @@ checks, and three new cross-language goldens pin the additions.
 - `EphemerisGraph`: the ephemeris series as line graphs, with longitude wraps
   split. All SSR-safe SVG with no runtime dependencies.
 
-## 0.9.0 — 2026-06-14
+## v0.9.0 — electional primitives + hosted MCP
+
+*2026-06-14*
 
 Electional building blocks and long-scan ergonomics on the engine, the hosted
 MCP transport, and a self-contained build. No breaking changes to the 0.8.x
@@ -439,7 +457,9 @@ new cross-language goldens pin the additions to the Python reference.
 - New site pages: methods, features, and how this was built.
 - Corrected the sidereal ayanamsa count in stray docs (seven, not eight).
 
-## 0.8.0 — 2026-06-13
+## v0.8.0 — turbo tier + MCP resources/prompts
+
+*2026-06-13*
 
 A turbo evaluation tier and the phase-2 MCP surface. No breaking changes to the
 0.7.x surface; the position conformance suite is unchanged at 3,218 checks.
@@ -462,7 +482,9 @@ A turbo evaluation tier and the phase-2 MCP surface. No breaking changes to the
 - Prompt: `rectification_session`, a multi-turn script around
   `rectification_grid` and `find_aspect_dates`.
 
-## 0.7.0 — 2026-06-13
+## v0.7.0 — derived-charts layer
+
+*2026-06-13*
 
 A derived-charts layer: standard astrological derivations computed on the
 validated primitives. No breaking changes to the 0.6.x surface; the position
@@ -491,7 +513,9 @@ conformance suite is unchanged at 3,218 checks, and a new cross-language golden
 - Community-health files: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`.
 - The `caelus-starter` template moved to its own repository.
 
-## 0.6.0 — 2026-06-13
+## v0.6.0 — the when() query language
+
+*2026-06-13*
 
 A declarative query language: the engine answers "where is the body?", and
 `when()` answers "when is the configuration true?" over a time range. No
@@ -522,7 +546,9 @@ checks) pins the TypeScript port to the Python reference, boundary diff 0 s.
 - `templates/starter` README rewritten in the project's voice.
 - Removed unused DE441 Moon refit tooling (`fit_moon.py`, `horizons.py`).
 
-## 0.5.0 — 2026-06-13
+## v0.5.0 — fixed stars, eclipses, Gauquelin sectors
+
+*2026-06-13*
 
 Swiss Ephemeris gap analysis Tiers 2 and 3 close (see
 `docs/gap-analysis.md`): every line item from the original plan is now
@@ -556,7 +582,9 @@ the 0.4.x surface; the conformance suite grew from 3,177 to 3,218 checks.
   reserved Tier 3 extension.
 - The zodiac parameter grows to eight modes (star-anchored ayanamsas).
 
-## 0.4.0 — 2026-06-13
+## v0.4.0 — event search + new bodies
+
+*2026-06-13*
 
 Swiss Ephemeris gap analysis Tier 2, minus fixed stars (see
 `docs/gap-analysis.md`), plus deployment-boundary fixes from an external
@@ -593,7 +621,9 @@ grew from 3,087 to 3,177 checks; the engine computes 28 bodies.
 - Live-deploy smoke test (`live-smoke` workflow) guards the production
   API on every push to main, daily, and on dispatch.
 
-## 0.3.0 — 2026-06-12
+## v0.3.0 — sidereal zodiac, eight house systems, topocentric
+
+*2026-06-12*
 
 Swiss Ephemeris gap analysis Tier 1 (see `docs/gap-analysis.md`). No
 breaking changes to the 0.2.x surface; the conformance suite grew from
@@ -635,22 +665,30 @@ Ephemeris 2.10 by the new `python/validate_swiss.py` harness.
   twelve systems. Defaults leave existing payloads byte-identical.
 - Payloads carry a `zodiac` key only when sidereal.
 
-## 0.2.1 — 2026-06-12
+## v0.2.1 — README-only npm patch
+
+*2026-06-12*
 
 - README-only patch so the npm package pages render the docs.
 
-## 0.2.0 — 2026-06-12
+## v0.2.0 — structured aspect objects across MCP
+
+*2026-06-12*
 
 - Structured aspect objects across the MCP surface
   (`{"a","b","aspect","orb"}`, transits add `t`/`n` and `applying`);
   chart payloads feed `caelus-wheel`'s `<ChartWheel>` with no adapter.
 - The MCP handshake reports the real package version.
 
-## 0.1.1 — 2026-06-12
+## v0.1.1 — fix caelus-mcp npx exit
+
+*2026-06-12*
 
 - Fix `caelus-mcp` silently exiting when launched via `npx`.
 
-## 0.1.0 — 2026-06-12
+## v0.1.0 — first release of all four packages
+
+*2026-06-12*
 
 First release of all four packages, published with npm provenance.
 

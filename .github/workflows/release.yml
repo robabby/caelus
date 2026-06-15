@@ -91,19 +91,23 @@ jobs:
             echo "Release $GITHUB_REF_NAME already exists; skipping."
             exit 0
           fi
-          version="${GITHUB_REF_NAME#v}"
-          # Print the body of the "## <version> — <date>" section: everything
-          # between that heading and the next "## " heading.
-          notes="$(awk -v v="$version" '
-            /^## / { if (found) exit; if ($2 == v) { found = 1; next } }
+          # The CHANGELOG heading is "## <tag> — <summary>" (e.g.
+          # "## v0.16.0 — chart synthesis: …"). The release title is that
+          # heading minus the "## "; the body is everything up to the next
+          # "## ", with the date its first line.
+          title="$(awk -v tag="$GITHUB_REF_NAME" '
+            /^## / && $2 == tag { sub(/^## /, ""); print; exit }
+          ' CHANGELOG.md)"
+          notes="$(awk -v tag="$GITHUB_REF_NAME" '
+            /^## / { if (found) exit; if ($2 == tag) { found = 1; next } }
             found { print }
           ' CHANGELOG.md)"
-          if [ -n "$(printf '%s' "$notes" | tr -d '[:space:]')" ]; then
+          if [ -n "$title" ] && [ -n "$(printf '%s' "$notes" | tr -d '[:space:]')" ]; then
             printf '%s\n' "$notes" > /tmp/release-notes.md
             gh release create "$GITHUB_REF_NAME" --verify-tag \
-              --title "$GITHUB_REF_NAME" --notes-file /tmp/release-notes.md
+              --title "$title" --notes-file /tmp/release-notes.md
           else
-            echo "No CHANGELOG section for $version; falling back to generated notes."
+            echo "No CHANGELOG section for $GITHUB_REF_NAME; falling back to generated notes."
             gh release create "$GITHUB_REF_NAME" --verify-tag \
               --title "$GITHUB_REF_NAME" --generate-notes
           fi
