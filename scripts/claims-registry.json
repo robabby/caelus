@@ -118,7 +118,8 @@
         "packages/caelus/README.md",
         "packages/wheel/README.md",
         "packages/birth/README.md",
-        "apps/web/components/FAQ.tsx"
+        "apps/web/components/FAQ.tsx",
+        "apps/web/components/Cta.tsx"
       ]
     },
     {

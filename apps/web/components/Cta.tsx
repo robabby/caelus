@@ -23,6 +23,9 @@ export default function Cta() {
       <a href={SITE.starter} className="btn btn-ghost" target="_blank" rel="noreferrer">
         Starter template
       </a>
+      <a href="/docs/mcp" className="btn btn-ghost">
+        25 MCP tools
+      </a>
     </div>
   );
 }
