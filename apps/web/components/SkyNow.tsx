@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
-  nakshatra, vimshottariActive,
+  nakshatra, vimshottariActive, profectionAt,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -326,11 +326,14 @@ export default function SkyNow() {
       const b = chart.bodies[p];
       return b ? [dignityScore(p, b.lon, sect)] : [];
     });
+    const now = new Date();
+    const nowJd = julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
     return {
       patterns: detectPatterns(chart),
       signature: chartSignature(chart),
       dignities,
       lots: lots(engine(), chart.jdUt, Number(lat), Number(lon), zodiac),
+      profection: profectionAt(engine(), chart.jdUt, nowJd, Number(lat), Number(lon), zodiac),
       sect,
     };
   }, [chart]);
@@ -749,6 +752,22 @@ export default function SkyNow() {
                             ))}
                           </tbody>
                         </table>
+                      </div>
+
+                      {/* Time-lords: annual profection (lord of the year), to today */}
+                      <div>
+                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>
+                          Time-lords (today)
+                        </div>
+                        <p className="small" style={{ margin: 0 }}>
+                          Age {insights.profection.age_years} · lord of the year{" "}
+                          <strong style={{ color: "var(--text)" }}>{insights.profection.annual.lord}</strong>{" "}
+                          <span className="mute">({insights.profection.annual.sign}, house {insights.profection.annual.house})</span>
+                        </p>
+                        <p className="dim small" style={{ margin: "0.2rem 0 0" }}>
+                          Month {insights.profection.month}: {insights.profection.monthly.lord} ({insights.profection.monthly.sign}).
+                          Also firdaria, zodiacal releasing, and primary directions.
+                        </p>
                       </div>
                     </div>
                   )}
