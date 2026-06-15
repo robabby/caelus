@@ -33,23 +33,27 @@ OUT_ENGINE = os.path.join(
     os.path.dirname(__file__), "astroengine", "data", "pluto_cheb.json"
 )
 
-# Fit window. 1700-2200 covers the near-term range goal with margin; widen here
-# (e.g. 1550-2650 to match JPL DE440) if a longer span is wanted -- Horizons
-# serves Pluto across DE441 either way and the pack stays small.
+# Fit window. The Pluto *body* center (999) wobbles around the Pluto-Charon
+# barycenter every 6.39 d at ~1.4e-5 AU (~2130 km) -- a high-frequency signal no
+# multi-year Chebyshev can absorb, so 999 floors the fit at ~1.4e-5 AU. We fit
+# the *barycenter* (command "9"): it is smooth (Charon averaged out), matches the
+# Meeus ch.37 series this pack supersedes (also barycenter, no Charon term), and
+# Horizons serves it across the full DE441 span. The 999-vs-barycenter offset is
+# <= ~0.1" geocentric, below the engine's other Pluto error terms.
 YEAR0, YEAR1 = 1700, 2200
 
 
 def main():
     jd0, jd1 = julian_day(YEAR0, 1, 1), julian_day(YEAR1, 1, 1)
-    # Pluto body center (999); barycenter (9) differs by < 1 mas for charts.
-    cache = HorizonsCache(CACHE, command="999", label="999 Pluto")
-    # pad past jd1: Chebyshev segments sample up to jd0 + nseg*seg_days > jd1
+    # Pluto barycenter (9): smooth (Charon wobble averaged out), full DE441 range.
+    cache = HorizonsCache(CACHE, command="9", label="9 Pluto barycenter")
+    # pad past jd1: Chebyshev segments sample up to jd0 + nseg*seg_days > jd1.
     cache.ensure(jd0, jd1, step=1.0, pad_days=23376)
     pluto_helio = cache.sample
 
     print("scan: seg_days, degree -> residual AU, size")
     best = None
-    for seg in (5844, 11688, 23376):  # 16, 32, 64 years
+    for seg in (5844, 11688, 23376):  # 16, 32, 64 yr
         for deg in (10, 12, 14, 16, 20):
             data, resid = fit(pluto_helio, jd0, jd1, seg, deg, scale=1.0, sig=10)
             size = len(json.dumps(data, separators=(",", ":")))
@@ -68,7 +72,7 @@ def main():
     seg, deg, size, data, resid = best
     data["provenance"] = {
         "source": "JPL Horizons",
-        "body": "999 Pluto",
+        "body": "9 Pluto barycenter",
         "center": "@sun",
         "frame": "heliocentric ecliptic J2000",
         "correction": "geometric (VEC_CORR=NONE)",

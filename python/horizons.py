@@ -135,7 +135,14 @@ class HorizonsCache:
         try:
             with open(self.path) as f:
                 data = json.load(f)
-            if data["jd0"] <= jd0 and data["jd1"] >= need_hi:
+            # Reuse only if the cache is the same body AND covers the span; the
+            # JD range alone is not enough -- a stale wrong-body cache (e.g. a
+            # 999-vs-barycenter Pluto run) would otherwise be used silently.
+            if (
+                data.get("body") == self.label
+                and data["jd0"] <= jd0
+                and data["jd1"] >= need_hi
+            ):
                 self._jds = np.array(data["jds"])
                 self._xs = np.array(data["x"])
                 self._ys = np.array(data["y"])
