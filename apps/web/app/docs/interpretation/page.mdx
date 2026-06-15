@@ -10,17 +10,17 @@ export const metadata = {
 
 Caelus is a fact engine. Every module stops at validated geometry and says so:
 a chart gives you bodies, aspects, angles, cusps, dignities, and patterns, with
-no flavour text and no "what it means." That is deliberate — the numbers are
+no flavour text and no "what it means." That is deliberate: the numbers are
 correct and auditable, and astrology's meaning is a matter of tradition and
 taste, not arithmetic.
 
-But it leaves a gap. If you want to *generate* an interpretation — a rule-based
-reading, or an LLM that writes natal prose — you have nowhere clean to plug in.
+But it leaves a gap. If you want to *generate* an interpretation (a rule-based
+reading, or an LLM that writes natal prose), you have nowhere clean to plug in.
 The interpretation layer is that seam. It does **not** interpret. It defines the
 contract between the facts the engine owns and the meaning you bring:
 
 > The engine owns the **facts**. A layer you plug in owns the **meaning**. The
-> framework owns the **contract** between them — never the content.
+> framework owns the **contract** between them. Never the content.
 
 ```text
 Engine (validated)     chart(): bodies, aspects, angles, cusps
@@ -37,13 +37,13 @@ the whole pipeline to a reconciled, cited reading.
 ## What it's for
 
 - **Ground an LLM in correct math.** The hardest part of an AI astrologer is not
-  the prose — models write fluent prose — it is that they hallucinate positions.
+  the prose (models write fluent prose). It is that they hallucinate positions.
   Hand the model the validated facts, each tagged with a stable id, and require
   it to cite the id behind every claim. The chart math was never the model's to
   invent, and `auditCitations` proves it didn't.
 - **Build a rule-based reading engine.** Express a tradition or house style as
-  selectors over the fact model — "Mars in an angular house and part of a
-  T-square" — and get back ranked statements, each carrying the exact atoms that
+  selectors over the fact model ("Mars in an angular house and part of a
+  T-square") and get back ranked statements, each carrying the exact atoms that
   justified it.
 - **Rank and reconcile.** Salience surfaces what is prominent; `reconcile`
   groups everything said about the same placement and flags where your corpus
@@ -64,23 +64,23 @@ const engine = new Engine(embeddedData);
 const chart = engine.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
 
 const ctx = interpretationContext(chart);
-ctx.atoms.slice(0, 3).forEach((a) => console.log(a.id, "—", a.text));
-// pattern:t_square:mars-moon-saturn — T-square: Mars, Moon, Saturn (apex Saturn)
-// placement:moon — Moon in Capricorn, house 6
-// aspect:moon~neptune:conjunction — Moon conjunction Neptune (applying, orb 0.6°)`}
+ctx.atoms.slice(0, 3).forEach((a) => console.log(a.id, ":", a.text));
+// pattern:t_square:mars-moon-saturn : T-square: Mars, Moon, Saturn (apex Saturn)
+// placement:moon : Moon in Capricorn, house 6
+// aspect:moon~neptune:conjunction : Moon conjunction Neptune (applying, orb 0.6°)`}
 />
 
 Every atom carries five common fields:
 
-- **`id`** — a stable, content-addressable string (`placement:mars`,
+- **`id`**: a stable, content-addressable string (`placement:mars`,
   `aspect:mars~saturn:square`, `pattern:t_square:mars-moon-saturn`,
   `signature:element:fire`, `angle:asc`). A generated claim points at this id,
   so it can always be traced back to the fact it rests on.
-- **`kind`** — `placement | aspect | pattern | signature | angle | dispositor |
+- **`kind`**: `placement | aspect | pattern | signature | angle | dispositor |
   reception`.
-- **`bodies`** — the body ids involved, for filtering and cross-reference.
-- **`salience`** — a transparent, overridable prominence score (below).
-- **`text`** — a plain-language statement of the fact, with no interpretation
+- **`bodies`**: the body ids involved, for filtering and cross-reference.
+- **`salience`**: a transparent, overridable prominence score (below).
+- **`text`**: a plain-language statement of the fact, with no interpretation
   (`"Moon conjunction Neptune (applying, orb 0.6°)"`).
 
 Kind-specific fields fill in the rest: placements add
@@ -91,13 +91,13 @@ facets add `facet`/`value`; dispositors add `dispositor`/`final`.
 Two enrichments that the bare `Chart.aspects` list omits are computed here (the
 engine now fills them onto the aspect, the projection carries them onto the atom):
 
-- **`phase`** — applying, separating, or exact, from the two bodies' speeds.
-- **`strength`** — closeness in `[0, 1]` (1 = exact, 0 = at the orb limit),
+- **`phase`**: applying, separating, or exact, from the two bodies' speeds.
+- **`strength`**: closeness in `[0, 1]` (1 = exact, 0 = at the orb limit),
   normalized against the orb policy used to find the aspect.
 
 ### Salience
 
-Salience ranks atoms so a reader leads with what is prominent — without the
+Salience ranks atoms so a reader leads with what is prominent, without the
 engine asserting meaning. It is a sum of explicit, documented contributions,
 all overridable through `ContextOptions.salience`:
 
@@ -123,8 +123,8 @@ const ctx = interpretationContext(chart, {
 });`}
 />
 
-This is framework code, not ephemeris — there is no Swiss Ephemeris oracle for
-"which facts matter" — so it is unit-tested for structure (atoms tie back to the
+This is framework code, not ephemeris. There is no Swiss Ephemeris oracle for
+"which facts matter," so it is unit-tested for structure (atoms tie back to the
 validated chart, ids are unique, salience is sorted) rather than pinned by a
 parity golden.
 
@@ -132,8 +132,8 @@ parity golden.
 
 A **selector** tests the whole projection and reports the atoms that satisfied
 it. Because selectors read the atoms directly, they express the whole fact model
-— house, dignity, pattern membership, signature dominance, aspect phase and
-strength — which the geometric, time-only [`when()`](/docs/recipes) predicates
+(house, dignity, pattern membership, signature dominance, aspect phase and
+strength), which the geometric, time-only [`when()`](/docs/recipes) predicates
 cannot.
 
 <CodeBlock
@@ -169,7 +169,7 @@ its selector does not, and carries no atoms).
 ## 3. Plug in a rule corpus
 
 A **`Rule`** pairs a selector (`when`) with the `text` it licenses. An
-**`InterpretationSource`** bundles rules — a tradition, a house style, a
+**`InterpretationSource`** bundles rules: a tradition, a house style, or a
 third-party corpus. `interpret(ctx, sources)` runs every rule and, for each
 match, emits a `ReadingEntry` carrying the text, the matched `atomIds` (the
 audit trail), and a salience equal to the sum of those atoms' salience times the
@@ -239,11 +239,11 @@ for (const g of groups) {
 
 There are two consumers of the projection.
 
-**A structured reading** — the ranked `interpret(...)` entries (or reconciled
+**A structured reading:** the ranked `interpret(...)` entries (or reconciled
 groups), with provenance, for a rule-based product. You already have it from
 step 3.
 
-**An LLM brief** — `chartBrief(ctx, opts)` renders the salience-ranked,
+**An LLM brief:** `chartBrief(ctx, opts)` renders the salience-ranked,
 id-tagged facts into a ready-to-send `prompt`. The model writes original prose
 (*novel*) and cites the `[id]` each statement rests on; `auditCitations` then
 checks those citations resolve, flagging any that invented a fact (*accurate*).
@@ -277,16 +277,16 @@ const audit = auditCitations(modelClaims, ctx);
 
 `auditCitations` returns whether every cited id resolves (`ok`), how many claims
 were `cited` vs `uncited`, and the distinct `valid` and `unknown` ids. An
-`unknown` id is fabricated provenance — the model asserted a fact the chart never
+`unknown` id is fabricated provenance: the model asserted a fact the chart never
 contained.
 
 ## Over MCP
 
 The whole seam is wired into the [MCP server](/docs/mcp) as the `chart_facts`
-tool, for hosts where the model is already the interpreter (Claude, Cursor, …).
-It returns a chart's ranked, citable atoms plus a ready `brief`, so the host
-interprets from correct math and cites the `[id]` each statement rests on
-instead of re-deriving — and hallucinating — positions.
+tool, for hosts where the model is already the interpreter (Claude, Cursor, and
+the rest). It returns a chart's ranked, citable atoms plus a ready `brief`, so
+the host interprets from correct math and cites the `[id]` each statement rests
+on instead of re-deriving (and hallucinating) positions.
 
 ```text
 "Read my natal chart: born June 10 1990, 2:30pm, Tampa FL."
@@ -295,12 +295,12 @@ instead of re-deriving — and hallucinating — positions.
 
 ## When to use which layer
 
-- **Just the atoms** (`interpretationContext`) — you have your own model or
+- **Just the atoms** (`interpretationContext`): you have your own model or
   ranking and only need the validated facts, normalized and addressable.
-- **Selectors + a rule corpus** (`interpret` / `reconcile`) — you are building a
+- **Selectors + a rule corpus** (`interpret` / `reconcile`): you are building a
   deterministic, rule-based reading engine and want provenance and conflict
   detection for free.
-- **The brief** (`chartBrief` / `auditCitations`) — you are using an LLM and
+- **The brief** (`chartBrief` / `auditCitations`): you are using an LLM and
   need it grounded: novel prose, accurate facts, citations you can verify.
 
 In every case the engine ships the contract and the math, never the meaning. The
