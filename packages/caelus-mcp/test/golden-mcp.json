@@ -2413,6 +2413,81 @@
       ]
     }
   },
+  "patterns-tampa": {
+    "tool": "aspect_patterns",
+    "args": {
+      "date": "1990-06-10T14:30:00Z",
+      "lat": 27.95,
+      "lon": -82.46
+    },
+    "payload": {
+      "utc": "1990-06-10T14:30:00Z",
+      "houses": "placidus",
+      "patterns": [
+        {
+          "kind": "mystic_rectangle",
+          "bodies": [
+            "chiron",
+            "moon",
+            "pluto",
+            "venus"
+          ],
+          "orb": 2.5391
+        },
+        {
+          "kind": "mystic_rectangle",
+          "bodies": [
+            "chiron",
+            "neptune",
+            "pluto",
+            "venus"
+          ],
+          "orb": 2.5391
+        },
+        {
+          "kind": "mystic_rectangle",
+          "bodies": [
+            "jupiter",
+            "moon",
+            "pluto",
+            "venus"
+          ],
+          "orb": 2.4733
+        },
+        {
+          "kind": "mystic_rectangle",
+          "bodies": [
+            "jupiter",
+            "neptune",
+            "pluto",
+            "venus"
+          ],
+          "orb": 2.4733
+        },
+        {
+          "kind": "stellium_sign",
+          "bodies": [
+            "moon",
+            "neptune",
+            "saturn",
+            "uranus"
+          ],
+          "sign": "Capricorn",
+          "orb": 0
+        },
+        {
+          "kind": "stellium_house",
+          "bodies": [
+            "moon",
+            "neptune",
+            "saturn"
+          ],
+          "house": 6,
+          "orb": 0
+        }
+      ]
+    }
+  },
   "natal-polar-svalbard": {
     "tool": "natal_chart",
     "args": {

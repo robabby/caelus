@@ -47,6 +47,8 @@ export const GOLDEN_CASES = [
             start: "2026-01-01T00:00:00Z", end: "2027-01-01T00:00:00Z" } },
   { id: "rectification-tampa", tool: "rectification_grid",
     args: { date: "1990-06-10T00:00:00Z", lat: 27.95, lon: -82.46, step_minutes: 20 } },
+  { id: "patterns-tampa", tool: "aspect_patterns",
+    args: { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 } },
 
   // --- edge cases (format must stay stable across these too) ---
   { id: "natal-polar-svalbard", tool: "natal_chart",

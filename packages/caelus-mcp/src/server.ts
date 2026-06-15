@@ -35,6 +35,7 @@ import {
   yoginiDashas, yoginiAt, ashtottariDashas, ashtottariAt,
   varga, VARGA_DIVISIONS,
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
+  detectPatterns,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -524,6 +525,19 @@ export const yogasOut = z.object({
   dhana_yogas: z.array(lordPairOut),
   yogakarakas: z.array(z.string()),
 });
+export const patternsOut = z.object({
+  utc: z.string(),
+  houses: z.enum(HOUSE_SYSTEMS),
+  zodiac: z.enum(ZODIACS).optional(),
+  patterns: z.array(z.object({
+    kind: z.string(),
+    bodies: z.array(z.string()),
+    apex: z.string().optional(),
+    sign: z.string().optional(),
+    house: z.number().int().optional(),
+    orb: z.number(),
+  })),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
@@ -547,6 +561,7 @@ export const OUTPUT_SCHEMAS = {
   dasha: dashaOut,
   vargas: vargasOut,
   yogas: yogasOut,
+  aspect_patterns: patternsOut,
 } as const;
 
 // ---------------------------------------------------------------- server
@@ -1289,6 +1304,25 @@ export function buildServer(
       raja_yogas: raja,
       dhana_yogas: dhana,
       yogakarakas,
+    });
+  });
+
+  server.registerTool("aspect_patterns", {
+    description:
+      "Classical aspect configurations in a chart: T-squares, grand trines, grand crosses, yods, kites, mystic rectangles, and stelliums by sign and by house. Each is a structured object with the participating bodies and the worst defining-aspect orb; T-squares and yods also name the apex, stelliums their sign or house. Reported patterns are maximal — a grand cross hides the T-squares it contains, a kite its grand trine. Pure geometry (engine orbs plus a quincunx for yods), no interpretation. Needs date, lat, lon.",
+    inputSchema: { ...birth, house_system: houseSys, zodiac: zodiacSchema },
+  }, async ({ date, lat, lon, house_system, zodiac }) => {
+    const d = new Date(date);
+    if (Number.isNaN(d.getTime())) throw new Error(`Invalid date: ${date}`);
+    const c = engine.chart(
+      d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(),
+      d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), lat, lon,
+      { houseSystem: normalizeHouseSystem(house_system), zodiac },
+    );
+    return text({
+      utc: date, houses: c.houseSystem,
+      ...(zodiac !== "tropical" ? { zodiac } : {}),
+      patterns: detectPatterns(c),
     });
   });
 

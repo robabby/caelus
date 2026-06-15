@@ -17,7 +17,7 @@ const CARDS: Array<[string, string, string]> = [
   ["/docs/hellenistic", "Hellenistic Time-Lords", "Lots, profections, firdaria, zodiacal releasing, and primary directions."],
   ["/docs/vedic", "Vedic & Jyotish", "Nakshatras, the Vimshottari/Yogini/Ashtottari dashas, the vargas, and the yogas."],
   ["/docs/data-tiers", "Data Tiers", "Embedded vs Node loader: what ships in the bundle and what loads lazily."],
-  ["/docs/mcp", "MCP Setup", "Add twenty-two chart tools to Claude, Cursor, and other MCP clients."],
+  ["/docs/mcp", "MCP Setup", "Add twenty-three chart tools to Claude, Cursor, and other MCP clients."],
   ["/docs/recipes", "Recipes", "Transits, the when() query language, event search, and chart wheels."],
   ["/docs/electional", "Electional Search", "Scan a window with rankMoments, score each instant with the electional primitives, and render the winning chart."],
   ["/docs/visualizations", "Visualizations", "Beyond the flat wheel: a 3D chart sphere, an astrocartography world map, and a graphic ephemeris, rendered live."],

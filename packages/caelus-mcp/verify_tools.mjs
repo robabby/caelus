@@ -24,6 +24,7 @@ import {
   yoginiDashas, yoginiAt, ashtottariDashas, ashtottariAt,
   varga, VARGA_DIVISIONS,
   yogasAt, kemadrumaAt, rajaYogasAt, dhanaYogasAt,
+  detectPatterns,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -579,6 +580,17 @@ const assertExactHits = (hits, body, targetLonAt, angle, label, tolDeg = 0.02) =
   for (const y of [...res.raja_yogas, ...res.dhana_yogas]) {
     assert(["conjunction", "aspect", "exchange"].includes(y.via), `yogas: association type ${y.via} is defined`);
   }
+}
+
+// ---------------------------------------------------------------- aspect_patterns
+{
+  const args = { date: "1990-06-10T14:30:00Z", lat: 27.95, lon: -82.46 };
+  const res = await call("aspect_patterns", args);
+  const c = eng.chart(1990, 6, 10, 14, 30, 0, args.lat, args.lon, "placidus");
+  const expected = detectPatterns(c);
+  assert(JSON.stringify(res.patterns) === JSON.stringify(expected),
+    "aspect_patterns: matches engine detectPatterns");
+  assert(res.houses === "placidus", "aspect_patterns: house system echoed");
 }
 
 await client.close();
