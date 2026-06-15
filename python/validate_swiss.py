@@ -365,6 +365,36 @@ wt = max(abs(o["t_max"] - s[0]) * 86400 for o, s in zip(solar, se2)) if solar el
 report("solar eclipses (type+max)", wt if len(solar) == len(se2) and not bad else 1e9,
        unit=" s", n=len(solar))
 
+# where (greatest-eclipse geographic point) and local contact times vs SE,
+# for the central (non-partial) eclipses in the window.
+worst_km = 0.0
+worst_loc = 0.0
+n_central = 0
+for o, s in zip(solar, se2):
+    if o["type"] == "partial":
+        continue
+    _, wpos, _ = swe.sol_eclipse_where(s[0], FLG)  # SE central point at SE's max
+    w = EC.solar_eclipse_where(eng, o["t_max"])
+    if w is None:
+        continue
+    n_central += 1
+    lat_o, lon_o = w
+    dlat = lat_o - wpos[1]
+    dlon = (lon_o - wpos[0] + 180) % 360 - 180
+    worst_km = max(worst_km, math.hypot(
+        dlat * 111.195, dlon * 111.195 * math.cos(math.radians(wpos[1]))))
+    geopos = [wpos[0], wpos[1], 0.0]
+    _, tret, _ = swe.sol_eclipse_when_loc(o["t_max"] - 0.5, geopos, FLG, 0)
+    loc = EC.solar_eclipse_local(eng, o["t_max"], wpos[1], wpos[0], 0.0)
+    pairs = [(loc["c1"], tret[1]), (loc["c4"], tret[4])]
+    if loc["c2"] is not None:
+        pairs += [(loc["c2"], tret[2]), (loc["c3"], tret[3])]
+    for a, b in pairs:
+        if a is not None and b:
+            worst_loc = max(worst_loc, abs(a - b) * 86400)
+report("solar eclipse where", worst_km, unit=" km", n=n_central)
+report("solar eclipse contacts (loc)", worst_loc, unit=" s", n=n_central)
+
 print()
 # az/alt and pheno phase angle carry ΔT-model and sun-moon-distance noise;
 # they get wider tolerances than positions.
@@ -374,12 +404,15 @@ TOL_SEC = {"gauquelin sectors": 0.001}
 TOL_S = {"sun rise/set/transit": 1.0, "moon rise/set/transit": 2.0,
          "mars rise/set/transit": 1.0, "crossings (sun+moon)": 10.0,
          "lunar phases": 10.0, "stations": 180.0,
-         "lunar eclipses (type+max)": 15.0, "solar eclipses (type+max)": 15.0}
+         "lunar eclipses (type+max)": 15.0, "solar eclipses (type+max)": 15.0,
+         "solar eclipse contacts (loc)": 60.0}
+TOL_KM = {"solar eclipse where": 10.0}
 fails = [r for r in rows if (r[2] == '"' and r[1] > TOL.get(r[0], 5.0))
          or (r[2] == " s" and r[1] > TOL_S.get(r[0], 10.0))
          or (r[2] == " sec." and r[1] > TOL_SEC.get(r[0], 0.001))
          or (r[2] == " mag" and r[1] > 0.1)
          or (r[2] == " min" and r[1] > 0.05)
+         or (r[2] == " km" and r[1] > TOL_KM.get(r[0], 10.0))
          or (r[2] == " " and r[1] > 0.001)]
 if fails:
     print("OVER TOLERANCE:", [f[0] for f in fails])

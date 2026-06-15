@@ -89,8 +89,20 @@ its ~85 KB figure.
 **Status (2026-06-13): shipped** — global circumstances (search, type,
 gamma, magnitudes, contacts): types match Swiss Ephemeris exactly over
 1990–2030 (92 lunar + 89 solar), maxima ≤9 s, lunar magnitudes ≤0.0013
-via Danjon's parallax enlargement recovered empirically. Ground paths
-and local circumstances (`sol_eclipse_where`/`_loc`) remain open.
+via Danjon's parallax enlargement recovered empirically.
+
+**Update (2026-06-15): ground paths + local circumstances shipped.**
+`solarEclipseWhere` intersects the shadow axis with the IAU 1976 ellipsoid
+for the sub-shadow geographic point (sample it across the eclipse to draw
+the central line); `solarEclipseLocal` gives an observer's contact times
+(C1–C4), magnitude, and obscuration from topocentric Sun/Moon disks. Both
+ride on the `sky_events` MCP tool (solar eclipses now report the
+greatest-eclipse location, and local circumstances when a lat/lon is
+given). Validated in-repo against the NASA GSFC five-millennium canon: the
+greatest-eclipse point lands within ~2 km and totality duration within a
+few seconds for 2017-08-21 and 2024-04-08. The Swiss Ephemeris sweep
+(`validate_swiss.py`, against `swe_sol_eclipse_where`/`_when_loc`) runs
+where pyswisseph is installed.
 
 Solar and lunar eclipse search (when, where, how) via Besselian elements
 from Meeus and the Explanatory Supplement. No new data. With a 2.5″ Moon,

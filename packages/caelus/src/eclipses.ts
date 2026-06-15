@@ -11,10 +11,18 @@
  * Sun-Moon axis to the geocenter in Earth radii; the umbral cone's reach
  * at the surface separates total from annular, a sign change along the
  * track marks hybrids. Types match Swiss Ephemeris exactly over decades.
- * Local circumstances (where/visibility) are not computed here.
+ *
+ * Solar (where): the same shadow axis intersected with the IAU 1976 Earth
+ * ellipsoid gives the sub-shadow geographic point -- the centre line of
+ * totality/annularity at an instant; sampled across the eclipse it draws the
+ * ground track. Solar (local): topocentric Sun/Moon disks at an observer give
+ * the contact times, magnitude, and obscuration as seen from that point. With
+ * a ~2.5" Moon these land within seconds of time and a few km of track: right
+ * for charts, not for eclipse-chaser path maps.
  */
-import { ARCSEC, jdTT, mod } from "./core.js";
+import { ARCSEC, DEG, jdTT, mod, trueObliquity, equatorial, topocentricEcl } from "./core.js";
 import { Engine } from "./chart.js";
+import { gast } from "./houses.js";
 
 const KM_PER_AU = 149597870.7;
 const R_EARTH = 6378.14;
@@ -207,4 +215,190 @@ export function solarEclipses(
     });
   }
   return out;
+}
+
+// ---------------------------------------------------------------- where + local
+
+const EARTH_FLAT = 0.99664719; // 1 - f, IAU 1976 figure (b/a)
+const EARTH_FLAT2 = EARTH_FLAT * EARTH_FLAT; // (b/a)^2 = 1 - e^2
+
+/** Geographic point on the Earth's surface (geodetic latitude, east longitude). */
+export interface GeoPoint {
+  /** Geodetic latitude in degrees, north positive. */
+  lat: number;
+  /** Longitude in degrees, east positive, in (-180, 180]. */
+  lonEast: number;
+}
+
+/** Local circumstances of a solar eclipse seen from one place. */
+export interface SolarLocal {
+  /** What the observer sees at maximum: `"none"` when no part of the Sun is
+   *  covered from this place. */
+  type: "total" | "annular" | "partial" | "none";
+  /** Eclipse magnitude: fraction of the Sun's *diameter* covered at maximum
+   *  (can exceed 1 in totality). 0 when `type` is `"none"`. */
+  magnitude: number;
+  /** Obscuration: fraction of the Sun's *area* covered at maximum, in [0, 1]. */
+  obscuration: number;
+  /** Time of maximum eclipse at this place (JD UT), or `null` when unseen. */
+  maxTime: number | null;
+  /** First contact (partial begins), JD UT, or `null` when unseen. */
+  c1: number | null;
+  /** Second contact (totality/annularity begins), JD UT, or `null`. */
+  c2: number | null;
+  /** Third contact (totality/annularity ends), JD UT, or `null`. */
+  c3: number | null;
+  /** Fourth contact (partial ends), JD UT, or `null` when unseen. */
+  c4: number | null;
+}
+
+/** Geocentric *equatorial* Cartesian (km) of the Sun and Moon, plus obliquity. */
+function sunMoonEq(
+  engine: Engine, jde: number,
+): { S: number[]; M: number[] } {
+  const eps = trueObliquity(engine.data, jde);
+  const vec = (body: "sun" | "moon"): number[] => {
+    const [lon, lat, dist] = engine.ecliptic(body, jde);
+    const [ra, dec] = equatorial(lon, lat, eps);
+    const r = dist! * KM_PER_AU;
+    return [
+      r * Math.cos(dec) * Math.cos(ra),
+      r * Math.cos(dec) * Math.sin(ra),
+      r * Math.sin(dec),
+    ];
+  };
+  return { S: vec("sun"), M: vec("moon") };
+}
+
+/**
+ * Sub-shadow geographic point where the eclipse axis meets the Earth at a
+ * Julian Day (UT): the centre line of totality/annularity at that instant.
+ * Sample it across the eclipse (e.g. between the {@link SolarEclipse} `begin`
+ * and `end`) to draw the ground track.
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param jd Instant to evaluate, Julian Day (UT) -- typically a
+ *   {@link SolarEclipse.tMax} for the point of greatest eclipse.
+ * @returns The {@link GeoPoint} on the IAU 1976 ellipsoid, or `null` when the
+ *   axis misses the Earth (only a partial eclipse exists anywhere then).
+ */
+export function solarEclipseWhere(engine: Engine, jd: number): GeoPoint | null {
+  const jde = jdTT(jd);
+  const { S, M } = sunMoonEq(engine, jde);
+  const SM = [M[0] - S[0], M[1] - S[1], M[2] - S[2]];
+  const smn = Math.hypot(SM[0], SM[1], SM[2]);
+  const d = SM.map((c) => c / smn); // travels Sun -> Moon -> Earth
+  // Intersect the line M + s*d with the ellipsoid by scaling z by 1/flat,
+  // which maps the ellipsoid to a sphere of radius R_EARTH.
+  const Mz = [M[0], M[1], M[2] / EARTH_FLAT];
+  const dz = [d[0], d[1], d[2] / EARTH_FLAT];
+  const a = dz[0] ** 2 + dz[1] ** 2 + dz[2] ** 2;
+  const b = 2 * (Mz[0] * dz[0] + Mz[1] * dz[1] + Mz[2] * dz[2]);
+  const c = Mz[0] ** 2 + Mz[1] ** 2 + Mz[2] ** 2 - R_EARTH ** 2;
+  const disc = b * b - 4 * a * c;
+  if (disc < 0) return null;
+  const s = (-b - Math.sqrt(disc)) / (2 * a); // near side, facing the Moon
+  const P = [M[0] + s * d[0], M[1] + s * d[1], M[2] + s * d[2]];
+  const rho = Math.hypot(P[0], P[1]);
+  const lat = Math.atan2(P[2], EARTH_FLAT2 * rho); // geocentric -> geodetic
+  const ra = Math.atan2(P[1], P[0]);
+  const lonEast = mod(ra - gast(engine.data, jd) + Math.PI, 2 * Math.PI) - Math.PI;
+  return { lat: lat / DEG, lonEast: lonEast / DEG };
+}
+
+/** Topocentric Sun/Moon angular separation and disk radii (rad) at a place. */
+function topoCircs(
+  engine: Engine, jd: number, latDeg: number, lonEastDeg: number, altM: number,
+): { sep: number; sS: number; sM: number } {
+  const jde = jdTT(jd);
+  const eps = trueObliquity(engine.data, jde);
+  const lst = mod(gast(engine.data, jd) + lonEastDeg * DEG, 2 * Math.PI);
+  const topo = (body: "sun" | "moon"): [number, number, number] => {
+    const [lon, lat, dist] = engine.ecliptic(body, jde);
+    return topocentricEcl(lon, lat, dist!, lst, latDeg * DEG, altM, eps);
+  };
+  const [slon, slat, sdist] = topo("sun");
+  const [mlon, mlat, mdist] = topo("moon");
+  const cosSep = Math.sin(slat) * Math.sin(mlat)
+    + Math.cos(slat) * Math.cos(mlat) * Math.cos(slon - mlon);
+  return {
+    sep: Math.acos(Math.max(-1, Math.min(1, cosSep))),
+    sS: Math.asin(R_SUN / (sdist * KM_PER_AU)),
+    sM: Math.asin(R_MOON / (mdist * KM_PER_AU)),
+  };
+}
+
+/** Area where two disks (radii r1, r2, centre distance d) overlap. */
+function lensArea(d: number, r1: number, r2: number): number {
+  if (d >= r1 + r2) return 0;
+  if (d <= Math.abs(r1 - r2)) return Math.PI * Math.min(r1, r2) ** 2;
+  const a1 = Math.acos((d * d + r1 * r1 - r2 * r2) / (2 * d * r1));
+  const a2 = Math.acos((d * d + r2 * r2 - r1 * r1) / (2 * d * r2));
+  return r1 * r1 * (a1 - Math.sin(2 * a1) / 2) + r2 * r2 * (a2 - Math.sin(2 * a2) / 2);
+}
+
+/** Step out from `tMax` (where g < 0) until `g` changes sign, then bisect. */
+function contact(g: (t: number) => number, tMax: number, dir: 1 | -1): number | null {
+  const step = 0.003; // ~4.3 min
+  let prev = tMax; let fprev = g(tMax);
+  for (let i = 1; i <= 120; i++) { // search up to ~8.6 h either side
+    const t = tMax + dir * i * step;
+    const f = g(t);
+    if (fprev * f <= 0) return bisect(g, Math.min(prev, t), Math.max(prev, t));
+    prev = t; fprev = f;
+  }
+  return null;
+}
+
+/**
+ * Local circumstances of a solar eclipse as seen from one place: contact
+ * times, magnitude, and obscuration. Topocentric Sun and Moon disks, so it
+ * accounts for lunar parallax (which is what makes the same eclipse total in
+ * one town and partial in the next).
+ *
+ * @param engine The engine used to evaluate positions.
+ * @param jd A time near the eclipse, JD (UT) -- typically a
+ *   {@link SolarEclipse.tMax}; the local maximum is found within a few hours.
+ * @param latDeg Observer geodetic latitude in degrees (north positive).
+ * @param lonEastDeg Observer longitude in degrees (east positive).
+ * @param altM Observer height above the ellipsoid in metres (default 0).
+ * @returns {@link SolarLocal}. `type` is `"none"` when the Sun is not eclipsed
+ *   from this place at all; `c2`/`c3` are `null` outside totality/annularity.
+ */
+export function solarEclipseLocal(
+  engine: Engine, jd: number, latDeg: number, lonEastDeg: number, altM = 0,
+): SolarLocal {
+  const sepAt = (t: number): number =>
+    topoCircs(engine, t, latDeg, lonEastDeg, altM).sep;
+  const tMax = minimize(sepAt, jd - 0.2, jd + 0.2);
+  const { sep, sS, sM } = topoCircs(engine, tMax, latDeg, lonEastDeg, altM);
+  const none: SolarLocal = {
+    type: "none", magnitude: 0, obscuration: 0,
+    maxTime: null, c1: null, c2: null, c3: null, c4: null,
+  };
+  if (sep >= sS + sM) return none;
+  const type: SolarLocal["type"] =
+    sep <= sM - sS ? "total" : sep <= sS - sM ? "annular" : "partial";
+  const gOuter = (t: number): number => {
+    const c = topoCircs(engine, t, latDeg, lonEastDeg, altM);
+    return c.sep - (c.sS + c.sM);
+  };
+  let c2: number | null = null; let c3: number | null = null;
+  if (type === "total" || type === "annular") {
+    const gInner = (t: number): number => {
+      const c = topoCircs(engine, t, latDeg, lonEastDeg, altM);
+      return c.sep - Math.abs(c.sM - c.sS);
+    };
+    c2 = contact(gInner, tMax, -1);
+    c3 = contact(gInner, tMax, 1);
+  }
+  return {
+    type,
+    magnitude: (sS + sM - sep) / (2 * sS),
+    obscuration: lensArea(sep, sS, sM) / (Math.PI * sS * sS),
+    maxTime: tMax,
+    c1: contact(gOuter, tMax, -1),
+    c2, c3,
+    c4: contact(gOuter, tMax, 1),
+  };
 }

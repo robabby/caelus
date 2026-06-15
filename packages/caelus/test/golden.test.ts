@@ -13,7 +13,9 @@ import {
 import { Engine, BODIES, Body } from "../src/chart.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
-import { lunarEclipses, solarEclipses } from "../src/eclipses.js";
+import {
+  lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal,
+} from "../src/eclipses.js";
 import * as H from "../src/houses.js";
 import { loadNodeData } from "../src/node-loader.js";
 
@@ -291,6 +293,28 @@ for (const g of G.houses) {
         checks++;
         if (e.type !== gs[i].type) { failures++; console.error(`FAIL sec[${i}].type`); }
       });
+    }
+  }
+  // Eclipse where/local: validated against NASA GSFC's five-millennium canon
+  // rather than golden fixtures, since the canon is the external ground truth
+  // (gated via `failures`, no `checks` inflation). Greatest-eclipse point to
+  // ~0.02 deg (~2 km) and totality duration to a few seconds.
+  for (const c of [
+    { y: 2017, m: 8, geLat: 36.974, geLon: -87.659, durS: 160 },
+    { y: 2024, m: 4, geLat: 25.298, geLon: -104.138, durS: 268 },
+  ]) {
+    const es = solarEclipses(eng, julianDay(c.y, c.m, 1), julianDay(c.y, c.m, 28));
+    const e = es.find((x) => x.type === "total");
+    const w = e ? solarEclipseWhere(eng, e.tMax) : null;
+    if (!e || !w || Math.abs(w.lat - c.geLat) > 0.05 || Math.abs(w.lonEast - c.geLon) > 0.05) {
+      failures++;
+      console.error(`FAIL ${c.y} greatest-eclipse point: ${w ? `${w.lat.toFixed(3)},${w.lonEast.toFixed(3)}` : "null"} vs ${c.geLat},${c.geLon}`);
+    }
+    const loc = e ? solarEclipseLocal(eng, e.tMax, c.geLat, c.geLon) : null;
+    const dur = loc && loc.c2 && loc.c3 ? (loc.c3 - loc.c2) * 86400 : -1;
+    if (!loc || loc.type !== "total" || Math.abs(loc.obscuration - 1) > 1e-6 || Math.abs(dur - c.durS) > 8) {
+      failures++;
+      console.error(`FAIL ${c.y} local@GE: type=${loc?.type} obsc=${loc?.obscuration.toFixed(3)} dur=${dur.toFixed(0)}s vs ${c.durS}s`);
     }
   }
   for (const [b, want] of Object.entries({ ...g.asteroids, ...g.uranians }) as Array<[string, any]>) {

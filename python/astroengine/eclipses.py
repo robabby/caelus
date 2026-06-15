@@ -9,11 +9,18 @@ Solar (global): shadow-axis geometry. gamma = closest approach of the
 Sun-Moon axis to the geocenter in Earth radii; the umbral cone's reach at
 the surface separates total from annular, a sign change along the track
 marks hybrids. Types match Swiss Ephemeris exactly over 1950-2050; times
-of maximum to ~9 s. Local circumstances (where/visibility) are not
-computed here.
+of maximum to ~9 s.
+
+Solar (where): the shadow axis intersected with the IAU 1976 Earth
+ellipsoid gives the sub-shadow geographic point -- the centre line of
+totality/annularity at an instant; sampled across the eclipse it draws the
+ground track. Solar (local): topocentric Sun/Moon disks at an observer give
+the contact times, magnitude, and obscuration as seen from that point.
 """
 import math
-from .core import ARCSEC, jd_tt
+from . import houses as H
+from .core import (ARCSEC, DEG, jd_tt, true_obliquity, equatorial,
+                   topocentric_ecl)
 
 KM_PER_AU = 149597870.7
 R_EARTH = 6378.14
@@ -182,3 +189,129 @@ def solar_eclipses(engine, jd_start, jd_end):
         out.append({"t_max": t_max, "type": kind, "gamma": gamma,
                     "begin": begin, "end": end})
     return out
+
+
+# ---------------------------------------------------------------- where + local
+
+EARTH_FLAT = 0.99664719  # 1 - f, IAU 1976 figure (b/a)
+EARTH_FLAT2 = EARTH_FLAT * EARTH_FLAT  # (b/a)^2 = 1 - e^2
+
+
+def _sun_moon_eq(engine, jde):
+    """Geocentric equatorial Cartesian (km) of the Sun and Moon."""
+    eps = true_obliquity(jde)
+
+    def vec(body):
+        lon, lat, dist = engine._ecliptic(body, jde)
+        ra, dec = equatorial(lon, lat, eps)
+        r = dist * KM_PER_AU
+        return [r * math.cos(dec) * math.cos(ra),
+                r * math.cos(dec) * math.sin(ra),
+                r * math.sin(dec)]
+    return vec("sun"), vec("moon")
+
+
+def solar_eclipse_where(engine, jd):
+    """Sub-shadow geographic point (geodetic lat deg, east lon deg in
+    (-180, 180]) where the eclipse axis meets the IAU 1976 ellipsoid at jd
+    (UT) -- the centre line at that instant. None when the axis misses the
+    Earth (only a partial eclipse exists anywhere then)."""
+    jde = jd_tt(jd)
+    S, M = _sun_moon_eq(engine, jde)
+    SM = [M[i] - S[i] for i in range(3)]
+    smn = math.sqrt(sum(c * c for c in SM))
+    d = [c / smn for c in SM]  # travels Sun -> Moon -> Earth
+    # Scale z by 1/flat to map the ellipsoid to a sphere of radius R_EARTH.
+    mz = [M[0], M[1], M[2] / EARTH_FLAT]
+    dz = [d[0], d[1], d[2] / EARTH_FLAT]
+    a = sum(c * c for c in dz)
+    b = 2 * sum(mz[i] * dz[i] for i in range(3))
+    c = sum(v * v for v in mz) - R_EARTH ** 2
+    disc = b * b - 4 * a * c
+    if disc < 0:
+        return None
+    s = (-b - math.sqrt(disc)) / (2 * a)  # near side, facing the Moon
+    P = [M[i] + s * d[i] for i in range(3)]
+    rho = math.hypot(P[0], P[1])
+    lat = math.atan2(P[2], EARTH_FLAT2 * rho)  # geocentric -> geodetic
+    ra = math.atan2(P[1], P[0])
+    lon_east = (ra - H.gast(jd) + math.pi) % (2 * math.pi) - math.pi
+    return lat / DEG, lon_east / DEG
+
+
+def _topo_circs(engine, jd, lat_deg, lon_east_deg, alt_m):
+    """Topocentric Sun/Moon angular separation and disk radii (rad)."""
+    jde = jd_tt(jd)
+    eps = true_obliquity(jde)
+    lst = (H.gast(jd) + lon_east_deg * DEG) % (2 * math.pi)
+
+    def topo(body):
+        lon, lat, dist = engine._ecliptic(body, jde)
+        return topocentric_ecl(lon, lat, dist, lst, lat_deg * DEG, alt_m, eps)
+    slon, slat, sdist = topo("sun")
+    mlon, mlat, mdist = topo("moon")
+    cos_sep = (math.sin(slat) * math.sin(mlat)
+               + math.cos(slat) * math.cos(mlat) * math.cos(slon - mlon))
+    return (math.acos(max(-1.0, min(1.0, cos_sep))),
+            math.asin(R_SUN / (sdist * KM_PER_AU)),
+            math.asin(R_MOON / (mdist * KM_PER_AU)))
+
+
+def _lens_area(d, r1, r2):
+    """Area where two disks (radii r1, r2, centre distance d) overlap."""
+    if d >= r1 + r2:
+        return 0.0
+    if d <= abs(r1 - r2):
+        return math.pi * min(r1, r2) ** 2
+    a1 = math.acos((d * d + r1 * r1 - r2 * r2) / (2 * d * r1))
+    a2 = math.acos((d * d + r2 * r2 - r1 * r1) / (2 * d * r2))
+    return (r1 * r1 * (a1 - math.sin(2 * a1) / 2)
+            + r2 * r2 * (a2 - math.sin(2 * a2) / 2))
+
+
+def _contact(g, t_max, direction):
+    """Step out from t_max (g < 0) until g changes sign, then bisect."""
+    step = 0.003  # ~4.3 min
+    prev, fprev = t_max, g(t_max)
+    for i in range(1, 121):  # search up to ~8.6 h either side
+        t = t_max + direction * i * step
+        f = g(t)
+        if fprev * f <= 0:
+            return _bisect(g, min(prev, t), max(prev, t))
+        prev, fprev = t, f
+    return None
+
+
+def solar_eclipse_local(engine, jd, lat_deg, lon_east_deg, alt_m=0.0):
+    """Local circumstances of a solar eclipse at one place: dict with type
+    (total|annular|partial|none), magnitude (fraction of the Sun's diameter
+    covered at maximum), obscuration (fraction of area), max_time, and
+    contact times c1..c4 (UT JD; c2/c3 None outside totality/annularity).
+    Topocentric, so lunar parallax is included."""
+    def sep_at(t):
+        return _topo_circs(engine, t, lat_deg, lon_east_deg, alt_m)[0]
+    t_max = _minimize(sep_at, jd - 0.2, jd + 0.2)
+    sep, s_s, s_m = _topo_circs(engine, t_max, lat_deg, lon_east_deg, alt_m)
+    if sep >= s_s + s_m:
+        return {"type": "none", "magnitude": 0.0, "obscuration": 0.0,
+                "max_time": None, "c1": None, "c2": None,
+                "c3": None, "c4": None}
+    kind = ("total" if sep <= s_m - s_s
+            else "annular" if sep <= s_s - s_m else "partial")
+
+    def g_outer(t):
+        sep2, ss2, sm2 = _topo_circs(engine, t, lat_deg, lon_east_deg, alt_m)
+        return sep2 - (ss2 + sm2)
+    c2 = c3 = None
+    if kind in ("total", "annular"):
+        def g_inner(t):
+            sep2, ss2, sm2 = _topo_circs(engine, t, lat_deg, lon_east_deg, alt_m)
+            return sep2 - abs(sm2 - ss2)
+        c2 = _contact(g_inner, t_max, -1)
+        c3 = _contact(g_inner, t_max, +1)
+    return {"type": kind,
+            "magnitude": (s_s + s_m - sep) / (2 * s_s),
+            "obscuration": _lens_area(sep, s_s, s_m) / (math.pi * s_s * s_s),
+            "max_time": t_max,
+            "c1": _contact(g_outer, t_max, -1), "c2": c2, "c3": c3,
+            "c4": _contact(g_outer, t_max, +1)}

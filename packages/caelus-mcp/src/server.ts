@@ -20,7 +20,7 @@ import { realpathSync } from "node:fs";
 import {
   Engine, BODIES, Body, AlwaysBody, julianDay, mod,
   riseSet, crossings, lunarPhases, stations, RiseKind,
-  lunarEclipses, solarEclipses,
+  lunarEclipses, solarEclipses, solarEclipseWhere, solarEclipseLocal,
   ASPECTS, DEFAULT_ORBS, SIGNS as SIGN_NAMES, dignities, normalizeHouseSystem,
   solarPhase, aspectPhase, planetaryHour, voidOfCourse,
   CAZIMI_DEG, COMBUST_DEG, UNDER_BEAMS_DEG,
@@ -837,7 +837,7 @@ export function buildServer(
 
   server.registerTool("sky_events", {
     description:
-      "Sky events in a UTC date range: rise/set/meridian transits (need lat+lon+body), lunar phases (new/quarters/full), solar and lunar eclipses (global circumstances: type, magnitude, gamma), stations (body turns retrograde/direct; needs body), zodiac degree crossings (needs body + target_lon). Times to the second vs Swiss Ephemeris (stations to ~1 min: ill-conditioned by nature). Range <= 370 days.",
+      "Sky events in a UTC date range: rise/set/meridian transits (need lat+lon+body), lunar phases (new/quarters/full), solar and lunar eclipses, stations (body turns retrograde/direct; needs body), zodiac degree crossings (needs body + target_lon). Solar eclipses report global circumstances (type, magnitude, gamma) plus the greatest-eclipse location; add lat+lon to also get local circumstances (type seen, magnitude, obscuration, contact times C1-C4). Times to the second vs Swiss Ephemeris (stations to ~1 min: ill-conditioned by nature). Range <= 370 days.",
     inputSchema: {
       start: z.string().describe("UTC ISO start date (convert from local first)"),
       end: z.string().describe("UTC ISO end date; range <= 370 days"),
@@ -858,7 +858,11 @@ export function buildServer(
     if (jd1 - jd0 > 370) throw new Error("Range too large (max 370 days)");
     const iso = (jd: number) =>
       new Date((jd - 2440587.5) * 86400000).toISOString().slice(0, 19) + "Z";
-    const events: Array<{ t: string; kind: string; detail?: string }> = [];
+    const events: Array<{
+      t: string; kind: string; detail?: string;
+      local?: { type: string; magnitude?: number; obscuration?: number;
+        c1?: string; c2?: string; max?: string; c3?: string; c4?: string };
+    }> = [];
     const riseKinds = kinds.filter((k) =>
       k === "rise" || k === "set" || k === "mtransit" || k === "itransit");
     if (riseKinds.length) {
@@ -893,9 +897,30 @@ export function buildServer(
       }
     }
     if (kinds.includes("solar_eclipse")) {
+      const fmtLat = (v: number) => `${Math.abs(v).toFixed(1)}°${v >= 0 ? "N" : "S"}`;
+      const fmtLon = (v: number) => `${Math.abs(v).toFixed(1)}°${v >= 0 ? "E" : "W"}`;
       for (const e of solarEclipses(engine, jd0, jd1)) {
-        events.push({ t: iso(e.tMax), kind: "solar_eclipse",
-          detail: `${e.type}, gamma ${e.gamma.toFixed(2)}` });
+        const w = solarEclipseWhere(engine, e.tMax);
+        let detail = `${e.type}, gamma ${e.gamma.toFixed(2)}`;
+        if (w) detail += `, greatest at ${fmtLat(w.lat)} ${fmtLon(w.lonEast)}`;
+        const ev: (typeof events)[number] = { t: iso(e.tMax), kind: "solar_eclipse", detail };
+        // Local circumstances at the observer, when a place was given.
+        if (lat !== undefined && lon !== undefined) {
+          const loc = solarEclipseLocal(engine, e.tMax, lat, lon);
+          ev.local = loc.type === "none"
+            ? { type: "none" }
+            : {
+                type: loc.type,
+                magnitude: Number(loc.magnitude.toFixed(3)),
+                obscuration: Number(loc.obscuration.toFixed(3)),
+                c1: loc.c1 ? iso(loc.c1) : undefined,
+                c2: loc.c2 ? iso(loc.c2) : undefined,
+                max: loc.maxTime ? iso(loc.maxTime) : undefined,
+                c3: loc.c3 ? iso(loc.c3) : undefined,
+                c4: loc.c4 ? iso(loc.c4) : undefined,
+              };
+        }
+        events.push(ev);
       }
     }
     if (kinds.includes("crossing")) {
