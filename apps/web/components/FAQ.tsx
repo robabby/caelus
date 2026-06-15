@@ -89,13 +89,13 @@ const ITEMS: QA[] = [
     q: "Can I use it with AI assistants like Claude or Cursor?",
     a: (
       <>
-        Yes. <code>caelus-mcp</code> exposes twenty-two chart tools over the Model
+        Yes. <code>caelus-mcp</code> exposes twenty-three chart tools over the Model
         Context Protocol, available hosted or as a local stdio server. See{" "}
         <A href="/docs/mcp">MCP Setup</A>.
       </>
     ),
     text:
-      "Yes. The caelus-mcp package exposes twenty-two chart tools over the Model Context Protocol, available hosted or as a local stdio server.",
+      "Yes. The caelus-mcp package exposes twenty-three chart tools over the Model Context Protocol, available hosted or as a local stdio server.",
   },
 ];
 
