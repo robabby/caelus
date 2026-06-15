@@ -31,7 +31,7 @@ Dry engineer explaining a hard problem to a peer who builds software. State what
 | Level | How to write it |
 |-------|-----------------|
 | Measured fact | State the number and source |
-| Engine limit | "VSOP87 theory limit," "series valid 1885–2099" |
+| Engine limit | "VSOP87 theory limit," "embedded Moon tier 1920–2080" |
 | Comparison | "Swiss Ephemeris 2.10 at N random instants" — give N or "hundreds" |
 | Open question | Name it; don't fake closure |
 

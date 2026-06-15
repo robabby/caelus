@@ -1,7 +1,8 @@
 # Date-range expansion (Tier A)
 
-Tracking the work to widen Caelus's supported date range beyond the current
-1900-2099 headline, from the Swiss Ephemeris feasibility analysis. The lever:
+Tracking the work to widen Caelus's supported date range beyond the former
+1900-2099 headline (now **1850-2150**, landed — see below), from the Swiss
+Ephemeris feasibility analysis. The lever:
 the published ceiling is not a theory limit (VSOP87 holds to about 1 arcsec
 across +-4000 years for the inner planets, +-2000 years for Jupiter/Saturn),
 it is set by two analytic shortcuts and by what we have measured.
@@ -14,15 +15,16 @@ theory's published envelope alone.
 
 | Body group | Source | Range |
 |---|---|---|
-| Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune | VSOP87D | theory good well past 2099; measured only over 1900-2099 |
-| Pluto | Meeus ch.37 series | hard 1885-2099; diverges outside |
+| Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune | VSOP87D | theory good well past 2099; now measured over 1850-2150 |
+| Pluto | Chebyshev pack (Horizons barycenter) | 1700-2212; superseded the Meeus ch.37 series (hard 1885-2099) |
 | Moon (precise tier) | Chebyshev fit to DE | embedded 1920-2080, full 1850-2150 |
 | Moon (fallback) | Meeus ch.47 abridged | book precision over the historical span |
 | Chiron, Ceres, Pallas, Juno, Vesta, Pholus | Chebyshev fit to Horizons | 1850-2150 |
 | Uranian bodies | Kepler element pack | validated 1800-2149 |
 | Nodes, mean Lilith | analytic | no range limit |
 
-Pluto is the one hard cliff inside an otherwise much wider envelope.
+Pluto was the one hard cliff inside an otherwise much wider envelope; the
+Chebyshev pack removed it.
 
 ## Landed (network-free, this change)
 
@@ -46,26 +48,29 @@ Moon's full precise tier:
   heliocentric ecliptic J2000, geometric), scanning segment length and degree
   for the smallest pack under a 5e-6 AU residual. Default window 1700-2200.
 
-## Remaining (needs Horizons egress + numpy)
+## Landed (the data-plus-claims half, with Horizons egress)
 
-These cannot run in a sandbox without outbound access to `ssd.jpl.nasa.gov`.
-Run them locally or in CI with egress:
+All five remaining steps ran locally against `ssd.jpl.nasa.gov` and shipped:
 
-1. `python fit_pluto.py` -> writes `pluto_cheb.json` to both data dirs.
-   Confirm the residual prints under 5e-6 AU and the pack is a few tens of KB.
-2. Add `pluto_cheb.json` to the maintained data manifest and, if wanted, an
-   embedded browser tier (static import in `data-embedded.ts`, size budget
-   permitting).
-3. Regenerate the golden suite (`export_golden.py`). The longitudes table
-   samples Pluto out to about 2140; with a pack covering that span those
-   points now route through the pack, so the golden values for Pluto change
-   and must be regenerated, then the TS replay re-pinned.
-4. Extend `validate_horizons.py` to sample the new edges (e.g. add 1800 and
-   2200 epochs) and measure the VSOP outer planets and the Moon there. Write
-   the per-band bounds into `horizons-accuracy.json` / `accuracy.json`.
-5. Only if the measured arcsec holds at the edges: widen the published
-   headline (playground "1900-2099", the validation page, and the
-   claims-registry render forms + prose) to the measured band.
+1. `python fit_pluto.py` minted `pluto_cheb.json` from the Pluto **barycenter**
+   (Horizons body 9, not body 999): body 999 carries Charon's ~6.4-day wobble
+   (~1.4e-5 AU) that floors any smooth Chebyshev fit, while the barycenter is
+   smooth and has no 1800/2199 Horizons cliff. Window 1700-2212, fit residual
+   4.1e-6 AU (~0.03″). Pack written to both data dirs.
+2. The pack is a Node-tier artifact, loaded via `node-loader.ts`
+   (`existsSync`-guarded); the browser playground keeps Meeus.
+3. Golden suite regenerated (`export_golden.py`) and the TS replay re-pinned;
+   full 27-suite + birth/wheel green. A `1 - 1e-9` edge guard was added to both
+   astrocartography implementations to skip degenerate near-tangent points
+   (`acos(±1)`) that otherwise diverged ~2e-7° across languages.
+4. `validate_horizons.py` now measures banded edges (core 1900-2099, extended
+   1850-2150, edges 1800/2200) and writes per-band bounds to
+   `horizons-accuracy.json`. The engine holds across 1850-2150; majors and
+   Pluto run wider still.
+5. Headline widened to the measured **1850-2150** band: `accuracy.json`
+   (range + Pluto ≤3.4″, Mean Lilith ≤1.6″, and the per-body maxes from a
+   `validate_swiss.py` re-run over 1851-2149), the validation/provenance pages,
+   the MCP spec + server prose, both `llms.txt` copies, and the package READMEs.
 
 ## Notes and non-goals
 

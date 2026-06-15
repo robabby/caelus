@@ -21,7 +21,7 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(__file__))
 from astroengine.chart import Engine
-from astroengine.core import julian_day, jd_tt
+from astroengine.core import julian_day, jd_tt, delta_t
 
 HERE = os.path.dirname(__file__)
 API = "https://ssd.jpl.nasa.gov/api/horizons.api"
@@ -30,13 +30,39 @@ CACHE = os.path.join(HERE, "horizons_apparent_cache.json")
 BODIES = {
     "sun": "10", "moon": "301", "mercury": "199", "venus": "299",
     "mars": "499", "jupiter": "599", "saturn": "699", "uranus": "799",
-    "neptune": "899", "pluto": "999", "chiron": "2060", "ceres": "1;",
+    "neptune": "899", "pluto": "9", "chiron": "2060", "ceres": "1;",
     "pallas": "2;", "juno": "3;", "vesta": "4;", "pholus": "5145;",
 }
+# Bodies measured out to the 1800/2200 edges. The asteroid + Chiron Chebyshev
+# packs span only 1850-2150, so they are not exercised past that; the majors
+# (VSOP87D) and Pluto (1700-2212 pack) and the Moon (series fallback outside the
+# 1850-2150 cheb tier) are.
+EDGE_BODIES = {"sun", "moon", "mercury", "venus", "mars", "jupiter",
+               "saturn", "uranus", "neptune", "pluto"}
+
 # Spread the time-of-day across the day (golden-ratio fractions) so epochs
 # aren't all at the same clock time.
+def _band_epochs(years):
+    return [jd_tt(julian_day(y, (k * 5) % 12 + 1, (k * 7) % 27 + 1)
+                  + (k * 0.6180339887) % 1.0) for k, y in enumerate(years)]
+
+
+# Core band (unchanged: keeps the committed cache valid). Years 1900-2092.
 EPOCHS_TT = [jd_tt(julian_day(1900 + k * 8, (k * 5) % 12 + 1, 11)
                    + (k * 0.6180339887) % 1.0) for k in range(25)]
+# Extended band: inside the Moon/asteroid/Chiron pack envelope (1850-2150), so
+# every body is measured here -- this is the band we want to publish as widened.
+EXT_EPOCHS = _band_epochs(list(range(1855, 1900, 5)) + list(range(2105, 2150, 5)))
+# Edge band: just outside that envelope. Majors + Pluto + Moon only.
+EDGE_EPOCHS = _band_epochs(list(range(1800, 1850, 5)) + list(range(2155, 2200, 5)))
+
+
+def _band_of(year):
+    if 1900 <= year <= 2099:
+        return "1900-2099"
+    if 1850 <= year < 1900 or 2099 < year <= 2150:
+        return "1850-2150"
+    return "1800-2200 edges"
 
 
 def fetch(command, jds):
@@ -61,33 +87,76 @@ def fetch(command, jds):
     return rows
 
 
+J1900 = julian_day(1900, 1, 1)
+BAND_ORDER = ["1850-2150", "1900-2099", "1800-2200 edges"]
+
+
+def _needed(name):
+    """TT epochs a body is sampled at: core+extended for all, plus the 1800/2200
+    edges for the majors/Pluto/Moon (the asteroid/Chiron packs end at 2150)."""
+    jds = list(EPOCHS_TT) + list(EXT_EPOCHS)
+    if name in EDGE_BODIES:
+        jds += list(EDGE_EPOCHS)
+    return jds
+
+
 def main():
     cache = json.load(open(CACHE)) if os.path.exists(CACHE) else {}
-    eng = Engine("full")
-    out = {"basis": "JPL Horizons apparent geocentric RA/Dec (airless), TT epochs",
-           "epochs": len(EPOCHS_TT), "bodies": {}}
+    # Pluto moved from body center (999) to barycenter (9) to match the engine's
+    # Chebyshev pack (the 6.39-day Charon wobble of 999 is not in the pack); drop
+    # any pre-switch rows so Pluto refetches against the barycenter.
+    if cache.get("_pluto_center") != "9":
+        cache.pop("pluto", None)
+        cache["_pluto_center"] = "9"
+
+    # incremental fetch: only pull (body, epoch) pairs not already cached
     for name, cmd in BODIES.items():
-        if name not in cache:
-            cache[name] = fetch(cmd, EPOCHS_TT)
+        rows = cache.get(name, [])
+        have = {round(jd, 3) for jd, _, _ in rows}
+        miss = [jd for jd in _needed(name) if round(jd, 3) not in have]
+        if miss:
+            for i in range(0, len(miss), 40):  # keep TLIST requests modest
+                rows.extend(fetch(cmd, miss[i:i + 40]))
+                json.dump(cache | {name: rows}, open(CACHE, "w"))
+                time.sleep(0.2)
+            cache[name] = rows
             json.dump(cache, open(CACHE, "w"))
-            time.sleep(0.2)
-        worst = 0.0
-        for (jd, ra_h, dec_h) in cache[name]:
-            jd_ut = jd  # engine takes UT; reconstruct from TT
-            # invert jd_tt approximately (dt changes slowly)
-            from astroengine.core import delta_t
-            jd_ut = jd - delta_t(jd) / 86400.0
-            p = eng.position(name, jd_ut)
+
+    eng = Engine("full")
+    worst = {}   # (band, body) -> worst arcsec
+    for name in BODIES:
+        for (jd, ra_h, dec_h) in cache.get(name, []):
+            band = _band_of(int(1900 + (jd - J1900) / 365.25))
+            jd_ut = jd - delta_t(jd) / 86400.0  # engine takes UT
+            try:
+                p = eng.position(name, jd_ut)
+            except ValueError:
+                continue  # epoch outside a body's pack range; not measured here
             dra = abs(((p["ra"] - ra_h + 180) % 360 - 180)) * \
                 math.cos(math.radians(dec_h)) * 3600
             ddec = abs(p["dec"] - dec_h) * 3600
-            worst = max(worst, math.hypot(dra, ddec))
-        out["bodies"][name] = round(worst, 3)
-        print(f"{name:9s} worst vs JPL {worst:8.3f}\"")
+            worst[(band, name)] = max(worst.get((band, name), 0.0),
+                                      math.hypot(dra, ddec))
+
+    out = {"basis": "JPL Horizons apparent geocentric RA/Dec (airless), TT epochs; "
+                    "Pluto vs barycenter (9)",
+           "bands": {}}
+    counts = {"1900-2099": len(EPOCHS_TT), "1850-2150": len(EXT_EPOCHS),
+              "1800-2200 edges": len(EDGE_EPOCHS)}
+    for band in BAND_ORDER:
+        bodies = {n: round(w, 3) for (b, n), w in worst.items() if b == band}
+        if not bodies:
+            continue
+        print(f"\n=== {band}  ({counts[band]} epochs) ===")
+        for n in BODIES:
+            if n in bodies:
+                print(f"  {n:9s} worst vs JPL {bodies[n]:8.3f}\"")
+        out["bands"][band] = {"epochs": counts[band],
+                              "bodies": {n: bodies[n] for n in BODIES if n in bodies}}
     with open(os.path.join(HERE, "..", "packages", "caelus",
                            "horizons-accuracy.json"), "w") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
-    print("-> packages/caelus/horizons-accuracy.json")
+    print("\n-> packages/caelus/horizons-accuracy.json")
 
 
 if __name__ == "__main__":

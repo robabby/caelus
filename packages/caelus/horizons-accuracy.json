@@ -1,22 +1,62 @@
 {
-  "basis": "JPL Horizons apparent geocentric RA/Dec (airless), TT epochs",
-  "epochs": 25,
-  "bodies": {
-    "sun": 0.11,
-    "moon": 0.215,
-    "mercury": 0.145,
-    "venus": 0.11,
-    "mars": 0.236,
-    "jupiter": 0.513,
-    "saturn": 0.383,
-    "uranus": 1.493,
-    "neptune": 2.436,
-    "pluto": 6.494,
-    "chiron": 2.187,
-    "ceres": 4.437,
-    "pallas": 13.059,
-    "juno": 3.628,
-    "vesta": 2.912,
-    "pholus": 8.071
+  "basis": "JPL Horizons apparent geocentric RA/Dec (airless), TT epochs; Pluto vs barycenter (9)",
+  "bands": {
+    "1850-2150": {
+      "epochs": 18,
+      "bodies": {
+        "sun": 0.107,
+        "moon": 0.393,
+        "mercury": 0.099,
+        "venus": 0.113,
+        "mars": 0.182,
+        "jupiter": 0.663,
+        "saturn": 0.459,
+        "uranus": 1.571,
+        "neptune": 2.356,
+        "pluto": 5.668,
+        "chiron": 2.609,
+        "ceres": 3.77,
+        "pallas": 13.337,
+        "juno": 4.913,
+        "vesta": 2.341,
+        "pholus": 8.029
+      }
+    },
+    "1900-2099": {
+      "epochs": 25,
+      "bodies": {
+        "sun": 0.11,
+        "moon": 0.215,
+        "mercury": 0.145,
+        "venus": 0.11,
+        "mars": 0.236,
+        "jupiter": 0.513,
+        "saturn": 0.383,
+        "uranus": 1.493,
+        "neptune": 2.436,
+        "pluto": 6.161,
+        "chiron": 2.187,
+        "ceres": 4.437,
+        "pallas": 13.059,
+        "juno": 3.628,
+        "vesta": 2.912,
+        "pholus": 8.071
+      }
+    },
+    "1800-2200 edges": {
+      "epochs": 19,
+      "bodies": {
+        "sun": 0.108,
+        "moon": 7.408,
+        "mercury": 0.143,
+        "venus": 0.138,
+        "mars": 0.311,
+        "jupiter": 0.733,
+        "saturn": 0.506,
+        "uranus": 1.84,
+        "neptune": 3.757,
+        "pluto": 6.134
+      }
+    }
   }
 }

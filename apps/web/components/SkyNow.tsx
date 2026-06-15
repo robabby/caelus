@@ -519,7 +519,7 @@ export default function SkyNow() {
       )}
 
       <h3 style={{ marginTop: "2rem" }}>
-        Accuracy <span className="mute" style={{ fontWeight: 400, fontSize: "0.85rem" }}>(vs reference, 1900–2099)</span>
+        Accuracy <span className="mute" style={{ fontWeight: 400, fontSize: "0.85rem" }}>(vs reference, 1850–2150)</span>
       </h3>
       <table className="mono" style={{ fontSize: "0.85rem", maxWidth: 420 }}>
         <tbody>{ACCURACY.map(([k, v]) => <tr key={k}><td className="mute" style={cell}>{k}</td><td style={cell}>{v}</td></tr>)}</tbody>

@@ -635,7 +635,7 @@ export function buildServer(
 
   server.registerTool("natal_chart", {
     description:
-      "A person's birth chart. Requires their exact birth date+time and birthplace (all three: date, lat, lon). Use this — not current_sky — whenever the question is about someone's natal/birth chart. Returns 13 bodies (sun–pluto, chiron, nodes) with sign, house, retrograde, speed; ASC/MC; cusps; major aspects with orbs. Vs Swiss Ephemeris (1900–2099): Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤2.5″ (series valid 1885–2099), Chiron ≤1″, mean node ≤1″, true node ≤ 1′ vs SE's built-in ephemeris.",
+      "A person's birth chart. Requires their exact birth date+time and birthplace (all three: date, lat, lon). Use this — not current_sky — whenever the question is about someone's natal/birth chart. Returns 13 bodies (sun–pluto, chiron, nodes) with sign, house, retrograde, speed; ASC/MC; cusps; major aspects with orbs. Vs Swiss Ephemeris (1850–2150): Sun–Saturn ≤1″, Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤3.4″ (Chebyshev pack), Chiron ≤1″, mean node ≤1″, true node ≤ 1′ vs SE's built-in ephemeris.",
     inputSchema: { ...birth, house_system: houseSys, zodiac: zodiacSchema },
     _meta: CHART_TOOL_META,
   }, async ({ date, lat, lon, house_system, zodiac }) =>

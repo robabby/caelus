@@ -109,7 +109,7 @@ export default function Provenance() {
       <H2>Swiss Ephemeris as oracle</H2>
       <P>
         During development, Caelus positions were compared to Swiss Ephemeris
-        2.10 at random instants across 1900–2099. No Swiss Ephemeris code or
+        2.10 at random instants across 1850–2150. No Swiss Ephemeris code or
         coefficient ships here. An early Chiron fit sampled its asteroid file
         offline; release uses JPL Horizons instead. The two Chiron integrations
         agree to 0.85″ worst-case across 1900–2099.

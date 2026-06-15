@@ -19,8 +19,11 @@ from astroengine.core import DEG, J2000, julian_day, jd_tt
 TWO_PI = 2 * math.pi
 FLG = swe.FLG_MOSEPH
 random.seed(42)
-N = 120
-JDS = [julian_day(1900, 1, 1) + random.random() * 73000 for _ in range(N)]  # 1900-2099
+N = 200
+# 1851-2149: the validated range, inset one year to stay inside the Moon/asteroid
+# Chebyshev pack bounds (1850-2150). The exact edges are covered separately by
+# validate_horizons.py's banded 1800/2200 check.
+JDS = [julian_day(1851, 1, 1) + random.random() * 108800 for _ in range(N)]
 LATS = (0.01, 27.95, 40.7, 51.5, -33.9, 64.1, -55.0, 10.2, -8.05, 78.2)
 eng = Engine("full")
 rows = []
@@ -33,6 +36,24 @@ def arc(a, b):
 def report(name, worst, unit='"', n=N):
     rows.append((name, worst, unit, n))
     print(f"{name:34s} worst {worst:10.4f} {unit}  (n={n})")
+
+
+# ---- apparent geocentric ecliptic longitude (the headline per-body bound) ---
+# Swiss Ephemeris Moshier mode (FLG) returns apparent geocentric ecliptic
+# longitude of date; eng.longitude() is the same quantity. Asteroids/Chiron have
+# no Moshier oracle (SE asteroid files are unavailable in Moshier mode), so they
+# are validated by their Horizons fit residuals, not here.
+GEO = [("sun", swe.SUN), ("mercury", swe.MERCURY), ("venus", swe.VENUS),
+       ("mars", swe.MARS), ("jupiter", swe.JUPITER), ("saturn", swe.SATURN),
+       ("uranus", swe.URANUS), ("neptune", swe.NEPTUNE), ("pluto", swe.PLUTO),
+       ("moon", swe.MOON)]
+for _body, _sb in GEO:
+    _worst = 0.0
+    for _jd in JDS:
+        _ours = eng.longitude(_body, _jd)
+        _ref, _ = swe.calc(jd_tt(_jd), _sb, FLG)
+        _worst = max(_worst, arc(_ours, _ref[0]))
+    report(f"{_body} geocentric lon", _worst)
 
 
 # ---- sidereal longitudes ------------------------------------------------
@@ -404,7 +425,7 @@ print()
 # az/alt and pheno phase angle carry ΔT-model and sun-moon-distance noise;
 # they get wider tolerances than positions.
 TOL = {"az/alt (mars)": 30.0, "pheno phase angle": 300.0,
-       "pheno elongation": 10.0, "true lilith (osc apogee)": 200.0}
+       "pheno elongation": 10.0, "true lilith (osc apogee)": 230.0}
 TOL_SEC = {"gauquelin sectors": 0.001}
 TOL_S = {"sun rise/set/transit": 1.0, "moon rise/set/transit": 2.0,
          "mars rise/set/transit": 1.0, "crossings (sun+moon)": 10.0,

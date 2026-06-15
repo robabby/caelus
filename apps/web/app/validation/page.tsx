@@ -24,7 +24,7 @@ export default function Validation() {
       <H2>Reference vs Swiss Ephemeris 2.10</H2>
       <P>
         Python reference vs Swiss Ephemeris at hundreds of random instants in
-        1900–2099: apparent geocentric ecliptic longitude (true equinox of date),
+        1850–2150: apparent geocentric ecliptic longitude (true equinox of date),
         all bodies, angles and cusps at six latitudes including polar Iceland.
         Max and RMS disagreement in arcseconds:
       </P>

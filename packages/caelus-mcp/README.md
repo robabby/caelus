@@ -101,9 +101,9 @@ east-positive everywhere; the Americas are negative.
 
 ## Accuracy
 
-Checked against Swiss Ephemeris across 1900–2099: Sun–Saturn ≤1″,
-Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤2.5″ (series valid
-1885–2099), Chiron ≤1″, mean node ≤1″, true node ≤1′ vs SE's built-in
+Checked against Swiss Ephemeris across 1850–2150: Sun–Saturn ≤1″,
+Uranus ≤1.9″, Neptune ≤4.6″, Moon ≤2.5″, Pluto ≤3.4″ (Chebyshev
+pack), Chiron ≤1″, mean node ≤1″, true node ≤1′ vs SE's built-in
 ephemeris, asteroids ≤1″ (Horizons fits), Uranians ≤2.3″. Tables:
 [ephemengine.com/validation](https://ephemengine.com/validation).
 
