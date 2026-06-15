@@ -1,15 +1,10 @@
 "use client";
 
-import { mod, type Chart } from "caelus";
+import { type Chart } from "caelus";
 import { GLYPHS } from "caelus-wheel";
+import { aspectColor } from "../lib/chart-display";
 
 const SIGN_GLYPHS = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
-
-function aspectColor(a: string): string {
-  if (a === "square" || a === "opposition") return "var(--bad)";
-  if (a === "trine" || a === "sextile") return "var(--good)";
-  return "var(--text-mute)";
-}
 
 export interface SynContact { aBody: string; bBody: string; aspect: string; orb: number }
 

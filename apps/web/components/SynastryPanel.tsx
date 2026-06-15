@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  Engine, fmtLon, mod, ASPECTS, DEFAULT_ORBS, BODIES, compositeLongitudes,
+  Engine, fmtLon, BODIES, compositeLongitudes,
   type BodyId, type Chart,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -10,32 +10,9 @@ import { toUT } from "caelus-birth";
 import { GLYPHS } from "caelus-wheel";
 import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
+import { ASPECT_GLYPH, aspectColor, crossAspect, ASPECTABLE_ORDER as GRID } from "../lib/chart-display";
 
 const engine = new Engine(embeddedData);
-
-// Aspectable planets, in a fixed order, for the cross grid.
-const GRID = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto", "chiron"];
-const ASPECT_GLYPH: Record<string, string> = {
-  conjunction: "☌", sextile: "⚹", square: "□", trine: "△", opposition: "☍",
-};
-function aspectColor(a?: string): string {
-  if (a === "square" || a === "opposition") return "var(--bad)";
-  if (a === "trine" || a === "sextile") return "var(--good)";
-  return "var(--text-mute)";
-}
-
-/** The inter-chart aspect between two longitudes (different instants), or null. */
-function crossAspect(lonA: number, lonB: number): { aspect: string; orb: number } | null {
-  const sep = Math.abs(mod(lonA - lonB + 180, 360) - 180);
-  let best: { aspect: string; orb: number } | null = null;
-  for (const [name, angle] of Object.entries(ASPECTS)) {
-    const orb = Math.abs(sep - angle);
-    if (orb <= (DEFAULT_ORBS[name] ?? 0) && (!best || orb < best.orb)) {
-      best = { aspect: name, orb: Math.round(orb * 100) / 100 };
-    }
-  }
-  return best;
-}
 
 // Both births live in the URL fragment (#s2=), never sent to a server.
 function b64urlEncode(value: unknown): string {

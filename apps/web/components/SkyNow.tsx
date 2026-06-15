@@ -4,7 +4,7 @@ import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   detectPatterns, chartSignature, dignityScore, lots, HERMETIC_LOTS,
   nakshatra, vimshottariActive, profectionAt, varga,
-  ASPECTS, DEFAULT_ORBS, declinationAspects, outOfBounds,
+  declinationAspects, outOfBounds,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -15,17 +15,9 @@ import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
 import fixedStars from "../lib/fixed-stars.json";
-
-// The cross-chart aspect between two longitudes (natal vs transit), or null.
-function crossAspect(lonA: number, lonB: number): { aspect: string; orb: number } | null {
-  const sep = Math.abs(mod(lonA - lonB + 180, 360) - 180);
-  let best: { aspect: string; orb: number } | null = null;
-  for (const [name, angle] of Object.entries(ASPECTS)) {
-    const orb = Math.abs(sep - angle);
-    if (orb <= (DEFAULT_ORBS[name] ?? 0) && (!best || orb < best.orb)) best = { aspect: name, orb: Math.round(orb * 100) / 100 };
-  }
-  return best;
-}
+import {
+  ASPECT_GLYPH, aspectColor, crossAspect, ASPECTABLE_ORDER, PATTERN_LABEL,
+} from "../lib/chart-display";
 
 // Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
 const BRIGHT_STARS = Object.entries((fixedStars as { stars: Record<string, { mag: number }> }).stars)
@@ -54,29 +46,10 @@ const PHASE_LABEL: Record<string, string> = {
   new: "New Moon", first_quarter: "First Quarter", full: "Full Moon", last_quarter: "Last Quarter",
 };
 
-// ---- aspectarian grid ----
-const ASPECTARIAN_ORDER = [
-  "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
-  "uranus", "neptune", "pluto", "chiron",
-];
-const ASPECT_GLYPH: Record<string, string> = {
-  conjunction: "☌", sextile: "⚹", square: "□", trine: "△", opposition: "☍",
-};
-function aspectColor(a?: string): string {
-  if (a === "square" || a === "opposition") return "var(--bad)";
-  if (a === "trine" || a === "sextile") return "var(--good)";
-  return "var(--text-mute)"; // conjunction
-}
-
 // ---- Insights tab (Phase 4 symbolic layer) ----
 const CLASSICAL = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"] as const;
 const ELEMENTS = ["fire", "earth", "air", "water"] as const;
 const MODALITIES = ["cardinal", "fixed", "mutable"] as const;
-const PATTERN_LABEL: Record<string, string> = {
-  grand_cross: "Grand cross", mystic_rectangle: "Mystic rectangle", kite: "Kite",
-  t_square: "T-square", grand_trine: "Grand trine", yod: "Yod",
-  stellium_sign: "Stellium (sign)", stellium_house: "Stellium (house)",
-};
 
 type DigScore = ReturnType<typeof dignityScore>;
 function dignityLabel(d: DigScore): string {
@@ -682,7 +655,7 @@ export default function SkyNow() {
                   )}
 
                   {tab === "aspects" && (() => {
-                    const present = ASPECTARIAN_ORDER.filter((b) => chart.bodies[b]);
+                    const present = ASPECTABLE_ORDER.filter((b) => chart.bodies[b]);
                     const look: Record<string, { aspect: string; orb: number }> = {};
                     for (const a of chart.aspects) look[[a.a, a.b].sort().join("|")] = { aspect: a.aspect, orb: a.orb };
                     return (
