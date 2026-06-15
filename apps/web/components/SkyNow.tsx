@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
+  detectPatterns, chartSignature, dignityScore,
   type BodyId, type Chart, type HouseSystem, type Zodiac,
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
@@ -32,6 +33,29 @@ const ACCURACY: Array<[string, string]> = accuracy.summary.map((s) => [s.label, 
 const PHASE_LABEL: Record<string, string> = {
   new: "New Moon", first_quarter: "First Quarter", full: "Full Moon", last_quarter: "Last Quarter",
 };
+
+// ---- Insights tab (Phase 4 symbolic layer) ----
+const CLASSICAL = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"] as const;
+const ELEMENTS = ["fire", "earth", "air", "water"] as const;
+const MODALITIES = ["cardinal", "fixed", "mutable"] as const;
+const PATTERN_LABEL: Record<string, string> = {
+  grand_cross: "Grand cross", mystic_rectangle: "Mystic rectangle", kite: "Kite",
+  t_square: "T-square", grand_trine: "Grand trine", yod: "Yod",
+  stellium_sign: "Stellium (sign)", stellium_house: "Stellium (house)",
+};
+
+type DigScore = ReturnType<typeof dignityScore>;
+function dignityLabel(d: DigScore): string {
+  if (d.rulership) return "domicile";
+  if (d.exaltation) return "exalted";
+  if (d.detriment) return "detriment";
+  if (d.fall) return "fall";
+  if (d.peregrine) return "peregrine";
+  const minor = [
+    d.triplicity && "triplicity", d.term && "term", d.face && "face",
+  ].filter(Boolean);
+  return minor.length ? minor.join(", ") : "—";
+}
 
 function houseOf(cusps: number[], lon: number) {
   for (let i = 0; i < 12; i++) {
@@ -116,7 +140,7 @@ export default function SkyNow() {
   const [tzMode, setTzMode] = useState<"utc" | "local">("utc");
   const [place, setPlace] = useState("");
   const [label, setLabel] = useState("");
-  const [tab, setTab] = useState<"positions" | "aspects" | "events" | "json">("positions");
+  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "events" | "json">("positions");
   const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
   const [copied, setCopied] = useState(false);
   const [fromLink, setFromLink] = useState(false);
@@ -275,6 +299,19 @@ export default function SkyNow() {
       return null;
     }
   }, [view, chart, utIso]);
+
+  // The Phase 4 symbolic layer: configurations, structural signature, and the
+  // traditional dignity score per classical planet (sect from the Sun's house).
+  const insights = useMemo(() => {
+    if (!chart) return null;
+    const sun = chart.bodies.sun;
+    const sect: "day" | "night" = sun && sun.house >= 7 ? "day" : "night";
+    const dignities = CLASSICAL.flatMap((p) => {
+      const b = chart.bodies[p];
+      return b ? [dignityScore(p, b.lon, sect)] : [];
+    });
+    return { patterns: detectPatterns(chart), signature: chartSignature(chart), dignities, sect };
+  }, [chart]);
 
   const inp: React.CSSProperties = {
     background: "var(--surface-3)", color: "var(--text)", border: "1px solid var(--border-strong)",
@@ -466,7 +503,7 @@ export default function SkyNow() {
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
-                    {(["positions", "aspects", "events", "json"] as const).map((t) => (
+                    {(["positions", "aspects", "insights", "events", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
                         {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
                       </button>
@@ -504,6 +541,75 @@ export default function SkyNow() {
                         <li key={i}>{a.a} {a.aspect} {a.b} <span className="mute">(orb {a.orb}°)</span></li>
                       ))}
                     </ul>
+                  )}
+
+                  {tab === "insights" && insights && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem", fontSize: "0.82rem" }}>
+                      {/* Signature */}
+                      <div>
+                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>Signature</div>
+                        {ELEMENTS.map((e) => {
+                          const n = insights.signature.elements[e];
+                          const tot = ELEMENTS.reduce((s, el) => s + insights.signature.elements[el], 0) || 1;
+                          return (
+                            <div key={e} style={{ display: "flex", alignItems: "center", gap: "0.5rem", margin: "0.15rem 0" }}>
+                              <span className="mute" style={{ width: "3.4rem" }}>{e}</span>
+                              <div style={{ flex: 1, background: "var(--surface-2)", borderRadius: 2, height: "0.6rem", overflow: "hidden" }}>
+                                <div style={{ width: `${(n / tot) * 100}%`, background: "var(--accent)", height: "100%" }} />
+                              </div>
+                              <span className="mute" style={{ width: "1.2rem", textAlign: "right" }}>{n}</span>
+                            </div>
+                          );
+                        })}
+                        <p className="dim small" style={{ margin: "0.5rem 0 0" }}>
+                          {insights.signature.modalities.cardinal}c · {insights.signature.modalities.fixed}f · {insights.signature.modalities.mutable}m
+                          {" · dominant "}<strong style={{ color: "var(--text)" }}>{insights.signature.dominant.element} {insights.signature.dominant.modality}</strong>
+                          {insights.signature.dominant.sign && <> in {insights.signature.dominant.sign}</>}
+                          {insights.signature.ruler && <> · ruler {insights.signature.ruler}</>}
+                        </p>
+                      </div>
+
+                      {/* Patterns */}
+                      <div>
+                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>Configurations</div>
+                        {insights.patterns.length === 0 ? (
+                          <p className="dim small" style={{ margin: 0 }}>No major configurations.</p>
+                        ) : (
+                          <ul className="mono" style={{ lineHeight: 1.7, paddingLeft: "1.1rem", margin: 0 }}>
+                            {insights.patterns.map((p, i) => (
+                              <li key={i}>
+                                {PATTERN_LABEL[p.kind] ?? p.kind}{" "}
+                                <span className="mute">
+                                  {p.bodies.join(", ")}
+                                  {p.sign ? ` · ${p.sign}` : ""}
+                                  {p.apex ? ` · apex ${p.apex}` : ""}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {/* Dignities */}
+                      <div>
+                        <div className="dim small" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.4rem" }}>
+                          Dignity ({insights.sect} chart)
+                        </div>
+                        <table className="mono" style={{ fontSize: "0.82rem" }}>
+                          <tbody>
+                            {insights.dignities.map((d) => (
+                              <tr key={d.planet}>
+                                <td className="mute" style={cell}>{d.planet}</td>
+                                <td style={{ ...cell, color: d.total > 0 ? "var(--good)" : d.total < 0 ? "var(--bad)" : "var(--text-dim)" }}>
+                                  {d.total > 0 ? "+" : ""}{d.total}
+                                </td>
+                                <td className="mute" style={cell}>{dignityLabel(d)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   )}
 
                   {tab === "events" && (
