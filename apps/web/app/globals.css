@@ -409,6 +409,215 @@ a.card:hover,
   }
 }
 
+/* ---- features page: stat band + capability cards ---- */
+.feature-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin: 1.5rem 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .feature-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.85rem 1rem;
+  color: inherit;
+}
+
+.stat__num {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.stat__label {
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+}
+
+a.stat:hover {
+  color: inherit;
+}
+
+a.stat:hover .stat__num {
+  color: var(--accent);
+}
+
+.feature-group {
+  margin-top: 2.6rem;
+}
+
+.feature-group__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin: 0 0 0.9rem;
+}
+
+.feature-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.feature-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+.feature-card code {
+  font-size: 0.85em;
+}
+
+/* live engine renders dropped into a feature group */
+.feature-figure {
+  margin: 0 0 1.4rem;
+  text-align: center;
+}
+
+.feature-figure .chart-fluid {
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.feature-figure figcaption {
+  color: var(--text-mute);
+  font-size: var(--fs-small);
+  margin-top: 0.5rem;
+}
+
+.feature-figure--wide {
+  overflow-x: auto;
+}
+
+/* ---- comparison band (breaks out of the narrow column to full width) ---- */
+.feature-compare {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: 1.25rem;
+  padding: 0 var(--gutter);
+}
+
+.feature-compare__inner {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+}
+
+.cmp-block {
+  margin-top: 1.6rem;
+}
+
+.cmp-caption {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin: 0 0 0.7rem;
+}
+
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.cmp-table th,
+.cmp-table td {
+  padding: 0.5rem 0.7rem;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+  min-width: 6.5rem;
+}
+
+.cmp-table thead th {
+  font-weight: 500;
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  border-bottom: 1px solid var(--border-strong);
+  vertical-align: bottom;
+}
+
+.cmp-table tbody th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text);
+  min-width: 12rem;
+}
+
+.cmp-table th:first-child {
+  min-width: 12rem;
+}
+
+.cmp-me {
+  color: var(--text);
+  font-weight: 650;
+}
+
+.cmp-c--me {
+  background: var(--accent-soft);
+}
+
+th.cmp-me {
+  background: var(--accent-soft);
+  border-bottom-color: var(--accent);
+}
+
+.cmp-yes {
+  color: var(--good);
+  font-weight: 600;
+}
+
+.cmp-no {
+  color: var(--text-faint);
+}
+
+.cmp-notes {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-small);
+  color: var(--text-mute);
+  line-height: 1.5;
+}
+
+.cmp-notes li {
+  margin: 0 0 0.3rem;
+}
+
+.cmp-notes sup {
+  color: var(--text-dim);
+  margin-right: 0.3rem;
+}
+
 /* ---- header ---- */
 .site-header {
   position: sticky;
@@ -1210,6 +1419,9 @@ a.card:hover,
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
+  /* clip (not hidden) so full-bleed bands can't add a horizontal scrollbar
+     while position:sticky descendants keep working */
+  overflow-x: clip;
 }
 
 /* ---- theme toggle ---- */

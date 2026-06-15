@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel } from "caelus-wheel";
@@ -23,8 +24,18 @@ const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
   ["wheel", "caelus-wheel", "React SVG chart wheel. SSR-safe, ~3.4 KB gzipped."],
 ];
 
-// The home page's worked example is the canonical fixture — the very chart the
-// code sample computes — rendered server-side as static SVG (no client JS).
+// Credibility numbers surfaced above the fold. Each links to its proof.
+const PROOF: Array<{ num: string; label: string; href: string }> = [
+  { num: "0.41", label: "Nano-arcsec worst deviation", href: "/validation" },
+  { num: "3,218", label: "Golden checks in CI", href: "/validation" },
+  { num: "27", label: "MCP tools for AI clients", href: "/docs/mcp" },
+  { num: "~85 KB", label: "Engine, gzipped", href: "/docs/data-tiers" },
+  { num: "0", label: "Runtime dependencies", href: NPM.caelus },
+  { num: "MIT", label: "Licensed, no AGPL", href: `${SITE.repo}/blob/main/LICENSE` },
+];
+
+// The home page's worked example is the canonical fixture: the exact chart the
+// code sample computes, rendered server-side as static SVG (no client JS).
 const homeChart = new Engine(embeddedData).chart(1990, 6, 10, 14, 30, 0, 27.95, -82.46, "placidus");
 
 const jsonLd = {
@@ -44,19 +55,33 @@ export default function Home() {
     <main className="container page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Eyebrow>MIT · zero dependencies · ~85 KB</Eyebrow>
+      <Eyebrow>TypeScript · browser, edge, and Node</Eyebrow>
       <h1>A free, small, and complete Western and Vedic astrology engine</h1>
       <Lead>
-        Caelus computes natal charts and the techniques built on them: houses
-        and aspects, the Hellenistic time-lords, and the Vedic dashas, vargas,
-        and yogas, each convention validated against a named authority. The same
-        TypeScript runs in the browser, on edge runtimes, and in Node, with MCP
-        tools for AI clients. No Swiss Ephemeris, no AGPL, no ephemeris files on
-        disk.
+        Caelus computes natal charts and the classical techniques built on them,
+        each convention validated against a named authority. The same TypeScript
+        runs in the browser, on edge runtimes, and in Node, with MCP tools for AI
+        clients. No Swiss Ephemeris, no AGPL, no ephemeris files on disk.
       </Lead>
       <Cta />
 
-      <div style={{ margin: "2rem 0" }}>
+      <div className="feature-stats" style={{ marginBottom: "0.5rem" }}>
+        {PROOF.map((s) =>
+          s.href.startsWith("/") ? (
+            <Link key={s.label} href={s.href} className="card stat">
+              <span className="stat__num">{s.num}</span>
+              <span className="stat__label">{s.label}</span>
+            </Link>
+          ) : (
+            <a key={s.label} href={s.href} className="card stat" target="_blank" rel="noreferrer">
+              <span className="stat__num">{s.num}</span>
+              <span className="stat__label">{s.label}</span>
+            </a>
+          ),
+        )}
+      </div>
+
+      <div style={{ margin: "1.5rem 0 0.5rem" }}>
         <SkyRibbon />
       </div>
 
@@ -66,27 +91,15 @@ export default function Home() {
         <li>⏳ <A href="/docs/hellenistic">Hellenistic time-lords</A>: lots, profections, firdaria, zodiacal releasing, and primary directions</li>
         <li>🕉️ <A href="/docs/vedic">Vedic &amp; Jyotish</A>: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, divisional charts, and yogas</li>
         <li>🤖 <A href="/docs/mcp"><code>caelus-mcp</code></A> gives Claude, Cursor, and other MCP clients twenty-seven chart tools</li>
-        <li>🆓 MIT licensed, with no Swiss Ephemeris and no ephemeris files to deploy</li>
         <li>🔒 Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>
       </ul>
 
       <P>
         You pass a date, UT time, latitude, and longitude; the engine returns a
-        chart object for your app, API, or AI tool. Per-body accuracy is published,
-        not asserted: <A href="/validation">Validation</A>. Coefficient sources:{" "}
-        <A href="/provenance">Provenance</A>. The full capability list is on{" "}
+        chart object for your app, API, or AI tool. The full capability list,
+        with a comparison against the other engines, is on{" "}
         <A href="/features">Features</A>.
       </P>
-
-      <H2>The packages</H2>
-      <div className="grid grid-2">
-        {PACKAGES.map(([key, name, desc]) => (
-          <a key={name} href={NPM[key]} className="card card-interactive">
-            <code style={{ color: "var(--accent)" }}>{name}</code>
-            <p className="dim small" style={{ margin: "0.5rem 0 0" }}>{desc}</p>
-          </a>
-        ))}
-      </div>
 
       <H2>Compute a chart</H2>
       <CodeBlock lang="bash" code="npm install caelus" />
@@ -123,6 +136,16 @@ chart.bodies.saturn.retrograde; // true`}
         <A href={SITE.starter}>caelus-starter</A> template is a Next.js project with a
         birth form, timezone handling, and a chart wheel, deployable to Vercel in one click.
       </P>
+
+      <H2>The packages</H2>
+      <div className="grid grid-2">
+        {PACKAGES.map(([key, name, desc]) => (
+          <a key={name} href={NPM[key]} className="card card-interactive">
+            <code style={{ color: "var(--accent)" }}>{name}</code>
+            <p className="dim small" style={{ margin: "0.5rem 0 0" }}>{desc}</p>
+          </a>
+        ))}
+      </div>
 
       <H2>How it is checked</H2>
       <P>
