@@ -1,8 +1,19 @@
-import type { InterpretationSource } from "caelus";
-
 export type CorpusLayer = 1 | 2 | 3;
 
 export type CorpusRights = "pd-us" | "cc0" | "gratis-not-pd";
+
+/** Acquisition state of a source's local text. `needs-refetch` flags a file the
+ *  fetch pipeline captured corrupt (e.g. an HTML wrapper) or only partially. */
+export type SourceStatus = "ok" | "needs-refetch";
+
+/** Build-time acquisition spec — how `scripts/fetch-sources.ts` obtains a text. */
+export interface FetchSpec {
+  url?: string;
+  urls?: string[];
+  stripGutenberg?: boolean;
+  stripArchive?: boolean;
+  sacredTextsIndex?: string;
+}
 
 export interface SourceManifestEntry {
   id: string;
@@ -13,6 +24,10 @@ export interface SourceManifestEntry {
   tradition: string;
   rights: CorpusRights;
   file: string;
+  /** Acquisition state; absent means `ok`. */
+  status?: SourceStatus;
+  /** How to (re)acquire the text; absent for already-vendored data. */
+  fetch?: FetchSpec;
 }
 
 /** Serializable selector spec — resolved to Caelus selectors at extract/build time. */
@@ -50,8 +65,7 @@ export interface CorrespondenceEntry {
 
 export interface CorrespondenceData {
   version: string;
+  /** Provenance of the derived table (e.g. the open_777 transcription). */
+  derivedFrom?: { repo?: string; url?: string; note?: string };
   correspondences: CorrespondenceEntry[];
 }
-
-/** Rule corpus placeholder — populated by extract pipeline from PassageRecords. */
-export const sources: InterpretationSource[] = [];

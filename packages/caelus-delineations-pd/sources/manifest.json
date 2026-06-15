@@ -2,9 +2,9 @@
   {
     "id": "ptolemy-tetrabiblos",
     "layer": 1,
-    "title": "Tetrabiblos",
-    "author": "Claudius Ptolemy (trans. F.H. Robbins)",
-    "year": 1940,
+    "title": "Tetrabiblos (Quadripartite)",
+    "author": "Claudius Ptolemy (trans. J.M. Ashmand)",
+    "year": 1822,
     "tradition": "hellenistic",
     "rights": "pd-us",
     "file": "sources/text/ptolemy-tetrabiblos.txt",
@@ -70,9 +70,9 @@
     "tradition": "modern",
     "rights": "pd-us",
     "file": "sources/text/alan-leo-astrology-for-all.txt",
+    "status": "needs-refetch",
     "fetch": {
       "urls": [
-        "https://archive.org/stream/QPZD_astrology-for-all-alan-leo/QPZD_astrology-for-all-alan-leo_djvu.txt",
         "https://archive.org/download/QPZD_astrology-for-all-alan-leo/QPZD_astrology-for-all-alan-leo_djvu.txt"
       ],
       "stripArchive": true
@@ -118,8 +118,10 @@
     "tradition": "modern",
     "rights": "pd-us",
     "file": "sources/text/robson-fixed-stars.txt",
+    "status": "needs-refetch",
     "fetch": {
-      "url": "https://archive.org/stream/in.ernet.dli.2015.128091/in.ernet.dli.2015.128091_djvu.txt"
+      "url": "https://archive.org/download/in.ernet.dli.2015.128091/in.ernet.dli.2015.128091_djvu.txt",
+      "stripArchive": true
     }
   },
   {
@@ -174,6 +176,7 @@
     "tradition": "kabbalistic",
     "rights": "pd-us",
     "file": "sources/text/sepher-yetzirah.txt",
+    "status": "needs-refetch",
     "fetch": {
       "url": "https://sacred-texts.com/jud/yetzirah.htm"
     }

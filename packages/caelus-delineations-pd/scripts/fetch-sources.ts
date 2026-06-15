@@ -86,6 +86,41 @@ function stripHtml(html: string): string {
     .trim();
 }
 
+const ZODIAC = [
+  "aries", "taurus", "gemini", "cancer", "leo", "virgo",
+  "libra", "scorpio", "sagittar", "capricorn", "aquarius", "pisces",
+];
+
+/** A fetched body that is actually an HTML page (an archive.org / error
+ *  wrapper), not book text. The original bug shipped two of these. */
+function looksLikeHtml(text: string): boolean {
+  const head = text.slice(0, 4000).toLowerCase();
+  return head.includes("<!doctype html") || head.includes("<html")
+    || head.includes("archive.org/includes");
+}
+
+/** Count distinct zodiac terms — a cheap "is this an astrology text" signal
+ *  that an HTML wrapper or wrong scan fails. */
+function astrologyTerms(text: string): number {
+  const low = text.toLowerCase();
+  return ZODIAC.filter((z) => low.includes(z)).length;
+}
+
+/** Reject a body that is HTML, too short, or (for an astrology source) carries
+ *  too little zodiac vocabulary. Returns a reason, or null when the body is
+ *  acceptable. The zodiac floor is skipped for hermetic/kabbalistic texts. */
+function validateContent(text: string, requireAstrology = true): string | null {
+  if (looksLikeHtml(text)) return "looks like an HTML page, not text";
+  if (text.length < 1000) return `too short (${text.length} chars)`;
+  if (requireAstrology) {
+    const terms = astrologyTerms(text);
+    if (terms < 6) return `only ${terms}/12 zodiac terms found`;
+  }
+  return null;
+}
+
+const ASTROLOGY_TRADITIONS = new Set(["hellenistic", "renaissance", "modern"]);
+
 async function fetchText(url: string): Promise<string> {
   const res = await fetch(url, {
     headers: {
@@ -122,21 +157,26 @@ async function main(): Promise<void> {
   for (const entry of manifest) {
     const outPath = path.join(PKG_ROOT, entry.file);
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
+    const requireAstrology = ASTROLOGY_TRADITIONS.has(entry.tradition);
 
     if (fs.existsSync(outPath) && fs.statSync(outPath).size > 5000) {
-      console.log(`skip ${entry.id} (exists)`);
-      ok++;
-      continue;
+      const existing = fs.readFileSync(outPath, "utf8");
+      if (!validateContent(existing, requireAstrology)) {
+        console.log(`skip ${entry.id} (exists, valid)`);
+        ok++;
+        continue;
+      }
+      console.log(`re-fetch ${entry.id} (vendored copy is corrupt)`);
     }
 
     process.stdout.write(`fetch ${entry.id}... `);
+    let lastErr: Error | undefined;
     try {
       let text: string;
       if (entry.fetch.sacredTextsIndex) {
         text = await fetchSacredTextsCorpus(entry.fetch.sacredTextsIndex);
       } else {
         const urls = entry.fetch.urls ?? (entry.fetch.url ? [entry.fetch.url] : []);
-        let lastErr: Error | undefined;
         text = "";
         for (const url of urls) {
           try {
@@ -146,15 +186,18 @@ async function main(): Promise<void> {
             if (entry.file.endsWith(".htm") || url.endsWith(".htm") || url.endsWith(".html")) {
               text = stripHtml(text);
             }
-            if (text.length >= 1000) break;
-            lastErr = new Error(`too short (${text.length} chars) from ${url}`);
+            // Auto-recover a body that came back as HTML even when not flagged.
+            if (looksLikeHtml(text)) text = stripHtml(text);
+            const bad = validateContent(text, requireAstrology);
+            if (!bad) break;
+            lastErr = new Error(`${bad} from ${url}`);
           } catch (err) {
             lastErr = err instanceof Error ? err : new Error(String(err));
           }
         }
-        if (text.length < 1000) throw lastErr ?? new Error("no urls configured");
       }
-      if (text.length < 1000) throw new Error(`too short (${text.length} chars)`);
+      const bad = validateContent(text, requireAstrology);
+      if (bad) throw lastErr ?? new Error(bad);
       fs.writeFileSync(outPath, text, "utf8");
       console.log(`${(text.length / 1024).toFixed(0)} KB`);
       ok++;

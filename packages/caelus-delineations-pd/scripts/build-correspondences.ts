@@ -12,30 +12,21 @@ const PKG_ROOT = path.resolve(__dirname, "..");
 const CSV_PATH = path.join(PKG_ROOT, "sources/correspondence/liber-777.csv");
 const OUT_PATH = path.join(PKG_ROOT, "data/correspondences.json");
 
-/** Map 777 path columns (11–32) to Caelus body ids where applicable. */
+/**
+ * The seven classical planetary tarot-trump paths in Liber 777, mapped to
+ * Caelus body ids. Only these paths carry a planetary attribution; the other
+ * "double-letter" paths are signs (carried via the zodiac column) and the
+ * mother letters are elements, so they deliberately get no `body`. The previous
+ * table guessed a planet for every path and was largely wrong.
+ */
 const PATH_TO_BODY: Record<string, string> = {
-  "11": "mercury",
-  "12": "mercury",
-  "13": "moon",
-  "14": "venus",
-  "15": "mars",
-  "16": "sun",
-  "17": "venus",
-  "18": "mercury",
-  "19": "moon",
-  "20": "jupiter",
-  "21": "jupiter",
-  "22": "jupiter",
-  "23": "mars",
-  "24": "mars",
-  "25": "sun",
-  "26": "sun",
-  "27": "mars",
-  "28": "sun",
-  "29": "sun",
-  "30": "sun",
-  "31": "sun",
-  "32": "saturn",
+  "12": "mercury", // Beth — The Magus
+  "13": "moon", // Gimel — The High Priestess
+  "14": "venus", // Daleth — The Empress
+  "21": "jupiter", // Kaph — Fortune
+  "27": "mars", // Peh — The Tower
+  "30": "sun", // Resh — The Sun
+  "32": "saturn", // Tau — The Universe
 };
 
 const ZODIAC_TO_SIGN: Record<string, string> = {
@@ -152,8 +143,13 @@ function main(): void {
   }
 
   const correspondences = [...byPath.values()].sort((a, b) => a.path.localeCompare(b.path));
+  const derivedFrom = {
+    repo: "adamblvck/open_777",
+    url: "https://github.com/adamblvck/open_777",
+    note: "CSV transcription of Crowley's Liber 777 (public domain); transcription license unspecified — attributed, not relicensed.",
+  };
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
-  fs.writeFileSync(OUT_PATH, JSON.stringify({ version: "0.1.0", correspondences }, null, 2));
+  fs.writeFileSync(OUT_PATH, JSON.stringify({ version: "0.1.0", derivedFrom, correspondences }, null, 2));
   console.log(`wrote ${correspondences.length} path entries → ${OUT_PATH}`);
 }
 

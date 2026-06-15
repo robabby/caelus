@@ -6,8 +6,8 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w caelus && npm run build -w caelus-mcp && npm run build -w caelus-birth && npm run build -w caelus-wheel && npm run docs:api && npm run search:index && npm run build -w web",
-    "test": "npm run test -w caelus",
+    "build": "npm run build -w caelus && npm run build -w caelus-delineations-pd && npm run build -w caelus-mcp && npm run build -w caelus-birth && npm run build -w caelus-wheel && npm run docs:api && npm run search:index && npm run build -w web",
+    "test": "npm run test -w caelus && npm run test -w caelus-delineations-pd",
     "lint:prose": "bash scripts/lint-prose.sh",
     "lint:emdash": "node scripts/check-em-dashes.mjs",
     "lint:claims": "node scripts/check-claims.mjs",

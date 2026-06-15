@@ -12,9 +12,11 @@
   ],
   "scripts": {
     "build": "tsc",
+    "test": "node dist/test/validation.test.js",
     "fetch": "tsx scripts/fetch-sources.ts",
+    "extract": "tsx scripts/extract/saint-germain.ts",
     "build:correspondences": "tsx scripts/build-correspondences.ts",
-    "prepare:data": "npm run fetch && npm run build:correspondences"
+    "prepare:data": "npm run fetch && npm run extract && npm run build:correspondences"
   },
   "license": "MIT",
   "publishConfig": {
