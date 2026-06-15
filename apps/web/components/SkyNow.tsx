@@ -156,7 +156,7 @@ export default function SkyNow() {
   const [label, setLabel] = useState("");
   const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "events" | "json">("positions");
   const [view, setView] = useState<"wheel" | "sphere" | "map">("wheel");
-  const [focusPattern, setFocusPattern] = useState<number | null>(null);
+  const [focus, setFocus] = useState<{ key: string; bodies: string[] } | null>(null);
   const [copied, setCopied] = useState(false);
   const [fromLink, setFromLink] = useState(false);
   const [set, setSet] = useState<Share[]>([]);
@@ -328,11 +328,22 @@ export default function SkyNow() {
     return { patterns: detectPatterns(chart), signature: chartSignature(chart), dignities, sect };
   }, [chart]);
 
-  // A new chart clears any isolated configuration.
-  useEffect(() => { setFocusPattern(null); }, [chart]);
-  const focusBodies = focusPattern !== null && insights?.patterns[focusPattern]
-    ? insights.patterns[focusPattern].bodies
-    : undefined;
+  // A new chart clears any isolated selection on the wheel.
+  useEffect(() => { setFocus(null); }, [chart]);
+  const focusBodies = focus?.bodies;
+  // A planet plus everything it aspects, for the "isolate this planet" view.
+  const withAspectsOf = (b: string): string[] => {
+    const set = new Set<string>([b]);
+    if (chart) for (const a of chart.aspects) {
+      if (a.a === b) set.add(a.b);
+      if (a.b === b) set.add(a.a);
+    }
+    return [...set];
+  };
+  const toggleFocus = (key: string, bodies: string[]) => {
+    setFocus((f) => (f?.key === key ? null : { key, bodies }));
+    setView("wheel");
+  };
 
   const inp: React.CSSProperties = {
     background: "var(--surface-3)", color: "var(--text)", border: "1px solid var(--border-strong)",
@@ -532,28 +543,39 @@ export default function SkyNow() {
                   </div>
 
                   {tab === "positions" && (
-                    <table className="mono" style={{ fontSize: "0.82rem" }}>
-                      <tbody>
-                        {BODIES.map((b) => {
-                          const p = chart.bodies[b];
-                          return (
-                            <tr key={b}>
-                              <td className="mute" style={cell}>{b}</td>
-                              {p ? (
-                                <>
-                                  <td style={cell}>{fmtLon(p.lon)}{p.retrograde ? " ℞" : ""}</td>
-                                  <td className="mute" style={cell}>h{houseOf(chart.cusps, p.lon)}</td>
-                                </>
-                              ) : (
-                                <td className="mute" style={cell} colSpan={2}>n/a (outside fitted range)</td>
-                              )}
-                            </tr>
-                          );
-                        })}
-                        <tr><td className="mute" style={cell}>ASC</td><td style={cell}>{fmtLon(chart.angles.asc)}</td><td /></tr>
-                        <tr><td className="mute" style={cell}>MC</td><td style={cell}>{fmtLon(chart.angles.mc)}</td><td /></tr>
-                      </tbody>
-                    </table>
+                    <>
+                      <table className="mono" style={{ fontSize: "0.82rem" }}>
+                        <tbody>
+                          {BODIES.map((b) => {
+                            const p = chart.bodies[b];
+                            const active = focus?.key === `b-${b}`;
+                            return (
+                              <tr
+                                key={b}
+                                onClick={p ? () => toggleFocus(`b-${b}`, withAspectsOf(b)) : undefined}
+                                title={p ? "Isolate this planet and its aspects on the wheel" : undefined}
+                                style={p ? { cursor: "pointer", background: active ? "var(--surface-2)" : undefined } : undefined}
+                              >
+                                <td className="mute" style={cell}>{GLYPHS[b] ? `${GLYPHS[b]} ` : ""}{b}</td>
+                                {p ? (
+                                  <>
+                                    <td style={cell}>{fmtLon(p.lon)}{p.retrograde ? " ℞" : ""}</td>
+                                    <td className="mute" style={cell}>h{houseOf(chart.cusps, p.lon)}</td>
+                                  </>
+                                ) : (
+                                  <td className="mute" style={cell} colSpan={2}>n/a (outside fitted range)</td>
+                                )}
+                              </tr>
+                            );
+                          })}
+                          <tr><td className="mute" style={cell}>ASC</td><td style={cell}>{fmtLon(chart.angles.asc)}</td><td /></tr>
+                          <tr><td className="mute" style={cell}>MC</td><td style={cell}>{fmtLon(chart.angles.mc)}</td><td /></tr>
+                        </tbody>
+                      </table>
+                      <p className="dim small" style={{ margin: "0.5rem 0 0" }}>
+                        Click a planet to isolate it and its aspects on the wheel.
+                      </p>
+                    </>
                   )}
 
                   {tab === "aspects" && (() => {
@@ -634,12 +656,12 @@ export default function SkyNow() {
                           <>
                             <div className="mono" style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
                               {insights.patterns.map((p, i) => {
-                                const active = focusPattern === i;
+                                const active = focus?.key === `p${i}`;
                                 return (
                                   <button
                                     key={i}
                                     type="button"
-                                    onClick={() => { setFocusPattern(active ? null : i); setView("wheel"); }}
+                                    onClick={() => toggleFocus(`p${i}`, p.bodies)}
                                     aria-pressed={active}
                                     title="Isolate this configuration on the wheel"
                                     style={{
