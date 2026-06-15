@@ -70,11 +70,108 @@
     "tradition": "modern",
     "rights": "pd-us",
     "file": "sources/text/alan-leo-astrology-for-all.txt",
-    "status": "needs-refetch",
     "fetch": {
       "urls": [
-        "https://archive.org/download/QPZD_astrology-for-all-alan-leo/QPZD_astrology-for-all-alan-leo_djvu.txt"
+        "https://archive.org/download/bub_gb_8CwSAAAAYAAJ/bub_gb_8CwSAAAAYAAJ_djvu.txt"
       ],
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "alan-leo-key-to-own-nativity",
+    "layer": 1,
+    "title": "The Key to Your Own Nativity",
+    "author": "Alan Leo",
+    "year": 1910,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/alan-leo-key-to-own-nativity.txt",
+    "fetch": {
+      "url": "https://archive.org/download/dli.ernet.128062/128062_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "alan-leo-how-to-judge-nativity",
+    "layer": 1,
+    "title": "How to Judge a Nativity",
+    "author": "Alan Leo",
+    "year": 1908,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/alan-leo-how-to-judge-nativity.txt",
+    "fetch": {
+      "url": "https://archive.org/download/howtojudgenativi00leoa/howtojudgenativi00leoa_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "robson-students-textbook",
+    "layer": 1,
+    "title": "A Student's Text-Book of Astrology",
+    "author": "Vivian E. Robson",
+    "year": 1922,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/robson-students-textbook.txt",
+    "fetch": {
+      "url": "https://archive.org/download/bwb_S0-DTL-301/bwb_S0-DTL-301_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "heindel-message-of-the-stars",
+    "layer": 1,
+    "title": "The Message of the Stars",
+    "author": "Max Heindel and Augusta Foss Heindel",
+    "year": 1919,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/heindel-message-of-the-stars.txt",
+    "fetch": {
+      "url": "https://archive.org/download/messageofstarses00heiniala/messageofstarses00heiniala_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "sepharial-manual-of-astrology",
+    "layer": 1,
+    "title": "A Manual of Astrology",
+    "author": "Sepharial",
+    "year": 1898,
+    "tradition": "modern",
+    "rights": "pd-us",
+    "file": "sources/text/sepharial-manual-of-astrology.txt",
+    "fetch": {
+      "url": "https://archive.org/download/in.ernet.dli.2015.128043/2015.128043_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "varahamihira-brihat-jataka",
+    "layer": 1,
+    "title": "Brihat Jataka (trans. N. Chidambaram Iyer)",
+    "author": "Varahamihira",
+    "year": 1885,
+    "tradition": "vedic",
+    "rights": "pd-us",
+    "file": "sources/text/varahamihira-brihat-jataka.txt",
+    "fetch": {
+      "url": "https://archive.org/download/b2488442x/b2488442x_djvu.txt",
+      "stripArchive": true
+    }
+  },
+  {
+    "id": "george-az-horoscope-delineator",
+    "layer": 1,
+    "title": "A to Z Horoscope Maker and Delineator",
+    "author": "Llewellyn George",
+    "year": 1910,
+    "tradition": "modern",
+    "rights": "gratis-not-pd",
+    "file": "sources/text/george-az-horoscope-delineator.txt",
+    "fetch": {
+      "url": "https://archive.org/download/in.ernet.dli.2015.98183/2015.98183_djvu.txt",
       "stripArchive": true
     }
   },
@@ -118,9 +215,8 @@
     "tradition": "modern",
     "rights": "pd-us",
     "file": "sources/text/robson-fixed-stars.txt",
-    "status": "needs-refetch",
     "fetch": {
-      "url": "https://archive.org/download/in.ernet.dli.2015.128091/in.ernet.dli.2015.128091_djvu.txt",
+      "url": "https://archive.org/download/in.ernet.dli.2015.128091/2015.128091.The-Fixed-Stars-And-Constellations-In-Astrology_djvu.txt",
       "stripArchive": true
     }
   },
@@ -176,9 +272,9 @@
     "tradition": "kabbalistic",
     "rights": "pd-us",
     "file": "sources/text/sepher-yetzirah.txt",
-    "status": "needs-refetch",
     "fetch": {
-      "url": "https://sacred-texts.com/jud/yetzirah.htm"
+      "url": "https://archive.org/download/WestcottWWSepherYetzirah/Westcott-WW-Sepher-Yetzirah_djvu.txt",
+      "stripArchive": true
     }
   },
   {

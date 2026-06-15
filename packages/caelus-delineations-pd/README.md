@@ -66,20 +66,26 @@ and audits the manifest for rights and text integrity.
 
 ## Coverage
 
-The fact model is finite and enumerable, so the target is *cell coverage*:
+The fact model is finite and enumerable, so the target is *cell coverage*. 111
+passages across four sources today:
 
 | Cell | Selector | Status |
 |---|---|---|
-| Sun in sign | `placement{ body, sign }` | seeded (Saint-Germain, 12/12) |
-| Planet in sign | `placement{ body, sign }` | pending clean texts |
-| Planet in house | `placement{ body, house }` | pending |
-| Planet aspect planet | `aspect{ between, aspect }` | pending |
-| Rising sign | `angle{ asc, sign }` | pending |
+| Sun in sign | `placement{ body, sign }` | Saint-Germain 12/12; Alan Leo 12/12 |
+| Moon in sign | `placement{ body, sign }` | Alan Leo 3/12 (partial) |
+| Planet in house | `placement{ body, house }` | Alan Leo Key 21 + How to Judge 63 |
+| Other planet in sign | `placement{ body, sign }` | pending |
+| Planet aspect planet | `aspect{ between, aspect }` | pending (Heindel) |
+| Rising sign | `angle{ asc, sign }` | pending (Heindel, Alan Leo) |
 | Dignities | `placement{ dignity }` | pending |
 
-Vedic planet-in-rashi / planet-in-bhava map onto the same `placement` atoms.
-Varga, yoga, dasha, fixed-star, and lot delineations have **no atom kind yet** —
-binding them needs a Caelus-core extension to `FactKind`.
+Coverage is partial by design: an extractor emits only the cells it can lift
+cleanly from the OCR, and the harness reports the rest. Vedic
+planet-in-rashi / planet-in-bhava map onto the same `placement` atoms, but the
+Brihat Jataka translation uses Sanskrit rashi names, so its extractor needs a
+rashi-name map (pending). Varga, yoga, dasha, fixed-star, and lot delineations
+have **no atom kind yet** — binding them needs a Caelus-core extension to
+`FactKind`.
 
 ## Corpus and licensing
 
@@ -92,8 +98,10 @@ clean re-acquisition. The `data/correspondences.json` table is derived from the
 
 Verify rights before relying on any entry: a "public-domain scan" is only PD for
 the specific *edition/translation* cited (e.g. Ptolemy here is Ashmand 1822, not
-the in-copyright Robbins 1940). The full source texts are vendored to the repo
-but **not** published to npm; only the manifest, compiled passages, and
-correspondence data ship.
+the in-copyright Robbins 1940). One source — Llewellyn George's *A to Z* — is
+vendored as `gratis-not-pd` (the available scan is a 1960 reprint of unconfirmed
+status); it is **not** drawn on for any shipped rule. The full source texts are
+vendored to the repo but **not** published to npm; only the manifest, compiled
+passages, and correspondence data ship.
 
 MIT (this package's code and data wiring; the source texts are public domain).

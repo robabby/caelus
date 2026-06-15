@@ -14,7 +14,7 @@
     "build": "tsc",
     "test": "node dist/test/validation.test.js",
     "fetch": "tsx scripts/fetch-sources.ts",
-    "extract": "tsx scripts/extract/saint-germain.ts",
+    "extract": "tsx scripts/extract/saint-germain.ts && tsx scripts/extract/alan-leo-signs.ts && tsx scripts/extract/alan-leo-key.ts && tsx scripts/extract/alan-leo-judge.ts",
     "build:correspondences": "tsx scripts/build-correspondences.ts",
     "prepare:data": "npm run fetch && npm run extract && npm run build:correspondences"
   },

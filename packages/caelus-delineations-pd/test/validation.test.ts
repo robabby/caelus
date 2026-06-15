@@ -29,15 +29,16 @@ function check(cond: boolean, msg: string): void {
 }
 function warn(msg: string): void { console.warn(`  warn: ${msg}`); warnings++; }
 
-/** A minimal projection holding a single Sun placement in `sign`. */
-function sunCtx(sign: string): InterpretationContext {
+/** A minimal projection holding a single placement atom. */
+function placeCtx(body: string, sign: string, house: number): InterpretationContext {
   const atom: FactAtom = {
-    id: "placement:sun", kind: "placement", bodies: ["sun"], salience: 2.5,
-    text: `Sun in ${sign}`, body: "sun", sign, signDeg: 10, house: 5,
+    id: `placement:${body}`, kind: "placement", bodies: [body], salience: 2.5,
+    text: `${body} in ${sign}`, body, sign, signDeg: 10, house,
     retrograde: false, dignities: [],
   };
   return { jdUt: 0, zodiac: "tropical", atoms: [atom] };
 }
+const sunCtx = (sign: string): InterpretationContext => placeCtx("sun", sign, 5);
 
 // 1. The corpus is populated and internally consistent.
 console.log("corpus shape");
@@ -86,7 +87,10 @@ for (const s of specs) {
 // 4. Each Sun-sign rule fires for its sign, cites the real atom, and stays
 //    isolated to that sign — the core "valid, testable" guarantee.
 console.log("rules fire and cite");
-const sunSignPassages = passages.filter((p) => p.when.kind === "placement" && p.when.body === "sun");
+const sunSignPassages = passages.filter(
+  (p) => p.when.kind === "placement" && p.when.body === "sun"
+    && (p.when as { sign?: string }).sign !== undefined,
+);
 for (const p of sunSignPassages) {
   const sign = (p.when as { sign: string }).sign;
   const reading = interpret(sunCtx(sign), sources);
@@ -102,6 +106,26 @@ for (const p of sunSignPassages) {
   const other = sign === "Aries" ? "Taurus" : "Aries";
   const wrong = interpret(sunCtx(other), sources).entries.find((e) => e.rule === p.id);
   check(!wrong, `${p.id}: does not fire for Sun in ${other}`);
+}
+
+// 4b. Each planet-in-house rule fires for its body+house and cites the atom.
+console.log("planet-in-house rules fire");
+const housePassages = passages.filter(
+  (p) => p.when.kind === "placement" && typeof (p.when as { house?: number }).house === "number",
+);
+check(housePassages.length > 0, "corpus has planet-in-house passages");
+for (const p of housePassages) {
+  const w = p.when as { body: string; house: number };
+  const reading = interpret(placeCtx(w.body, "Aries", w.house), sources);
+  const entry = reading.entries.find((e) => e.rule === p.id);
+  check(!!entry, `${p.id}: fires for ${w.body} in house ${w.house}`);
+  if (entry) {
+    // Wrong house must not fire it.
+    const otherHouse = w.house === 1 ? 2 : 1;
+    const wrong = interpret(placeCtx(w.body, "Aries", otherHouse), sources)
+      .entries.find((e) => e.rule === p.id);
+    check(!wrong, `${p.id}: does not fire for house ${otherHouse}`);
+  }
 }
 
 // 5. No reading ever cites an atom the projection did not contain.
@@ -128,12 +152,14 @@ try {
   const sun = ctx.atoms.find((a) => a.id === "placement:sun");
   check(!!sun, "engine projection contains placement:sun");
   const reading = interpret(ctx, sources);
-  const sunEntry = reading.entries.find((e) => e.rule.startsWith("saint-germain:sun-in-"));
-  check(!!sunEntry, "a Sun-sign rule fires on the real chart projection");
-  if (sunEntry) {
+  const signEntry = reading.entries.find((e) => /:[a-z]+-in-[a-z]+$/.test(e.rule));
+  const houseEntry = reading.entries.find((e) => /-in-house-\d+$/.test(e.rule));
+  check(!!signEntry, "a planet-in-sign rule fires on the real chart projection");
+  check(!!houseEntry, "a planet-in-house rule fires on the real chart projection");
+  for (const e of reading.entries) {
     check(
-      sunEntry.atomIds.includes("placement:sun"),
-      "the fired rule cites the real Sun placement atom",
+      e.atomIds.every((id) => ctx.atoms.some((a) => a.id === id)),
+      `${e.rule}: cites only atoms in the real projection`,
     );
   }
 } catch (e) {
