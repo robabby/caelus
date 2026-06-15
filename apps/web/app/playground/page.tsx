@@ -1,8 +1,7 @@
 import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import { ChartWheel } from "caelus-wheel";
-import SkyNow from "../../components/SkyNow";
-import SynastryPanel from "../../components/SynastryPanel";
+import { SkyNow, SynastryPanel } from "../../components/PlaygroundPanels";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
 import PlaygroundStickyBar from "../../components/PlaygroundStickyBar";

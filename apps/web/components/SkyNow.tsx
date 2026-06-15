@@ -56,7 +56,6 @@ function jdToUtc(jd: number): string {
 
 export default function SkyNow() {
   const engineRef = useRef<Engine | null>(null);
-  const [mounted, setMounted] = useState(false);
   const [iso, setIso] = useState("");
   const [lat, setLat] = useState("27.94");
   const [lon, setLon] = useState("-82.46");
@@ -72,6 +71,7 @@ export default function SkyNow() {
   const [fromLink, setFromLink] = useState(false);
   const [set, setSet] = useState<Share[]>([]);
   const [collectionCopied, setCollectionCopied] = useState(false);
+  const [ready, setReady] = useState(false);
 
   // Load an encoded chart into the builder. `t` is a UT instant, so we read it
   // back in UTC mode; the nickname rides along.
@@ -99,7 +99,7 @@ export default function SkyNow() {
     } else {
       setIso(new Date().toISOString().slice(0, 16));
     }
-    setMounted(true);
+    setReady(true);
   }, [loadShare]);
 
   // Embedded data plus the fixed-star catalog, so star conjunctions work in-browser.
@@ -107,7 +107,7 @@ export default function SkyNow() {
 
   const { chart, ms, error, utIso, zone, tzStatus } = useMemo(() => {
     const none = { chart: null, ms: 0, error: null, utIso: iso, zone: "", tzStatus: "" as UTResult["status"] | "" };
-    if (!mounted || !iso) return none;
+    if (!ready || !iso) return none;
     const la = Number(lat);
     const lo = Number(lon);
     const d = new Date(iso + ":00Z");
@@ -152,7 +152,7 @@ export default function SkyNow() {
     } catch {
       return { ...none, error: "could not compute a chart for this instant" };
     }
-  }, [mounted, iso, lat, lon, sys, zodiac, tzMode]);
+  }, [ready, iso, lat, lon, sys, zodiac, tzMode]);
 
   function share() {
     // Share the resolved UT instant, so a link is tz-unambiguous: the recipient
@@ -203,7 +203,7 @@ export default function SkyNow() {
   }
 
   const phases = useMemo(() => {
-    if (!chart) return [];
+    if (!chart || tab !== "events") return [];
     try {
       const d = new Date(utIso + ":00Z");
       const jd0 = julianDay(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate());
@@ -211,7 +211,7 @@ export default function SkyNow() {
     } catch {
       return [];
     }
-  }, [chart, utIso]);
+  }, [chart, utIso, tab]);
 
   const mapLines = useMemo(() => {
     if (view !== "map" || !chart) return null;
@@ -230,7 +230,7 @@ export default function SkyNow() {
   // The Phase 4 symbolic layer: configurations, structural signature, and the
   // traditional dignity score per classical planet (sect from the Sun's house).
   const insights = useMemo(() => {
-    if (!chart) return null;
+    if (!chart || tab !== "insights") return null;
     const sun = chart.bodies.sun;
     const sect: "day" | "night" = sun && sun.house >= 7 ? "day" : "night";
     const dignities = CLASSICAL.flatMap((p) => {
@@ -247,12 +247,12 @@ export default function SkyNow() {
       profection: profectionAt(engine(), chart.jdUt, nowJd, Number(lat), Number(lon), zodiac),
       sect,
     };
-  }, [chart]);
+  }, [chart, tab, lat, lon, zodiac]);
 
   // The Vedic (sidereal) layer: each body's nakshatra, and the Vimshottari dasha
   // active today, reading the chart as a natal moment.
   const vedic = useMemo(() => {
-    if (!chart) return null;
+    if (!chart || tab !== "vedic") return null;
     const sid = (b: string) => engine().longitude(b as BodyId, chart.jdUt, { zodiac: "sidereal:lahiri" });
     const bodies = BODIES.flatMap((b) => {
       if (!chart.bodies[b]) return [];
@@ -262,12 +262,12 @@ export default function SkyNow() {
     const now = new Date();
     const nowJd = julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes());
     return { bodies, dasha: vimshottariActive(sid("moon"), chart.jdUt, nowJd) };
-  }, [chart]);
+  }, [chart, tab]);
 
   // Transits: the chart as natal (inner), the current sky (outer), with the
   // cross-aspect web between them.
   const transit = useMemo(() => {
-    if (!chart) return null;
+    if (!chart || view !== "transits") return null;
     const n = new Date();
     const tjd = julianDay(n.getUTCFullYear(), n.getUTCMonth() + 1, n.getUTCDate(), n.getUTCHours(), n.getUTCMinutes());
     const tchart = engine().chartAt(tjd, Number(lat), Number(lon), { houseSystem: sys, zodiac });
@@ -283,23 +283,23 @@ export default function SkyNow() {
       }
     }
     return { chart: tchart, contacts };
-  }, [chart]);
+  }, [chart, view, lat, lon, sys, zodiac]);
 
   // Declinations: each body's declination, out-of-bounds flag, and the
   // parallels / contraparallels among them.
   const decl = useMemo(() => {
-    if (!chart) return null;
+    if (!chart || tab !== "declination") return null;
     const bodies = BODIES.flatMap((b) => {
       const p = chart.bodies[b];
       return p ? [{ body: b, dec: p.dec, oob: outOfBounds(engine(), b as BodyId, chart.jdUt) }] : [];
     });
     const present = BODIES.filter((b) => chart.bodies[b]) as BodyId[];
     return { bodies, pairs: declinationAspects(engine(), present, chart.jdUt) };
-  }, [chart]);
+  }, [chart, tab]);
 
   // Fixed-star conjunctions: bright catalog stars within 1° of a body.
   const stars = useMemo(() => {
-    if (!chart) return null;
+    if (!chart || tab !== "stars") return null;
     const starLons = BRIGHT_STARS.map((name) => ({ name, lon: engine().fixedStar(name, chart.jdUt).lon }));
     const hits: Array<{ body: string; star: string; orb: number }> = [];
     for (const b of BODIES) {
@@ -314,7 +314,7 @@ export default function SkyNow() {
     const parans = starParans(engine(), chart.jdUt, Number(lat), PARAN_STARS, undefined, 12)
       .sort((x, y) => x.gap_min - y.gap_min).slice(0, 15);
     return { conjunctions: hits.sort((x, y) => x.orb - y.orb), parans };
-  }, [chart]);
+  }, [chart, tab, lat]);
 
   // A new chart clears any isolated selection on the wheel.
   useEffect(() => { setFocus(null); }, [chart]);
@@ -346,7 +346,7 @@ export default function SkyNow() {
 
   return (
     <div className="card" style={{ padding: "1.2rem" }}>
-      {!mounted ? (
+      {!ready ? (
         <p className="dim small" style={{ margin: 0 }}>loading playground…</p>
       ) : (
         <>
