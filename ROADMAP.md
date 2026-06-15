@@ -52,7 +52,7 @@ impossible ones (`compileForm`) (0.11.0); a JD-first chart entry point that
 builds a full chart directly from a Julian Day, no calendar round-trip
 (`chartAt`) (0.12.0); conformance suite;
 MCP server over stdio and hosted Streamable HTTP (`ephemengine.com/api/mcp`,
-stateless) exposing twenty-two chart tools, with golden payloads, resources
+stateless) exposing twenty-three chart tools, with golden payloads, resources
 (`caelus://glossary`, `caelus://accuracy`), and the `rectification_session`
 prompt, listed on the official MCP Registry as `io.github.heavyblotto/caelus-mcp`
 (0.12.1); JPL-direct validation tier.
