@@ -7,7 +7,7 @@ import {
 } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import { toUT, type UTResult } from "caelus-birth";
-import { ChartWheel, ChartSphere, AstroMap } from "caelus-wheel";
+import { ChartWheel, ChartSphere, AstroMap, GLYPHS } from "caelus-wheel";
 import accuracy from "caelus/accuracy.json";
 import CityPicker, { type City } from "./CityPicker";
 
@@ -33,6 +33,20 @@ const ACCURACY: Array<[string, string]> = accuracy.summary.map((s) => [s.label, 
 const PHASE_LABEL: Record<string, string> = {
   new: "New Moon", first_quarter: "First Quarter", full: "Full Moon", last_quarter: "Last Quarter",
 };
+
+// ---- aspectarian grid ----
+const ASPECTARIAN_ORDER = [
+  "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
+  "uranus", "neptune", "pluto", "chiron",
+];
+const ASPECT_GLYPH: Record<string, string> = {
+  conjunction: "☌", sextile: "⚹", square: "□", trine: "△", opposition: "☍",
+};
+function aspectColor(a?: string): string {
+  if (a === "square" || a === "opposition") return "var(--bad)";
+  if (a === "trine" || a === "sextile") return "var(--good)";
+  return "var(--text-mute)"; // conjunction
+}
 
 // ---- Insights tab (Phase 4 symbolic layer) ----
 const CLASSICAL = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"] as const;
@@ -542,13 +556,48 @@ export default function SkyNow() {
                     </table>
                   )}
 
-                  {tab === "aspects" && (
-                    <ul className="mono" style={{ lineHeight: 1.8, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: 0 }}>
-                      {chart.aspects.map((a, i) => (
-                        <li key={i}>{a.a} {a.aspect} {a.b} <span className="mute">(orb {a.orb}°)</span></li>
-                      ))}
-                    </ul>
-                  )}
+                  {tab === "aspects" && (() => {
+                    const present = ASPECTARIAN_ORDER.filter((b) => chart.bodies[b]);
+                    const look: Record<string, { aspect: string; orb: number }> = {};
+                    for (const a of chart.aspects) look[[a.a, a.b].sort().join("|")] = { aspect: a.aspect, orb: a.orb };
+                    return (
+                      <>
+                        <div style={{ overflowX: "auto" }}>
+                          <table className="mono" style={{ borderCollapse: "collapse", fontSize: "0.95rem" }}>
+                            <tbody>
+                              {present.map((b, i) => (
+                                <tr key={b}>
+                                  {present.slice(0, i).map((other) => {
+                                    const a = look[[b, other].sort().join("|")];
+                                    return (
+                                      <td
+                                        key={other}
+                                        title={a ? `${b} ${a.aspect} ${other} · orb ${a.orb}°` : `${b} / ${other}`}
+                                        style={{
+                                          width: "1.5rem", height: "1.5rem", textAlign: "center",
+                                          border: "1px solid var(--border)", color: aspectColor(a?.aspect),
+                                        }}
+                                      >
+                                        {a ? ASPECT_GLYPH[a.aspect] ?? "" : ""}
+                                      </td>
+                                    );
+                                  })}
+                                  <td style={{ padding: "0 0.4rem", color: "var(--text-mute)", whiteSpace: "nowrap" }}>
+                                    {GLYPHS[b] ?? b.slice(0, 2)}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <ul className="mono" style={{ lineHeight: 1.8, paddingLeft: "1.1rem", fontSize: "0.82rem", margin: "0.8rem 0 0" }}>
+                          {chart.aspects.map((a, i) => (
+                            <li key={i}>{a.a} {a.aspect} {a.b} <span className="mute">(orb {a.orb}°)</span></li>
+                          ))}
+                        </ul>
+                      </>
+                    );
+                  })()}
 
                   {tab === "insights" && insights && (
                     <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem", fontSize: "0.82rem" }}>
