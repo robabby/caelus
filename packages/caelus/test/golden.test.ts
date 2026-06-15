@@ -14,6 +14,7 @@ import { Engine, BODIES, Body, DEFAULT_ORBS } from "../src/chart.js";
 import { interpretationContext } from "../src/interpretation.js";
 import {
   interpret, hasPlacement, hasAspect, hasPattern, matchAll, matchNone,
+  hasDispositor, hasReception,
 } from "../src/interpret.js";
 import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
@@ -554,6 +555,32 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error(`FAIL citation audit: ${JSON.stringify(audit)}`);
+  }
+
+  // Dispositors: one per classical planet; Saturn in Capricorn is a final
+  // dispositor and the Moon (Capricorn) is disposited by Saturn. No mutual
+  // reception in this chart.
+  const disp = ctx.atoms.filter((a) => a.kind === "dispositor");
+  if (
+    disp.length !== 7
+    || !hasDispositor({ body: "saturn", final: true })(ctx).matched
+    || !hasDispositor({ body: "moon", dispositor: "saturn" })(ctx).matched
+    || ctx.atoms.some((a) => a.kind === "reception")
+  ) {
+    failures++;
+    console.error(`FAIL dispositors: count=${disp.length}`);
+  }
+  // Reception: 2000-02-01 has Mars<->Jupiter and Venus<->Saturn.
+  const ctx2000 = interpretationContext(eng.chartAt(julianDay(2000, 2, 1, 12, 0, 0), 51.5, 0, "whole_sign"));
+  const recs = ctx2000.atoms.filter((a) => a.kind === "reception");
+  if (
+    recs.length !== 2
+    || !hasReception({ body: "mars" })(ctx2000).matched
+    || !hasReception({ body: "saturn" })(ctx2000).matched
+    || hasReception({ body: "sun" })(ctx2000).matched
+  ) {
+    failures++;
+    console.error(`FAIL reception: ${JSON.stringify(recs.map((r) => r.id))}`);
   }
 }
 

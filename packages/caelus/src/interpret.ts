@@ -87,6 +87,25 @@ export function hasAngle(angle: string, sign?: string): Selector {
     && (sign === undefined || a.sign === sign)));
 }
 
+/** Matches dispositor atoms by body, its dispositor, and/or the final flag
+ *  (a body in its own domicile that terminates a dispositor chain). */
+export function hasDispositor(filter: {
+  body?: string; dispositor?: string; final?: boolean;
+} = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "dispositor"
+    && (filter.body === undefined || a.body === filter.body)
+    && (filter.dispositor === undefined || a.dispositor === filter.dispositor)
+    && (filter.final === undefined || a.final === filter.final)));
+}
+
+/** Matches a mutual reception, optionally involving a given body. */
+export function hasReception(filter: { body?: string } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "reception"
+    && (filter.body === undefined || a.bodies.includes(filter.body))));
+}
+
 // ----------------------------------------------------------------- combinators
 
 /** Matches only when every selector matches; returns the union of their atoms. */

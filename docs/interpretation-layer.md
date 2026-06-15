@@ -137,11 +137,15 @@ plus a ready `brief`, so an LLM host interprets from correct math and cites the
 `[id]` each statement rests on instead of re-deriving (and hallucinating)
 positions. This is the interpretation seam wired into the chat product.
 
+Atom kinds now also include **dispositor** (the classical ruler of each
+classical planet's sign, with the final-dispositor terminus flagged) and
+**reception** (mutual reception by domicile), with `hasDispositor` /
+`hasReception` selectors.
+
 ## Follow-ons
 
 - Promote `phase` and `strength` onto `Chart.aspects` itself (needs the Python
   reference + golden regenerated, so it is a maintainer-environment change).
-- Reception and dispositor chains as additional atom kinds; richer contradiction
-  reconciliation in the resolver beyond salience ranking.
+- Richer contradiction reconciliation in the resolver beyond salience ranking.
 - A reference `InterpretationSource` (clearly labelled example content, shipped
   separately from the engine) so the plugin path has a worked example.

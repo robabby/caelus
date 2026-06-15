@@ -20,7 +20,7 @@
  * than pinned by a parity golden.
  */
 import { mod } from "./core.js";
-import { SIGNS, ASPECTS, DEFAULT_ORBS } from "./chart.js";
+import { SIGNS, ASPECTS, DEFAULT_ORBS, DOMICILE } from "./chart.js";
 import type { Chart, Zodiac } from "./chart.js";
 import { aspectPhase, AspectPhase } from "./electional.js";
 import { detectPatterns, ChartPattern } from "./patterns.js";
@@ -30,8 +30,23 @@ const LUMINARIES = new Set(["sun", "moon"]);
 const ANGULAR_HOUSES = new Set([1, 4, 7, 10]);
 const HARD_ASPECTS = new Set(["conjunction", "square", "opposition"]);
 
+/** The seven classical planets that participate in the dispositor scheme. */
+const CLASSICAL = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
+
+/** Traditional domicile ruler of each sign (index 0-11), inverted from
+ *  {@link DOMICILE}: the body that rules a body's sign disposits it. */
+const SIGN_RULER: string[] = (() => {
+  const r: string[] = new Array(12);
+  for (const [body, signs] of Object.entries(DOMICILE)) {
+    for (const s of signs) r[s] = body;
+  }
+  return r;
+})();
+
 /** Atom kinds in an {@link InterpretationContext}. */
-export type FactKind = "placement" | "aspect" | "pattern" | "signature" | "angle";
+export type FactKind =
+  | "placement" | "aspect" | "pattern" | "signature" | "angle"
+  | "dispositor" | "reception";
 
 interface FactAtomBase {
   /** Stable, content-addressable id, e.g. `"placement:mars"` or
@@ -91,8 +106,24 @@ export interface AngleAtom extends FactAtomBase {
   signDeg: number;
 }
 
+export interface DispositorAtom extends FactAtomBase {
+  kind: "dispositor";
+  body: string;
+  /** The classical ruler of the body's sign (equals `body` when in domicile). */
+  dispositor: string;
+  /** The body occupies its own domicile -- a chain terminus / final dispositor. */
+  final: boolean;
+}
+
+export interface ReceptionAtom extends FactAtomBase {
+  kind: "reception";
+  /** The dignity the reception runs through (domicile here). */
+  by: "domicile";
+}
+
 export type FactAtom =
-  | PlacementAtom | AspectAtom | PatternAtom | SignatureAtom | AngleAtom;
+  | PlacementAtom | AspectAtom | PatternAtom | SignatureAtom | AngleAtom
+  | DispositorAtom | ReceptionAtom;
 
 /** A chart as a flat, ranked list of {@link FactAtom}s. */
 export interface InterpretationContext {
@@ -119,11 +150,15 @@ export interface SalienceWeights {
   hardAspect: number;
   /** Base salience of a whole configuration (T-square, grand trine, ...). */
   pattern: number;
+  /** Added to a dispositor link (and again when it is a final dispositor). */
+  dispositor: number;
+  /** Added to a mutual reception. */
+  reception: number;
 }
 
 export const DEFAULT_SALIENCE: SalienceWeights = {
   base: 1, luminary: 1.5, angular: 1, chartRuler: 1,
-  dignity: 0.5, hardAspect: 1, pattern: 4,
+  dignity: 0.5, hardAspect: 1, pattern: 4, dispositor: 0.5, reception: 2,
 };
 
 export interface ContextOptions {
@@ -238,6 +273,42 @@ export function interpretationContext(
   sigAtom("modality", sig.dominant.modality, `${title(sig.dominant.modality)} is the dominant modality`);
   sigAtom("sign", sig.dominant.sign, `${sig.dominant.sign} is the most-occupied sign`);
   sigAtom("ruler", sig.ruler, `${title(sig.ruler ?? "")} is the chart ruler`);
+
+  // Dispositors: the classical ruler of each classical planet's sign, plus any
+  // mutual receptions (a disposits b and b disposits a) among them.
+  const dispositorOf = (body: string): string | null => {
+    const p = chart.bodies[body];
+    return p ? SIGN_RULER[Math.floor(mod(p.lon, 360) / 30)] : null;
+  };
+  for (const body of CLASSICAL) {
+    if (!chart.bodies[body]) continue;
+    const disp = dispositorOf(body)!;
+    const final = disp === body;
+    let salience = w.base + w.dispositor + (final ? w.dispositor : 0);
+    if (LUMINARIES.has(body)) salience += w.luminary;
+    atoms.push({
+      id: `dispositor:${body}`, kind: "dispositor", bodies: [body], salience,
+      body, dispositor: disp, final,
+      text: final
+        ? `${title(body)} is in its own domicile (final dispositor)`
+        : `${title(body)} is disposited by ${title(disp)}`,
+    });
+  }
+  for (let i = 0; i < CLASSICAL.length; i++) {
+    for (let j = i + 1; j < CLASSICAL.length; j++) {
+      const a = CLASSICAL[i]; const b = CLASSICAL[j];
+      if (!chart.bodies[a] || !chart.bodies[b]) continue;
+      if (dispositorOf(a) === b && dispositorOf(b) === a) {
+        let salience = w.base + w.reception;
+        if (LUMINARIES.has(a) || LUMINARIES.has(b)) salience += w.luminary;
+        atoms.push({
+          id: `reception:${a}~${b}`, kind: "reception", bodies: [a, b], salience,
+          by: "domicile",
+          text: `Mutual reception: ${title(a)} and ${title(b)} (domicile)`,
+        });
+      }
+    }
+  }
 
   // Angles.
   const angleAtom = (angle: AngleAtom["angle"], lon: number): void => {
