@@ -28,5 +28,6 @@ export * from "./ashtottari.js";
 export * from "./rajayoga.js";
 export * from "./patterns.js";
 export * from "./signature.js";
+export * from "./interpretation.js";
 export * from "./dignity-score.js";
 export * from "./parans.js";

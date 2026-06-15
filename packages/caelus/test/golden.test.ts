@@ -10,7 +10,8 @@ import { fileURLToPath } from "node:url";
 import {
   julianDay, deltaT, jdTT, nutation, meanObliquity, DEG, mod, ayanamsa,
 } from "../src/core.js";
-import { Engine, BODIES, Body } from "../src/chart.js";
+import { Engine, BODIES, Body, DEFAULT_ORBS } from "../src/chart.js";
+import { interpretationContext } from "../src/interpretation.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
 import { riseSet, crossings, lunarPhases, stations, gauquelinSector } from "../src/events.js";
 import {
@@ -452,6 +453,46 @@ for (const g of G.houses) {
   if (!threw) {
     failures++;
     console.error("FAIL Julian-Day-as-year did not throw RangeError");
+  }
+}
+
+// Interpretation context: the fact-atom projection is a deterministic transform
+// of a validated chart, so it is checked structurally (gated via `failures`):
+// every aspect atom ties back to a chart aspect with a consistent strength and a
+// valid phase, every present body has a placement, ids are unique, and atoms are
+// salience-sorted.
+{
+  const c = eng.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
+  const ctx = interpretationContext(c);
+  const by = (k: string) => ctx.atoms.filter((a) => a.kind === k);
+  const ids = new Set(ctx.atoms.map((a) => a.id));
+  const sorted = ctx.atoms.every((a, i) => i === 0 || ctx.atoms[i - 1].salience >= a.salience);
+  if (
+    ids.size !== ctx.atoms.length // unique ids
+    || !sorted // descending salience
+    || by("placement").length !== Object.keys(c.bodies).length
+    || by("aspect").length !== c.aspects.length
+    || by("angle").length !== 4
+  ) {
+    failures++;
+    console.error(`FAIL interp shape: atoms=${ctx.atoms.length} placements=${by("placement").length}/${Object.keys(c.bodies).length} aspects=${by("aspect").length}/${c.aspects.length} unique=${ids.size === ctx.atoms.length} sorted=${sorted}`);
+  }
+  // every aspect atom maps to a chart aspect; strength = 1 - |orb|/limit in [0,1]
+  for (const a of by("aspect") as Array<{ a: string; b: string; aspect: string; orb: number; strength: number; phase: string }>) {
+    const match = c.aspects.find((x) => x.a === a.a && x.b === a.b && x.aspect === a.aspect);
+    const want = Math.max(0, 1 - Math.abs(a.orb) / DEFAULT_ORBS[a.aspect]);
+    if (!match || Math.abs(match.orb - a.orb) > 1e-9 || Math.abs(a.strength - want) > 1e-9
+      || !["applying", "separating", "exact"].includes(a.phase)) {
+      failures++;
+      console.error(`FAIL interp aspect ${a.a}~${a.b} ${a.aspect}: strength=${a.strength} phase=${a.phase}`);
+      break;
+    }
+  }
+  // a known fact: 1990-06-10 has the Sun in Gemini
+  const sun = ctx.atoms.find((a) => a.id === "placement:sun") as { sign?: string } | undefined;
+  if (sun?.sign !== "Gemini") {
+    failures++;
+    console.error(`FAIL interp sun placement: ${sun?.sign}`);
   }
 }
 
