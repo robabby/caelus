@@ -19,7 +19,7 @@ export const metadata = {
 
 const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
   ["caelus", "caelus", "Chart math: positions, houses, aspects. Zero dependencies, ~85 KB gzipped."],
-  ["mcp", "caelus-mcp", "Twenty-seven chart tools for AI agents: natal charts, transits, synastry, event search, electional, lots, time-lords, directions, and the Vedic layer (nakshatras, dashas, vargas, yogas)."],
+  ["mcp", "caelus-mcp", "Twenty-eight chart tools for AI agents: natal charts, transits, synastry, event search, electional, lots, time-lords, directions, and the Vedic layer (nakshatras, dashas, vargas, yogas)."],
   ["birth", "caelus-birth", "Local birth time and place to UT, with DST and historical timezone rules."],
   ["wheel", "caelus-wheel", "React SVG chart wheel. SSR-safe, ~3.4 KB gzipped."],
 ];
@@ -28,7 +28,7 @@ const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
 const PROOF: Array<{ num: string; label: string; href: string }> = [
   { num: "0.41", label: "Nano-arcsec worst deviation", href: "/validation" },
   { num: "3,218", label: "Golden checks in CI", href: "/validation" },
-  { num: "27", label: "MCP tools for AI clients", href: "/docs/mcp" },
+  { num: "28", label: "MCP tools for AI clients", href: "/docs/mcp" },
   { num: "~85 KB", label: "Engine, gzipped", href: "/docs/data-tiers" },
   { num: "0", label: "Runtime dependencies", href: NPM.caelus },
   { num: "MIT", label: "Licensed, no AGPL", href: `${SITE.repo}/blob/main/LICENSE` },
@@ -90,6 +90,8 @@ export default function Home() {
         <li>🧩 <A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
         <li>⏳ <A href="/docs/hellenistic">Hellenistic time-lords</A>: lots, profections, firdaria, zodiacal releasing, and primary directions</li>
         <li>🕉️ <A href="/docs/vedic">Vedic &amp; Jyotish</A>: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, divisional charts, and yogas</li>
+        <li>📖 <A href="/docs/interpretation">Interpretation layer</A>: ranked, citable fact atoms, a pluggable rule corpus, and LLM briefs with citation auditing</li>
+        <li>📍 <A href="/docs/provenance">Chart provenance</A>: declare what a chart is (forecast, mythic, archetypal) and route to the ephemeris or the compiler</li>
         <li>🤖 <A href="/docs/mcp"><code>caelus-mcp</code></A> gives Claude, Cursor, and other MCP clients twenty-eight chart tools</li>
         <li>🔒 Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>
       </ul>
