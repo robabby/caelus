@@ -211,3 +211,85 @@ export function interpret(
   entries.sort((p, q) => q.salience - p.salience || (p.id < q.id ? -1 : 1));
   return { jdUt: ctx.jdUt, entries };
 }
+
+// ----------------------------------------------------------------- reconcile
+
+/** Entries about the same facts, gathered. */
+export interface ReadingGroup {
+  /** Union of the group's cited atom ids -- the facts it is about. */
+  atomIds: string[];
+  /** Member entries, highest salience first. */
+  entries: ReadingEntry[];
+  /** Distinct tags across the members. */
+  tags: string[];
+  /** True when a declared conflicting tag-pair both appear (the corpus made
+   *  opposing claims about the same facts). */
+  contested: boolean;
+  /** The group's salience (its strongest entry). */
+  salience: number;
+}
+
+export interface ReconcileOptions {
+  /** Tag pairs that contradict, e.g. `[["affirming", "challenging"]]`. */
+  conflicts?: [string, string][];
+  /** Drop an entry whose `text` duplicates a higher-salience one. */
+  dedupe?: boolean;
+}
+
+/**
+ * Group a {@link Reading}'s entries by the facts they share, so statements about
+ * the same atoms surface together rather than scattered through a flat list --
+ * the substrate for "everything said about this placement" and for spotting
+ * contention. Entries are connected when their cited atoms overlap; an entry
+ * citing nothing (an absence rule) stands alone. A group is `contested` when a
+ * declared conflicting tag-pair both appear in it.
+ *
+ * Semantic contradiction is the corpus author's to declare (via `tags` +
+ * `conflicts`); the resolver does the bookkeeping, not the judgement.
+ *
+ * @param reading A reading from {@link interpret}.
+ * @param opts Conflicting tag pairs and optional text de-duplication.
+ * @returns Groups sorted by descending salience.
+ */
+export function reconcile(
+  reading: Reading, opts: ReconcileOptions = {},
+): ReadingGroup[] {
+  let entries = reading.entries;
+  if (opts.dedupe) {
+    const seen = new Set<string>(); // entries arrive salience-sorted: keep first
+    entries = entries.filter((e) => (seen.has(e.text) ? false : seen.add(e.text)));
+  }
+  // Union-find over entries that share an atom id.
+  const parent = entries.map((_, i) => i);
+  const find = (x: number): number => {
+    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+    return x;
+  };
+  const firstByAtom = new Map<string, number>();
+  entries.forEach((e, i) => {
+    for (const id of e.atomIds) {
+      const seen = firstByAtom.get(id);
+      if (seen === undefined) firstByAtom.set(id, i);
+      else parent[find(i)] = find(seen);
+    }
+  });
+  const buckets = new Map<number, ReadingEntry[]>();
+  entries.forEach((e, i) => {
+    const r = find(i);
+    (buckets.get(r) ?? buckets.set(r, []).get(r)!).push(e);
+  });
+  const conflicts = opts.conflicts ?? [];
+  const groups: ReadingGroup[] = [...buckets.values()].map((es) => {
+    es.sort((a, b) => b.salience - a.salience || (a.id < b.id ? -1 : 1));
+    const tags = [...new Set(es.flatMap((e) => e.tags ?? []))];
+    return {
+      atomIds: [...new Set(es.flatMap((e) => e.atomIds))],
+      entries: es, tags,
+      contested: conflicts.some(([x, y]) => tags.includes(x) && tags.includes(y)),
+      salience: Math.max(...es.map((e) => e.salience)),
+    };
+  });
+  groups.sort((a, b) => b.salience - a.salience
+    || (a.atomIds.join() < b.atomIds.join() ? -1 : 1));
+  return groups;
+}

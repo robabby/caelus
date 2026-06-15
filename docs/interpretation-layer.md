@@ -113,8 +113,14 @@ interface InterpretationSource { id: string; version: string; rules: Rule[]; }
 `ReadingEntry` carrying the text, the matched `atomIds` (the audit trail), and a
 salience = sum of those atoms' salience x the rule weight. Entries come back
 sorted by salience. The engine ships the mechanism; the rule *content* is always
-the developer's (a tradition, a house style, a third-party corpus). Contradiction
-reconciliation beyond ranking is left to the caller for now.
+the developer's (a tradition, a house style, a third-party corpus).
+
+`reconcile(reading, { conflicts, dedupe })` goes beyond flat ranking: it groups
+entries by the facts they share (so everything said about one placement surfaces
+together), drops duplicate text, and marks a group `contested` when a declared
+conflicting tag-pair both appear in it. Semantic contradiction is the corpus
+author's to declare (`tags` + `conflicts`); the resolver does the bookkeeping,
+not the judgement.
 
 ## 4. Output: structured reading or LLM brief (shipped)
 
@@ -146,6 +152,5 @@ classical planet's sign, with the final-dispositor terminus flagged) and
 
 - Promote `phase` and `strength` onto `Chart.aspects` itself (needs the Python
   reference + golden regenerated, so it is a maintainer-environment change).
-- Richer contradiction reconciliation in the resolver beyond salience ranking.
 - A reference `InterpretationSource` (clearly labelled example content, shipped
   separately from the engine) so the plugin path has a worked example.

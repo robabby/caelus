@@ -14,7 +14,7 @@ import { Engine, BODIES, Body, DEFAULT_ORBS } from "../src/chart.js";
 import { interpretationContext } from "../src/interpretation.js";
 import {
   interpret, hasPlacement, hasAspect, hasPattern, matchAll, matchNone,
-  hasDispositor, hasReception,
+  hasDispositor, hasReception, reconcile,
 } from "../src/interpret.js";
 import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js";
 import { pheno, equationOfTime } from "../src/pheno.js";
@@ -581,6 +581,29 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error(`FAIL reception: ${JSON.stringify(recs.map((r) => r.id))}`);
+  }
+
+  // Reconcile: entries citing the same atom group together; opposing declared
+  // tags mark the group contested; duplicate text is dropped.
+  const rsrc = {
+    id: "s", version: "1", rules: [
+      { id: "sun-up", when: hasPlacement({ body: "sun" }), text: "a", tags: ["affirming"] },
+      { id: "sun-dn", when: hasPlacement({ body: "sun" }), text: "b", tags: ["challenging"] },
+      { id: "moon-a", when: hasPlacement({ body: "moon" }), text: "m" },
+      { id: "moon-b", when: hasPlacement({ body: "moon" }), text: "m", weight: 0.5 }, // dup text
+    ],
+  };
+  const groups = reconcile(interpret(ctx, [rsrc]), { conflicts: [["affirming", "challenging"]], dedupe: true });
+  const sunGroup = groups.find((g) => g.atomIds.includes("placement:sun"));
+  const moonGroup = groups.find((g) => g.atomIds.includes("placement:moon"));
+  if (
+    !sunGroup?.contested // opposing tags on shared atom
+    || sunGroup.entries.length !== 2
+    || moonGroup?.entries.length !== 1 // dedupe dropped the duplicate text
+    || moonGroup.contested
+  ) {
+    failures++;
+    console.error(`FAIL reconcile: sunContested=${sunGroup?.contested} moonEntries=${moonGroup?.entries.length}`);
   }
 }
 
