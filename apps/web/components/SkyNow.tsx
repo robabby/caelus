@@ -64,6 +64,7 @@ function jdToUtc(jd: number): string {
 
 export default function SkyNow() {
   const engineRef = useRef<Engine | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const [iso, setIso] = useState("");
   const [lat, setLat] = useState("27.94");
   const [lon, setLon] = useState("-82.46");
@@ -72,7 +73,7 @@ export default function SkyNow() {
   const [tzMode, setTzMode] = useState<"utc" | "local">("utc");
   const [place, setPlace] = useState("");
   const [label, setLabel] = useState("");
-  const [tab, setTab] = useState<"reading" | "positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("reading");
+  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("positions");
   const [view, setView] = useState<"wheel" | "sphere" | "map" | "transits">("wheel");
   const [focus, setFocus] = useState<{ key: string; bodies: string[] } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -108,6 +109,20 @@ export default function SkyNow() {
       setIso(new Date().toISOString().slice(0, 16));
     }
     setReady(true);
+  }, [loadShare]);
+
+  // A link to a chart from elsewhere on the page (the curated examples below)
+  // only changes the fragment, so reload from it on hashchange and bring the
+  // builder into view.
+  useEffect(() => {
+    const onHash = () => {
+      const { set: urlSet, single } = readUrlState();
+      if (urlSet && urlSet.length) { setSet(urlSet); loadShare(urlSet[0]); setFromLink(true); }
+      else if (single) { loadShare(single); setFromLink(true); }
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
   }, [loadShare]);
 
   // Embedded data plus the fixed-star catalog, so star conjunctions work in-browser.
@@ -237,9 +252,10 @@ export default function SkyNow() {
 
   // Interpretation inputs: the fixed-star conjunctions and Hermetic lots the
   // bare projection can't compute (the catalog and sect live on the engine).
-  // ReadingTab turns chart + these into a cited, public-domain reading.
+  // The Reading panel turns chart + these into a cited, public-domain reading;
+  // it leads the page, so compute these for any chart.
   const readingInputs = useMemo(() => {
-    if (!chart || tab !== "reading") return null;
+    if (!chart) return null;
     try {
       return {
         stars: engine().starConjunctions(chart, { orb: 1 }),
@@ -248,7 +264,7 @@ export default function SkyNow() {
     } catch {
       return { stars: [], lots: [] };
     }
-  }, [chart, tab]);
+  }, [chart]);
 
   // The Phase 4 symbolic layer: configurations, structural signature, and the
   // traditional dignity score per classical planet (sect from the Sun's house).
@@ -368,7 +384,7 @@ export default function SkyNow() {
   });
 
   return (
-    <div className="card" style={{ padding: "1.2rem" }}>
+    <div className="card" style={{ padding: "1.2rem" }} ref={cardRef}>
       {!ready ? (
         <p className="dim small" style={{ margin: 0 }}>loading playground…</p>
       ) : (
@@ -424,7 +440,26 @@ export default function SkyNow() {
                 </p>
               )}
 
-              <div className="skynow-layout">
+              {readingInputs && (
+                <section
+                  aria-label="Reading"
+                  style={{
+                    marginTop: "1rem",
+                    padding: "1rem 1.15rem 1.15rem",
+                    background: "var(--surface-2)",
+                    borderLeft: "3px solid var(--accent)",
+                    borderRadius: "var(--radius)",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
+                    <span className="eyebrow" style={{ margin: 0 }}>Reading</span>
+                    <span className="dim small">the chart&rsquo;s validated facts, turned into a cited public-domain interpretation</span>
+                  </div>
+                  <ReadingTab chart={chart} stars={readingInputs.stars} lots={readingInputs.lots} />
+                </section>
+              )}
+
+              <div className="skynow-layout" style={{ marginTop: "1.2rem" }}>
                 <div className="skynow-chart">
                   <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.6rem" }}>
                     {(["wheel", "sphere", "map", "transits"] as const).map((v) => (
@@ -457,16 +492,12 @@ export default function SkyNow() {
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
-                    {(["reading", "positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
+                    {(["positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
                         {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
                       </button>
                     ))}
                   </div>
-
-                  {tab === "reading" && readingInputs && (
-                    <ReadingTab chart={chart} stars={readingInputs.stars} lots={readingInputs.lots} />
-                  )}
 
                   {tab === "positions" && (
                     <>

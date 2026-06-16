@@ -2,7 +2,7 @@
  * Generic planet-in-house extractor, shared by the Alan Leo books that head a
  * delineation "Planet in the Nth House" with the prose following inline.
  */
-import { denoise, excerpt } from "./denoise.js";
+import { denoise, excerpt, sentenceStart } from "./denoise.js";
 import { ordinalToNumber } from "./ordinal.js";
 import { PLANET_TO_BODY } from "./astro.js";
 import type { PassageRecord, CorpusRights } from "../../src/types.js";
@@ -41,7 +41,7 @@ export function extractHouses(lines: string[], source: SourceMeta): PassageRecor
       if (HEADING.test(lines[j]) || DIVIDER.test(lines[j].trim())) break;
       block.push(lines[j]);
     }
-    const text = excerpt(denoise(block));
+    const text = excerpt(sentenceStart(denoise(block)));
     if (text.length < 80) continue;
 
     const key = `${body}:${house}`;

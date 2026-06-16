@@ -3,7 +3,7 @@
  * "PLANET IN SIGN" on its own line (often repeated as a running page header
  * through the section, which we de-duplicate).
  */
-import { denoise, excerpt, stripCipher } from "./denoise.js";
+import { denoise, excerpt, stripCipher, sentenceStart } from "./denoise.js";
 import { PLANET_TO_BODY, SIGN_CANON } from "./astro.js";
 import type { PassageRecord } from "../../src/types.js";
 import type { SourceMeta } from "./houses.js";
@@ -44,7 +44,7 @@ export function extractSigns(lines: string[], source: SourceMeta): PassageRecord
     }
     // Body lines, dropping any heading line (the running headers).
     const block = lines.slice(head.idx + 1, endIdx).filter((l) => !HEADING.test(l));
-    const text = excerpt(stripCipher(denoise(block)));
+    const text = excerpt(sentenceStart(stripCipher(denoise(block))));
     if (text.length < 80) continue;
 
     records.push({

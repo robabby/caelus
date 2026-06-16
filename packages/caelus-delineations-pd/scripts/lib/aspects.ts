@@ -5,7 +5,7 @@
  * aspect that the engine knows). "parallel" is a declination aspect Caelus does
  * not model, so it is dropped.
  */
-import { denoise, excerpt, stripCipher } from "./denoise.js";
+import { denoise, excerpt, stripCipher, sentenceStart } from "./denoise.js";
 import { PLANET_TO_BODY } from "./astro.js";
 import type { PassageRecord } from "../../src/types.js";
 import type { SourceMeta } from "./houses.js";
@@ -49,7 +49,7 @@ export function extractAspects(lines: string[], source: SourceMeta): PassageReco
     const end = h + 1 < heads.length ? heads[h + 1].idx : lines.length;
     // Drop the matched header and any leading glyph cipher from the first line.
     const firstLine = stripCipher(lines[head.idx].replace(HEADING, ""));
-    const text = excerpt(denoise([firstLine, ...lines.slice(head.idx + 1, end)]));
+    const text = excerpt(sentenceStart(denoise([firstLine, ...lines.slice(head.idx + 1, end)])));
     if (text.length < 80) return;
 
     const [x, y] = [head.a, head.b].sort();

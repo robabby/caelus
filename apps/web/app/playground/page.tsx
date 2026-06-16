@@ -6,6 +6,7 @@ import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
 import PlaygroundStickyBar from "../../components/PlaygroundStickyBar";
 import { WHEEL_THEME } from "../../lib/wheelTheme";
+import { b64urlEncode, type Share } from "../../lib/share";
 import { A, Lead, P, H2 } from "../../components/Prose";
 
 export const metadata = {
@@ -17,11 +18,30 @@ export const metadata = {
 
 const engine = new Engine(embeddedData);
 
-const EXAMPLES: Array<[string, Parameters<Engine["chart"]>]> = [
-  ["1990-06-10 18:30 UT · Tampa · placidus", [1990, 6, 10, 18, 30, 0, 27.95, -82.46, "placidus"]],
-  ["1985-12-01 09:00 UT · Svalbard · placidus → whole-sign fallback", [1985, 12, 1, 9, 0, 0, 78.2, 15.6, "placidus"]],
-  ["1962-02-05 00:00 UT · Aquarius stellium (5 bodies within 3°)", [1962, 2, 5, 0, 0, 0, 27.95, -82.46, "placidus"]],
-  ["2026-03-20 14:46 UT · London · equal houses", [2026, 3, 20, 14, 46, 0, 51.5, -0.12, "equal"]],
+// Charts curated for a striking reading. Each carries the share payload (a UT
+// instant + place) so a click loads it into the builder above; the wheel is a
+// preview computed here.
+const EXAMPLES: Array<{ caption: string; args: Parameters<Engine["chart"]>; share: Share }> = [
+  {
+    caption: "Four Royal Stars lit at once: the Sun and Mercury on Regulus, the Moon on Algol, Pluto on Antares.",
+    args: [2000, 8, 22, 12, 0, 0, 51.5, -0.12, "placidus"],
+    share: { v: 1, t: "2000-08-22T12:00", la: "51.5", lo: "-0.12", h: "placidus", z: "tropical", n: "Royal stars" },
+  },
+  {
+    caption: "Jupiter conjunct Sirius, the brightest star; the engine's canonical test fixture.",
+    args: [1990, 6, 10, 18, 30, 0, 27.95, -82.46, "placidus"],
+    share: { v: 1, t: "1990-06-10T18:30", la: "27.95", lo: "-82.46", h: "placidus", z: "tropical", n: "Jupiter on Sirius" },
+  },
+  {
+    caption: "A five-body Aquarius stellium, with Uranus on Regulus.",
+    args: [1962, 2, 5, 0, 0, 0, 27.95, -82.46, "placidus"],
+    share: { v: 1, t: "1962-02-05T00:00", la: "27.95", lo: "-82.46", h: "placidus", z: "tropical", n: "Aquarius stellium" },
+  },
+  {
+    caption: "The day Star Wars opened: the Moon on Regulus, the lunar node on Spica.",
+    args: [1977, 5, 25, 19, 0, 0, 34.05, -118.24, "placidus"],
+    share: { v: 1, t: "1977-05-25T19:00", la: "34.05", lo: "-118.24", h: "placidus", z: "tropical", n: "1977-05-25" },
+  },
 ];
 
 export default function Playground() {
@@ -35,8 +55,9 @@ export default function Playground() {
           ephemeris files, nothing invented.
         </Lead>
         <P dim>
-          The <strong>Reading</strong> tab projects the chart into ranked fact atoms
-          (placements, aspects, fixed-star conjunctions, the Part of Fortune) and runs a
+          The <strong>reading</strong> that leads each chart projects it into ranked
+          fact atoms (placements, aspects, fixed-star conjunctions, the Part of
+          Fortune) and runs a
           public-domain delineation corpus over them, so every statement cites the
           validated fact it rests on: the same grounding an LLM uses instead of
           hallucinating positions. Search a birthplace and enter the local time
@@ -57,20 +78,28 @@ export default function Playground() {
       </P>
       <SynastryPanel />
 
-      <H2>Example charts</H2>
+      <H2>Charts worth reading</H2>
       <P>
-        Four charts chosen to stress the <A href="https://www.npmjs.com/package/caelus-wheel">caelus-wheel</A>{" "}
-        renderer: the canonical fixture, a polar Placidus fallback, a tight stellium with
-        collision-avoided glyphs, and an equal-house chart.
+        Four charts chosen for a striking reading. Click any one to load it into the builder
+        above and read it in full: the wheel is the{" "}
+        <A href="https://www.npmjs.com/package/caelus-wheel">caelus-wheel</A> renderer, and the
+        interpretation is the public-domain corpus run over the engine&rsquo;s facts.
       </P>
       <div className="grid grid-2" style={{ marginTop: "1rem" }}>
-        {EXAMPLES.map(([label, args]) => (
-          <figure key={label} className="card" style={{ margin: 0 }}>
+        {EXAMPLES.map((ex) => (
+          <a
+            key={ex.caption}
+            href={`/playground#c=${b64urlEncode(ex.share)}`}
+            className="card"
+            style={{ margin: 0, display: "block", textDecoration: "none", color: "inherit" }}
+          >
             <div className="chart-fluid">
-              <ChartWheel chart={engine.chart(...args)} size={420} theme={WHEEL_THEME} />
+              <ChartWheel chart={engine.chart(...ex.args)} size={420} theme={WHEEL_THEME} />
             </div>
-            <figcaption className="dim small" style={{ marginTop: "0.6rem" }}>{label}</figcaption>
-          </figure>
+            <div className="dim small" style={{ marginTop: "0.6rem" }}>
+              {ex.caption} <span style={{ color: "var(--accent)" }}>Read this chart &rarr;</span>
+            </div>
+          </a>
         ))}
       </div>
 

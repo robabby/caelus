@@ -64,6 +64,21 @@ export function stripCipher(s: string): string {
 }
 
 /**
+ * Make a passage begin at a clean sentence. After a header and glyph cipher are
+ * stripped, a delineation can start mid-sentence ("endows the person…"); if it
+ * does, advance to the next capitalized sentence opener, or, failing that,
+ * capitalize the first letter so the excerpt at least reads as a statement.
+ */
+export function sentenceStart(text: string): string {
+  if (!text || /^["'(]?[A-Z]/.test(text)) return text;
+  const m = text.match(/[.;:!?]\s+(?=["'(]?[A-Z])/);
+  if (m && m.index !== undefined && m.index < 160) {
+    return text.slice(m.index + m[0].length);
+  }
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/**
  * Trim a long passage to a representative excerpt: keep whole sentences up to
  * `max` characters so a citation is self-contained, never cut mid-word.
  */
