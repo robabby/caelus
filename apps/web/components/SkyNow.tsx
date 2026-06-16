@@ -16,6 +16,7 @@ import BiWheel, { type SynContact } from "./BiWheel";
 import Aspectarian from "./Aspectarian";
 import ChartControls from "./ChartControls";
 import InsightsTab from "./InsightsTab";
+import FactsTab from "./FactsTab";
 import VedicTab from "./VedicTab";
 import DeclinationTab from "./DeclinationTab";
 import StarsTab from "./StarsTab";
@@ -42,6 +43,9 @@ const fmtIso = (y: number, mo: number, d: number, h: number, mi: number) =>
   `${pad(y, 4)}-${pad(mo)}-${pad(d)}T${pad(h)}:${pad(mi)}`;
 
 const MAP_BODIES: BodyId[] = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
+
+// Tab display labels that differ from the title-cased key.
+const TAB_LABEL: Record<string, string> = { facts: "Facts", insights: "Synthesis", json: "JSON" };
 
 const ACCURACY: Array<[string, string]> = accuracy.summary.map((s) => [s.label, s.bound]);
 const PHASE_LABEL: Record<string, string> = {
@@ -73,7 +77,7 @@ export default function SkyNow() {
   const [tzMode, setTzMode] = useState<"utc" | "local">("utc");
   const [place, setPlace] = useState("");
   const [label, setLabel] = useState("");
-  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("positions");
+  const [tab, setTab] = useState<"facts" | "positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("facts");
   const [view, setView] = useState<"wheel" | "sphere" | "map" | "transits">("wheel");
   const [focus, setFocus] = useState<{ key: string; bodies: string[] } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -492,12 +496,16 @@ export default function SkyNow() {
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
-                    {(["positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
+                    {(["facts", "positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
-                        {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
+                        {TAB_LABEL[t] ?? t.charAt(0).toUpperCase() + t.slice(1)}
                       </button>
                     ))}
                   </div>
+
+                  {tab === "facts" && readingInputs && (
+                    <FactsTab chart={chart} stars={readingInputs.stars} lots={readingInputs.lots} />
+                  )}
 
                   {tab === "positions" && (
                     <>
