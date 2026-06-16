@@ -11,7 +11,7 @@ import { A, Lead, P, H2 } from "../../components/Prose";
 export const metadata = {
   title: "Playground",
   description:
-    "Compute a chart in the browser: positions, houses, aspects, lunar phases, raw JSON. Twelve house systems, tropical and sidereal zodiacs, all client-side.",
+    "Compute and interpret a chart in the browser: ranked fact atoms turned into a cited, public-domain reading, plus positions, houses, aspects, fixed stars, and lots. Twelve house systems, tropical and sidereal zodiacs, all client-side.",
   alternates: { canonical: "/playground" },
 };
 
@@ -27,21 +27,23 @@ const EXAMPLES: Array<[string, Parameters<Engine["chart"]>]> = [
 export default function Playground() {
   return (
     <main className="container page page--sticky-cta">
-      <PageHero eyebrow="Playground" title="Compute a chart in your browser">
+      <PageHero eyebrow="Playground" title="Compute and interpret a chart in your browser">
         <Lead>
           Every chart below is computed on this page by the <code>caelus</code> engine
-          with its embedded dataset. No server, no ephemeris files.
+          with its embedded dataset, then <strong>read</strong>: its validated facts are
+          turned into a cited reading from a public-domain corpus. No server, no
+          ephemeris files, nothing invented.
         </Lead>
         <P dim>
-          Search a birthplace and enter the local time: the city comes from an
-          offline gazetteer bundled with the page, and <code>caelus-birth</code>{" "}
-          resolves the time zone and historical daylight-saving rules to UT, all
-          without a network request. Then <strong>Copy share link</strong> to mint a
-          chart you can send to anyone: the link carries only the values you typed,
-          and the recipient&rsquo;s browser recomputes the chart with no server in
-          the loop. Or <strong>Add to my charts</strong> to build a labelled set
-          (you, partner, family) and share them all as one link. (Switch the time
-          mode to UTC for the current sky.)
+          The <strong>Reading</strong> tab projects the chart into ranked fact atoms
+          (placements, aspects, fixed-star conjunctions, the Part of Fortune) and runs a
+          public-domain delineation corpus over them, so every statement cites the
+          validated fact it rests on: the same grounding an LLM uses instead of
+          hallucinating positions. Search a birthplace and enter the local time
+          (<code>caelus-birth</code> resolves the zone and historical DST to UT offline),
+          then <strong>Copy share link</strong> to mint a chart whose URL carries only
+          the values you typed, recomputed in the recipient&rsquo;s browser. (Switch the
+          time mode to UTC for the current sky.)
         </P>
       </PageHero>
 

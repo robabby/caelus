@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   Engine, BODIES, fmtLon, mod, julianDay, lunarPhases, astrocartography,
   detectPatterns, chartSignature, dignityScore, lots,
@@ -22,6 +23,13 @@ import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
 import fixedStars from "../lib/fixed-stars.json";
 import { crossAspect, cell, control } from "../lib/chart-display";
 import { type Share, b64urlEncode, readUrlState } from "../lib/share";
+
+// The interpretation panel pulls in the public-domain delineation corpus
+// (~90 KB gzipped), so load it only when the Reading tab is first opened.
+const ReadingTab = dynamic(() => import("./ReadingTab"), {
+  ssr: false,
+  loading: () => <p className="dim small" style={{ marginTop: 0 }}>reading the chart…</p>,
+});
 
 // Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
 const STAR_MAG = (fixedStars as { stars: Record<string, { mag: number }> }).stars;
@@ -64,7 +72,7 @@ export default function SkyNow() {
   const [tzMode, setTzMode] = useState<"utc" | "local">("utc");
   const [place, setPlace] = useState("");
   const [label, setLabel] = useState("");
-  const [tab, setTab] = useState<"positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("positions");
+  const [tab, setTab] = useState<"reading" | "positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("reading");
   const [view, setView] = useState<"wheel" | "sphere" | "map" | "transits">("wheel");
   const [focus, setFocus] = useState<{ key: string; bodies: string[] } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -226,6 +234,21 @@ export default function SkyNow() {
       return null;
     }
   }, [view, chart, utIso]);
+
+  // Interpretation inputs: the fixed-star conjunctions and Hermetic lots the
+  // bare projection can't compute (the catalog and sect live on the engine).
+  // ReadingTab turns chart + these into a cited, public-domain reading.
+  const readingInputs = useMemo(() => {
+    if (!chart || tab !== "reading") return null;
+    try {
+      return {
+        stars: engine().starConjunctions(chart, { orb: 1 }),
+        lots: engine().lots(chart),
+      };
+    } catch {
+      return { stars: [], lots: [] };
+    }
+  }, [chart, tab]);
 
   // The Phase 4 symbolic layer: configurations, structural signature, and the
   // traditional dignity score per classical planet (sect from the Sun's house).
@@ -434,12 +457,16 @@ export default function SkyNow() {
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
-                    {(["positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
+                    {(["reading", "positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
                         {t === "json" ? "JSON" : t.charAt(0).toUpperCase() + t.slice(1)}
                       </button>
                     ))}
                   </div>
+
+                  {tab === "reading" && readingInputs && (
+                    <ReadingTab chart={chart} stars={readingInputs.stars} lots={readingInputs.lots} />
+                  )}
 
                   {tab === "positions" && (
                     <>

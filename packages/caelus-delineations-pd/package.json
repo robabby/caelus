@@ -36,6 +36,10 @@
       "types": "./dist/src/index.d.ts",
       "default": "./dist/src/index.js"
     },
+    "./pd": {
+      "types": "./dist/src/pd.d.ts",
+      "default": "./dist/src/pd.js"
+    },
     "./manifest": {
       "types": "./dist/src/manifest.d.ts",
       "default": "./dist/src/manifest.js"

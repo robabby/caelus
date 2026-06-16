@@ -11,7 +11,7 @@ const withMDX = createMDX({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["caelus", "caelus-wheel", "caelus-mcp"],
+  transpilePackages: ["caelus", "caelus-wheel", "caelus-mcp", "caelus-delineations-pd"],
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   // Let CI/preflight build into a separate dir (NEXT_DIST_DIR=.next-ci) so a
   // `next build` never clobbers the `.next` a running `next dev` depends on.
