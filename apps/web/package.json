@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node ../../scripts/ensure-conformance-stats.mjs && next dev",
+    "dev": "node ../../scripts/ensure-conformance-stats.mjs && node ../../scripts/ensure-delineations-pd.mjs && next dev",
     "dev:clean": "rm -rf .next && next dev",
-    "build": "node ../../scripts/build-chart-widget.mjs && next build",
+    "build": "node ../../scripts/ensure-delineations-pd.mjs && node ../../scripts/build-chart-widget.mjs && next build",
     "start": "next start",
     "vercel-build": "cd ../.. && npm run build"
   },

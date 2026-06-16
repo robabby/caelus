@@ -35,11 +35,16 @@ export default function TableOfContents() {
       return;
     }
     const next: Item[] = [];
+    const idCounts = new Map<string, number>();
     for (const h of Array.from(root.querySelectorAll<HTMLElement>("h2, h3"))) {
       const text = (h.textContent ?? "").replace(/[¶#]/g, "").trim();
       if (!text) continue;
-      if (!h.id) h.id = slugify(text);
-      next.push({ id: h.id, text, level: h.tagName === "H3" ? 3 : 2 });
+      const base = h.id || slugify(text);
+      const n = idCounts.get(base) ?? 0;
+      const id = n === 0 ? base : `${base}-${n + 1}`;
+      idCounts.set(base, n + 1);
+      h.id = id;
+      next.push({ id, text, level: h.tagName === "H3" ? 3 : 2 });
     }
     setItems(next);
     setActive(next[0]?.id ?? "");

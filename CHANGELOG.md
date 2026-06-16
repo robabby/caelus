@@ -327,12 +327,12 @@ gains an optional inter-planetary (mundane) block.
   needs only `resourceDomains`) with the legacy `openai/*` aliases for
   compatibility. See `docs/mcp-app-wiring.md`.
 
-## v0.13.0 — Hellenistic time-lords + Vedic layer (9→18 MCP tools)
+## v0.13.0 — hellenistic time-lords + Vedic layer (9→18 MCP tools)
 
 *2026-06-14*
 
 A feature release across all four packages. The engine completes Phase 1 — the
-Hellenistic time-lords (lots, profections, firdaria, zodiacal releasing) and
+hellenistic time-lords (lots, profections, firdaria, zodiacal releasing) and
 primary directions to the angles — and lays the Phase 2 Vedic layer (nakshatras,
 the Vimshottari and Yogini dashas, the Parashari vargas, and the placement-based
 yogas), each pinned by a cross-language golden. The MCP server grows from nine to
@@ -341,7 +341,7 @@ five Phase 1 time-lord and direction tools.
 
 ### Engine (`caelus`)
 
-- Hellenistic lots (Arabic parts), sect-aware (Roadmap Phase 1): the seven
+- hellenistic lots (Arabic parts), sect-aware (Roadmap Phase 1): the seven
   Hermetic lots — Fortune, Spirit, Eros, Necessity, Courage, Victory, Nemesis —
   via `lots(engine, jdUt, lat, lonEast, zodiac)` plus the pure formula helpers
   `hermeticLots`, `lotFortune`, `lotSpirit`. Arithmetic on the validated
@@ -361,7 +361,7 @@ five Phase 1 time-lord and direction tools.
   night start. `firdaria`, `firdariaSequence`, `firdariaActive`, `firdariaAt`.
   Python reference + `firdaria-golden` cross-language pin, with 75-year-total
   and sub-period-tiling invariants in the test.
-- Zodiacal releasing / aphesis (Roadmap Phase 1, completing it): the Hellenistic
+- Zodiacal releasing / aphesis (Roadmap Phase 1, completing it): the hellenistic
   time-lord technique from Valens, released from a Lot. `zrRelease` (the L1..Ln
   timeline), `zrActive` (the L1..L4 lords at a moment), and `zrAt` (releasing
   from the chart's Lot of Spirit or Fortune). Standard Valens/Schmidt

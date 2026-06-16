@@ -1,3 +1,4 @@
+import { useId } from "react";
 import Cta from "./Cta";
 import { H2 } from "./Prose";
 
@@ -12,9 +13,10 @@ export default function PageClose({
   secondaryHref,
   secondaryLabel,
 }: PageCloseProps) {
+  const headingId = useId();
   return (
-    <section className="page-close" aria-labelledby="page-close-heading">
-      <H2 id="page-close-heading">{title}</H2>
+    <section className="page-close" aria-labelledby={headingId}>
+      <H2 id={headingId}>{title}</H2>
       <Cta
         variant="compact"
         secondaryHref={secondaryHref}

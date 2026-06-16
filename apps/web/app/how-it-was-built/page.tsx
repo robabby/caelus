@@ -36,10 +36,9 @@ export default function HowItWasBuilt() {
 
       <H2>Two oracles, not the author&apos;s word</H2>
       <P>
-        Positions are checked, not asserted. Swiss Ephemeris 2.10 is the
-        same-frame oracle across 1850&ndash;2150; JPL Horizons is the independent
-        reference at a separate set of epochs. The per-body bounds are published
-        on <A href="/validation">Validation</A>, and the methodology behind them
+        Swiss Ephemeris 2.10 is the same-frame oracle across 1850&ndash;2150; JPL
+        Horizons is the independent reference at a separate set of epochs. The
+        per-body bounds are published on <A href="/validation">Validation</A>, and the methodology behind them
         on <A href="/methods">Methods</A>. For an engine written by a machine,
         the trust comes from the oracle rather than the author, which is the same
         standard a human-written engine should meet.

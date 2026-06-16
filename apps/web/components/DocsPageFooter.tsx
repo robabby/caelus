@@ -25,6 +25,11 @@ const CLOSE_BY_PATH: Record<string, CloseConfig> = {
     secondaryHref: "/playground",
     secondaryLabel: "Playground →",
   },
+  "/docs/corpus": {
+    title: "Ground an LLM in real chart facts",
+    secondaryHref: "/docs/interpretation",
+    secondaryLabel: "Interpretation layer →",
+  },
 };
 
 export default function DocsPageFooter() {

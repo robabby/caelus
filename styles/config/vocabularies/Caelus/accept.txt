@@ -92,6 +92,13 @@ eval
 ephemengine
 magus
 Danjon
+formatters
+Counterfactuals
+hellenistic
+chartAt
+npx
+pyswisseph
+caelus-mcp
 Davison
 antiscia
 antiscion
