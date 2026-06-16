@@ -2,9 +2,58 @@
 
 The four packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`)
 version together on feature releases; metadata-only patches can ship per
-package. Numbers quoted here are as measured at release time;
+package. The companion **`caelus-delineations-pd`** corpus ships on its own
+semver (currently 0.1.x). Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
+
+## v0.19.0 — interpretation corpus, star/lot atoms, and cited Playground readings
+
+*2026-06-16*
+
+A feature release across the four core packages plus the first npm publish of
+**`caelus-delineations-pd`**: a public-domain interpretation corpus, star and
+Hermetic-lot fact atoms, MCP `chart_facts` enrichment, canonical site facts
+sync, and a Playground tab that runs the corpus in-browser with clickable
+citations.
+
+### Engine (`caelus`)
+
+- **Star and lot atoms**: `interpretationContext()` accepts `stars` (from
+  `Engine.starConjunctions()`) and `lots` (from `Engine.lots()`); new
+  `hasStar` / `hasLot` selectors and salience weights for fixed-star
+  conjunctions and the Part of Fortune and its companions.
+- Golden suite extended for lot projection wiring.
+
+### MCP (`caelus-mcp`)
+
+- **`chart_facts`** auto-enriches ephemeris charts with Fortune/Spirit lots and
+  tight fixed-star conjunctions before building the brief.
+
+### Corpus (`caelus-delineations-pd` @ 0.1.0, first npm publish)
+
+- **334 passages** from seven sources: planet-in-sign/house, aspects, rising
+  sign, curated Robson fixed stars; compiled to `InterpretationSource`s with a
+  validation harness (`npm test` in the package).
+- **`publicDomainSources`** drops the segregated Llewellyn George
+  `gratis-not-pd` cells; **`sources`** includes them.
+- Liber 777 correspondences table; manifest-driven fetch/extract pipeline in-repo.
+
+### Web
+
+- New guide: [Building a corpus](/docs/corpus); Interpretation and Provenance
+  added to the docs sidebar.
+- **Canonical facts**: `scripts/sync-facts.mjs` derives `accuracy.json` counts
+  and claims anchors; web pages import `apps/web/lib/facts.ts` formatters.
+- **Playground**: in-browser cited reading from `caelus-delineations-pd` with
+  curated clickable examples.
+
+### CI
+
+- `caelus-delineations-pd` build + validation harness gated in conformance.
+- `facts:sync` runs before `lint:claims`.
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at **0.19.0**. **`caelus-delineations-pd`** publishes at **0.1.0**.
 
 ## v0.18.0 — interpretation, provenance, and the wider sky (27→29 MCP tools)
 

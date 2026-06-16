@@ -15,6 +15,7 @@ const PKGS = [
   ["caelus-mcp", "packages/caelus-mcp/package.json"],
   ["caelus-birth", "packages/birth/package.json"],
   ["caelus-wheel", "packages/wheel/package.json"],
+  ["caelus-delineations-pd", "packages/caelus-delineations-pd/package.json"],
 ];
 for (const [name, path] of PKGS) {
   const version = JSON.parse(readFileSync(path, "utf8")).version;

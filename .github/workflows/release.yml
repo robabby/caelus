@@ -1,6 +1,6 @@
 name: release
-# Publish all four packages to npm with provenance attestation.
-# Trigger: push a tag like v0.1.0, or dispatch manually from main (the
+# Publish npm packages with provenance attestation (four core packages +
+# caelus-delineations-pd on its own semver). Trigger: push a tag like v0.1.0,
 # published versions come from the package.json files either way).
 # Requires the NPM_TOKEN secret (automation token for the npm account
 # that owns the caelus* package names) — see docs/releasing.md.
@@ -26,6 +26,8 @@ jobs:
       - run: node scripts/check-versions.mjs   # npm × PyPI × server.json must agree
       - run: npm run build -w caelus
       - run: node packages/caelus/dist/test/golden.test.js
+      - run: npm run build -w caelus-delineations-pd
+      - run: npm run test -w caelus-delineations-pd
       - run: npm run build -w caelus-mcp
       - run: node packages/caelus-mcp/smoke.mjs
       - run: node packages/caelus-mcp/verify_tools.mjs
@@ -44,6 +46,8 @@ jobs:
       - run: bash scripts/publish-if-missing.sh caelus-birth packages/birth
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
       - run: bash scripts/publish-if-missing.sh caelus-wheel packages/wheel
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+      - run: bash scripts/publish-if-missing.sh caelus-delineations-pd packages/caelus-delineations-pd
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
 
   # Python reference engine → PyPI. No token: PyPI Trusted Publishing (OIDC)

@@ -17,7 +17,7 @@ export {
 
 export const SITE = {
   name: "Caelus",
-  version: "0.18.0",
+  version: "0.19.0",
   url: "https://www.ephemengine.com",
   tagline: "MIT astrological ephemeris engine in TypeScript.",
   repo: "https://github.com/heavyblotto/caelus",
@@ -101,6 +101,7 @@ export const FOOTER: FooterColumn[] = [
       { href: NPM.mcp, label: "caelus-mcp", external: true },
       { href: NPM.birth, label: "caelus-birth", external: true },
       { href: NPM.wheel, label: "caelus-wheel", external: true },
+      { href: NPM.delineationsPd, label: "caelus-delineations-pd", external: true },
       { href: PYPI.caelusEngine, label: "caelus-engine (PyPI)", external: true },
     ],
   },
