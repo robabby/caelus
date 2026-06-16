@@ -6,7 +6,14 @@ import { ChartWheel, ChartSphere, EphemerisGraph } from "caelus-wheel";
 import { A, P } from "../../components/Prose";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
-import { formatMcpToolsProse, MCP_TOOL_COUNT } from "../../lib/site";
+import {
+  FACTS,
+  formatCountProse,
+  formatGoldenChecks,
+  formatHouseSystemsProse,
+  formatMcpToolsProse,
+  formatSiderealProse,
+} from "../../lib/facts";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../../lib/wheelTheme";
 
 const MCP_TOOLS_PROSE = formatMcpToolsProse();
@@ -33,11 +40,11 @@ const graphSeries = ephemeris(engine, GRAPH_BODIES, {
 type Stat = { num: string; label: string; href: string };
 
 const STATS: Stat[] = [
-  { num: "13", label: "Bodies in the default chart", href: "/validation" },
-  { num: "12", label: "House systems", href: "/docs/houses-and-zodiacs" },
-  { num: "8", label: "Zodiacs (tropical + 7 sidereal)", href: "/docs/houses-and-zodiacs" },
-  { num: String(MCP_TOOL_COUNT), label: "MCP tools for AI clients", href: "/docs/mcp" },
-  { num: "3,218", label: "Golden checks in CI", href: "/validation" },
+  { num: String(FACTS.defaultBodies), label: "Bodies in the default chart", href: "/validation" },
+  { num: String(FACTS.houseSystems), label: "House systems", href: "/docs/houses-and-zodiacs" },
+  { num: String(FACTS.zodiacModes), label: `Zodiacs (tropical + ${formatSiderealProse()} sidereal)`, href: "/docs/houses-and-zodiacs" },
+  { num: String(FACTS.mcpTools), label: "MCP tools for AI clients", href: "/docs/mcp" },
+  { num: formatGoldenChecks(), label: "Golden checks in CI", href: "/validation" },
   { num: "0", label: "Runtime dependencies", href: "/docs/data-tiers" },
 ];
 
@@ -186,18 +193,20 @@ export default function Features() {
         }
       >
         <Feature title="Bodies">
-          Thirteen in the default chart: Sun, Moon, Mercury, Venus, Mars,
+          {formatCountProse(FACTS.defaultBodies).charAt(0).toUpperCase()}
+          {formatCountProse(FACTS.defaultBodies).slice(1)} in the default chart: Sun, Moon, Mercury, Venus, Mars,
           Jupiter, Saturn, Uranus, Neptune, Pluto, Chiron, and the mean and true
           lunar node. On request: mean and true Lilith (lunar apogee), five
           asteroids (Ceres, Pallas, Juno, Vesta, Pholus), the Uranian/Hamburg
           points, and a 318-star fixed catalog.
         </Feature>
         <Feature title="Houses, angles, and zodiacs">
-          Twelve house systems: Placidus, Koch, Porphyry, Equal, Whole-sign,
+          {formatHouseSystemsProse().charAt(0).toUpperCase()}
+          {formatHouseSystemsProse().slice(1)} house systems: Placidus, Koch, Porphyry, Equal, Whole-sign,
           Regiomontanus, Campanus, Alcabitius, Morinus, Meridian, Polich-Page,
           and Vehlow, with a whole-sign fallback above the polar circles.
           Angles: Ascendant, Midheaven, vertex, and east point. Zodiac: tropical
-          and seven sidereal ayanamsas (Lahiri, Fagan/Bradley, Krishnamurti,
+          and {formatSiderealProse()} sidereal ayanamsas (Lahiri, Fagan/Bradley, Krishnamurti,
           Raman, Yukteshwar, Galactic Center, and Spica). See{" "}
           <A href="/docs/houses-and-zodiacs">Houses &amp; Zodiacs</A>.
         </Feature>

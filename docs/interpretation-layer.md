@@ -36,7 +36,8 @@ Every atom carries:
   `aspect:mars~saturn:square`, `pattern:t_square:mars-moon-saturn`,
   `signature:element:fire`, `angle:asc`). Interpretations reference this id, so a
   generated claim can point at the fact it rests on.
-- `kind` -- `placement | aspect | pattern | signature | angle`.
+- `kind` -- `placement | aspect | pattern | signature | angle | dispositor |
+  reception | star | lot`.
 - `bodies` -- the body ids involved, for filtering and cross-reference.
 - `salience` -- a transparent, overridable score (see below).
 - `text` -- a plain-language statement of the fact, no interpretation
@@ -70,6 +71,8 @@ asserting meaning. It is a sum of explicit, documented contributions
 | `dignity` | per essential dignity |
 | `hardAspect` | conjunction / square / opposition |
 | `pattern` | a whole configuration |
+| `dispositor` / `reception` | a dispositor link / a mutual reception |
+| `star` / `lot` | a fixed-star conjunction / a Hermetic lot |
 
 No weight is magic; a caller who dislikes the defaults overrides them.
 
@@ -89,7 +92,8 @@ geometric, time-only `query` predicates cannot.
 - atom selectors: `hasPlacement({ body, sign, house, retrograde, dignity })`,
   `hasAspect({ a, b, between, aspect, phase, minStrength })`,
   `hasPattern({ kind, body })`, `hasSignature(facet, value)`,
-  `hasAngle(angle, sign)`.
+  `hasAngle(angle, sign)`, `hasDispositor({ body })`, `hasReception({ body })`,
+  `hasStar({ body, star })`, `hasLot({ lot, sign, house })`.
 - combinators: `matchAll(...)` (every selector; unions atoms), `matchAny(...)`
   (any; unions the matched), `matchNone(sel)` (an absence test; no atoms).
 
@@ -218,12 +222,18 @@ from `Engine.lots(chart)`; the projection emits a `lot:<name>` atom for each.
 Lots are time-sensitive (they derive from the Ascendant and Moon), so an inexact
 instant damps them like the angles.
 
+## Reference corpus (shipped separately)
+
+**`caelus-delineations-pd`** (`packages/caelus-delineations-pd`) is a
+public-domain interpretation corpus and validation set: passages decomposed into
+`PassageRecord` JSON, compiled to `InterpretationSource`s, and gated by
+`npm test`. Site guide: [/docs/corpus](https://www.ephemengine.com/docs/corpus).
+
 ## Follow-ons
 
-All the listed follow-ons have shipped: dispositor/reception atoms (now by
-domicile, exaltation, and the sect triplicity ruler), reconciliation, the worked
-example, `phase`/`strength` promoted onto `Chart.aspects`, and those two surfaced
-through the MCP `natal_chart` aspect output. The one maintainer-environment step
-that remains is to regenerate `golden.json` so the new aspect fields are stored
-in it (the TS engine fills them now, and the golden run pins aspect *count*, so
-nothing is red in the meantime).
+Remaining corpus gaps (not engine gaps): dignity and lot passages from PD texts,
+Vedic verse-level extraction (Brihat Jataka vendored), and broader fixed-star
+coverage beyond the curated Robson set. Regenerate `golden.json` when aspect
+phase/strength fields should be stored in the golden fixtures (the TS engine
+fills them now; the golden run pins aspect count, so nothing is red in the
+meantime).

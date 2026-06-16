@@ -1,0 +1,239 @@
+export const metadata = {
+  title: "Building a Corpus",
+  description: "Consume and construct interpretation corpora for Caelus: the caelus-delineations-pd package, PassageRecords, extractors, validation, and licensing.",
+  alternates: { canonical: "/docs/corpus" },
+};
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
+
+# Building a corpus
+
+The [interpretation layer](/docs/interpretation) defines the contract between
+validated chart facts and the meaning you plug in. **`caelus-delineations-pd`**
+is a reference implementation of that contract: hundreds of public-domain
+delineations decomposed into selectors the engine can match and cite.
+
+The engine ships the mechanism (`interpret()`, selectors, citation audit). This
+package ships **content**: passages, provenance, and a validation harness that
+proves every rule binds to a real atom and fires only for its condition.
+
+## Consume a corpus
+
+Install the companion package (monorepo path today; npm publish follows the
+v0.19 release):
+
+<CodeBlock lang="bash" code="npm install caelus-delineations-pd" />
+
+Project a chart, then run the compiled sources:
+
+<CodeBlock
+  lang="typescript"
+  label="consume.ts"
+  code={`import { Engine, julianDay, interpretationContext, interpret } from "caelus";
+import { loadNodeData } from "caelus/node";
+import { sources, publicDomainSources } from "caelus-delineations-pd";
+
+const engine = new Engine(loadNodeData(dataDir));
+const chart = engine.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
+
+// All sources (includes Llewellyn George Mercury–Saturn sign cells, tagged gratis-not-pd)
+const reading = interpret(interpretationContext(chart), sources);
+
+// Strict public-domain only: drops the George source
+const pdReading = interpret(interpretationContext(chart), publicDomainSources);
+
+reading.entries.forEach((e) => console.log(e.salience.toFixed(1), e.text, e.atomIds));`}
+/>
+
+Each `ReadingEntry` carries the licensed text, the atom ids it rests on (the
+audit trail), and a salience score derived from the matched atoms.
+
+### Fixed stars and lots
+
+Star and lot atoms are not computed from a bare `Chart`. The star catalog lives
+in the data pack; lots derive from the Ascendant, Moon, and sect. Supply them
+when projecting:
+
+<CodeBlock
+  lang="typescript"
+  label="enrich.ts"
+  code={`const stars = engine.starConjunctions(chart, { orb: 1 });
+const lots = engine.lots(chart);
+
+const ctx = interpretationContext(chart, { stars, lots });
+const reading = interpret(ctx, sources);`}
+/>
+
+The MCP `chart_facts` tool does this automatically for Fortune, Spirit, and
+tight star conjunctions. For your own app, mirror that enrichment before
+calling `interpret()`.
+
+### Exports beyond `sources`
+
+| Export | Role |
+|---|---|
+| `sources` / `publicDomainSources` | Ready-to-run `InterpretationSource[]` |
+| `passages` / `passageSets` | Raw `PassageRecord` JSON by work |
+| `corpusManifest` | Bibliography (`sources/manifest.json`) |
+| `correspondences` | Liber 777 table (Crowley PD, via open_777) |
+| `selectorFromSpec` / `compileSource` | Compiler for your own passages |
+
+See the [Interpretation guide](/docs/interpretation) for selectors, reconciliation,
+and LLM briefs.
+
+## How a corpus is built
+
+The corpus is **data**, not hand-written TypeScript rules, so every claim stays
+traceable:
+
+```text
+sources/manifest.json       bibliography + fetch specs + rights tags
+  → sources/text/*.txt        public-domain scans (manifest-driven fetch)
+  → scripts/extract/*.ts      parse enumerated delineations → PassageRecords
+  → data/passages/*.json      passage + SelectorSpec + provenance
+  → src/compile.ts            SelectorSpec → live Selector → Rule
+  → src/sources.ts            one InterpretationSource per work → sources
+```
+
+A **`PassageRecord`** is one licensable statement bound to a fact:
+
+- **`when`**: a serializable **`SelectorSpec`** naming the placement, aspect,
+  pattern, angle, star, or lot the passage speaks to.
+- **`text`**: the delineation prose (de-noised, excerpted).
+- **`atomIds`**: the engine ids the rule must cite (e.g. `placement:mars`,
+  `aspect:moon~neptune:conjunction`). Must match the engine exactly.
+- **`source`**: author, work, optional locus for attribution.
+- **`rights`**: `pd-us`, `cc0`, or `gratis-not-pd`.
+
+Selectors ship as **data** (JSON), not code. `selectorFromSpec()` resolves each
+spec into a live Caelus selector at compile time. That is what makes the corpus
+auditable and publishable without executing arbitrary extract logic at runtime.
+
+### SelectorSpec kinds
+
+| kind | Example | Matches |
+|---|---|---|
+| `placement` | `{ body: "mars", sign: "Aries" }` | Mars in Aries |
+| `placement` | `{ body: "moon", house: 10 }` | Moon in the 10th |
+| `aspect` | `{ a: "moon", b: "neptune", aspect: "conjunction" }` | Moon conjunct Neptune |
+| `angle` | `{ angle: "asc", sign: "Leo" }` | Leo rising |
+| `star` | `{ body: "jupiter", star: "Sirius" }` | Jupiter conjunct Sirius |
+| `lot` | `{ lot: "fortune", house: 1 }` | Part of Fortune in the 1st |
+| `pattern` | `{ pattern: "t_square", body: "mars" }` | Mars in a T-square |
+| `signature` | `{ facet: "element", value: "fire" }` | Fire dominant |
+
+Sign names use the engine's title case (`"Aries"`, not `"aries"`). Body ids
+match the chart object (`"mean_node"`, `"true_node"`, etc.).
+
+## Write an extractor
+
+Extractors live in `packages/caelus-delineations-pd/scripts/extract/`. Each
+script reads one vendored text, locates delineations by structure (section
+headers, enumerated lists, aspect tables), de-noises OCR, and writes
+`data/passages/<work>.json`.
+
+Pattern from the Saint-Germain Sun-sign extractor:
+
+1. **Locate sections deterministically**: regex on headings the book actually uses
+   (`1. ARIES. (The …)`), not fuzzy NLP.
+2. **De-noise**: `denoise()` strips page numbers, running headers, hyphenation artifacts.
+3. **Emit one PassageRecord per cell**: id, `when`, `text`, `atomIds`, `source`, `rights`.
+4. **Wire into `npm run extract`**: add the script to the package `extract` chain.
+
+<CodeBlock
+  lang="typescript"
+  label="passage-record.ts"
+  code={`{
+  "id": "saint-germain:sun:aries",
+  "when": { "kind": "placement", "body": "sun", "sign": "Aries" },
+  "atomIds": ["placement:sun"],
+  "text": "People born under this sign are…",
+  "tradition": "modern",
+  "source": { "author": "Saint-Germain", "work": "Practical Astrology", "locus": "Ch. 1" },
+  "rights": "pd-us"
+}`}
+/>
+
+Some cells cannot be auto-extracted cleanly (glyph-coded sign entries, garbled
+star catalogs, verse-structured Vedic texts). The harness reports gaps; hand-curate
+those records (Robson fixed stars) or defer until a better parser exists.
+
+### Add a source to the manifest
+
+Each work needs an entry in `sources/manifest.json`:
+
+<CodeBlock
+  lang="json"
+  label="manifest-entry.json"
+  code={`{
+  "id": "saint-germain-practical",
+  "layer": 1,
+  "title": "Practical Astrology",
+  "author": "Comte de Saint-Germain",
+  "year": 1901,
+  "tradition": "modern",
+  "rights": "pd-us",
+  "file": "saint-germain-practical-astrology.txt",
+  "fetch": { "url": "https://…", "stripGutenberg": true }
+}`}
+/>
+
+Run `npm run fetch` to (re)acquire texts, `npm run extract` to rebuild passage
+JSON, `npm run build` to compile, `npm test` to validate.
+
+## Validation harness
+
+`npm test` in `caelus-delineations-pd` is what makes this a **validation set**,
+not just a data dump. With no ephemeris it checks:
+
+- Every compiled rule binds to a legal selector kind.
+- Each rule **fires** for its condition and **only** that condition (no overly
+  broad selectors).
+- Cited `atomIds` exist on the projection (no invented provenance).
+- Manifest rights and file integrity.
+
+Then it runs end-to-end against a real engine projection. A broken extractor or
+a drifted atom id fails CI.
+
+When you add passages, extend the harness if you introduce a new cell shape.
+
+## Licensing and segregation
+
+`sources/manifest.json` tags each work:
+
+| `rights` | Meaning |
+|---|---|
+| `pd-us` | Public domain in the US for the cited edition/translation |
+| `cc0` | Explicitly dedicated |
+| `gratis-not-pd` | Free to read online; copyright status uncertain |
+
+The Llewellyn George *A to Z* Mercury–Saturn (and outer-planet) sign cells are
+the only comprehensive natal planet-in-sign source whose OCR is usable; they
+live in a **separate source** tagged `gratis-not-pd`. Use `publicDomainSources`
+when you need strict PD provenance.
+
+Full source texts are vendored in the repo for extraction but **not** published
+to npm; only compiled passages and the manifest ship in the package.
+
+## Coverage today
+
+334 passages across seven active sources: planet-in-sign (Sun through Neptune),
+planet-in-house (Alan Leo), planet-aspect-planet (Heindel), rising sign
+(Heindel), fixed-star conjunctions (Robson, curated). Dignity and lot cells have
+selectors but no PD passages yet. See the package README for the full table and
+known gaps (Vedic verse structure, Brihat Jataka, etc.).
+
+## Next steps
+
+- Read the [Interpretation layer](/docs/interpretation) for atoms, `reconcile()`,
+  and LLM briefs with `auditCitations`.
+- Read [Chart provenance](/docs/provenance) when the chart is not a plain birth instant.
+- Clone `packages/caelus-delineations-pd/scripts/extract/saint-germain.ts` as a
+  template for your first extractor.
+- Run the monorepo test chain: `npm test` (engine goldens + corpus validation).
+
+<PageClose
+  title="Ground an LLM in real chart facts"
+  secondaryHref="/docs/interpretation"
+  secondaryLabel="Interpretation layer →"
+/>

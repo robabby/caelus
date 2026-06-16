@@ -1,6 +1,7 @@
 import { A, H2, P, Code } from "../../components/Prose";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
+import { formatGoldenChecks, formatWorstNanoProse } from "../../lib/facts";
 
 export const metadata = {
   title: "Build Notes",
@@ -71,8 +72,8 @@ export default function Notes() {
 
       <H2>Golden suite</H2>
       <P>
-        Swiss Ephemeris checks the Python reference; 3,218 fixtures pin the TypeScript
-        port (worst delta 0.41 nano-arcseconds). CI runs both on every commit. The
+        Swiss Ephemeris checks the Python reference; {formatGoldenChecks()} fixtures pin the TypeScript
+        port (worst delta {formatWorstNanoProse()}). CI runs both on every commit. The
         TS port was mostly agent-written with one gate: keep the suite green.
       </P>
       <P>

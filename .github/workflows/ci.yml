@@ -59,7 +59,11 @@ jobs:
       - run: node packages/caelus/dist/test/features-experiment.test.js
       # geometric compiler (constraints -> wheel): loss golden + solver behaviour
       - run: node packages/caelus/dist/test/compiler-golden.test.js
+      # interpretation corpus: compiled rules must bind to legal atoms only
+      - run: npm run build -w caelus-delineations-pd
+      - run: npm run test -w caelus-delineations-pd
       - run: npm run build -w caelus-mcp
+      - run: npm run facts:sync
       - run: node packages/caelus-mcp/smoke.mjs
       # MCP-layer oracle suite: golden checks can't see server.ts (PATCHES #2)
       - run: node packages/caelus-mcp/verify_tools.mjs

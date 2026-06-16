@@ -9,7 +9,17 @@ import CodeBlock from "../components/CodeBlock";
 import FAQ from "../components/FAQ";
 import { A, Lead, P, H2 } from "../components/Prose";
 import { WHEEL_THEME } from "../lib/wheelTheme";
-import { formatMcpToolsProse, formatMcpToolsTitle, MCP_TOOL_COUNT, NPM, SITE } from "../lib/site";
+import {
+  FACTS,
+  formatGoldenChecks,
+  formatHouseSystemsProse,
+  formatMcpToolsProse,
+  formatMcpToolsTitle,
+  formatSiderealProse,
+  formatWorstNano,
+  formatWorstNanoProse,
+} from "../lib/facts";
+import { NPM, SITE } from "../lib/site";
 
 export const metadata = {
   title: "Caelus · MIT astrological ephemeris engine",
@@ -27,9 +37,9 @@ const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
 
 // Credibility numbers surfaced above the fold. Each links to its proof.
 const PROOF: Array<{ num: string; label: string; href: string }> = [
-  { num: "0.41", label: "Nano-arcsec worst deviation", href: "/validation" },
-  { num: "3,218", label: "Golden checks in CI", href: "/validation" },
-  { num: String(MCP_TOOL_COUNT), label: "MCP tools for AI clients", href: "/docs/mcp" },
+  { num: formatWorstNano(), label: "Nano-arcsec worst deviation", href: "/validation" },
+  { num: formatGoldenChecks(), label: "Golden checks in CI", href: "/validation" },
+  { num: String(FACTS.mcpTools), label: "MCP tools for AI clients", href: "/docs/mcp" },
   { num: "~85 KB", label: "Engine, gzipped", href: "/docs/data-tiers" },
   { num: "0", label: "Runtime dependencies", href: NPM.caelus },
   { num: "MIT", label: "Licensed, no AGPL", href: `${SITE.repo}/blob/main/LICENSE` },
@@ -91,7 +101,10 @@ export default function Home() {
       </div>
 
       <ul className="capability-list">
-        <li>Sun through Pluto, Chiron, and nodes; twelve house systems; tropical and seven sidereal zodiacs</li>
+        <li>
+          Sun through Pluto, Chiron, and nodes; {formatHouseSystemsProse()} house systems; tropical and{" "}
+          {formatSiderealProse()} sidereal zodiacs
+        </li>
         <li><A href="/docs/derived">Derived charts</A>: returns, progressions, solar arc, composite, Davison, harmonics, dignities, and sect</li>
         <li><A href="/docs/hellenistic">Hellenistic time-lords</A>: lots, profections, firdaria, zodiacal releasing, and primary directions</li>
         <li><A href="/docs/vedic">Vedic &amp; Jyotish</A>: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, divisional charts, and yogas</li>
@@ -157,8 +170,8 @@ chart.bodies.saturn.retrograde; // true`}
       <H2>How it is checked</H2>
       <P>
         Two-stage CI. A Python reference engine is calibrated against Swiss
-        Ephemeris, then the TypeScript port is replayed against 3,218 golden
-        checks. Worst recorded deviation: 0.41 nano-arcseconds, far below any
+        Ephemeris, then the TypeScript port is replayed against {formatGoldenChecks()} golden
+        checks. Worst recorded deviation: {formatWorstNanoProse()}, far below any
         astronomical relevance, so a porting bug fails the build. Tables and
         methodology: <A href="/validation">Validation</A>. Bugs the suite caught:{" "}
         <A href="/notes">Build Notes</A>.

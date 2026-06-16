@@ -1,5 +1,5 @@
 {
-  "_doc": "Each claim ties a number/string that appears in prose to a generated source of truth. check-claims.mjs verifies the rendered value is present in every listed file and that no competing value of the same shape appears. Sources: 'stats' = conformance-stats.json (golden suite), 'accuracy' = packages/caelus/accuracy.json. PATCHES.md is intentionally excluded everywhere: it is a historical changelog that records superseded values on purpose.",
+  "_doc": "Each claim ties a number/string that appears in prose to a generated source of truth. check-claims.mjs verifies the rendered value is present in every listed file and that no competing value of the same shape appears. Sources: 'stats' = conformance-stats.json (golden suite), 'accuracy' = packages/caelus/accuracy.json. Dynamic TSX pages import apps/web/lib/facts.ts formatters; literal anchors live in facts-anchors.generated.ts (scripts/sync-facts.mjs). PATCHES.md is intentionally excluded everywhere: it is a historical changelog that records superseded values on purpose.",
   "claims": [
     {
       "id": "golden-check-count",
@@ -10,9 +10,7 @@
       "competing": "\\b\\d,\\d{3}\\b(?=[^\\n]{0,40}(golden|check|fixture))",
       "appearsIn": [
         "ARCHITECTURE.md",
-        "apps/web/app/notes/page.tsx",
-        "apps/web/app/page.tsx",
-        "apps/web/app/validation/page.tsx",
+        "apps/web/lib/facts-anchors.generated.ts",
         "apps/web/public/llms.txt",
         "llms.txt",
         "packages/caelus/README.md"
@@ -29,9 +27,7 @@
       "competing": "(\\d+\\.\\d+)\\s*nano-arcsecond",
       "appearsIn": [
         "packages/caelus/README.md",
-        "apps/web/app/page.tsx",
-        "apps/web/app/validation/page.tsx",
-        "apps/web/app/notes/page.tsx"
+        "apps/web/lib/facts-anchors.generated.ts"
       ]
     },
     {
@@ -73,8 +69,7 @@
         "Twelve house systems"
       ],
       "appearsIn": [
-        "apps/web/app/features/page.tsx",
-        "apps/web/app/page.tsx",
+        "apps/web/lib/facts-anchors.generated.ts",
         "apps/web/app/docs/data-tiers/page.mdx",
         "python/README.md"
       ]
@@ -90,8 +85,7 @@
       ],
       "competing": "(\\b\\d+|six|seven|eight|nine|ten|eleven|twelve) (sidereal|ayanamsa)",
       "appearsIn": [
-        "apps/web/app/features/page.tsx",
-        "apps/web/app/page.tsx",
+        "apps/web/lib/facts-anchors.generated.ts",
         "apps/web/app/docs/data-tiers/page.mdx",
         "ROADMAP.md",
         "python/README.md"
@@ -109,7 +103,7 @@
         "twenty-nine tools"
       ],
       "appearsIn": [
-        "apps/web/lib/site.ts",
+        "apps/web/lib/facts-anchors.generated.ts",
         "apps/web/app/docs/mcp/page.mdx",
         "llms.txt",
         "apps/web/public/llms.txt",
@@ -127,7 +121,7 @@
         "Thirteen in the default"
       ],
       "appearsIn": [
-        "apps/web/app/features/page.tsx",
+        "apps/web/lib/facts-anchors.generated.ts",
         "MCP_SPEC.md",
         "packages/caelus-mcp/README.md"
       ]

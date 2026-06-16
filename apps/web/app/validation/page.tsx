@@ -2,10 +2,15 @@ import { A, H2, P, Code } from "../../components/Prose";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
 import accuracy from "caelus/accuracy.json";
+import {
+  formatGoldenChecks,
+  formatHouseSystemsProse,
+  formatWorstNanoProse,
+} from "../../lib/facts";
 
 export const metadata = {
   title: "Validation",
-  description: "Reference engine vs Swiss Ephemeris; TypeScript port vs 3,218 golden checks. CI on every commit.",
+  description: `Reference engine vs Swiss Ephemeris; TypeScript port vs ${formatGoldenChecks()} golden checks. CI on every commit.`,
   alternates: { canonical: "/validation" },
 };
 
@@ -55,10 +60,10 @@ export default function Validation() {
 
       <H2>TypeScript port vs reference</H2>
       <P>
-        <strong>3,218 golden checks</strong> (bodies, timescales, nutation, twelve house
-        systems, fixed stars, Gauquelin sectors, eclipses, speeds, retrograde flags,
-        polar Placidus fallback). Worst deviation 0.41 nano-arcseconds. Same algorithms
-        in IEEE doubles; tolerance is far below astronomical relevance: a porting bug
+        <strong>{formatGoldenChecks()} golden checks</strong> (bodies, timescales, nutation,{" "}
+        {formatHouseSystemsProse()} house systems, fixed stars, Gauquelin sectors, eclipses, speeds,
+        retrograde flags, polar Placidus fallback). Worst deviation {formatWorstNanoProse()}. Same
+        algorithms in IEEE doubles; tolerance is far below astronomical relevance: a porting bug
         fails the build.
       </P>
 

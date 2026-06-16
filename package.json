@@ -6,11 +6,13 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w caelus && npm run build -w caelus-delineations-pd && npm run build -w caelus-mcp && npm run build -w caelus-birth && npm run build -w caelus-wheel && npm run docs:api && npm run search:index && npm run build -w web",
+    "build": "npm run build -w caelus && npm run stats:golden && npm run facts:sync && npm run build -w caelus-delineations-pd && npm run build -w caelus-mcp && npm run build -w caelus-birth && npm run build -w caelus-wheel && npm run docs:api && npm run search:index && npm run build -w web",
     "test": "npm run test -w caelus && npm run test -w caelus-delineations-pd",
     "lint:prose": "bash scripts/lint-prose.sh",
     "lint:emdash": "node scripts/check-em-dashes.mjs",
     "lint:claims": "node scripts/check-claims.mjs",
+    "facts:sync": "node scripts/sync-facts.mjs",
+    "stats:golden": "CAELUS_STATS_OUT=conformance-stats.json node packages/caelus/dist/test/golden.test.js",
     "check:versions": "node scripts/check-versions.mjs",
     "docs:api": "typedoc",
     "search:index": "node scripts/build-search-index.mjs",
@@ -20,7 +22,7 @@
     "smoke:web": "node scripts/smoke-web.mjs",
     "smoke:live": "node scripts/smoke-live.mjs",
     "test:web": "export NEXT_DIST_DIR=.next-ci; npm run build -w caelus-mcp && npm run docs:api && npm run search:index && npm run build -w web && npm run smoke:web",
-    "preflight": "npm run check:versions && npm run test && npm run lint:prose && npm run lint:emdash && npm run lint:claims && npm run test:web",
+    "preflight": "npm run check:versions && npm run test && npm run lint:prose && npm run lint:emdash && npm run facts:sync && npm run lint:claims && npm run test:web",
     "dev:web": "npm run dev -w web",
     "dev:web:clean": "npm run dev:clean -w web"
   },

@@ -3,28 +3,17 @@
  * header, footer, and metadata. Keeping the version here avoids drift across
  * the header tag, footer, and OpenGraph copy.
  */
-import accuracy from "caelus/accuracy.json";
-
-export const MCP_TOOL_COUNT = accuracy.counts.mcp_tools;
-
-const MCP_PROSE: Record<number, string> = {
-  29: "twenty-nine",
-};
-
-/** Anchor strings for scripts/check-claims.mjs — must cover every claim.render form. */
-export const MCP_TOOL_CLAIMS =
-  "29 chart tools, 29 MCP tools, MCP tools (29), twenty-nine chart tools, Twenty-nine chart tools, twenty-nine tools";
-
-/** Lowercase prose count for MCP tools, e.g. "twenty-nine". */
-export function formatMcpToolsProse(count = MCP_TOOL_COUNT): string {
-  return MCP_PROSE[count] ?? String(count);
-}
-
-/** Title-case prose count, e.g. "Twenty-nine". */
-export function formatMcpToolsTitle(count = MCP_TOOL_COUNT): string {
-  const word = formatMcpToolsProse(count);
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
+export {
+  FACTS,
+  MCP_TOOL_COUNT,
+  formatGoldenChecks,
+  formatWorstNano,
+  formatWorstNanoProse,
+  formatMcpToolsProse,
+  formatMcpToolsTitle,
+  formatHouseSystemsProse,
+  formatSiderealProse,
+} from "./facts";
 
 export const SITE = {
   name: "Caelus",
@@ -42,6 +31,7 @@ export const NPM = {
   mcp: "https://www.npmjs.com/package/caelus-mcp",
   birth: "https://www.npmjs.com/package/caelus-birth",
   wheel: "https://www.npmjs.com/package/caelus-wheel",
+  delineationsPd: "https://www.npmjs.com/package/caelus-delineations-pd",
 } as const;
 
 export const PYPI = {
@@ -84,6 +74,9 @@ export const DOCS_NAV: DocsGroup[] = [
       { href: "/docs/recipes", label: "Recipes" },
       { href: "/docs/electional", label: "Electional Search" },
       { href: "/docs/visualizations", label: "Visualizations" },
+      { href: "/docs/interpretation", label: "Interpretation Layer" },
+      { href: "/docs/provenance", label: "Chart Provenance" },
+      { href: "/docs/corpus", label: "Building a Corpus" },
     ],
   },
   {
