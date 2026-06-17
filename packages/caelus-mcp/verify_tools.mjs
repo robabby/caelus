@@ -27,6 +27,7 @@ import {
   detectPatterns, detectPatternsIn, chartSignature,
   chartFeatures, configurationFit,
   dignityScore, voidOfCourse,
+  synastryAspects,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -162,21 +163,17 @@ const call = async (name, args) => {
   const b = { date: "1987-11-02T06:15:00Z", lat: 40.71, lon: -74.0 };
   const orb = 4;
   const s = await call("synastry", { a, b, orb });
-  const ASP = [["conjunction", 0], ["sextile", 60], ["square", 90], ["trine", 120], ["opposition", 180]];
+  const chartA = eng.chartAt(jdFromIso(a.date), a.lat, a.lon, { houseSystem: "placidus" });
+  const chartB = eng.chartAt(jdFromIso(b.date), b.lat, b.lon, { houseSystem: "placidus" });
 
-  const expected = [];
   for (const ba of BODIES) {
     assert(s.a_planets_in_b_houses[ba] === houseFromCusps(s.b.cusps, s.a.bodies[ba].lon),
       `synastry: A.${ba} house in B`);
     assert(s.b_planets_in_a_houses[ba] === houseFromCusps(s.a.cusps, s.b.bodies[ba].lon),
       `synastry: B.${ba} house in A`);
-    for (const bb of BODIES) {
-      const sep = Math.abs(mod(s.a.bodies[ba].lon - s.b.bodies[bb].lon + 180, 360) - 180);
-      for (const [name, angle] of ASP) {
-        if (Math.abs(sep - angle) <= orb) expected.push(`A.${ba} ${name} B.${bb}`);
-      }
-    }
   }
+  const expected = synastryAspects(chartA, chartB, orb)
+    .map((x) => `A.${x.a} ${x.aspect} B.${x.b}`);
   const got = s.inter_aspects.map((x) => `A.${x.a} ${x.aspect} B.${x.b}`);
   assert(got.length === expected.length && expected.every((e) => got.includes(e)),
     `synastry: inter-aspect set ${got.length} vs oracle ${expected.length}`);
