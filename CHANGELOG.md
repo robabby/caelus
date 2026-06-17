@@ -9,6 +9,21 @@ current figures live in `packages/caelus/accuracy.json` and on
 
 ## Unreleased
 
+## corpus v0.1.1 — track caelus 0.20.1
+
+*2026-06-17*
+
+Corpus-only republish of `caelus-delineations-pd` so a single `caelus` resolves
+for consumers. The `0.1.0` on npm pins `caelus ^0.19.0`, which excludes 0.20.x;
+the range was corrected to `^0.20.1` in the tree at v0.20.0/v0.20.1 but never
+shipped, because the version stayed at `0.1.0` and `publish-if-missing` skips a
+version already on the registry. Bumping to `0.1.1` ships the corrected range.
+
+- **`caelus-delineations-pd` → 0.1.1**: `caelus` dependency `^0.19.0` → `^0.20.1`.
+  No corpus or API changes — the `star`/`lot`/`dignity` selectors and the
+  334-passage set are unchanged. Validation green against caelus 0.20.1.
+- Core packages unchanged (still **0.20.1**); this is a single-package patch.
+
 ## v0.20.1 — fixed stars in embedded data
 
 *2026-06-17*
