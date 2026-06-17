@@ -28,7 +28,7 @@ Repo: https://github.com/heavyblotto/caelus
 - caelus-birth@0.20.1 — local birth time + place -> UT (use this; see below)
 - caelus-wheel@0.20.1 — React SVG chart wheel, plus ChartSphere (3D), AstroMap (astrocartography), EphemerisGraph
 - caelus-mcp@0.20.1 — MCP server, 29 chart tools over stdio (charts, transits, synastry, find_aspect_dates, sky_events, rectification_grid, planetary_hours, void_of_course, returns, progressions, composite, dignities, lots, profections, firdaria, releasing, directions, nakshatras, dasha, vargas, yogas, aspect_patterns, chart_signature, similar_skies, electional_search, cosmic_weather, chart_facts, counterfactual_chart); also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp; listed on the official MCP Registry as io.github.heavyblotto/caelus-mcp
-- caelus-delineations-pd@0.1.0 — public-domain interpretation corpus (334 cited passages) for interpret(); sources and publicDomainSources
+- caelus-delineations-pd@0.1.1 — public-domain interpretation corpus (334 cited passages) for interpret(); sources and publicDomainSources
 - caelus-engine (PyPI) — the Python reference engine (no numpy), https://pypi.org/project/caelus-engine/
 
 Interpretation layer: interpretationContext() -> ranked citable fact atoms;
