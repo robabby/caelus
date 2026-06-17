@@ -220,12 +220,16 @@ by cosine similarity over a window), `electional_search` (rank moments in a
 window for a set of wanted aspects, optionally avoiding a void-of-course Moon),
 `cosmic_weather` (the day's active configurations, stations, and
 void-of-course Moon, with no birth chart needed), `chart_facts` (the
-chart's validated facts as ranked, citable atoms — including fixed-star
+chart's validated facts as ranked, citable atoms — placements through yogas,
+including transits/time-lords when `target_date` is set, fixed-star
 conjunctions and the Part of Fortune — plus a ready-to-interpret
 brief; accepts structured `when` anchors, an in-request `anchors` registry,
-`realm`, and `constraints` for archetypal charts — see the
+`realm`, `target_date`, `include_vedic`, and `constraints` for archetypal
+charts — see the
 [Interpretation](/docs/interpretation) and
-[Provenance](/docs/provenance) guides), and `counterfactual_chart` (a birth
+[Provenance](/docs/provenance) guides), `synastry` (inter-chart aspects,
+house overlays, composite midpoint atoms, and the same ranked `facts` +
+`brief` as `chart_facts`), and `counterfactual_chart` (a birth
 chart perturbed: shift time, move place, or splice body longitudes, with a
 legible diff of sign/house/aspect changes vs the original).
 
@@ -265,7 +269,8 @@ A natal-chart call returns structured positions, not prose:
 
 - "Natal chart: born June 10 1990, 2:30pm, Tampa FL."
 - "When is Saturn square my natal Moon in the next two years?"
-- "Compare my chart with my partner's."
+- "Compare my chart with my partner's." (synastry returns citable atoms + brief)
+- "Natal chart facts with transits active today." (chart_facts + target_date)
 - "Next solar eclipse? Lunar eclipses in 2026?"
 - "My solar return chart for this year."
 - "Progress my chart to today: secondary positions and the solar arc."

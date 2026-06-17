@@ -77,7 +77,8 @@ Every atom carries five common fields:
   `signature:element:fire`, `angle:asc`). A generated claim points at this id,
   so it can always be traced back to the fact it rests on.
 - **`kind`**: `placement | aspect | pattern | signature | angle | dispositor |
-  reception | star | lot`.
+  reception | star | lot | transit | synastry | composite | timelord | dignity |
+  nakshatra | varga | yoga`.
 - **`bodies`**: the body ids involved, for filtering and cross-reference.
 - **`salience`**: a transparent, overridable prominence score (below).
 - **`text`**: a plain-language statement of the fact, with no interpretation
@@ -94,6 +95,49 @@ fixed star (`star:jupiter:Sirius`, from `Engine.starConjunctions`), and the
 Hermetic lots — the Part of Fortune and its companions (`lot:fortune`, from
 `Engine.lots`). Match them with `hasStar({ star: "Algol" })` and
 `hasLot({ lot: "fortune" })`.
+
+### Diachronic and relational atoms
+
+The natal projection extends via `ContextOptions` and two helpers:
+
+- **`enrichContextOptions(engine, chart, target)`** — transits to natal (with
+  phase and strength), active profection / zodiacal releasing / firdaria /
+  Vimshottari dasha, Egyptian term/face/triplicity/almuten facts (always), and
+  nakshatra / D9 / yogas when the chart is sidereal.
+- **`enrichSynastryOptions(engine, chartA, chartB)`** — inter-chart aspects,
+  house overlays, and composite midpoint placements (chart A is the base).
+
+Id examples: `transit:saturn~natal_moon:square`, `profection:year:scorpio:mars`,
+`zr:l1:scorpio:mars`, `dasha:maha:saturn`, `term:moon:saturn`,
+`synastry:mars~b_venus:square`, `composite:mars`, `nakshatra:moon:Ashwini`,
+`varga:d9:moon:virgo`, `yoga:Gajakesari`. Match with `hasTransit`,
+`hasTimelord`, `hasSynastry`, `hasComposite`, `hasDignityFine`, `hasNakshatra`,
+`hasVarga`, and `hasYoga`. Every id resolves in `auditCitations`.
+
+<CodeBlock
+  lang="typescript"
+  label="enrich.ts"
+  code={`import {
+  interpretationContext, enrichContextOptions, enrichSynastryOptions,
+  transitAspects, julianDay,
+} from "caelus";
+
+const targetJd = julianDay(2025, 6, 10, 12, 0);
+const ctx = interpretationContext(chart, {
+  stars, lots,
+  ...enrichContextOptions(engine, chart, {
+    jd: targetJd, lat: 27.95, lonEast: -82.46, zodiac: chart.zodiac,
+  }),
+});
+
+// Or supply hits directly:
+const transits = transitAspects(chart, engine, targetJd, { maxOrb: 3 });
+interpretationContext(chart, { transits });`}
+/>
+
+The Playground **Reading** tab and MCP **`chart_facts`** (with optional
+`target_date`) use `enrichContextOptions` automatically. MCP **`synastry`**
+returns the same citable atoms plus a ready `brief`.
 
 Kind-specific fields fill in the rest: placements add
 `sign`/`signDeg`/`house`/`retrograde`/`dignities`; aspects add
@@ -125,6 +169,9 @@ all overridable through `ContextOptions.salience`:
 | `pattern` | a whole configuration |
 | `dispositor` / `reception` | a dispositor link / a mutual reception |
 | `star` / `lot` | a fixed-star conjunction / a Hermetic lot |
+| `transit` / `synastry` / `composite` | a transit aspect / inter-chart link / midpoint placement |
+| `timelord` | an active profection, ZR, firdaria, or dasha period |
+| `dignity` / `vedic` | finer essential dignity / nakshatra, varga, or yoga |
 
 No weight is magic. A caller who dislikes the defaults overrides any subset:
 
@@ -155,7 +202,10 @@ cannot.
   label="selectors.ts"
   code={`import {
   hasPlacement, hasAspect, hasPattern, hasSignature, hasAngle,
-  hasDispositor, hasReception, hasStar, hasLot, matchAll, matchAny, matchNone,
+  hasDispositor, hasReception, hasStar, hasLot,
+  hasTransit, hasTimelord, hasSynastry, hasComposite,
+  hasDignityFine, hasNakshatra, hasVarga, hasYoga,
+  matchAll, matchAny, matchNone,
 } from "caelus";
 
 // Atom selectors take a filter; any omitted field is a wildcard.
@@ -167,6 +217,8 @@ hasSignature("element", "fire");
 hasReception({ body: "venus" });
 hasStar({ star: "Algol" });                       // any body conjunct Algol
 hasLot({ lot: "fortune", house: 1 });             // Part of Fortune rising
+hasTransit({ transit: "saturn", natal: "moon", aspect: "square" });
+hasTimelord({ system: "profection", level: "year" });
 
 // Combinators compose them. matchAll unions the atoms that justified the match.
 const angularMarsInTSquare = matchAll(
@@ -355,6 +407,10 @@ the host interprets from correct math and cites the `[id]` each statement rests
 on instead of re-deriving (and hallucinating) positions. Pass structured
 `when` (instant, range, relative, narrative), an optional in-request `anchors`
 registry, `realm`, and `constraints` when the chart is not a plain birth instant.
+Optional **`target_date`** (UTC ISO) adds transits and time-lords at that
+instant; **`include_vedic`** adds nakshatra/D9/yoga when the zodiac is sidereal.
+The **`synastry`** tool returns the same atom shape for two charts (inter-chart
+aspects, overlays, composite placements) plus a `brief`.
 
 ```text
 "Read my natal chart: born June 10 1990, 2:30pm, Tampa FL."

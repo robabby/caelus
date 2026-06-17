@@ -12,7 +12,7 @@ import { A, Lead, P, H2 } from "../../components/Prose";
 export const metadata = {
   title: "Playground",
   description:
-    "Compute and interpret a chart in the browser: ranked fact atoms turned into a cited, public-domain reading, plus positions, houses, aspects, fixed stars, and lots. Twelve house systems, tropical and sidereal zodiacs, all client-side.",
+    "Compute and interpret a chart in the browser: ranked citable fact atoms (natal, transits, time-lords), a cited public-domain reading, synastry/composite compare, plus positions, aspects, fixed stars, and lots. All client-side.",
   alternates: { canonical: "/playground" },
 };
 
@@ -57,10 +57,11 @@ export default function Playground() {
         <P dim>
           The <strong>reading</strong> that leads each chart projects it into ranked
           fact atoms (placements, aspects, fixed-star conjunctions, the Part of
-          Fortune) and runs a
+          Fortune, transits and time-lords active now) and runs a
           public-domain delineation corpus over them, so every statement cites the
           validated fact it rests on: the same grounding an LLM uses instead of
-          hallucinating positions. Search a birthplace and enter the local time
+          hallucinating positions. The **Facts** tab lists the same enriched atoms;
+          **Synastry** adds inter-chart and composite ids. Search a birthplace and enter the local time
           (<code>caelus-birth</code> resolves the zone and historical DST to UT offline),
           then <strong>Copy share link</strong> to mint a chart whose URL carries only
           the values you typed, recomputed in the recipient&rsquo;s browser. (Switch the

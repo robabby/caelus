@@ -321,10 +321,13 @@ export default function Features() {
         <Feature title="Interpretation layer">
           The engine stops at facts; this is the seam where meaning plugs in.
           <code>interpretationContext</code> projects a chart into ranked,
-          citable fact atoms (placements, aspects, configurations, dispositors
-          and receptions, fixed-star conjunctions, and the Part of Fortune);
-          selectors and a pluggable rule corpus turn them into a structured
-          reading; and{" "}
+          citable fact atoms: natal geometry, dispositors and receptions,
+          fixed-star conjunctions and lots, transits and time-lords at a target
+          instant, synastry/composite links between two charts, finer essential
+          dignities, and sidereal nakshatra/varga/yoga when applicable;
+          <code>enrichContextOptions</code> and <code>enrichSynastryOptions</code>
+          wire the diachronic layer; selectors and a pluggable rule corpus turn
+          them into a structured reading; and{" "}
           <code>chartBrief</code> hands an LLM only the validated facts, each
           tagged with a stable id, with <code>auditCitations</code> to verify
           what it cited. Pair with the{" "}

@@ -136,7 +136,7 @@ export default function ReadingTab({
 
       <p className="dim small" style={{ margin: 0 }}>
         Public-domain corpus (Saint-Germain, Alan Leo, Heindel, Robson), decomposed into selectors over the
-        engine&rsquo;s fact atoms — natal, transit, time-lord, and dignity ids are all{" "}
+        engine&rsquo;s fact atoms (natal, transit, time-lord, and dignity ids) are all{" "}
         <code>auditCitations</code>-checkable. See the{" "}
         <a href="/docs/interpretation">interpretation layer</a>.
       </p>

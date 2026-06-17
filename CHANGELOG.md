@@ -7,6 +7,33 @@ semver (currently 0.1.x). Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## Unreleased — diachronic/relational interpretation atoms
+
+### Engine (`caelus`)
+
+- **Relational projection**: `interpretationContext()` now emits transit,
+  synastry, composite, time-lord, finer-dignity, nakshatra, varga, and yoga
+  atoms with stable ids for `auditCitations`.
+- **`relational.ts`**: `transitAspects`, `synastryAspects`, `synastryOverlays`,
+  `compositePlacements`.
+- **`interpretation-enrich.ts`**: `enrichContextOptions` (transits,
+  time-lords, Vedic at a target instant) and `enrichSynastryOptions`.
+- New selectors: `hasTransit`, `hasSynastry`, `hasComposite`, `hasTimelord`,
+  `hasDignityFine`, `hasNakshatra`, `hasVarga`, `hasYoga`.
+
+### MCP (`caelus-mcp`)
+
+- **`chart_facts`**: optional `target_date` and `include_vedic` enrich the brief
+  with transits, time-lords, and sidereal structure.
+- **`synastry`**: returns ranked `facts` and a citable `brief` alongside the
+  inter-chart geometry.
+
+### Web
+
+- Playground **Reading** and **Facts** tabs project enriched, citable atoms
+  (transits and time-lords); the synastry compare panel adds synastry/composite
+  atoms.
+
 ## v0.19.0 — interpretation corpus, star/lot atoms, and cited Playground readings
 
 *2026-06-16*

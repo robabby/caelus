@@ -31,6 +31,11 @@ Repo: https://github.com/heavyblotto/caelus
 - caelus-delineations-pd@0.1.0 — public-domain interpretation corpus (334 cited passages) for interpret(); sources and publicDomainSources
 - caelus-engine (PyPI) — the Python reference engine (no numpy), https://pypi.org/project/caelus-engine/
 
+Interpretation layer: interpretationContext() -> ranked citable fact atoms;
+enrichContextOptions() / enrichSynastryOptions() add transits, time-lords,
+synastry/composite, finer dignities, nakshatra/varga/yoga; chartBrief() +
+auditCitations() for LLM grounding. Docs: https://www.ephemengine.com/docs/interpretation
+
 ## Entry points
 
 - `caelus` — Engine, BODIES, julianDay, mod, fmtLon, types

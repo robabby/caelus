@@ -29,18 +29,25 @@ Project a chart, then run the compiled sources:
 <CodeBlock
   lang="typescript"
   label="consume.ts"
-  code={`import { Engine, julianDay, interpretationContext, interpret } from "caelus";
+  code={`import { Engine, julianDay, interpretationContext, interpret,
+  enrichContextOptions } from "caelus";
 import { loadNodeData } from "caelus/node";
 import { sources, publicDomainSources } from "caelus-delineations-pd";
 
 const engine = new Engine(loadNodeData(dataDir));
 const chart = engine.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
 
+const ctx = interpretationContext(chart, {
+  ...enrichContextOptions(engine, chart, {
+    jd: julianDay(2025, 6, 10, 12, 0), lat: 27.95, lonEast: -82.46,
+  }),
+});
+
 // All sources (includes Llewellyn George Mercury–Saturn sign cells, tagged gratis-not-pd)
-const reading = interpret(interpretationContext(chart), sources);
+const reading = interpret(ctx, sources);
 
 // Strict public-domain only: drops the George source
-const pdReading = interpret(interpretationContext(chart), publicDomainSources);
+const pdReading = interpret(ctx, publicDomainSources);
 
 reading.entries.forEach((e) => console.log(e.salience.toFixed(1), e.text, e.atomIds));`}
 />
@@ -64,9 +71,28 @@ const ctx = interpretationContext(chart, { stars, lots });
 const reading = interpret(ctx, sources);`}
 />
 
-The MCP `chart_facts` tool does this automatically for Fortune, Spirit, and
-tight star conjunctions. For your own app, mirror that enrichment before
-calling `interpret()`.
+The MCP `chart_facts` tool does this automatically for Fortune, Spirit, tight
+star conjunctions, and (with `target_date`) transits and time-lords. For your
+own app, mirror that enrichment before calling `interpret()`:
+
+<CodeBlock
+  lang="typescript"
+  label="diachronic.ts"
+  code={`import { enrichContextOptions, enrichSynastryOptions, julianDay } from "caelus";
+
+const targetJd = julianDay(2025, 6, 10, 12, 0);
+const ctx = interpretationContext(chart, {
+  stars, lots,
+  ...enrichContextOptions(engine, chart, {
+    jd: targetJd, lat, lonEast: lon, zodiac: chart.zodiac,
+  }),
+});
+
+// Synastry/composite on chart A as base:
+interpretationContext(chartA, {
+  ...enrichSynastryOptions(engine, chartA, chartB),
+});`}
+/>
 
 ### Exports beyond `sources`
 

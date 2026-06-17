@@ -512,7 +512,15 @@ export default function SkyNow() {
                   </div>
 
                   {tab === "facts" && readingInputs && (
-                    <FactsTab chart={chart} stars={readingInputs.stars} lots={readingInputs.lots} />
+                    <FactsTab
+                      chart={chart}
+                      engine={engine()}
+                      lat={Number(lat)}
+                      lonEast={Number(lon)}
+                      zodiac={zodiac}
+                      stars={readingInputs.stars}
+                      lots={readingInputs.lots}
+                    />
                   )}
 
                   {tab === "positions" && (
