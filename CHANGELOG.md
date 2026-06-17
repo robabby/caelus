@@ -9,6 +9,22 @@ current figures live in `packages/caelus/accuracy.json` and on
 
 ## Unreleased
 
+## corpus v0.1.2 — fix packaging so external installs resolve
+
+*2026-06-17*
+
+`tsc` (with `rootDir: "."` + `resolveJsonModule`) copies the corpus JSON to
+`dist/data/` and `dist/sources/`, and the compiled `dist/src/*.js` import it from
+there (`../data`, `../sources`). The published `files` shipped only `dist/src`
+plus the root `data`/`sources`, so those `dist/`-level JSON files were missing
+from the tarball and any external consumer hit `ERR_MODULE_NOT_FOUND` on import.
+The monorepo Playground was unaffected because the local build leaves the files
+in place. Surfaced wiring the corpus into a downstream app.
+
+- **`caelus-delineations-pd` → 0.1.2**: add `dist/data` and `dist/sources` to
+  `files`. No corpus, API, or dependency changes. Verified by installing the
+  packed tarball into a clean consumer and resolving a 24-entry reading.
+
 ## corpus v0.1.1 — track caelus 0.20.1
 
 *2026-06-17*

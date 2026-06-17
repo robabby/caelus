@@ -1,12 +1,14 @@
 {
   "name": "caelus-delineations-pd",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Public-domain astrology delineations and correspondence data for the Caelus interpretation layer.",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
     "dist/src",
+    "dist/data",
+    "dist/sources",
     "data",
     "sources/manifest.json"
   ],
