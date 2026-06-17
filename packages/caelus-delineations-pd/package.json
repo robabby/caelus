@@ -24,7 +24,7 @@
     "provenance": true
   },
   "dependencies": {
-    "caelus": "^0.20.0"
+    "caelus": "^0.20.1"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",

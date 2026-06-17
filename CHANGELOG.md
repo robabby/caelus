@@ -9,12 +9,28 @@ current figures live in `packages/caelus/accuracy.json` and on
 
 ## Unreleased
 
+## v0.20.1 — fixed stars in embedded data
+
+*2026-06-17*
+
+Patch release across the four core packages: the HYG fixed-star catalog now
+ships in `caelus/data-embedded`, so `starNames()`, `starConjunctions()`, and
+Robson `star:*` interpretation atoms work in the browser and on edge without
+`loadNodeData()`.
+
 ### Engine (`caelus`)
 
-- **Fixed stars in embedded data**: `caelus/data-embedded` now bundles
-  `data/fixed_stars.json` (~13 KB gzipped), so `starNames()`, `starConjunctions()`,
-  and Robson `star:*` interpretation atoms work client-side and on edge without
-  `loadNodeData()`.
+- **`data-embedded`**: bundles `data/fixed_stars.json` (~13 KB gzipped; embedded
+  pack ~97 KB gzipped total).
+- npm `files` includes `data/fixed_stars.json`.
+
+### Web
+
+- Removed duplicate `apps/web/lib/fixed-stars.json`; Playground and hosted MCP
+  use the catalog from `embeddedData`.
+- Data-tiers and corpus docs updated; embedded bundle size figures revised.
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at **0.20.1**. **`caelus-delineations-pd`** remains at **0.1.0** (dependency range `^0.20.1`).
 
 ## v0.20.0 — diachronic/relational interpretation atoms
 
