@@ -24,10 +24,10 @@ reference by 3,218 golden checks (worst diff 0.41e-9 arcsec).
 Repo: https://github.com/heavyblotto/caelus
 ## Install
 
-- caelus@0.19.0 — the engine
-- caelus-birth@0.19.0 — local birth time + place -> UT (use this; see below)
-- caelus-wheel@0.19.0 — React SVG chart wheel, plus ChartSphere (3D), AstroMap (astrocartography), EphemerisGraph
-- caelus-mcp@0.19.0 — MCP server, 29 chart tools over stdio (charts, transits, synastry, find_aspect_dates, sky_events, rectification_grid, planetary_hours, void_of_course, returns, progressions, composite, dignities, lots, profections, firdaria, releasing, directions, nakshatras, dasha, vargas, yogas, aspect_patterns, chart_signature, similar_skies, electional_search, cosmic_weather, chart_facts, counterfactual_chart); also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp; listed on the official MCP Registry as io.github.heavyblotto/caelus-mcp
+- caelus@0.20.0 — the engine
+- caelus-birth@0.20.0 — local birth time + place -> UT (use this; see below)
+- caelus-wheel@0.20.0 — React SVG chart wheel, plus ChartSphere (3D), AstroMap (astrocartography), EphemerisGraph
+- caelus-mcp@0.20.0 — MCP server, 29 chart tools over stdio (charts, transits, synastry, find_aspect_dates, sky_events, rectification_grid, planetary_hours, void_of_course, returns, progressions, composite, dignities, lots, profections, firdaria, releasing, directions, nakshatras, dasha, vargas, yogas, aspect_patterns, chart_signature, similar_skies, electional_search, cosmic_weather, chart_facts, counterfactual_chart); also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp; listed on the official MCP Registry as io.github.heavyblotto/caelus-mcp
 - caelus-delineations-pd@0.1.0 — public-domain interpretation corpus (334 cited passages) for interpret(); sources and publicDomainSources
 - caelus-engine (PyPI) — the Python reference engine (no numpy), https://pypi.org/project/caelus-engine/
 

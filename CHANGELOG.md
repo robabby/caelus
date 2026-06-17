@@ -7,7 +7,16 @@ semver (currently 0.1.x). Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## Unreleased — diachronic/relational interpretation atoms
+## Unreleased
+
+## v0.20.0 — diachronic/relational interpretation atoms
+
+*2026-06-17*
+
+A feature release across the four core packages: the interpretation layer now
+projects transits, synastry/composite geometry, time-lords, finer dignities,
+and Vedic structure as citable fact atoms; MCP and the Playground surface them
+with enriched briefs.
 
 ### Engine (`caelus`)
 
@@ -33,6 +42,14 @@ current figures live in `packages/caelus/accuracy.json` and on
 - Playground **Reading** and **Facts** tabs project enriched, citable atoms
   (transits and time-lords); the synastry compare panel adds synastry/composite
   atoms.
+- Public docs, features copy, and `llms.txt` updated for the enriched atom kinds.
+
+### CI
+
+- `verify_tools`: synastry oracle uses `synastryAspects` (matches non-aspectable
+  body policy).
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at **0.20.0**. **`caelus-delineations-pd`** remains at **0.1.0** (dependency range updated to `^0.20.0`).
 
 ## v0.19.0 — interpretation corpus, star/lot atoms, and cited Playground readings
 
