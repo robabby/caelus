@@ -43,7 +43,7 @@ export default function StarsTab({ stars }: { stars: StarsData }) {
           ))}
         </ul>
       )}
-      <p className="dim small" style={{ margin: "0.5rem 0 0" }}>From the 319-star catalogue (Node tier), bundled here for the demo.</p>
+      <p className="dim small" style={{ margin: "0.5rem 0 0" }}>From the 319-star HYG catalogue in the embedded data pack.</p>
     </>
   );
 }

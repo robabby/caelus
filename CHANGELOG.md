@@ -9,6 +9,13 @@ current figures live in `packages/caelus/accuracy.json` and on
 
 ## Unreleased
 
+### Engine (`caelus`)
+
+- **Fixed stars in embedded data**: `caelus/data-embedded` now bundles
+  `data/fixed_stars.json` (~13 KB gzipped), so `starNames()`, `starConjunctions()`,
+  and Robson `star:*` interpretation atoms work client-side and on edge without
+  `loadNodeData()`.
+
 ## v0.20.0 — diachronic/relational interpretation atoms
 
 *2026-06-17*

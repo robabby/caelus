@@ -57,9 +57,9 @@ audit trail), and a salience score derived from the matched atoms.
 
 ### Fixed stars and lots
 
-Star and lot atoms are not computed from a bare `Chart`. The star catalog lives
-in the data pack; lots derive from the Ascendant, Moon, and sect. Supply them
-when projecting:
+Star and lot atoms are not computed from a bare `Chart`. The fixed-star catalog
+ships in `embeddedData` (and the Node loader); lots derive from the Ascendant,
+Moon, and sect. Supply conjunctions and lots when projecting:
 
 <CodeBlock
   lang="typescript"
@@ -248,6 +248,15 @@ planet-in-house (Alan Leo), planet-aspect-planet (Heindel), rising sign
 (Heindel), fixed-star conjunctions (Robson, curated). Dignity and lot cells have
 selectors but no PD passages yet. See the package README for the full table and
 known gaps (Vedic verse structure, Brihat Jataka, etc.).
+
+## Fixed stars in embedded data
+
+**Resolved (P2):** `caelus/data-embedded` now bundles `data/fixed_stars.json`, so
+`new Engine(embeddedData)` exposes the full catalog: `starNames()`,
+`starConjunctions()`, and Robson `star:*` rules work in the browser, on edge
+(`/api/chart`, hosted MCP), and anywhere else that uses embedded data without
+calling `loadNodeData()`. Pass `engine.starConjunctions(chart, { orb: 1 })` into
+`interpretationContext()` (as MCP `chart_facts` does) to fire star atoms.
 
 ## Next steps
 

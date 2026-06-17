@@ -21,7 +21,6 @@ import VedicTab from "./VedicTab";
 import DeclinationTab from "./DeclinationTab";
 import StarsTab from "./StarsTab";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
-import fixedStars from "../lib/fixed-stars.json";
 import { crossAspect, cell, control } from "../lib/chart-display";
 import { type Share, b64urlEncode, readUrlState } from "../lib/share";
 
@@ -33,7 +32,7 @@ const ReadingTab = dynamic(() => import("./ReadingTab"), {
 });
 
 // Bright catalog stars (mag <= 2.5) for meaningful conjunctions.
-const STAR_MAG = (fixedStars as { stars: Record<string, { mag: number }> }).stars;
+const STAR_MAG = embeddedData.fixedStars!.stars as Record<string, { mag: number }>;
 const BRIGHT_STARS = Object.entries(STAR_MAG).filter(([, s]) => s.mag <= 2.5).map(([name]) => name);
 // The brightest stars (mag <= 1.5) for parans, to keep the list legible.
 const PARAN_STARS = Object.entries(STAR_MAG).filter(([, s]) => s.mag <= 1.5).map(([name]) => name);
@@ -129,8 +128,7 @@ export default function SkyNow() {
     return () => window.removeEventListener("hashchange", onHash);
   }, [loadShare]);
 
-  // Embedded data plus the fixed-star catalog, so star conjunctions work in-browser.
-  const engine = () => (engineRef.current ??= new Engine({ ...embeddedData, fixedStars } as never));
+  const engine = () => (engineRef.current ??= new Engine(embeddedData));
 
   const { chart, ms, error, utIso, zone, tzStatus } = useMemo(() => {
     const none = { chart: null, ms: 0, error: null, utIso: iso, zone: "", tzStatus: "" as UTResult["status"] | "" };

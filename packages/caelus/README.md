@@ -25,12 +25,13 @@ keep this suite green.
 | VSOP87 planets, embedded tier      | 65 KB   |
 | Moon series + nutation + Pluto     | 2 KB    |
 | Chiron (1850–2150)                 | 10 KB   |
-| **core total**                     | **~85 KB** |
+| Fixed-star catalog (HYG)           | 13 KB   |
+| **core total**                     | **~97 KB** |
 | VSOP micro tier (alt.)             | 25 KB   |
 | precise Moon 1920–2080 (lazy-load) | 729 KB  |
 
-The 85 KB core computes natal charts client-side — planets to sub-arcsecond,
-Moon to ~10″ via the analytic series. The 729 KB tier (1920–2080 JPL-fit Moon,
+The ~97 KB core computes natal charts client-side — planets to sub-arcsecond,
+Moon to ~10″ via the analytic series, fixed stars from the bundled HYG catalog. The 729 KB tier (1920–2080 JPL-fit Moon,
 0.1″-class) lazy-loads when present; the engine switches automatically.
 
 ## Usage
@@ -46,7 +47,7 @@ import { loadNodeData } from "caelus/node"; // Node only
 // Node: filesystem loader
 const engine = new Engine(loadNodeData("./data", "embedded", "full"));
 
-// Browser/edge: bundled embedded dataset (~85 KB gz)
+// Browser/edge: bundled embedded dataset (~97 KB gz)
 // import { embeddedData } from "caelus/data-embedded";
 // const engine = new Engine(embeddedData);
 

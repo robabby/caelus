@@ -40,6 +40,7 @@ import {
 } from "../src/eclipses.js";
 import * as H from "../src/houses.js";
 import { loadNodeData } from "../src/node-loader.js";
+import { embeddedData } from "../src/data-embedded.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const G = JSON.parse(readFileSync(join(here, "../../test/golden.json"), "utf8"));
@@ -546,6 +547,19 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error(`FAIL interp stars: atoms=${starAtoms.length}/${conj.length} sirius=${JSON.stringify(sirius)}`);
+  }
+
+  // Embedded pack ships the fixed-star catalog for browser/edge consumers.
+  const embEng = new Engine(embeddedData);
+  const starCount = embEng.starNames().length;
+  if (!embeddedData.fixedStars?.stars || starCount < 300) {
+    failures++;
+    console.error(`FAIL embeddedData fixed stars: starNames=${starCount}`);
+  }
+  const embConj = embEng.starConjunctions(c, { orb: 1.0, stars: ["Sirius"] });
+  if (!embConj.some((x) => x.body === "jupiter")) {
+    failures++;
+    console.error(`FAIL embeddedData starConjunctions: ${JSON.stringify(embConj)}`);
   }
 
   // Lot atoms: the seven Hermetic lots project, Fortune and Spirit mirror the

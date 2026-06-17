@@ -9,7 +9,6 @@ import {
 import { embeddedData } from "caelus/data-embedded";
 import { toUT } from "caelus-birth";
 import { GLYPHS } from "caelus-wheel";
-import fixedStars from "../lib/fixed-stars.json";
 import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
 import { ASPECT_GLYPH, aspectColor, crossAspect, ASPECTABLE_ORDER as GRID } from "../lib/chart-display";
@@ -19,7 +18,7 @@ const ReadingTab = dynamic(() => import("./ReadingTab"), {
   loading: () => <p className="dim small" style={{ marginTop: 0 }}>reading the charts…</p>,
 });
 
-const engine = new Engine({ ...embeddedData, fixedStars } as never);
+const engine = new Engine(embeddedData);
 
 // Both births live in the URL fragment (#s2=), never sent to a server.
 function b64urlEncode(value: unknown): string {

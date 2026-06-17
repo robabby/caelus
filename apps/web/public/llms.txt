@@ -39,7 +39,7 @@ auditCitations() for LLM grounding. Docs: https://www.ephemengine.com/docs/inter
 ## Entry points
 
 - `caelus` — Engine, BODIES, julianDay, mod, fmtLon, types
-- `caelus/data-embedded` — bundled coefficient data (~85 KB gz), browser/edge
+- `caelus/data-embedded` — bundled coefficient data (~97 KB gz), browser/edge
 - `caelus/node` — loadNodeData(dir, vsopTier, moonTier) fs loader, Node only
 
 ```ts

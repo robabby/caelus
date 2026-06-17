@@ -14,7 +14,8 @@
     "data/moon_meeus47.json",
     "data/pluto_meeus37.json",
     "data/chiron_cheb.json",
-    "data/moon_cheb.embedded.json"
+    "data/moon_cheb.embedded.json",
+    "data/fixed_stars.json"
   ],
   "scripts": {
     "build": "tsc",

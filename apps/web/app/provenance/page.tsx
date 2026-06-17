@@ -118,7 +118,7 @@ export default function Provenance() {
       <P>
         MIT. Ship in closed source, SaaS, mobile, or edge bundles without AGPL
         obligations or ephemeris file deployment. Engine plus embedded data is
-        ~85 KB gzipped, so a full chart computes in the browser; the same code
+        ~97 KB gzipped, so a full chart computes in the browser; the same code
         runs on the edge API and the{" "}
         <A href="https://www.npmjs.com/package/caelus-mcp">MCP Server</A>.
       </P>

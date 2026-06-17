@@ -1,7 +1,8 @@
-/** Bundler-friendly embedded dataset: ~85 KB gzipped total. Imports JSON
+/** Bundler-friendly embedded dataset: ~98 KB gzipped total. Imports JSON
  *  statically so web bundlers (Next.js, Vite) inline it -- charts fully
- *  client-side. The precise moon tier is intentionally NOT here (729 KB);
- *  fetch it lazily and pass via { ...embeddedData, moonCheb } if wanted. */
+ *  client-side, including the HYG fixed-star catalog. The precise moon tier
+ *  is intentionally NOT here (729 KB); fetch it lazily and pass via
+ *  { ...embeddedData, moonCheb } if wanted. */
 import mercury from "../data/vsop87d_mercury.embedded.json" with { type: "json" };
 import venus from "../data/vsop87d_venus.embedded.json" with { type: "json" };
 import earth from "../data/vsop87d_earth.embedded.json" with { type: "json" };
@@ -14,9 +15,10 @@ import nutation from "../data/nutation_iau1980.json" with { type: "json" };
 import moonMeeus from "../data/moon_meeus47.json" with { type: "json" };
 import pluto from "../data/pluto_meeus37.json" with { type: "json" };
 import chiron from "../data/chiron_cheb.json" with { type: "json" };
+import fixedStars from "../data/fixed_stars.json" with { type: "json" };
 import type { EngineData } from "./core.js";
 
 export const embeddedData: EngineData = {
   vsop: { mercury, venus, earth, mars, jupiter, saturn, uranus, neptune },
-  nutation, moonMeeus, pluto, chiron,
+  nutation, moonMeeus, pluto, chiron, fixedStars,
 } as EngineData;

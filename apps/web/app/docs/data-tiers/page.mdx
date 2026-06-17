@@ -22,7 +22,7 @@ and [MCP server](/docs/mcp) build on these two.
 | Tropical + 7 sidereal ayanamsas | ✓ | ✓ | tropical | ✓ |
 | Derived charts (returns, progressions, …) | ✓ | ✓ | — | transits, synastry |
 | Extended bodies (asteroids, Uranian points) | — | ✓ | — | ✓ |
-| Fixed stars (318-star catalog) | — | ✓ | — | ✓ |
+| Fixed stars (318-star catalog) | ✓ | ✓ | ✓ | ✓ |
 | Event search (rise/set, crossings, phases, stations) | — | ✓ | — | ✓ |
 | Eclipses (solar, lunar) | — | ✓ | — | ✓ |
 | Data on disk | none (bundled) | JSON packs (precise Moon ~3.1 MB + catalogs) | none (edge) | JSON packs (Node) |
@@ -41,8 +41,9 @@ and [MCP server](/docs/mcp) build on these two.
 ## Embedded (browser, edge)
 
 `caelus/data-embedded` bundles a compact dataset: the eight planets, the Moon,
-Pluto, Chiron, and the nodes, with the core house systems and aspects. This is
-what runs client-side and on edge runtimes, with no files on disk.
+Pluto, Chiron, the nodes, and the HYG fixed-star catalog (~13 KB gzipped of the
+~98 KB total), with the core house systems and aspects. This is what runs
+client-side and on edge runtimes, with no files on disk.
 
 <CodeBlock
   lang="typescript"
@@ -58,8 +59,9 @@ const engine = new Engine(embeddedData);`}
 `loadNodeData` reads the larger JSON packs from disk: higher-precision VSOP
 tiers, the precise Moon pack, a wide-range Pluto pack (a Chebyshev fit to the
 JPL Horizons barycenter that supersedes the embedded Meeus series and holds
-across 1850&ndash;2150), the asteroids and Uranian points, and the 318-star
-catalog. Use it when you need extended bodies, fixed stars, or event search.
+across 1850&ndash;2150), the asteroids and Uranian points. Fixed stars ship in
+embedded too; the Node loader reads the same catalog from disk when you load
+extended packs. Use the Node tier when you need extended bodies or event search.
 
 <CodeBlock
   lang="typescript"
@@ -113,7 +115,7 @@ bundles.
 
 | What you ship | Approx. gzipped | Notes |
 | --- | :---: | --- |
-| Embedded dataset (`caelus/data-embedded`) | ~74 KB | the eight planets, Moon series, Pluto, Chiron, nutation; full client-side charts |
+| Embedded dataset (`caelus/data-embedded`) | ~97 KB | planets, Moon series, Pluto, Chiron, nutation, fixed-star catalog; full client-side charts |
 | Precise Moon tier (`caelus/node`) | ~700 KB | ~3.1 MB on disk; **lazy**, never in the initial bundle |
 | `caelus-wheel` | a few KB | React is a peer dependency, not bundled |
 | `caelus-birth` | small code, plus IANA timezone data | the timezone data is the weight, not the resolver |
