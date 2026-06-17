@@ -37,7 +37,8 @@ Every atom carries:
   `signature:element:fire`, `angle:asc`). Interpretations reference this id, so a
   generated claim can point at the fact it rests on.
 - `kind` -- `placement | aspect | pattern | signature | angle | dispositor |
-  reception | star | lot`.
+  reception | star | lot | transit | synastry | composite | timelord | dignity |
+  nakshatra | varga | yoga`.
 - `bodies` -- the body ids involved, for filtering and cross-reference.
 - `salience` -- a transparent, overridable score (see below).
 - `text` -- a plain-language statement of the fact, no interpretation
@@ -221,6 +222,38 @@ six companions -- placed by sign and house. Supply them via `ContextOptions.lots
 from `Engine.lots(chart)`; the projection emits a `lot:<name>` atom for each.
 Lots are time-sensitive (they derive from the Ascendant and Moon), so an inexact
 instant damps them like the angles.
+
+### Diachronic and relational atoms (shipped)
+
+The natal projection is extended via `ContextOptions` and the helpers in
+`relational.ts`:
+
+- **Transit** (`transit:saturn~natal_moon:square`, ...): transiting body aspecting
+  a natal point, with phase, strength, and natal house. Supply
+  `transits` from {@link transitAspects}.
+- **Synastry** (`synastry:mars~b_venus:square`, `synastry:overlay:a:mars:house:7`):
+  inter-chart aspects and house overlays from {@link synastryAspects} /
+  {@link synastryOverlays}.
+- **Composite** (`composite:mars`, ...): midpoint placements from
+  {@link compositePlacements}.
+- **Time-lords** (`profection:year:scorpio:mars`, `zr:l1:…`, `firdaria:major:…`,
+  `dasha:maha:…`): active profection, zodiacal releasing, firdaria, and
+  Vimshottari dasha periods via `timelords` (caller runs `profectionAt`, `zrAt`,
+  `firdariaAt`, `vimshottariAt`).
+- **Finer dignities** (`term:moon:saturn`, `face:…`, `triplicity:…`,
+  `almuten:moon:jupiter`): Egyptian terms, faces, sect triplicity, and almuten
+  of each classical planet's degree -- projected automatically from the chart.
+- **Vedic structure** (`nakshatra:moon:…`, `varga:d9:moon:…`, `yoga:Gajakesari`):
+  nakshatras, divisional placements, and yogas via `vedic` options (often from
+  a sidereal chart and `yogasAt`).
+
+Selectors: `hasTransit`, `hasSynastry`, `hasComposite`, `hasTimelord`,
+`hasDignityFine`, `hasNakshatra`, `hasVarga`, `hasYoga`. All ids resolve in
+{@link auditCitations} like natal atoms.
+
+Helpers: {@link enrichContextOptions} (transits + time-lords + Vedic at a target
+instant), {@link enrichSynastryOptions} (synastry + composite for two charts).
+The Playground Reading tab and MCP `chart_facts` / `synastry` tools use these.
 
 ## Reference corpus (shipped separately)
 

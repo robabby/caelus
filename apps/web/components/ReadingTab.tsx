@@ -2,8 +2,9 @@
 
 import { useMemo } from "react";
 import {
-  interpretationContext, interpret, reconcile,
-  type Chart, type FactAtom, type ReadingGroup,
+  interpretationContext, interpret, reconcile, enrichContextOptions,
+  enrichSynastryOptions, julianDay,
+  type Chart, type Engine, type FactAtom, type ReadingGroup, type Zodiac,
 } from "caelus";
 import { publicDomainSources } from "caelus-delineations-pd/pd";
 
@@ -22,28 +23,48 @@ function workOf(tags: string[] | undefined, fallback: string): string {
 
 export interface ReadingTabProps {
   chart: Chart;
+  engine: Engine;
+  lat: number;
+  lonEast: number;
+  zodiac: Zodiac;
   stars: { body: string; star: string; orb: number }[];
   lots: { lot: string; sign: string; signDeg: number; house: number }[];
+  /** When set, project synastry/composite atoms against this partner chart. */
+  partner?: { chart: Chart; label?: string };
 }
 
 /**
  * The interpretation layer, live in the browser: project the chart into fact
- * atoms, run the public-domain delineation corpus over them, and show the
- * reconciled, cited reading — every statement pointing at the validated facts it
- * rests on. The engine computed the chart; the meaning is sourced, not invented.
+ * atoms (natal, transits, time-lords, synastry/composite when paired, finer
+ * dignities, and sidereal structure when applicable), run the public-domain
+ * delineation corpus over them, and show the reconciled, cited reading.
  */
-export default function ReadingTab({ chart, stars, lots }: ReadingTabProps) {
-  const { groups, atomById, statements, sourceCount } = useMemo(() => {
-    const ctx = interpretationContext(chart, { stars, lots });
+export default function ReadingTab({
+  chart, engine, lat, lonEast, zodiac, stars, lots, partner,
+}: ReadingTabProps) {
+  const { groups, atomById, statements, sourceCount, enriched } = useMemo(() => {
+    const now = new Date();
+    const targetJd = julianDay(
+      now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+      now.getUTCHours(), now.getUTCMinutes(),
+    );
+    const ctx = interpretationContext(chart, {
+      stars, lots,
+      ...enrichContextOptions(engine, chart, { jd: targetJd, lat, lonEast, zodiac }),
+      ...(partner ? enrichSynastryOptions(engine, chart, partner.chart) : {}),
+    });
     const reading = interpret(ctx, publicDomainSources);
     const grouped = reconcile(reading, { dedupe: true });
+    const kinds = new Set(ctx.atoms.map((a) => a.kind));
     return {
       groups: grouped,
       atomById: new Map(ctx.atoms.map((a) => [a.id, a] as const)),
       statements: reading.entries.length,
       sourceCount: new Set(reading.entries.map((e) => e.source)).size,
+      enriched: kinds.has("transit") || kinds.has("timelord")
+        || kinds.has("synastry") || kinds.has("composite"),
     };
-  }, [chart, stars, lots]);
+  }, [chart, engine, lat, lonEast, zodiac, stars, lots, partner]);
 
   // The most prominent fact a group is about, to label it.
   const factOf = (g: ReadingGroup): FactAtom | undefined => {
@@ -68,8 +89,13 @@ export default function ReadingTab({ chart, stars, lots }: ReadingTabProps) {
       <p className="dim small" style={{ margin: 0 }}>
         <strong style={{ color: "var(--text)" }}>{statements}</strong> statements from{" "}
         <strong style={{ color: "var(--text)" }}>{sourceCount}</strong> public-domain sources, each citing
-        the validated facts it rests on. The engine computed the chart; the meaning is{" "}
-        <strong style={{ color: "var(--text)" }}>sourced, never invented</strong>.
+        the validated facts it rests on.
+        {partner ? (
+          <> Includes synastry/composite atoms plus transits and time-lords active{" "}
+            <strong style={{ color: "var(--text)" }}>now</strong>.</>
+        ) : enriched ? (
+          <> Includes transits and time-lords active <strong style={{ color: "var(--text)" }}>now</strong>.</>
+        ) : null}
       </p>
 
       {groups.slice(0, MAX_GROUPS).map((g, gi) => {
@@ -110,7 +136,8 @@ export default function ReadingTab({ chart, stars, lots }: ReadingTabProps) {
 
       <p className="dim small" style={{ margin: 0 }}>
         Public-domain corpus (Saint-Germain, Alan Leo, Heindel, Robson), decomposed into selectors over the
-        engine&rsquo;s fact atoms. The same shape an LLM cites instead of hallucinating positions. See the{" "}
+        engine&rsquo;s fact atoms — natal, transit, time-lord, and dignity ids are all{" "}
+        <code>auditCitations</code>-checkable. See the{" "}
         <a href="/docs/interpretation">interpretation layer</a>.
       </p>
     </div>

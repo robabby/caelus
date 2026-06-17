@@ -459,7 +459,15 @@ export default function SkyNow() {
                     <span className="eyebrow" style={{ margin: 0 }}>Reading</span>
                     <span className="dim small">the chart&rsquo;s validated facts, turned into a cited public-domain interpretation</span>
                   </div>
-                  <ReadingTab chart={chart} stars={readingInputs.stars} lots={readingInputs.lots} />
+                  <ReadingTab
+                    chart={chart}
+                    engine={engine()}
+                    lat={Number(lat)}
+                    lonEast={Number(lon)}
+                    zodiac={zodiac}
+                    stars={readingInputs.stars}
+                    lots={readingInputs.lots}
+                  />
                 </section>
               )}
 

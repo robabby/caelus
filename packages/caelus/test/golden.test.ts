@@ -14,8 +14,17 @@ import { Engine, BODIES, Body, DEFAULT_ORBS, ASPECTS, SIGNS } from "../src/chart
 import { aspectPhase } from "../src/electional.js";
 import { interpretationContext } from "../src/interpretation.js";
 import {
+  transitAspects, synastryAspects, synastryOverlays, compositePlacements,
+} from "../src/relational.js";
+import { profectionAt } from "../src/profections.js";
+import { zrAt } from "../src/releasing.js";
+import { firdariaAt } from "../src/firdaria.js";
+import { vimshottariAt } from "../src/vedic.js";
+import { yogasAt } from "../src/yogas.js";
+import {
   interpret, hasPlacement, hasAspect, hasPattern, hasStar, hasLot, matchAll, matchNone,
-  hasDispositor, hasReception, reconcile,
+  hasDispositor, hasReception, hasTransit, hasTimelord, hasDignityFine, hasSynastry,
+  hasComposite, hasNakshatra, hasVarga, hasYoga, reconcile,
 } from "../src/interpret.js";
 import { chartBrief, auditCitations, BRIEF_INSTRUCTIONS } from "../src/brief.js";
 import {
@@ -556,6 +565,72 @@ for (const g of G.houses) {
   ) {
     failures++;
     console.error(`FAIL interp lots: atoms=${lotAtoms.length} fortune=${JSON.stringify(fortune)}`);
+  }
+
+  // Diachronic / relational atoms: transits, synastry, composite, time-lords,
+  // finer dignities, and Vedic structure — all citable for auditCitations.
+  {
+    const natal = eng.chartAt(julianDay(1990, 6, 10, 14, 30, 0), 27.95, -82.46, "placidus");
+    const transitJd = julianDay(2025, 6, 10, 12, 0, 0);
+    const natalB = eng.chartAt(julianDay(1992, 3, 15, 8, 0, 0), 40.71, -74.0, "placidus");
+    const transits = transitAspects(natal, eng, transitJd, { maxOrb: 3 });
+    const prof = profectionAt(eng, natal.jdUt, transitJd, 27.95, -82.46);
+    const zr = zrAt(eng, natal.jdUt, transitJd, 27.95, -82.46);
+    const fir = firdariaAt(eng, natal.jdUt, transitJd, 27.95, -82.46);
+    const sidNatal = eng.chartAt(natal.jdUt, 27.95, -82.46, { zodiac: "sidereal:lahiri" });
+    const dasha = vimshottariAt(eng, natal.jdUt, transitJd);
+    const yogas = yogasAt(eng, natal.jdUt, 27.95, -82.46);
+    const rctx = interpretationContext(natal, {
+      transits,
+      synastry: {
+        aspects: synastryAspects(natal, natalB, 4),
+        overlays: synastryOverlays(natal, natalB),
+      },
+      composite: compositePlacements(eng, natal.jdUt, natalB.jdUt),
+      timelords: {
+        profection: prof,
+        zr: { l1: zr.l1!, l2: zr.l2!, l3: zr.l3!, l4: zr.l4!, lot: zr.lot },
+        firdaria: { major: fir.major, sub: fir.sub, day: fir.day },
+        dasha: { maha: dasha.maha!, antar: dasha.antar ?? null, pratyantar: dasha.pratyantar ?? null, moon_nakshatra: dasha.moon_nakshatra },
+      },
+      vedic: { nakshatraBodies: ["moon"], vargas: [9], yogas },
+    });
+    const sidCtx = interpretationContext(sidNatal, { vedic: { nakshatraBodies: ["moon"], vargas: [9] } });
+    const ids = new Set(rctx.atoms.map((a) => a.id));
+    const transitAtom = rctx.atoms.find((a) => a.kind === "transit");
+    const profAtom = rctx.atoms.find((a) => a.id.startsWith("profection:year:"));
+    const termAtom = rctx.atoms.find((a) => a.kind === "dignity" && a.facet === "term");
+    const nakAtom = sidCtx.atoms.find((a) => a.kind === "nakshatra");
+    const vargaAtom = sidCtx.atoms.find((a) => a.kind === "varga");
+    const rr = interpret(rctx, [{
+      id: "rel", version: "0.1", rules: [
+        { id: "t", when: hasTransit({ transit: transitAtom?.transit, minStrength: 0 }), text: "x" },
+        { id: "p", when: hasTimelord({ system: "profection", level: "year" }), text: "x" },
+        { id: "d", when: hasDignityFine({ facet: "term", body: "moon" }), text: "x" },
+        { id: "y", when: hasYoga({ yoga: yogas[0]?.yoga }), text: "x" },
+      ],
+    }]);
+    const audit = auditCitations([
+      { text: "ok", cites: [transitAtom!.id, profAtom!.id, termAtom!.id] },
+      { text: "bad", cites: ["transit:fake~natal_moon:square"] },
+    ], rctx);
+    if (
+      ids.size !== rctx.atoms.length
+      || !transits.length
+      || !transitAtom?.id.includes("~natal_")
+      || !profAtom
+      || !termAtom
+      || !nakAtom?.id.startsWith("nakshatra:moon:")
+      || !vargaAtom?.id.startsWith("varga:d9:moon:")
+      || rctx.atoms.filter((a) => a.kind === "synastry").length === 0
+      || rctx.atoms.filter((a) => a.kind === "composite").length === 0
+      || rr.entries.length < 3
+      || audit.ok !== false
+      || audit.unknown.length !== 1
+    ) {
+      failures++;
+      console.error(`FAIL relational atoms: unique=${ids.size === rctx.atoms.length} transits=${transits.length} audit=${audit.ok}`);
+    }
   }
 
   // Matching + resolver: a developer's rule corpus over the projection, with

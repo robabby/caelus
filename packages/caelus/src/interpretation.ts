@@ -25,8 +25,14 @@ import type { Chart, Zodiac } from "./chart.js";
 import type { AspectPhase } from "./electional.js";
 import { detectPatterns, ChartPattern } from "./patterns.js";
 import { chartSignature, ChartSignature } from "./signature.js";
-import { TRIPLICITY } from "./dignity-score.js";
+import { TRIPLICITY, dignityScore, almuten, type Sect } from "./dignity-score.js";
 import type { Realm, Certainty } from "./provenance.js";
+import type { Profection } from "./profections.js";
+import type {
+  CompositePlacement, SynastryAspectHit, SynastryOverlays, TransitHit,
+} from "./relational.js";
+import { nakshatra } from "./vedic.js";
+import { varga } from "./vargas.js";
 
 const LUMINARIES = new Set(["sun", "moon"]);
 const ANGULAR_HOUSES = new Set([1, 4, 7, 10]);
@@ -60,7 +66,9 @@ const DIGNITY_RANK: Record<string, number> = { domicile: 3, exaltation: 2, tripl
 /** Atom kinds in an {@link InterpretationContext}. */
 export type FactKind =
   | "placement" | "aspect" | "pattern" | "signature" | "angle"
-  | "dispositor" | "reception" | "star" | "lot";
+  | "dispositor" | "reception" | "star" | "lot"
+  | "transit" | "synastry" | "composite" | "timelord" | "dignity"
+  | "nakshatra" | "varga" | "yoga";
 
 interface FactAtomBase {
   /** Stable, content-addressable id, e.g. `"placement:mars"` or
@@ -156,9 +164,78 @@ export interface LotAtom extends FactAtomBase {
   house: number;
 }
 
+export interface TransitAtom extends FactAtomBase {
+  kind: "transit";
+  transit: string;
+  natal: string;
+  aspect: string;
+  orb: number;
+  phase: AspectPhase;
+  strength: number;
+  natalHouse: number;
+}
+
+export interface SynastryAtom extends FactAtomBase {
+  kind: "synastry";
+  mode: "aspect" | "overlay";
+  a?: string;
+  b?: string;
+  aspect?: string;
+  orb?: number;
+  strength?: number;
+  body?: string;
+  partner?: "a" | "b";
+  house?: number;
+}
+
+export interface CompositeAtom extends FactAtomBase {
+  kind: "composite";
+  body: string;
+  sign: string;
+  signDeg: number;
+}
+
+export interface TimelordAtom extends FactAtomBase {
+  kind: "timelord";
+  system: "profection" | "zr" | "firdaria" | "dasha";
+  level: string;
+  lord: string;
+  sign?: string;
+}
+
+export interface DignityAtom extends FactAtomBase {
+  kind: "dignity";
+  facet: "term" | "face" | "triplicity" | "almuten";
+  body: string;
+  ruler?: string;
+}
+
+export interface NakshatraAtom extends FactAtomBase {
+  kind: "nakshatra";
+  body: string;
+  name: string;
+  pada: number;
+  lord: string;
+}
+
+export interface VargaAtom extends FactAtomBase {
+  kind: "varga";
+  division: number;
+  body: string;
+  sign: string;
+}
+
+export interface YogaAtom extends FactAtomBase {
+  kind: "yoga";
+  yoga: string;
+  planets: string[];
+}
+
 export type FactAtom =
   | PlacementAtom | AspectAtom | PatternAtom | SignatureAtom | AngleAtom
-  | DispositorAtom | ReceptionAtom | StarAtom | LotAtom;
+  | DispositorAtom | ReceptionAtom | StarAtom | LotAtom
+  | TransitAtom | SynastryAtom | CompositeAtom | TimelordAtom | DignityAtom
+  | NakshatraAtom | VargaAtom | YogaAtom;
 
 /** A chart as a flat, ranked list of {@link FactAtom}s. */
 export interface InterpretationContext {
@@ -200,12 +277,25 @@ export interface SalienceWeights {
   star: number;
   /** Added to a Hermetic lot (the Part of Fortune and its companions). */
   lot: number;
+  /** Added to a transit-to-natal aspect. */
+  transit: number;
+  /** Added to a synastry aspect or house overlay. */
+  synastry: number;
+  /** Added to a composite midpoint placement. */
+  composite: number;
+  /** Added to an active time-lord period. */
+  timelord: number;
+  /** Added to a finer essential-dignity fact. */
+  dignityFine: number;
+  /** Added to a nakshatra / varga / yoga fact. */
+  vedic: number;
 }
 
 export const DEFAULT_SALIENCE: SalienceWeights = {
   base: 1, luminary: 1.5, angular: 1, chartRuler: 1,
   dignity: 0.5, hardAspect: 1, pattern: 4, dispositor: 0.5, reception: 2,
-  star: 2, lot: 2,
+  star: 2, lot: 2, transit: 1.5, synastry: 1, composite: 0.8, timelord: 2,
+  dignityFine: 0.4, vedic: 1,
 };
 
 export interface ContextOptions {
@@ -224,6 +314,27 @@ export interface ContextOptions {
   stars?: { body: string; star: string; orb: number }[];
   /** Hermetic lots to project as `lot` atoms, e.g. from {@link Engine.lots}. */
   lots?: { lot: string; sign: string; signDeg: number; house: number }[];
+  /** Transit-to-natal hits, e.g. from {@link transitAspects}. */
+  transits?: TransitHit[];
+  /** Synastry aspects and/or house overlays between two charts. */
+  synastry?: { aspects?: SynastryAspectHit[]; overlays?: SynastryOverlays };
+  /** Composite midpoint placements, e.g. from {@link compositePlacements}. */
+  composite?: CompositePlacement[];
+  /** Active time-lord periods at a target instant (caller-supplied). */
+  timelords?: {
+    profection?: Profection;
+    zr?: { l1: string; l2: string; l3: string; l4: string; lot?: string };
+    firdaria?: { major: string | null; sub: string | null; day?: boolean };
+    dasha?: { maha: string; antar?: string | null; pratyantar?: string | null; moon_nakshatra?: string };
+  };
+  /** Vedic structure facts (caller-supplied or auto from sidereal chart). */
+  vedic?: {
+    /** Project nakshatras for these bodies from the chart longitudes. */
+    nakshatraBodies?: string[];
+    /** Project varga D-n for these bodies (default `[9]` when set true). */
+    vargas?: number[] | true;
+    yogas?: { yoga: string; planets: string[] }[];
+  };
 }
 
 /** How much to keep of a time-sensitive atom's salience at each certainty -- the
@@ -422,6 +533,215 @@ export function interpretationContext(
       lot: l.lot, sign: l.sign, signDeg: l.signDeg, house: l.house,
       text: `Lot of ${title(l.lot)} in ${l.sign}, house ${l.house}`,
     });
+  }
+
+  // Finer essential dignities: term, face, triplicity held, almuten of each degree.
+  const chartSect: Sect = sunHouse !== undefined && sunHouse >= 7 ? "day" : "night";
+  for (const body of CLASSICAL) {
+    const p = chart.bodies[body];
+    if (!p) continue;
+    const ds = dignityScore(body, p.lon, chartSect);
+    const alm = almuten(p.lon, chartSect);
+    let sal = w.base + w.dignityFine;
+    if (LUMINARIES.has(body)) sal += w.luminary;
+    atoms.push({
+      id: `term:${body}:${ds.term_ruler}`, kind: "dignity", bodies: [body], salience: sal,
+      facet: "term", body, ruler: ds.term_ruler,
+      text: `${title(body)} in the term of ${title(ds.term_ruler)}`
+        + (ds.term > 0 ? " (holds term dignity)" : ""),
+    });
+    atoms.push({
+      id: `face:${body}:${ds.face_ruler}`, kind: "dignity", bodies: [body], salience: sal,
+      facet: "face", body, ruler: ds.face_ruler,
+      text: `${title(body)} in the face of ${title(ds.face_ruler)}`
+        + (ds.face > 0 ? " (holds face dignity)" : ""),
+    });
+    if (ds.triplicity > 0) {
+      atoms.push({
+        id: `triplicity:${body}`, kind: "dignity", bodies: [body],
+        salience: sal + w.dignity, facet: "triplicity", body,
+        text: `${title(body)} holds ${chartSect} triplicity`,
+      });
+    }
+    atoms.push({
+      id: `almuten:${body}:${alm.planet}`, kind: "dignity", bodies: [body],
+      salience: sal + (alm.planet === body ? w.dignity : 0),
+      facet: "almuten", body, ruler: alm.planet,
+      text: `${title(alm.planet)} is almuten of ${title(body)}'s degree`,
+    });
+  }
+
+  // Transit-to-natal aspects (caller-supplied).
+  for (const t of opts.transits ?? []) {
+    let salience = w.base + w.transit + t.strength;
+    if (HARD_ASPECTS.has(t.aspect)) salience += w.hardAspect;
+    if (LUMINARIES.has(t.transit) || LUMINARIES.has(t.natal)) salience += w.luminary;
+    atoms.push({
+      id: `transit:${t.transit}~natal_${t.natal}:${t.aspect}`, kind: "transit",
+      bodies: [t.transit, t.natal], salience,
+      transit: t.transit, natal: t.natal, aspect: t.aspect, orb: t.orb,
+      phase: t.phase, strength: t.strength, natalHouse: t.natalHouse,
+      text: `Transiting ${title(t.transit)} ${t.aspect} natal ${title(t.natal)} `
+        + `(${t.phase}, orb ${t.orb.toFixed(1)}°, natal house ${t.natalHouse})`,
+    });
+  }
+
+  // Synastry: inter-chart aspects and house overlays.
+  for (const s of opts.synastry?.aspects ?? []) {
+    let salience = w.base + w.synastry + s.strength;
+    if (HARD_ASPECTS.has(s.aspect)) salience += w.hardAspect;
+    if (LUMINARIES.has(s.a) || LUMINARIES.has(s.b)) salience += w.luminary;
+    atoms.push({
+      id: `synastry:${s.a}~b_${s.b}:${s.aspect}`, kind: "synastry",
+      bodies: [s.a, s.b], salience, mode: "aspect",
+      a: s.a, b: s.b, aspect: s.aspect, orb: s.orb, strength: s.strength,
+      text: `${title(s.a)} ${s.aspect} partner's ${title(s.b)} (orb ${s.orb.toFixed(1)}°)`,
+    });
+  }
+  const overlays = opts.synastry?.overlays;
+  if (overlays) {
+    for (const [body, house] of Object.entries(overlays.aInB)) {
+      atoms.push({
+        id: `synastry:overlay:a:${body}:house:${house}`, kind: "synastry",
+        bodies: [body], salience: w.base + w.synastry, mode: "overlay",
+        body, partner: "a", house,
+        text: `${title(body)} falls in partner's house ${house}`,
+      });
+    }
+    for (const [body, house] of Object.entries(overlays.bInA)) {
+      atoms.push({
+        id: `synastry:overlay:b:${body}:house:${house}`, kind: "synastry",
+        bodies: [body], salience: w.base + w.synastry, mode: "overlay",
+        body, partner: "b", house,
+        text: `Partner's ${title(body)} falls in house ${house}`,
+      });
+    }
+  }
+
+  // Composite midpoint placements.
+  for (const c of opts.composite ?? []) {
+    atoms.push({
+      id: `composite:${c.body}`, kind: "composite", bodies: [c.body],
+      salience: w.base + w.composite + (LUMINARIES.has(c.body) ? w.luminary : 0),
+      body: c.body, sign: c.sign, signDeg: c.signDeg,
+      text: `Composite ${title(c.body)} in ${c.sign}`,
+    });
+  }
+
+  // Time-lords: profection, zodiacal releasing, firdaria, dasha.
+  const tl = opts.timelords;
+  if (tl?.profection) {
+    const pf = tl.profection;
+    atoms.push({
+      id: `profection:year:${pf.annual.sign.toLowerCase()}:${pf.annual.lord}`, kind: "timelord",
+      bodies: [pf.annual.lord], salience: w.base + w.timelord, system: "profection",
+      level: "year", lord: pf.annual.lord, sign: pf.annual.sign,
+      text: `Annual profection: ${pf.annual.sign} (house ${pf.annual.house}), lord ${title(pf.annual.lord)}`,
+    });
+    atoms.push({
+      id: `profection:month:${pf.monthly.sign.toLowerCase()}:${pf.monthly.lord}`, kind: "timelord",
+      bodies: [pf.monthly.lord], salience: w.base + w.timelord * 0.7, system: "profection",
+      level: "month", lord: pf.monthly.lord, sign: pf.monthly.sign,
+      text: `Monthly profection: ${pf.monthly.sign} (house ${pf.monthly.house}), lord ${title(pf.monthly.lord)}`,
+    });
+  }
+  if (tl?.zr) {
+    const zrWeight: Record<string, number> = { l1: 1, l2: 0.75, l3: 0.5, l4: 0.35 };
+    const zrLevels: Array<[string, string]> = [
+      ["l1", tl.zr.l1], ["l2", tl.zr.l2], ["l3", tl.zr.l3], ["l4", tl.zr.l4],
+    ];
+    for (const [level, sign] of zrLevels) {
+      const signIdx = SIGNS.indexOf(sign);
+      const lord = signIdx >= 0 ? SIGN_RULER[signIdx] : "";
+      atoms.push({
+        id: `zr:${level}:${sign.toLowerCase()}:${lord}`, kind: "timelord",
+        bodies: lord ? [lord] : [], salience: w.base + w.timelord * (zrWeight[level] ?? 0.5),
+        system: "zr", level, lord, sign,
+        text: `Zodiacal releasing ${level.toUpperCase()}: ${sign}`
+          + (lord ? `, lord ${title(lord)}` : "")
+          + (tl.zr.lot ? ` (from Lot of ${title(tl.zr.lot)})` : ""),
+      });
+    }
+  }
+  if (tl?.firdaria?.major) {
+    atoms.push({
+      id: `firdaria:major:${tl.firdaria.major}`, kind: "timelord",
+      bodies: [tl.firdaria.major], salience: w.base + w.timelord, system: "firdaria",
+      level: "major", lord: tl.firdaria.major,
+      text: `Firdaria major period: ${title(tl.firdaria.major)}`
+        + (tl.firdaria.day !== undefined ? ` (${tl.firdaria.day ? "day" : "night"} chart)` : ""),
+    });
+    if (tl.firdaria.sub) {
+      atoms.push({
+        id: `firdaria:sub:${tl.firdaria.sub}`, kind: "timelord",
+        bodies: [tl.firdaria.sub], salience: w.base + w.timelord * 0.7, system: "firdaria",
+        level: "sub", lord: tl.firdaria.sub,
+        text: `Firdaria sub-period: ${title(tl.firdaria.sub)}`,
+      });
+    }
+  }
+  if (tl?.dasha?.maha) {
+    const d = tl.dasha;
+    atoms.push({
+      id: `dasha:maha:${d.maha}`, kind: "timelord", bodies: [d.maha],
+      salience: w.base + w.timelord, system: "dasha", level: "maha", lord: d.maha,
+      text: `Vimshottari mahadasha: ${title(d.maha)}`
+        + (d.moon_nakshatra ? ` (Moon in ${d.moon_nakshatra})` : ""),
+    });
+    if (d.antar) {
+      atoms.push({
+        id: `dasha:antar:${d.antar}`, kind: "timelord", bodies: [d.antar],
+        salience: w.base + w.timelord * 0.8, system: "dasha", level: "antar", lord: d.antar,
+        text: `Vimshottari antardasha: ${title(d.antar)}`,
+      });
+    }
+    if (d.pratyantar) {
+      atoms.push({
+        id: `dasha:pratyantar:${d.pratyantar}`, kind: "timelord", bodies: [d.pratyantar],
+        salience: w.base + w.timelord * 0.6, system: "dasha", level: "pratyantar", lord: d.pratyantar,
+        text: `Vimshottari pratyantardasha: ${title(d.pratyantar)}`,
+      });
+    }
+  }
+
+  // Vedic: nakshatras, vargas, yogas.
+  const vedic = opts.vedic;
+  if (vedic) {
+    const nakBodies = vedic.nakshatraBodies
+      ?? ["moon", "sun", "mars", "mercury", "jupiter", "venus", "saturn"];
+    for (const body of nakBodies) {
+      const p = chart.bodies[body];
+      if (!p) continue;
+      const nak = nakshatra(p.lon);
+      let salience = w.base + w.vedic;
+      if (body === "moon") salience += w.luminary;
+      atoms.push({
+        id: `nakshatra:${body}:${nak.name.replace(/\s+/g, "_")}`, kind: "nakshatra",
+        bodies: [body], salience, body, name: nak.name, pada: nak.pada, lord: nak.lord,
+        text: `${title(body)} in ${nak.name} (pada ${nak.pada}, lord ${title(nak.lord)})`,
+      });
+    }
+    const vargaDivs = vedic.vargas === true ? [9] : (vedic.vargas ?? []);
+    for (const n of vargaDivs) {
+      for (const body of nakBodies) {
+        const p = chart.bodies[body];
+        if (!p) continue;
+        const v = varga(p.lon, n);
+        atoms.push({
+          id: `varga:d${n}:${body}:${v.sign.toLowerCase()}`, kind: "varga",
+          bodies: [body], salience: w.base + w.vedic, division: n, body, sign: v.sign,
+          text: `${title(body)} D${n} (${v.sign})`,
+        });
+      }
+    }
+    for (const y of vedic.yogas ?? []) {
+      atoms.push({
+        id: `yoga:${y.yoga.replace(/\s+/g, "_")}`, kind: "yoga",
+        bodies: y.planets, salience: w.base + w.timelord * 0.5 + w.vedic,
+        yoga: y.yoga, planets: y.planets,
+        text: `Yoga ${y.yoga} (${y.planets.map(title).join(", ")})`,
+      });
+    }
   }
 
   // An inexact instant trusts the fast-moving facts least.

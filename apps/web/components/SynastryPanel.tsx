@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   Engine, fmtLon, BODIES, compositeLongitudes,
   type BodyId, type Chart,
@@ -8,11 +9,17 @@ import {
 import { embeddedData } from "caelus/data-embedded";
 import { toUT } from "caelus-birth";
 import { GLYPHS } from "caelus-wheel";
+import fixedStars from "../lib/fixed-stars.json";
 import CityPicker, { type City } from "./CityPicker";
 import BiWheel, { type SynContact } from "./BiWheel";
 import { ASPECT_GLYPH, aspectColor, crossAspect, ASPECTABLE_ORDER as GRID } from "../lib/chart-display";
 
-const engine = new Engine(embeddedData);
+const ReadingTab = dynamic(() => import("./ReadingTab"), {
+  ssr: false,
+  loading: () => <p className="dim small" style={{ marginTop: 0 }}>reading the charts…</p>,
+});
+
+const engine = new Engine({ ...embeddedData, fixedStars } as never);
 
 // Both births live in the URL fragment (#s2=), never sent to a server.
 function b64urlEncode(value: unknown): string {
@@ -112,6 +119,18 @@ export default function SynastryPanel() {
     [a, b],
   );
 
+  const readingInputs = useMemo(() => {
+    if (!a) return null;
+    try {
+      return {
+        stars: engine.starConjunctions(a.chart, { orb: 1 }),
+        lots: engine.lots(a.chart),
+      };
+    } catch {
+      return { stars: [], lots: [] };
+    }
+  }, [a]);
+
   const set = (i: 0 | 1) => (next: Person) =>
     setPeople((prev) => (i === 0 ? [next, prev[1]] : [prev[0], next]));
 
@@ -155,6 +174,25 @@ export default function SynastryPanel() {
           <p className="dim small" style={{ margin: "0.8rem 0 0" }}>
             {people[0].name || "A"} ({a.zone}) and {people[1].name || "B"} ({b.zone}), computed client-side.
           </p>
+
+          {readingInputs && (
+            <>
+              <h3 style={{ marginTop: "1.2rem", marginBottom: "0.3rem" }}>Reading</h3>
+              <p className="dim small" style={{ margin: "0 0 0.6rem" }}>
+                {people[0].name || "A"}&rsquo;s chart as the base; synastry and composite facts are citable atoms.
+              </p>
+              <ReadingTab
+                chart={a.chart}
+                engine={engine}
+                lat={Number(people[0].lat)}
+                lonEast={Number(people[0].lon)}
+                zodiac="tropical"
+                stars={readingInputs.stars}
+                lots={readingInputs.lots}
+                partner={{ chart: b.chart, label: people[0].name || "A" }}
+              />
+            </>
+          )}
 
           <figure className="chart-fluid" style={{ margin: "1rem 0 0", textAlign: "center" }}>
             <BiWheel

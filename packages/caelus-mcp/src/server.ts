@@ -40,6 +40,7 @@ import {
   chartFeatures, searchConfigurations,
   dignityScore, aspectBetween,
   interpretationContext, chartBrief, realize, realmFraming, isoToJd, counterfactual,
+  enrichContextOptions, enrichSynastryOptions,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -695,7 +696,7 @@ export function buildServer(
 
   server.registerTool("synastry", {
     description:
-      "Compare two people's birth charts: inter-chart aspects with orbs, house overlays both ways. Each person needs date+lat+lon. House overlays always use Placidus (not configurable here).",
+      "Compare two people's birth charts: inter-chart aspects with orbs, house overlays both ways, plus ranked citable fact atoms and a ready `brief` (synastry/composite ids for auditCitations). Each person needs date+lat+lon. House overlays always use Placidus (not configurable here).",
     inputSchema: {
       a: z.object(birth).describe("Person A birth data (UTC date, lat, lon)"),
       b: z.object(birth).describe("Person B birth data (UTC date, lat, lon)"),
@@ -703,40 +704,25 @@ export function buildServer(
       zodiac: zodiacSchema,
     },
   }, async ({ a, b, orb, zodiac }) => {
+    const jdA = jdFromIso(a.date);
+    const jdB = jdFromIso(b.date);
+    if (jdA === null || jdB === null) throw new Error("invalid birth date");
+    const chartA = engine.chartAt(jdA, a.lat, a.lon, { houseSystem: "placidus", zodiac });
+    const chartB = engine.chartAt(jdB, b.lat, b.lon, { houseSystem: "placidus", zodiac });
+    const syn = enrichSynastryOptions(engine, chartA, chartB, { orb, zodiac });
+    const inter = syn.synastry!.aspects!.map((h) => ({ a: h.a, b: h.b, aspect: h.aspect, orb: r2(h.orb) }));
+    const aInB = syn.synastry!.overlays!.aInB;
+    const bInA = syn.synastry!.overlays!.bInA;
+    const stars = engine.starConjunctions(chartA, { orb: 1 });
+    const lots = engine.lots(chartA).filter((l) => l.lot === "fortune" || l.lot === "spirit");
+    const ctx = interpretationContext(chartA, { stars, lots, ...syn });
+    const brief = chartBrief(ctx, { limit: 24 });
     const ca = chartPayload(engine, a.date, a.lat, a.lon, "placidus", zodiac);
     const cb = chartPayload(engine, b.date, b.lat, b.lon, "placidus", zodiac);
-    const ASP: Array<[string, number]> = [
-      ["conjunction", 0], ["sextile", 60], ["square", 90], ["trine", 120], ["opposition", 180],
-    ];
-    const inter: Array<{ a: string; b: string; aspect: string; orb: number }> = [];
-    const houseIn = (cusps: number[], bl: number) => {
-      for (let i = 0; i < 12; i++) {
-        if (mod(bl - cusps[i], 360) < mod(cusps[(i + 1) % 12] - cusps[i], 360)) return i + 1;
-      }
-      return 12;
-    };
-    const aInB: Record<string, number> = {};
-    const bInA: Record<string, number> = {};
-    for (const ba of BODIES) {
-      const la = (ca.bodies as Record<string, { lon: number }>)[ba].lon;
-      aInB[ba] = houseIn(cb.cusps as number[], la);
-      const lb = (cb.bodies as Record<string, { lon: number }>)[ba].lon;
-      bInA[ba] = houseIn(ca.cusps as number[], lb);
-    }
-    for (const ba of BODIES) {
-      for (const bb of BODIES) {
-        const la = (ca.bodies as Record<string, { lon: number }>)[ba].lon;
-        const lb = (cb.bodies as Record<string, { lon: number }>)[bb].lon;
-        const sep = Math.abs(mod(la - lb + 180, 360) - 180);
-        for (const [name, angle] of ASP) {
-          const o = Math.abs(sep - angle);
-          if (o <= orb) inter.push({ a: ba, b: bb, aspect: name, orb: r2(o) });
-        }
-      }
-    }
     return text({
       a: ca, b: cb, inter_aspects: inter,
       a_planets_in_b_houses: aInB, b_planets_in_a_houses: bInA,
+      total_facts: ctx.atoms.length, facts: brief.facts, brief: brief.prompt,
     });
   });
 
@@ -1458,10 +1444,14 @@ export function buildServer(
         z.object({ kind: z.literal("degree"), body: z.string(), degree: z.number(), weight: z.number().optional() }),
       ])).optional().describe("Geometric constraints for an archetypal/conceptual chart with no time (compiler synthesis)"),
       house_system: houseSys, zodiac: zodiacSchema,
+      target_date: z.string().optional()
+        .describe("UTC ISO instant for transits and time-lords vs this natal chart; omit for natal-only facts"),
+      include_vedic: z.boolean().optional()
+        .describe("With target_date: project nakshatra/varga/yoga (default true when zodiac is sidereal)"),
       limit: z.number().int().min(1).max(60).default(24)
         .describe("max facts to return, highest salience first (default 24)"),
     },
-  }, async ({ date, earliest, latest, when: whenInput, anchors, lat, lon, realm, constraints, house_system, zodiac, limit }) => {
+  }, async ({ date, earliest, latest, when: whenInput, anchors, lat, lon, realm, constraints, house_system, zodiac, target_date, include_vedic, limit }) => {
     const when = whenInput
       ?? (date ? { kind: "instant" as const, utc: date }
         : earliest && latest ? { kind: "range" as const, earliest, latest }
@@ -1486,9 +1476,21 @@ export function buildServer(
       // The two primary lots; the five derived lots are niche, so they are left
       // out of the default brief to avoid crowding it.
       const lots = engine.lots(r.chart).filter((l) => l.lot === "fortune" || l.lot === "spirit");
-      const ctx = interpretationContext(r.chart, {
+      const ctxOpts: Parameters<typeof interpretationContext>[1] = {
         provenance: { realm, certainty: r.time.certainty }, stars, lots,
-      });
+      };
+      let targetUtc: string | undefined;
+      if (target_date) {
+        const targetJd = isoToJd(target_date);
+        if (targetJd === null) throw new Error("invalid target_date");
+        targetUtc = target_date;
+        if (lat !== undefined && lon !== undefined) {
+          Object.assign(ctxOpts, enrichContextOptions(engine, r.chart, {
+            jd: targetJd, lat, lonEast: lon, zodiac,
+          }, { vedic: include_vedic ?? zodiac.startsWith("sidereal") }));
+        }
+      }
+      const ctx = interpretationContext(r.chart, ctxOpts);
       const brief = chartBrief(ctx, { limit });
       const framing = realmFraming(realm, r.time.certainty);
       return text({
@@ -1497,6 +1499,7 @@ export function buildServer(
         ...(r.time.earliest !== undefined ? { range: { earliest: isoFromJd(r.time.earliest), latest: isoFromJd(r.time.latest!) } } : {}),
         ...(zodiac !== "tropical" ? { zodiac } : {}),
         ...(framing ? { framing } : {}),
+        ...(targetUtc ? { target_utc: targetUtc } : {}),
         total_facts: ctx.atoms.length, facts: brief.facts, brief: brief.prompt,
       });
     }

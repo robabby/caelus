@@ -123,6 +123,95 @@ export function hasLot(filter: { lot?: string; sign?: string; house?: number } =
     && (filter.house === undefined || a.house === filter.house)));
 }
 
+/** Matches transit-to-natal aspect atoms. */
+export function hasTransit(filter: {
+  transit?: string; natal?: string; aspect?: string; phase?: string; minStrength?: number;
+} = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) => {
+    if (a.kind !== "transit") return false;
+    if (filter.transit !== undefined && a.transit !== filter.transit) return false;
+    if (filter.natal !== undefined && a.natal !== filter.natal) return false;
+    if (filter.aspect !== undefined && a.aspect !== filter.aspect) return false;
+    if (filter.phase !== undefined && a.phase !== filter.phase) return false;
+    if (filter.minStrength !== undefined && a.strength < filter.minStrength) return false;
+    return true;
+  }));
+}
+
+/** Matches synastry aspect or house-overlay atoms. */
+export function hasSynastry(filter: {
+  mode?: "aspect" | "overlay"; a?: string; b?: string; aspect?: string;
+  body?: string; partner?: "a" | "b"; house?: number;
+} = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) => {
+    if (a.kind !== "synastry") return false;
+    if (filter.mode !== undefined && a.mode !== filter.mode) return false;
+    if (filter.a !== undefined && a.a !== filter.a) return false;
+    if (filter.b !== undefined && a.b !== filter.b) return false;
+    if (filter.aspect !== undefined && a.aspect !== filter.aspect) return false;
+    if (filter.body !== undefined && a.body !== filter.body) return false;
+    if (filter.partner !== undefined && a.partner !== filter.partner) return false;
+    if (filter.house !== undefined && a.house !== filter.house) return false;
+    return true;
+  }));
+}
+
+/** Matches a composite midpoint placement. */
+export function hasComposite(filter: { body?: string; sign?: string } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "composite"
+    && (filter.body === undefined || a.body === filter.body)
+    && (filter.sign === undefined || a.sign === filter.sign)));
+}
+
+/** Matches an active time-lord period. */
+export function hasTimelord(filter: {
+  system?: "profection" | "zr" | "firdaria" | "dasha"; level?: string; lord?: string;
+} = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "timelord"
+    && (filter.system === undefined || a.system === filter.system)
+    && (filter.level === undefined || a.level === filter.level)
+    && (filter.lord === undefined || a.lord === filter.lord)));
+}
+
+/** Matches finer essential-dignity facts (term, face, triplicity, almuten). */
+export function hasDignityFine(filter: {
+  facet?: "term" | "face" | "triplicity" | "almuten"; body?: string; ruler?: string;
+} = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "dignity"
+    && (filter.facet === undefined || a.facet === filter.facet)
+    && (filter.body === undefined || a.body === filter.body)
+    && (filter.ruler === undefined || a.ruler === filter.ruler)));
+}
+
+/** Matches a nakshatra placement. */
+export function hasNakshatra(filter: { body?: string; name?: string; lord?: string } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "nakshatra"
+    && (filter.body === undefined || a.body === filter.body)
+    && (filter.name === undefined || a.name === filter.name)
+    && (filter.lord === undefined || a.lord === filter.lord)));
+}
+
+/** Matches a varga (divisional chart) placement. */
+export function hasVarga(filter: { division?: number; body?: string; sign?: string } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "varga"
+    && (filter.division === undefined || a.division === filter.division)
+    && (filter.body === undefined || a.body === filter.body)
+    && (filter.sign === undefined || a.sign === filter.sign)));
+}
+
+/** Matches a classical yoga. */
+export function hasYoga(filter: { yoga?: string; body?: string } = {}): Selector {
+  return (ctx) => hit(ctx.atoms.filter((a) =>
+    a.kind === "yoga"
+    && (filter.yoga === undefined || a.yoga === filter.yoga)
+    && (filter.body === undefined || a.bodies.includes(filter.body))));
+}
+
 // ----------------------------------------------------------------- combinators
 
 /** Matches only when every selector matches; returns the union of their atoms. */

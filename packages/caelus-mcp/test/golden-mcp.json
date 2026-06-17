@@ -1862,18 +1862,6 @@
           "orb": 3.99
         },
         {
-          "a": "sun",
-          "b": "mean_node",
-          "aspect": "square",
-          "orb": 3.47
-        },
-        {
-          "a": "sun",
-          "b": "true_node",
-          "aspect": "square",
-          "orb": 3.62
-        },
-        {
           "a": "moon",
           "b": "moon",
           "aspect": "trine",
@@ -1895,13 +1883,13 @@
           "a": "moon",
           "b": "pluto",
           "aspect": "sextile",
-          "orb": 1.05
+          "orb": 1.06
         },
         {
           "a": "mercury",
           "b": "sun",
           "aspect": "sextile",
-          "orb": 2.99
+          "orb": 3
         },
         {
           "a": "venus",
@@ -1925,7 +1913,7 @@
           "a": "venus",
           "b": "pluto",
           "aspect": "opposition",
-          "orb": 0.8
+          "orb": 0.81
         },
         {
           "a": "mars",
@@ -1949,7 +1937,7 @@
           "a": "jupiter",
           "b": "mars",
           "aspect": "opposition",
-          "orb": 3.93
+          "orb": 3.94
         },
         {
           "a": "jupiter",
@@ -1958,22 +1946,10 @@
           "orb": 2.61
         },
         {
-          "a": "saturn",
-          "b": "mean_node",
-          "aspect": "sextile",
-          "orb": 1.39
-        },
-        {
-          "a": "saturn",
-          "b": "true_node",
-          "aspect": "sextile",
-          "orb": 1.24
-        },
-        {
           "a": "uranus",
           "b": "mercury",
           "aspect": "sextile",
-          "orb": 1.78
+          "orb": 1.79
         },
         {
           "a": "uranus",
@@ -1985,7 +1961,7 @@
           "a": "uranus",
           "b": "pluto",
           "aspect": "sextile",
-          "orb": 3.88
+          "orb": 3.87
         },
         {
           "a": "neptune",
@@ -2015,7 +1991,7 @@
           "a": "pluto",
           "b": "moon",
           "aspect": "opposition",
-          "orb": 2.09
+          "orb": 2.1
         },
         {
           "a": "pluto",
@@ -2033,7 +2009,7 @@
           "a": "pluto",
           "b": "pluto",
           "aspect": "conjunction",
-          "orb": 3.27
+          "orb": 3.28
         },
         {
           "a": "chiron",
@@ -2058,18 +2034,6 @@
           "b": "pluto",
           "aspect": "trine",
           "orb": 3.34
-        },
-        {
-          "a": "mean_node",
-          "b": "moon",
-          "aspect": "square",
-          "orb": 3.45
-        },
-        {
-          "a": "mean_node",
-          "b": "pluto",
-          "aspect": "square",
-          "orb": 2.27
         }
       ],
       "a_planets_in_b_houses": {
@@ -2101,7 +2065,155 @@
         "chiron": 11,
         "mean_node": 8,
         "true_node": 8
-      }
+      },
+      "total_facts": 157,
+      "facts": [
+        {
+          "id": "pattern:mystic_rectangle:chiron-moon-pluto-venus",
+          "kind": "pattern",
+          "text": "Mystic rectangle: Chiron, Moon, Pluto, Venus",
+          "salience": 5.5
+        },
+        {
+          "id": "pattern:mystic_rectangle:jupiter-moon-pluto-venus",
+          "kind": "pattern",
+          "text": "Mystic rectangle: Jupiter, Moon, Pluto, Venus",
+          "salience": 5.5
+        },
+        {
+          "id": "pattern:stellium_house:moon-neptune-saturn",
+          "kind": "pattern",
+          "text": "Stellium: Moon, Neptune, Saturn",
+          "salience": 5.5
+        },
+        {
+          "id": "pattern:stellium_sign:moon-neptune-saturn-uranus",
+          "kind": "pattern",
+          "text": "Stellium: Moon, Neptune, Saturn, Uranus in Capricorn",
+          "salience": 5.5
+        },
+        {
+          "id": "synastry:venus~b_moon:conjunction",
+          "kind": "synastry",
+          "text": "Venus conjunction partner's Moon (orb 0.4°)",
+          "salience": 5.405
+        },
+        {
+          "id": "synastry:pluto~b_moon:opposition",
+          "kind": "synastry",
+          "text": "Pluto opposition partner's Moon (orb 2.1°)",
+          "salience": 4.975
+        },
+        {
+          "id": "synastry:moon~b_neptune:conjunction",
+          "kind": "synastry",
+          "text": "Moon conjunction partner's Neptune (orb 3.2°)",
+          "salience": 4.6975
+        },
+        {
+          "id": "synastry:sun~b_chiron:conjunction",
+          "kind": "synastry",
+          "text": "Sun conjunction partner's Chiron (orb 4.0°)",
+          "salience": 4.5024999999999995
+        },
+        {
+          "id": "synastry:moon~b_moon:trine",
+          "kind": "synastry",
+          "text": "Moon trine partner's Moon (orb 0.1°)",
+          "salience": 4.4675
+        },
+        {
+          "id": "aspect:moon~neptune:conjunction",
+          "kind": "aspect",
+          "text": "Moon conjunction Neptune (applying, orb 0.6°)",
+          "salience": 4.43125
+        },
+        {
+          "id": "synastry:neptune~b_moon:trine",
+          "kind": "synastry",
+          "text": "Neptune trine partner's Moon (orb 0.4°)",
+          "salience": 4.3925
+        },
+        {
+          "id": "aspect:jupiter~moon:opposition",
+          "kind": "aspect",
+          "text": "Moon opposition Jupiter (applying, orb 1.6°)",
+          "salience": 4.30625
+        },
+        {
+          "id": "synastry:moon~b_pluto:sextile",
+          "kind": "synastry",
+          "text": "Moon sextile partner's Pluto (orb 1.1°)",
+          "salience": 4.234999999999999
+        },
+        {
+          "id": "aspect:chiron~moon:opposition",
+          "kind": "aspect",
+          "text": "Moon opposition Chiron (applying, orb 2.3°)",
+          "salience": 4.21375
+        },
+        {
+          "id": "synastry:jupiter~b_moon:sextile",
+          "kind": "synastry",
+          "text": "Jupiter sextile partner's Moon (orb 1.4°)",
+          "salience": 4.1425
+        },
+        {
+          "id": "pattern:mystic_rectangle:chiron-neptune-pluto-venus",
+          "kind": "pattern",
+          "text": "Mystic rectangle: Chiron, Neptune, Pluto, Venus",
+          "salience": 4
+        },
+        {
+          "id": "pattern:mystic_rectangle:jupiter-neptune-pluto-venus",
+          "kind": "pattern",
+          "text": "Mystic rectangle: Jupiter, Neptune, Pluto, Venus",
+          "salience": 4
+        },
+        {
+          "id": "synastry:chiron~b_moon:sextile",
+          "kind": "synastry",
+          "text": "Chiron sextile partner's Moon (orb 2.2°)",
+          "salience": 3.96
+        },
+        {
+          "id": "aspect:moon~uranus:conjunction",
+          "kind": "aspect",
+          "text": "Moon conjunction Uranus (separating, orb 4.9°)",
+          "salience": 3.88375
+        },
+        {
+          "id": "synastry:pluto~b_venus:opposition",
+          "kind": "synastry",
+          "text": "Pluto opposition partner's Venus (orb 0.7°)",
+          "salience": 3.8200000000000003
+        },
+        {
+          "id": "synastry:venus~b_pluto:opposition",
+          "kind": "synastry",
+          "text": "Venus opposition partner's Pluto (orb 0.8°)",
+          "salience": 3.7975
+        },
+        {
+          "id": "synastry:moon~b_venus:trine",
+          "kind": "synastry",
+          "text": "Moon trine partner's Venus (orb 2.9°)",
+          "salience": 3.765
+        },
+        {
+          "id": "synastry:mercury~b_sun:sextile",
+          "kind": "synastry",
+          "text": "Mercury sextile partner's Sun (orb 3.0°)",
+          "salience": 3.75
+        },
+        {
+          "id": "aspect:mars~moon:square",
+          "kind": "aspect",
+          "text": "Moon square Mars (separating, orb 5.8°)",
+          "salience": 3.6742857142857144
+        }
+      ],
+      "brief": "Natal chart facts follow, each with a stable id in [brackets]. Interpret them in your own words; after each statement, cite the id(s) it rests on as [id]. Do not introduce astrological facts that are not listed here.\n\n[pattern:mystic_rectangle:chiron-moon-pluto-venus] Mystic rectangle: Chiron, Moon, Pluto, Venus\n[pattern:mystic_rectangle:jupiter-moon-pluto-venus] Mystic rectangle: Jupiter, Moon, Pluto, Venus\n[pattern:stellium_house:moon-neptune-saturn] Stellium: Moon, Neptune, Saturn\n[pattern:stellium_sign:moon-neptune-saturn-uranus] Stellium: Moon, Neptune, Saturn, Uranus in Capricorn\n[synastry:venus~b_moon:conjunction] Venus conjunction partner's Moon (orb 0.4°)\n[synastry:pluto~b_moon:opposition] Pluto opposition partner's Moon (orb 2.1°)\n[synastry:moon~b_neptune:conjunction] Moon conjunction partner's Neptune (orb 3.2°)\n[synastry:sun~b_chiron:conjunction] Sun conjunction partner's Chiron (orb 4.0°)\n[synastry:moon~b_moon:trine] Moon trine partner's Moon (orb 0.1°)\n[aspect:moon~neptune:conjunction] Moon conjunction Neptune (applying, orb 0.6°)\n[synastry:neptune~b_moon:trine] Neptune trine partner's Moon (orb 0.4°)\n[aspect:jupiter~moon:opposition] Moon opposition Jupiter (applying, orb 1.6°)\n[synastry:moon~b_pluto:sextile] Moon sextile partner's Pluto (orb 1.1°)\n[aspect:chiron~moon:opposition] Moon opposition Chiron (applying, orb 2.3°)\n[synastry:jupiter~b_moon:sextile] Jupiter sextile partner's Moon (orb 1.4°)\n[pattern:mystic_rectangle:chiron-neptune-pluto-venus] Mystic rectangle: Chiron, Neptune, Pluto, Venus\n[pattern:mystic_rectangle:jupiter-neptune-pluto-venus] Mystic rectangle: Jupiter, Neptune, Pluto, Venus\n[synastry:chiron~b_moon:sextile] Chiron sextile partner's Moon (orb 2.2°)\n[aspect:moon~uranus:conjunction] Moon conjunction Uranus (separating, orb 4.9°)\n[synastry:pluto~b_venus:opposition] Pluto opposition partner's Venus (orb 0.7°)\n[synastry:venus~b_pluto:opposition] Venus opposition partner's Pluto (orb 0.8°)\n[synastry:moon~b_venus:trine] Moon trine partner's Venus (orb 2.9°)\n[synastry:mercury~b_sun:sextile] Mercury sextile partner's Sun (orb 3.0°)\n[aspect:mars~moon:square] Moon square Mars (separating, orb 5.8°)"
     }
   },
   "find-saturn-sq-moon": {
