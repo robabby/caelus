@@ -140,6 +140,22 @@ assert(render(fixture).includes("℞"), "fixture: retrograde mark rendered");
 assert(render(fixture, { theme: { axis: "#ff0000" } }).includes("#ff0000"),
   "theme: override applied");
 
+// planetColors tints glyph + position tick; label/connector stay on labelText
+{
+  const svg = render(fixture, {
+    theme: {
+      planetText: "#cccccc",
+      labelText: "#888888",
+      planetColors: { sun: "#ffaa00", moon: "#aabbcc" },
+    },
+  });
+  assert(svg.includes('fill="#ffaa00"'), "planetColors: sun glyph fill");
+  assert(svg.includes('stroke="#ffaa00"'), "planetColors: sun position tick");
+  assert(svg.includes('fill="#aabbcc"'), "planetColors: moon glyph fill");
+  assert(!svg.includes('fill="#cccccc"') || svg.includes('fill="#888888"'),
+    "planetColors: unlisted bodies fall back to planetText or use labelText for labels");
+}
+
 // size prop
 assert(render(fixture, { size: 300 }).includes('width="300"'), "size: applied");
 

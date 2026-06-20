@@ -37,6 +37,9 @@ export interface WheelTheme {
   axis: string;
   signText: string;
   planetText: string;
+  /** Optional per-body glyph color, keyed by body name ("sun","moon","mars",…).
+   *  Falls back to planetText for any body not listed. */
+  planetColors?: Record<string, string>;
   labelText: string;
   houseText: string;
   aspectColors: Record<string, string>;
@@ -166,7 +169,8 @@ export function ChartWheel({
   glyphs,
 }: ChartWheelProps): ReactElement {
   const T: WheelTheme = { ...DARK_THEME, ...theme,
-    aspectColors: { ...DARK_THEME.aspectColors, ...(theme?.aspectColors ?? {}) } };
+    aspectColors: { ...DARK_THEME.aspectColors, ...(theme?.aspectColors ?? {}) },
+    planetColors: { ...(DARK_THEME.planetColors ?? {}), ...(theme?.planetColors ?? {}) } };
   const G = { ...GLYPHS, ...glyphs };
   const asc = chart.angles.asc;
   const c = size / 2;
@@ -261,7 +265,8 @@ export function ChartWheel({
   names.forEach((b, i) => {
     const p = chart.bodies[b]!;
     const disp = dispLons[i];
-    el.push(line(p.lon, 0.815, 0.84, { stroke: T.planetText, strokeWidth: 1.2 }, `pt-${b}`));
+    const pColor = T.planetColors?.[b] ?? T.planetText;
+    el.push(line(p.lon, 0.815, 0.84, { stroke: pColor, strokeWidth: 1.2 }, `pt-${b}`));
     // connector when the glyph was displaced off its true longitude
     if (Math.abs(mod(disp - p.lon + 180, 360) - 180) > 0.75) {
       const [x1, y1] = pt(p.lon, 0.815);
@@ -270,7 +275,7 @@ export function ChartWheel({
         stroke={T.labelText} strokeWidth={0.5} opacity={0.5} />);
     }
     el.push(text(disp, 0.655, G[b] ?? b.slice(0, 2).toUpperCase(),
-      size * 0.05, T.planetText, `pg-${b}`));
+      size * 0.05, pColor, `pg-${b}`));
     const signDeg = p.signDeg ?? mod(p.lon, 30);
     const retro = p.retrograde ?? p.rx ?? false;
     const deg = Math.floor(signDeg);
