@@ -390,14 +390,14 @@ th {
 /* Playground: chart + data side by side, stacking on small screens */
 .skynow-layout {
   display: grid;
-  grid-template-columns: minmax(0, 460px) 1fr;
+  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
   gap: 1.5rem;
   align-items: start;
   margin-top: 0.8rem;
 }
 
 .skynow-chart {
-  max-width: 460px;
+  max-width: 360px;
 }
 
 .skynow-chart svg {
@@ -406,10 +406,65 @@ th {
   height: auto;
 }
 
+.skynow-data {
+  min-width: 0;
+}
+
+/* Facts tab: long atom ids and descriptions wrap inside the data panel */
+.facts-tab {
+  font-size: 0.82rem;
+}
+
+.facts-tab__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.facts-tab__row {
+  display: grid;
+  grid-template-columns: 2.6rem 4.2rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: start;
+}
+
+.facts-tab__bar {
+  background: var(--surface-2);
+  border-radius: 2px;
+  height: 0.5rem;
+  overflow: hidden;
+  align-self: center;
+}
+
+.facts-tab__kind {
+  font-size: 0.66rem;
+}
+
+.facts-tab__content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.facts-tab__id {
+  display: block;
+  color: var(--accent);
+  font-size: 0.72rem;
+  margin-bottom: 0.1rem;
+}
+
+.facts-tab__text {
+  display: block;
+}
+
 @media (max-width: 720px) {
   .skynow-layout {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .skynow-chart {
+    max-width: 22rem;
+    margin: 0 auto;
   }
 }
 

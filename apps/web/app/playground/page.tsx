@@ -46,7 +46,7 @@ const EXAMPLES: Array<{ caption: string; args: Parameters<Engine["chart"]>; shar
 
 export default function Playground() {
   return (
-    <main className="container page page--sticky-cta">
+    <main className="container-wide page page--sticky-cta">
       <PageHero eyebrow="Playground" title="Compute and interpret a chart in your browser">
         <Lead>
           Every chart below is computed on this page by the <code>caelus</code> engine

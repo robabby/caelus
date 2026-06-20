@@ -52,7 +52,7 @@ export default function FactsTab({
   }, [chart, engine, lat, lonEast, zodiac, stars, lots]);
 
   return (
-    <div style={{ fontSize: "0.82rem" }}>
+    <div className="facts-tab">
       <p className="dim small" style={{ marginTop: 0 }}>
         <strong style={{ color: "var(--text)" }}>{atoms.length}</strong> ranked fact atoms: the
         structured, citable substrate the Reading is built on, and the same shape MCP
@@ -62,23 +62,20 @@ export default function FactsTab({
             <strong style={{ color: "var(--text)" }}>now</strong>.</>
         )}
       </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      <div className="facts-tab__list">
         {atoms.slice(0, MAX).map((a) => (
-          <div
-            key={a.id}
-            style={{ display: "grid", gridTemplateColumns: "2.6rem 4.2rem 1fr", gap: "0.5rem", alignItems: "baseline" }}
-          >
+          <div key={a.id} className="facts-tab__row">
             <div
+              className="facts-tab__bar"
               title={`salience ${a.salience.toFixed(1)}`}
-              style={{ background: "var(--surface-2)", borderRadius: 2, height: "0.5rem", overflow: "hidden", alignSelf: "center" }}
             >
               <div style={{ width: `${(a.salience / max) * 100}%`, background: "var(--accent)", height: "100%" }} />
             </div>
-            <span className="mono mute" style={{ fontSize: "0.66rem" }}>{KIND_LABEL[a.kind] ?? a.kind}</span>
-            <span>
-              <span className="mono" style={{ color: "var(--accent)", fontSize: "0.72rem", marginRight: "0.5rem" }}>{a.id}</span>
-              <span className="mute">{a.text}</span>
-            </span>
+            <span className="mono mute facts-tab__kind">{KIND_LABEL[a.kind] ?? a.kind}</span>
+            <div className="facts-tab__content">
+              <span className="mono facts-tab__id">{a.id}</span>
+              <span className="mute facts-tab__text">{a.text}</span>
+            </div>
           </div>
         ))}
       </div>

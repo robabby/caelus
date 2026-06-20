@@ -500,7 +500,7 @@ export default function SkyNow() {
                     </p>
                   )}
                 </div>
-                <div style={{ minWidth: 0 }}>
+                <div className="skynow-data">
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
                     {(["facts", "positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
