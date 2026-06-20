@@ -39,6 +39,18 @@
   --wheel-conj: #b8b4c8;
   --wheel-line-moon: #c8c8d0;
   --wheel-line-saturn: #8d8a99;
+  --wheel-planet-sun: #e0b020;
+  --wheel-planet-moon: var(--wheel-line-moon);
+  --wheel-planet-mercury: #9a93c4;
+  --wheel-planet-venus: #4fb09a;
+  --wheel-planet-mars: #c0564f;
+  --wheel-planet-jupiter: #c08a4f;
+  --wheel-planet-saturn: var(--wheel-line-saturn);
+  --wheel-planet-uranus: #4f8fc0;
+  --wheel-planet-neptune: #5a6fc0;
+  --wheel-planet-pluto: #a05a8a;
+  --wheel-planet-chiron: #7a9a5a;
+  --wheel-planet-true-node: #9a93c4;
 
   /* syntax (mirrors lib/highlight.tsx) */
   --syntax-text: #d8d4e8;
@@ -1588,6 +1600,8 @@ th.cmp-me {
   --wheel-conj: #8f88a8;
   --wheel-line-moon: #6b6580;
   --wheel-line-saturn: #6a6580;
+  --wheel-planet-moon: var(--wheel-line-moon);
+  --wheel-planet-saturn: var(--wheel-line-saturn);
 
   --syntax-text: #2f2942;
   --syntax-muted: #6b6580;

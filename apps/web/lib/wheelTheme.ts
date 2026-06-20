@@ -9,11 +9,32 @@ import type { WheelTheme } from "caelus-wheel";
  * to --accent so they stay legible on either surface; the structural inks have
  * their own --wheel-* tokens tuned per mode.
  */
+/**
+ * Per-body glyph and position-tick tints for ChartWheel. Matches the AstroMap /
+ * EphemerisGraph palette; moon and saturn use mode-aware tokens so they stay
+ * legible on light surfaces.
+ */
+export const WHEEL_PLANET_COLORS: Record<string, string> = {
+  sun: "var(--wheel-planet-sun)",
+  moon: "var(--wheel-planet-moon)",
+  mercury: "var(--wheel-planet-mercury)",
+  venus: "var(--wheel-planet-venus)",
+  mars: "var(--wheel-planet-mars)",
+  jupiter: "var(--wheel-planet-jupiter)",
+  saturn: "var(--wheel-planet-saturn)",
+  uranus: "var(--wheel-planet-uranus)",
+  neptune: "var(--wheel-planet-neptune)",
+  pluto: "var(--wheel-planet-pluto)",
+  chiron: "var(--wheel-planet-chiron)",
+  true_node: "var(--wheel-planet-true-node)",
+};
+
 export const WHEEL_THEME: Partial<WheelTheme> = {
   ring: "var(--wheel-ring)",
   axis: "var(--accent)",
   signText: "var(--wheel-sign)",
   planetText: "var(--text)",
+  planetColors: WHEEL_PLANET_COLORS,
   labelText: "var(--wheel-label)",
   houseText: "var(--wheel-house)",
   // Only conjunction is theme-sensitive (a near-neutral); the coloured aspects
