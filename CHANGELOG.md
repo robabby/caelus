@@ -9,6 +9,29 @@ current figures live in `packages/caelus/accuracy.json` and on
 
 ## Unreleased
 
+## v0.21.0 — per-body planet colors on ChartWheel
+
+*2026-06-20*
+
+Feature release across the four core packages: `caelus-wheel` gains optional
+`planetColors` on `WheelTheme` for per-body glyph and position-tick tints; the
+Playground wires them through CSS tokens aligned with AstroMap/EphemerisGraph.
+
+### Wheel (`caelus-wheel`)
+
+- **`WheelTheme.planetColors`**: optional `Record<string, string>` keyed by
+  body name; glyph fill and position tick stroke use it, falling back to
+  `planetText` when omitted.
+- Render test coverage for partial overrides.
+
+### Web
+
+- **`WHEEL_THEME`**: `--wheel-planet-*` CSS tokens; moon and saturn reuse
+  mode-aware line colors for light/dark legibility.
+- Playground Facts tab stays inside page margins on wide viewports.
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at **0.21.0**. **`caelus-delineations-pd`** remains at **0.1.2** (dependency range `^0.21.0`).
+
 ## corpus v0.1.2 — fix packaging so external installs resolve
 
 *2026-06-17*
