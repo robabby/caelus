@@ -3,6 +3,8 @@ node_modules/
 
 # build outputs
 dist/
+# generated image renders (SkyView test/demo output)
+output/
 apps/web/.next/
 apps/web/.next-ci/
 apps/web/out/
