@@ -11,7 +11,7 @@ current figures live in `packages/caelus/accuracy.json` and on
 
 Imaginary bodies that move over time: placement, periodic, and Kepler tiers;
 register on `Engine` for transits, returns, and SkyView with authored render
-attrs (size, magnitude, colour).
+attributes (size, magnitude, colour).
 
 ### Engine (`caelus`)
 
@@ -20,8 +20,8 @@ attrs (size, magnitude, colour).
 - **`registerSyntheticSystem`**: drop authored bodies into a real `Engine` via
   `registerSource`; `returns`, `skyView`, and the rest work unchanged.
 - **`Engine.registerSource` / `registerRender`**: runtime body registration
-  and SkyView appearance attrs.
-- **SkyView**: `render` opts and engine-registered attrs flow into body pixels
+  and SkyView appearance attributes.
+- **SkyView**: `render` opts and engine-registered attributes flow into body pixels
   and the image prompt.
 
 ### MCP (`caelus-mcp`)

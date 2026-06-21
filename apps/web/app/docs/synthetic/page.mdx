@@ -24,12 +24,12 @@ Three tiers, increasing in physics:
 
 ## World frame vs real sky
 
-**World frame** — `syntheticPositions` / `syntheticEphemeris`. Optional
+**World frame**: `syntheticPositions` / `syntheticEphemeris`. Optional
 `observer` on the system fixes the vantage point; outer bodies show apparent
 retrograde near opposition. Time is in abstract day units matching each body's
 `periodDays` and `epoch`.
 
-**Real sky** — `registerSyntheticSystem(engine, sys)`. Bodies drop into a live
+**Real sky**: `registerSyntheticSystem(engine, sys)`. Bodies drop into a live
 `Engine` through `registerSource`; `returns`, `transits`, and `skyView` consume
 them with zero changes. Here `epoch` on each body is a **TT Julian Day**, and
 the vantage point is Earth.
@@ -63,7 +63,7 @@ const frame = skyView(engine, jd, {
 
 `validateSyntheticSystem` flags duplicate ids, non-positive periods,
 out-of-range eccentricity, and observers that are not system bodies. Unsound
-systems set `impossible: true` and list `problems` — they are not silently
+systems set `impossible: true` and list `problems`; they are not silently
 computed.
 
 ## MCP

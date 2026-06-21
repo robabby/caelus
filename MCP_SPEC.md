@@ -146,6 +146,30 @@ angle; the arc, converted by a time key (`naibod` 0.9856473°/yr default, or
 Circumpolar bodies have no Ascendant/Descendant directions. Equatorial, so
 zodiac is irrelevant; needs the birth time and place.
 
+### synthetic_validate(system)
+Check an authored synthetic celestial system for ill-defined inputs: duplicate
+body ids, non-positive periods, out-of-range eccentricity, or an observer that
+is not a body in the system. Returns `impossible` and a list of `problems`, the
+same honesty pattern as the compiler. No instant or place needed.
+
+### synthetic_positions(system, date?, t_days?)
+Positions of every body in an authored system at one instant. Three body modes:
+`placement` (a fixed longitude), `periodic` (uniform motion, one cycle per
+`periodDays`), and `kepler` (constant orbital elements). With `observer` set on
+the system the positions are geocentric and apparent from that body, so outer
+bodies can show retrograde. Pass `t_days` for the abstract world frame, or
+`date` (UT ISO) when body `epoch` values are Julian Days. Returns longitude,
+latitude, distance, speed, and a retrograde flag per body, plus the validation
+diagnosis.
+
+### synthetic_sky_view(system, lat, lon, azimuth, altitude?, date?, lens?, width?, height?, elevation_m?, bortle?, bodies?, include_stars?)
+Sky View for a mix of real and synthetic bodies. The authored system is
+registered on an ephemeral engine, then the visible sky is framed exactly like
+`sky_view`. Synthetic bodies carry render attributes (`sizeDeg`, `magnitude`,
+`color`) that flow into the pixel spec and the image prompt. Real Sun, Moon, and
+planets stay for twilight and context unless `bodies` omits them; stars are off
+by default for fictional skies.
+
 ## Resources (shipped)
 - `caelus://glossary`: machine-readable definitions; aspect angles and default
   orbs, signs, bodies, the twelve house systems, and essential dignities

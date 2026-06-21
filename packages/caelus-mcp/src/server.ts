@@ -904,7 +904,7 @@ export function buildServer(
 
   server.registerTool("synthetic_sky_view", {
     description:
-      "Sky View for a mix of real and synthetic bodies: register the authored system on an ephemeral engine, then frame the visible sky like sky_view. Synthetic bodies can carry render attrs (sizeDeg, magnitude, color) that flow into the pixel spec and prompt. Real Sun/Moon/planets stay for twilight and context unless omitted from `bodies`.",
+      "Sky View for a mix of real and synthetic bodies: register the authored system on an ephemeral engine, then frame the visible sky like sky_view. Synthetic bodies can carry render attributes (sizeDeg, magnitude, color) that flow into the pixel spec and prompt. Real Sun/Moon/planets stay for twilight and context unless omitted from `bodies`.",
     inputSchema: {
       system: syntheticSystemIn,
       date: z.string().optional().describe("UTC ISO date-time; omit for now"),
