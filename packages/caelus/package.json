@@ -1,6 +1,6 @@
 {
   "name": "caelus",
-  "version": "0.21.0",
+  "version": "0.22.0",
   "description": "Clean-room TypeScript astrology computation: ephemeris, charts, events, timing techniques, Vedic methods, and citable chart facts. MIT, no AGPL or ephemeris files.",
   "type": "module",
   "main": "dist/src/index.js",

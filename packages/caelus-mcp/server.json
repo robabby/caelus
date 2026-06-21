@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.heavyblotto/caelus-mcp",
-  "description": "29-tool Caelus MCP for validated astrology computation: charts, transits, time-lords, Vedic methods, and citable facts.",
+  "description": "31-tool Caelus MCP for validated astrology computation: charts, transits, time-lords, Vedic methods, citable facts, and sky-view image framing.",
   "repository": {
     "url": "https://github.com/heavyblotto/caelus",
     "source": "github"
   },
-  "version": "0.21.0",
+  "version": "0.22.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "caelus-mcp",
-      "version": "0.21.0",
+      "version": "0.22.0",
       "transport": {
         "type": "stdio"
       }

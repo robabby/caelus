@@ -1,6 +1,6 @@
 {
   "name": "caelus-mcp",
-  "version": "0.21.0",
+  "version": "0.22.0",
   "mcpName": "io.github.heavyblotto/caelus-mcp",
   "description": "MCP server for Caelus astrology computation: charts, transits, timing techniques, Vedic methods, and citable chart facts.",
   "type": "module",

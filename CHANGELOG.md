@@ -7,7 +7,9 @@ semver (currently 0.1.x). Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## Unreleased — Sky View
+## v0.22.0 — Sky View
+
+*2026-06-21*
 
 Sky View: frame the visible sky from a place and moment as a pixel-precise
 prompt for AI image generation. Caelus computes the truth (positions, sizes,
@@ -49,6 +51,8 @@ brightness, phase); it does not render images.
   controls, a play/scrub time control, Bortle and overlay toggles, an SVG
   preview, and a copy-to-clipboard prompt. The cited reading now sits at the
   foot of the chart panel rather than leading it.
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at **0.22.0**. **`caelus-delineations-pd`** remains at **0.1.2** (dependency range `^0.22.0`).
 
 ## v0.21.0 — per-body planet colors on ChartWheel
 
