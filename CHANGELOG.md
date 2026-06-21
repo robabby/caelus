@@ -7,7 +7,9 @@ semver (currently 0.1.x). Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## Unreleased — Synthetic ephemeris
+## v0.23.0 — Synthetic ephemeris
+
+*2026-06-21*
 
 Imaginary bodies that move over time: placement, periodic, and Kepler tiers;
 register on `Engine` for transits, returns, and SkyView with authored render
@@ -32,6 +34,8 @@ attributes (size, magnitude, colour).
 ### Web
 
 - **Docs**: [Synthetic Ephemeris](/docs/synthetic) guide.
+
+All four npm packages (`caelus`, `caelus-mcp`, `caelus-birth`, `caelus-wheel`) and the `caelus-engine` PyPI package ship at **0.23.0**. **`caelus-delineations-pd`** remains at **0.1.2** (dependency range `^0.23.0`).
 
 ## v0.22.0 — Sky View
 
