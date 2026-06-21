@@ -15,6 +15,7 @@ import { starApparent } from "./stars.js";
 import {
   azAlt, pheno, refractTrueToApparent, DIAMETER_KM,
 } from "./pheno.js";
+import type { SyntheticRender } from "./synthetic.js";
 
 type Vec3 = [number, number, number];
 
@@ -216,6 +217,24 @@ function displayName(id: string): string {
   return id.charAt(0).toUpperCase() + id.slice(1);
 }
 
+/** Merge engine-registered and opt-in render attrs; apply size, magnitude, colour. */
+function applyRenderAttrs(
+  body: SkyBody, id: string, render: SyntheticRender | undefined,
+  lens: SkyLens, width: number, limit: number,
+): void {
+  if (!render) return;
+  if (render.sizeDeg !== undefined) {
+    body.angularDiameterDeg = Math.round(render.sizeDeg * 1e4) / 1e4;
+    body.sizePx = Math.max(1, Math.round((render.sizeDeg * width) / lens.hfovDeg));
+  }
+  if (render.magnitude !== undefined) {
+    body.magnitude = Math.round(render.magnitude * 100) / 100;
+    body.nakedEye = id === "sun" || id === "moon" || render.magnitude <= limit;
+    body.brightnessHint = brightnessDescriptor(body.magnitude, body.nakedEye);
+  }
+  if (render.color) body.color = render.color;
+}
+
 /** Map apparent magnitude to a rendering cue: how prominent the point should
  *  look in the image. This is deliberately decoupled from the body's true
  *  angular size, which is sub-pixel for a planet: in a photo a bright point's
@@ -331,8 +350,12 @@ export interface SkyViewOptions {
   /** Reference-frame overlays to project onto the sky (annotations, not part of
    *  a photoreal render). */
   overlays?: SkyViewOverlaysRequest;
-  /** Bodies to place. Defaults to Sun, Moon, and the naked-eye planets. */
-  bodies?: BodyId[];
+  /** Bodies to place. Defaults to Sun, Moon, and the naked-eye planets. Any
+   *  string id works for runtime bodies registered via {@link Engine.registerSource}. */
+  bodies?: readonly string[];
+  /** Per-body appearance overrides (size, magnitude, colour). Merged with
+   *  {@link Engine.renderFor} for registered bodies; opts win on conflict. */
+  render?: Record<string, SyntheticRender>;
 }
 
 export interface SkyBody {
@@ -356,6 +379,8 @@ export interface SkyBody {
   phaseName?: string;
   brightLimbAngleDeg?: number;
   brightLimbClock?: string;
+  /** Authored colour hint for synthetic or overridden bodies. */
+  color?: string;
   note?: string;
 }
 
@@ -658,7 +683,7 @@ export function skyView(
   const bodies: SkyBody[] = [];
   const offFrame: SkyOffFrameBody[] = [];
 
-  const bodyIds: BodyId[] = opts.bodies ?? [
+  const bodyIds: readonly string[] = opts.bodies ?? [
     "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
   ];
 
@@ -724,6 +749,11 @@ export function skyView(
       body.brightLimbAngleDeg = Math.round(angle * 10) / 10;
       body.brightLimbClock = clockOf(angle);
     }
+    const authored = {
+      ...engine.renderFor(id),
+      ...opts.render?.[id],
+    };
+    applyRenderAttrs(body, id, Object.keys(authored).length ? authored : undefined, lens, width, limit);
     bodies.push(body);
   }
 
@@ -1189,6 +1219,7 @@ function buildPrompt(
       parts.push("point of light");
       if (b.brightnessHint) parts.push(b.brightnessHint);
     }
+    if (b.color) parts.push(`colour ${b.color}`);
     let line = `- ${parts.join(", ")}`;
     if (b.note) line += `. ${b.note}`;
     lines.push(line);

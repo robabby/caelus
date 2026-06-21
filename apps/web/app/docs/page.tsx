@@ -29,6 +29,7 @@ const CARDS: Array<[string, string, string]> = [
   ["/docs/corpus", "Building a Corpus", "Consume and construct interpretation corpora: PassageRecords, extractors, validation, and the public-domain delineations package."],
   ["/docs/provenance", "Chart Provenance", "Declare what a chart is and how time and place are known: realms, anchors, routing to ephemeris or compiler, and honest interpretation framing."],
   ["/docs/visualizations", "Visualizations", "Beyond the flat wheel: a 3D chart sphere, an astrocartography world map, a graphic ephemeris, and Sky View frames for AI image prompts, rendered live."],
+  ["/docs/synthetic", "Synthetic Ephemeris", "Imaginary bodies that move: periodic and Kepler tiers, Engine registration, SkyView render attrs, and MCP tools for fictional skies."],
   ["/docs/api", "API Reference", "Generated reference for the caelus package surface."],
   ["/docs/edge-cases", "Edge Cases & Stability", "Date range, polar fallback, civil-time hazards, longitude convention, and the versioning contract."],
   ["https://github.com/heavyblotto/caelus-starter", "Starter template", "A full Next.js app: birth form, timezone handling, chart wheel. Clone and deploy."],

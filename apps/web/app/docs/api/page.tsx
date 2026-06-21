@@ -105,6 +105,18 @@ const ENGINE_METHODS: ReadonlyArray<{
       ["starConjunctions()", "starconjunctions", "A chart's bodies within orb of catalog stars; feeds star fact atoms."],
       ["lots()", "lots", "The seven Hermetic lots placed by sign and house; feeds lot fact atoms."],
       ["bodies()", "bodies", "Body ids this engine can compute, given its data."],
+      ["registerSource()", "registersource", "Register a runtime heliocentric xyz source under any body id."],
+      ["registerRender()", "registerrender", "Author SkyView appearance (size, magnitude, colour) for a registered body."],
+      ["renderFor()", "renderfor", "SkyView render attrs for a registered body, if any."],
+    ],
+  },
+  {
+    group: "Synthetic ephemeris",
+    methods: [
+      ["syntheticPositions()", "syntheticpositions", "World-frame positions for every body in an authored system at one instant."],
+      ["syntheticEphemeris()", "syntheticephemeris", "Reusable position source with speed, retrograde, and validation diagnosis."],
+      ["registerSyntheticSystem()", "registersyntheticsystem", "Drop authored bodies onto an Engine for returns, transits, SkyView."],
+      ["validateSyntheticSystem()", "validatesyntheticsystem", "Flag ill-defined synthetic systems (impossible / problems)."],
     ],
   },
 ];

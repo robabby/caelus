@@ -77,6 +77,7 @@ export const DOCS_NAV: DocsGroup[] = [
       { href: "/docs/recipes", label: "Recipes" },
       { href: "/docs/electional", label: "Electional Search" },
       { href: "/docs/visualizations", label: "Visualizations" },
+      { href: "/docs/synthetic", label: "Synthetic Ephemeris" },
       { href: "/docs/interpretation", label: "Interpretation Layer" },
       { href: "/docs/provenance", label: "Chart Provenance" },
       { href: "/docs/corpus", label: "Building a Corpus" },

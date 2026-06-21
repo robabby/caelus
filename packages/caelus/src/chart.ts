@@ -9,6 +9,7 @@ import {
   J2000,
 } from "./core.js";
 import { starApparent } from "./stars.js";
+import type { SyntheticRender } from "./synthetic.js";
 import { hermeticLots, HERMETIC_LOTS } from "./lots.js";
 import * as H from "./houses.js";
 import type { AspectPhase } from "./electional.js"; // type-only: no runtime cycle
@@ -294,11 +295,55 @@ export class Engine {
   private chironCheb: ChebSeries | null;
 
   private packs = new Map<string, XyzSource>();
+  private runtimeSources = new Map<string, XyzSource>();
+  private renderAttrs = new Map<string, SyntheticRender>();
 
   constructor(data: EngineData) {
     this.data = data;
     this.moonCheb = data.moonCheb ? new ChebSeries(data.moonCheb) : null;
     this.chironCheb = data.chiron ? new ChebSeries(data.chiron) : null;
+  }
+
+  /**
+   * Register a runtime {@link XyzSource} under a body id, so it resolves through
+   * {@link Engine.position}, {@link Engine.longitude}, {@link Engine.chartAt},
+   * and everything built on them (transits, returns, retrograde, SkyView) with
+   * no special-casing — exactly like a baked-in Chebyshev or Kepler pack. The
+   * source yields heliocentric ecliptic-J2000 xyz in AU at a **TT** Julian Day,
+   * the same contract Chiron and the Uranian bodies satisfy; the engine applies
+   * light-time, aberration, precession and nutation to it like any real body.
+   *
+   * This is the seam the `synthetic` module plugs imaginary bodies into (see
+   * {@link registerSyntheticSystem}). A registered id shadows a baked-in pack of
+   * the same name and persists for the engine's lifetime.
+   *
+   * @param id The body id to register (any string).
+   * @param source A heliocentric xyz source; see {@link XyzSource}.
+   * @returns This engine, for chaining.
+   */
+  registerSource(id: string, source: XyzSource): this {
+    this.runtimeSources.set(id, source);
+    this.packs.set(id, source);
+    return this;
+  }
+
+  /** Author how a runtime body should look in SkyView (size, magnitude, colour).
+   *  Position still comes from {@link registerSource}; this owns appearance only. */
+  registerRender(id: string, render: SyntheticRender): this {
+    this.renderAttrs.set(id, render);
+    return this;
+  }
+
+  /** SkyView appearance for a registered body, if any. */
+  renderFor(id: string): SyntheticRender | undefined {
+    return this.renderAttrs.get(id);
+  }
+
+  /** Whether `body` resolves through the generic packed-source path: a baked-in
+   *  Chebyshev/Kepler pack or a runtime source from {@link registerSource}. */
+  private hasPack(body: string): boolean {
+    return !!(this.data.chebPacks?.[body] || this.data.keplerPack?.bodies[body])
+      || this.runtimeSources.has(body);
   }
 
   private pack(body: string): XyzSource {
@@ -336,6 +381,7 @@ export class Engine {
       ...[...BODIES, ...EXTRA_BODIES].filter((b) => b !== "chiron" || this.chironCheb),
       ...Object.keys(this.data.chebPacks ?? {}),
       ...Object.keys(this.data.keplerPack?.bodies ?? {}),
+      ...this.runtimeSources.keys(),
     ];
   }
 
@@ -388,8 +434,9 @@ export class Engine {
         : oscApogeeSeries(this.data, jde);
       return [lon, lat, km / KM_PER_AU];
     }
-    if (this.data.chebPacks?.[body] || this.data.keplerPack?.bodies[body]) {
-      // same heliocentric pipeline as Chiron (Chebyshev or Kepler source)
+    if (this.hasPack(body)) {
+      // same heliocentric pipeline as Chiron (Chebyshev, Kepler, or a runtime
+      // source registered via registerSource — e.g. a synthetic body)
       return chironApparent(this.data, this.pack(body), jde);
     }
     if (this.data.vsop[body]) return planetApparent(this.data, body, jde);
@@ -591,7 +638,7 @@ export class Engine {
       l = mod(Math.atan2(y, x), TWO_PI);
       b = Math.atan2(z, Math.hypot(x, y));
       [l, b] = precessEcliptic(l, b, J2000, jde);
-    } else if (this.data.chebPacks?.[body] || this.data.keplerPack?.bodies[body]) {
+    } else if (this.hasPack(body)) {
       const [x, y, z] = this.pack(body).xyz(jde);
       r = Math.sqrt(x * x + y * y + z * z);
       l = mod(Math.atan2(y, x), TWO_PI);

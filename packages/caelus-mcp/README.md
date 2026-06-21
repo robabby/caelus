@@ -1,7 +1,7 @@
 # caelus-mcp
 
 MCP server for [Caelus](https://github.com/heavyblotto/caelus) astrology
-computation: thirty-one chart tools over stdio. Computation only — positions, houses,
+computation: thirty-four chart tools over stdio. Computation only — positions, houses,
 aspects with orbs, event search, electional, returns, progressions, composite,
 dignities, Hermetic lots, the Hellenistic time-lords (profections, firdaria,
 zodiacal releasing), primary directions, the Vedic layer (nakshatras,
@@ -51,6 +51,9 @@ A hosted Streamable HTTP endpoint is also live at
 | `sky_events` | Rise/set/meridian transits, lunar phases, stations, zodiac crossings in a date range (≤370 days) |
 | `sky_view` | Frame the visible sky from a place and moment: per-body pixel positions, apparent sizes, magnitudes, Moon phase orientation, twilight, limiting magnitude, deep star field, Milky Way, overlays (ecliptic/signs/houses/constellations), and a ready-to-use image prompt |
 | `sky_view_sequence` | An animation timeline of Sky View frames: the celestial pole, sidereal rotation per frame, and a per-frame summary (twilight, Sun/Moon, Milky Way) |
+| `synthetic_validate` | Check an authored synthetic system for duplicate ids, bad periods, invalid eccentricity, or a dangling observer |
+| `synthetic_positions` | Positions, speed, and retrograde for every body in a synthetic system at one instant (world frame) |
+| `synthetic_sky_view` | Sky View with real and synthetic bodies; authored size, magnitude, and colour flow into the pixel spec |
 | `planetary_hours` | The planetary hour in effect at a moment and place: ruler, day/night, hour number, start/end, day ruler, and the 24-hour ruler sequence |
 | `void_of_course` | Whether the Moon is void-of-course at a moment: its sign, sign-exit time, and next perfecting aspect to Sun–Saturn |
 | `returns` | Solar/lunar return instants in a window plus the first return chart, cast at the return location (defaults to the birthplace) |

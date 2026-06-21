@@ -1,8 +1,8 @@
 # caelus
 
 Clean-room TypeScript astrology computation: ephemeris, charts, events,
-hellenistic timing techniques, Vedic methods, citable chart facts, and sky-view
-image-prompt frames. MIT, no Swiss Ephemeris code, no AGPL, no ephemeris files.
+hellenistic timing techniques, Vedic methods, citable chart facts, sky-view
+image-prompt frames, and synthetic ephemeris for imaginary bodies. MIT, no Swiss Ephemeris code, no AGPL, no ephemeris files.
 1:1 port of the Python reference, checked by golden fixtures.
 
 ## Verification chain

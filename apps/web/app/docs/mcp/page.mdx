@@ -14,7 +14,7 @@ export const metadata = pageMetadata({
 computed by the engine on each call, never recalled from training data, so every
 answer is deterministic.
 
-There are two ways to connect, with the same thirty-one tools either way:
+There are two ways to connect, with the same thirty-four tools either way:
 
 - **Hosted (Streamable HTTP)**: point your client at
   `https://www.ephemengine.com/api/mcp`. Nothing to install.
@@ -196,7 +196,7 @@ Any stdio MCP client takes the same command and arguments:
 
 ## Verify the tools appeared
 
-After the client reloads, it should list **thirty-one** tools. Ask it to enumerate
+After the client reloads, it should list **thirty-four** tools. Ask it to enumerate
 them, or check the client's MCP panel:
 
 `natal_chart`, `current_sky`, `sky_view` (frame the visible sky at a place and
@@ -246,7 +246,7 @@ eclipse, the path-of-totality width, and, given a place, local circumstances.
 (cazimi, combust, under the beams) and each aspect as applying or separating,
 with a normalized strength.
 
-If you see all thirty-one, the server is wired correctly. The server also exposes two
+If you see all thirty-four, the server is wired correctly. The server also exposes two
 **resources**: `caelus://glossary` (aspect angles and orbs, signs, bodies,
 house systems, essential dignities) and `caelus://accuracy` (the validation
 table), plus a **prompt**, `rectification_session`, a guided flow around

@@ -1,0 +1,74 @@
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Synthetic Ephemeris",
+  description: "Give imaginary bodies motion over time: placement, periodic, and Kepler tiers; register them on Engine for transits, returns, and SkyView; validate unsatisfiable systems honestly.",
+  path: "/docs/synthetic",
+});
+
+<div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
+
+# Synthetic ephemeris
+
+`compileForm` solves for body longitudes at one instant. The synthetic module
+extends that idea: **bodies that move** from authored parameters, so transits,
+returns, retrograde arcs, and SkyView animation all work on fictional worlds.
+
+Three tiers, increasing in physics:
+
+| Mode | What it does |
+|------|----------------|
+| `placement` | Fixed longitude — parity with `compileForm` |
+| `periodic` | Uniform motion: one full cycle every `periodDays` |
+| `kepler` | Constant orbital elements; true heliocentric xyz |
+
+## World frame vs real sky
+
+**World frame** — `syntheticPositions` / `syntheticEphemeris`. Optional
+`observer` on the system fixes the vantage point; outer bodies show apparent
+retrograde near opposition. Time is in abstract day units matching each body's
+`periodDays` and `epoch`.
+
+**Real sky** — `registerSyntheticSystem(engine, sys)`. Bodies drop into a live
+`Engine` through `registerSource`; `returns`, `transits`, and `skyView` consume
+them with zero changes. Here `epoch` on each body is a **TT Julian Day**, and
+the vantage point is Earth.
+
+```ts
+import { Engine, registerSyntheticSystem, julianDay, skyView } from "caelus";
+import { embeddedData } from "caelus/data-embedded";
+
+const engine = new Engine(embeddedData);
+registerSyntheticSystem(engine, {
+  id: "verdant-moon",
+  bodies: [{
+    id: "verdant", mode: "kepler",
+    a: 3.2, e: 0.05, i: 2, node: 80, peri: 30, M0: 0,
+    periodDays: 2100, epoch: julianDay(2000, 1, 1),
+  }],
+  render: { verdant: { sizeDeg: 0.4, magnitude: -1.2, color: "pale gold" } },
+});
+
+const jd = julianDay(2025, 6, 21, 12);
+const frame = skyView(engine, jd, {
+  observer: { lat: 40, lonEast: -75 },
+  aim: { azimuth: "S", altitude: 45 },
+  lens: "wide",
+  image: { width: 1024, height: 683 },
+}, { bodies: ["sun", "verdant"] });
+// frame.bodies[].color, sizePx, and frame.prompt carry the authored appearance
+```
+
+## Validation
+
+`validateSyntheticSystem` flags duplicate ids, non-positive periods,
+out-of-range eccentricity, and observers that are not system bodies. Unsound
+systems set `impossible: true` and list `problems` — they are not silently
+computed.
+
+## MCP
+
+`caelus-mcp` exposes `synthetic_validate`, `synthetic_positions`, and
+`synthetic_sky_view`. See [MCP Setup](/docs/mcp).
+
+Full design notes live in the repo at `docs/synthetic.md`.

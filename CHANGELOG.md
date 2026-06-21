@@ -7,6 +7,32 @@ semver (currently 0.1.x). Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
+## Unreleased — Synthetic ephemeris
+
+Imaginary bodies that move over time: placement, periodic, and Kepler tiers;
+register on `Engine` for transits, returns, and SkyView with authored render
+attrs (size, magnitude, colour).
+
+### Engine (`caelus`)
+
+- **`syntheticPositions` / `syntheticEphemeris`**: world-frame position over
+  time, with optional `observer` for geocentric apparent motion and retrograde.
+- **`registerSyntheticSystem`**: drop authored bodies into a real `Engine` via
+  `registerSource`; `returns`, `skyView`, and the rest work unchanged.
+- **`Engine.registerSource` / `registerRender`**: runtime body registration
+  and SkyView appearance attrs.
+- **SkyView**: `render` opts and engine-registered attrs flow into body pixels
+  and the image prompt.
+
+### MCP (`caelus-mcp`)
+
+- **`synthetic_validate`, `synthetic_positions`, `synthetic_sky_view`** (tool
+  count 31 → 34).
+
+### Web
+
+- **Docs**: [Synthetic Ephemeris](/docs/synthetic) guide.
+
 ## v0.22.0 — Sky View
 
 *2026-06-21*

@@ -259,6 +259,15 @@ and the web playground's Sky View tab (with a play/scrub time control);
 sequences through the `sky_view_sequence` MCP tool and the `skyViewSequence`
 library API.
 
+### Synthetic bodies and render attrs
+
+Bodies registered via `Engine.registerSource` (including through
+`registerSyntheticSystem`) can carry appearance through `Engine.registerRender`
+or `opts.render`: `sizeDeg`, `magnitude`, and `color`. These override the
+default photometry for SkyView and land on each `SkyBody` and in the serialized
+prompt, so `skyViewSequence` keeps fictional bodies visually consistent across
+frames. See [Synthetic ephemeris](/docs/synthetic).
+
 Later: a sky-brightness gradient color model, atmospheric extinction near the
 horizon, an observer obstruction profile (skyline altitude per azimuth),
 constellation line data, and per-image-model prompt templates.

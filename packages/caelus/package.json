@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "node dist/test/golden.test.js && node dist/test/skyview.test.js"
+    "test": "node dist/test/golden.test.js && node dist/test/skyview.test.js && node dist/test/synthetic.test.js"
   },
   "license": "MIT",
   "publishConfig": {

@@ -42,6 +42,9 @@ import {
   interpretationContext, chartBrief, realize, realmFraming, isoToJd, counterfactual,
   enrichContextOptions, enrichSynastryOptions,
   skyView, skyViewSequence, LENS_NAMES,
+  validateSyntheticSystem, syntheticPositions, syntheticEphemeris,
+  registerSyntheticSystem,
+  type SyntheticSystem,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -76,6 +79,15 @@ function defaultEngine(): Engine {
     ?? join(dirname(require.resolve("caelus/package.json")), "data");
   return (_defaultEngine = new Engine(loadNodeData(dataDir, "embedded", "full")));
 }
+
+/** Ephemeral engine for synthetic registration (does not mutate the default). */
+function forkEngine(base: Engine): Engine {
+  return new Engine(base.data);
+}
+
+const DEFAULT_SKY_BODIES = [
+  "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
+] as const;
 
 // ---------------------------------------------------------------- helpers
 const r2 = (x: number) => Math.round(x * 100) / 100;
@@ -582,6 +594,41 @@ export const cosmicWeatherOut = z.object({
   stationing: z.array(z.object({ body: z.string(), utc: z.string(), direction: z.enum(["retrograde", "direct"]) })),
   moon_void_of_course: z.boolean(),
 });
+const syntheticRenderIn = z.object({
+  sizeDeg: z.number().optional(),
+  magnitude: z.number().optional(),
+  color: z.string().optional(),
+});
+const syntheticBodyIn = z.discriminatedUnion("mode", [
+  z.object({ id: z.string(), mode: z.literal("placement"), lonDeg: z.number() }),
+  z.object({
+    id: z.string(), mode: z.literal("periodic"),
+    periodDays: z.number().positive(), phaseDeg: z.number(), epoch: z.number().optional(),
+  }),
+  z.object({
+    id: z.string(), mode: z.literal("kepler"),
+    a: z.number().positive(), e: z.number().min(0).lt(1),
+    i: z.number(), node: z.number(), peri: z.number(), M0: z.number(),
+    periodDays: z.number().positive(), epoch: z.number().optional(),
+  }),
+]);
+const syntheticSystemIn = z.object({
+  id: z.string(),
+  bodies: z.array(syntheticBodyIn).min(1),
+  observer: z.string().optional(),
+  render: z.record(syntheticRenderIn).optional(),
+});
+export const syntheticDiagnosisOut = z.object({
+  impossible: z.boolean(),
+  problems: z.array(z.string()),
+});
+export const syntheticPositionsOut = syntheticDiagnosisOut.extend({
+  t: z.number(),
+  bodies: z.record(z.object({
+    lonDeg: z.number(), latDeg: z.number(), r: z.number(),
+    speed: z.number(), retrograde: z.boolean(),
+  })),
+});
 export const skyViewBodyOut = z.object({
   id: z.string(), name: z.string(),
   azimuthDeg: z.number(), altitudeDeg: z.number(),
@@ -666,6 +713,23 @@ export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
   sky_view: skyViewOut,
+  sky_view_sequence: z.object({
+    count: z.number(), stepMinutes: z.number(), durationMinutes: z.number(),
+    rotationDegPerHour: z.number(), rotationDegPerStep: z.number(),
+    pole: z.object({
+      which: z.enum(["north", "south"]), altitudeDeg: z.number(),
+      x: z.number().nullable(), y: z.number().nullable(), inFrame: z.boolean(),
+    }),
+    frames: z.array(z.object({
+      utc: z.string(), twilight: z.string(),
+      sunAltitudeDeg: z.number(), moonAltitudeDeg: z.number().nullable(),
+      moonIllum: z.number().nullable(), moonBrightLimbClock: z.string().nullable(),
+      milkyWayInFrame: z.boolean(),
+    })),
+  }),
+  synthetic_validate: syntheticDiagnosisOut,
+  synthetic_positions: syntheticPositionsOut,
+  synthetic_sky_view: skyViewOut.extend({ impossible: z.boolean(), problems: z.array(z.string()) }),
   transits: transitsOut,
   synastry: synastryOut,
   find_aspect_dates: findAspectDatesOut,
@@ -804,6 +868,77 @@ export function buildServer(
         };
       }),
     });
+  });
+
+  server.registerTool("synthetic_validate", {
+    description:
+      "Check an authored synthetic celestial system for ill-defined inputs: duplicate body ids, non-positive periods, out-of-range eccentricity, or a dangling observer. Returns `impossible` and a list of problems — the same honesty pattern as compileForm.",
+    inputSchema: { system: syntheticSystemIn },
+  }, async ({ system }) => text(validateSyntheticSystem(system as SyntheticSystem)));
+
+  server.registerTool("synthetic_positions", {
+    description:
+      "Positions of every body in an authored synthetic system at one instant. Three body modes: `placement` (fixed longitude), `periodic` (uniform motion), `kepler` (constant elements). With `observer` set on the system, positions are geocentric/apparent from that body (outer bodies can show retrograde). Pass `t_days` for abstract day units, or `date` (UT ISO) when body `epoch` values are Julian Days. Returns speed and retrograde per body.",
+    inputSchema: {
+      system: syntheticSystemIn,
+      date: z.string().optional().describe("UT instant as ISO 8601; used as t when t_days is omitted"),
+      t_days: z.number().optional().describe("Time in the same day units as each body's periodDays/epoch (abstract world frame)"),
+    },
+  }, async ({ system, date, t_days }) => {
+    const sys = system as SyntheticSystem;
+    const diag = validateSyntheticSystem(sys);
+    const t = t_days ?? jdFromIso(date ?? new Date().toISOString());
+    const eph = syntheticEphemeris(sys);
+    const bodies: Record<string, {
+      lonDeg: number; latDeg: number; r: number; speed: number; retrograde: boolean;
+    }> = {};
+    for (const b of sys.bodies) {
+      const p = eph.position(b.id, t);
+      bodies[b.id] = {
+        lonDeg: p.lonDeg, latDeg: p.latDeg, r: p.r,
+        speed: p.speed, retrograde: p.retrograde,
+      };
+    }
+    return text({ ...diag, t, bodies });
+  });
+
+  server.registerTool("synthetic_sky_view", {
+    description:
+      "Sky View for a mix of real and synthetic bodies: register the authored system on an ephemeral engine, then frame the visible sky like sky_view. Synthetic bodies can carry render attrs (sizeDeg, magnitude, color) that flow into the pixel spec and prompt. Real Sun/Moon/planets stay for twilight and context unless omitted from `bodies`.",
+    inputSchema: {
+      system: syntheticSystemIn,
+      date: z.string().optional().describe("UTC ISO date-time; omit for now"),
+      lat: latSchema,
+      lon: lonSchema,
+      elevation_m: z.number().optional().describe("Eye height above ground in meters"),
+      azimuth: z.union([z.number(), z.string()]).describe("Center direction: degrees from true north or a compass name"),
+      altitude: z.number().min(-10).max(90).default(5).describe("Center altitude in degrees"),
+      lens: z.enum(LENS_NAMES as [string, ...string[]]).default("normal"),
+      width: z.number().int().positive().default(1024),
+      height: z.number().int().positive().default(683),
+      bortle: z.number().int().min(1).max(9).optional(),
+      bodies: z.array(z.string()).optional().describe("Body ids to draw; defaults to Sun, Moon, planets, and every synthetic body"),
+      include_stars: z.boolean().default(false).describe("Include catalog stars (usually off for fictional skies)"),
+    },
+  }, async ({
+    system, date, lat, lon, elevation_m, azimuth, altitude, lens, width, height,
+    bortle, bodies, include_stars,
+  }) => {
+    const sys = system as SyntheticSystem;
+    const diag = validateSyntheticSystem(sys);
+    const eph = forkEngine(engine);
+    registerSyntheticSystem(eph, sys);
+    const jd = jdFromIso(date ?? new Date().toISOString());
+    const synIds = sys.bodies.map((b) => b.id);
+    const defaultSet = new Set<string>(DEFAULT_SKY_BODIES);
+    const bodyList = bodies ?? [...DEFAULT_SKY_BODIES, ...synIds.filter((id) => !defaultSet.has(id))];
+    const view = skyView(eph, jd, {
+      observer: { lat, lonEast: lon, ...(elevation_m !== undefined ? { altM: elevation_m } : {}) },
+      aim: { azimuth, altitude },
+      lens,
+      image: { width, height },
+    }, { bortle, bodies: bodyList, includeStars: include_stars, render: sys.render });
+    return text({ ...diag, ...view });
   });
 
   server.registerTool("transits", {

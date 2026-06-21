@@ -16,6 +16,7 @@ export * from "./astrocartography.js";
 export * from "./ephemeris.js";
 export * from "./features.js";
 export * from "./compiler.js";
+export * from "./synthetic.js";
 export * from "./lots.js";
 export * from "./profections.js";
 export * from "./firdaria.js";
