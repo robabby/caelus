@@ -4,13 +4,14 @@ import { ChartSphere, AstroMap, EphemerisGraph } from "caelus-wheel";
 import { Eyebrow, Lead, P, H2 } from "../../../components/Prose";
 import CodeBlock from "../../../components/CodeBlock";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../../../lib/wheelTheme";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Visualizations",
   description:
     "The chart beyond the flat wheel: a 3D celestial sphere, an astrocartography world map, and a graphic ephemeris. Each is SSR-safe SVG fed by the caelus engine, rendered live on this page.",
-  alternates: { canonical: "/docs/visualizations" },
-};
+  path: "/docs/visualizations",
+});
 
 const engine = new Engine(embeddedData);
 
@@ -138,6 +139,27 @@ export default function Visualizations() {
         <EphemerisGraph series={graphSeries} width={680} height={340} wrap={360} theme={WHEEL_THEME} colors={WHEEL_LINE_COLORS} />
       </div>
       <CodeBlock lang="tsx" label="EphemerisGraph.tsx" code={GRAPH_CODE} />
+
+      <H2>Sky View</H2>
+      <P>
+        Sky View frames the visible sky from a place and moment, then writes a
+        prompt for an AI image model. Give it a compass aim (azimuth and
+        altitude), a lens preset, and an image size; it returns each in-frame
+        body at exact pixels, its apparent size and a brightness cue from
+        magnitude, the Moon&rsquo;s phase and which way the crescent points, the
+        twilight stage and limiting magnitude, the horizon row, the Milky Way
+        band, and a deep field of naked-eye stars. Caelus computes the geometry
+        and photometry; it does not render the image.
+      </P>
+      <P>
+        Reference frames project on request: the ecliptic, the zodiac signs, the
+        house cusps and angles, and the constellation figures, each as exact
+        pixels. <code>skyViewSequence</code> steps the same frame through time
+        for an animation, returning the celestial pole and the sky&rsquo;s
+        rotation per frame. Try it on the{" "}
+        <a href="/playground">playground</a> Sky View tab, with a play control
+        and overlay toggles.
+      </P>
 
       <H2>Next steps</H2>
       <P>

@@ -4,6 +4,11 @@ import CaelusMark from "../components/CaelusMark";
 export const metadata = {
   title: "Off the chart",
   description: "This page is not on the chart.",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
 
 export default function NotFound() {

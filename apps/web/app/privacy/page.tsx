@@ -1,12 +1,13 @@
 import { A, Lead, P, H2 } from "../../components/Prose";
 import { SITE } from "../../lib/site";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Privacy",
   description:
     "Caelus collects no personal data. The Playground computes charts in your browser; birth data never leaves your device.",
-  alternates: { canonical: "/privacy" },
-};
+  path: "/privacy",
+});
 
 export default function Privacy() {
   return (

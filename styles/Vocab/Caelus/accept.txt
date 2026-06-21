@@ -99,3 +99,6 @@ chartAt
 npx
 pyswisseph
 caelus-mcp
+Bortle
+[Ss]ky[Vv]iew
+[Vv]iewports?

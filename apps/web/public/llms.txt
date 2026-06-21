@@ -1,7 +1,11 @@
 # caelus
 
-MIT astrological ephemeris engine in TypeScript. Zero dependencies, zero
-I/O in core (data injected). Computes apparent geocentric positions for
+Caelus is a clean-room, MIT-licensed TypeScript suite for validated astrology
+computation. It computes ephemeris positions, charts, events, hellenistic
+timing techniques, Vedic methods, citable chart facts, sky-view image-prompt
+frames, and MCP tools. The core
+engine has zero dependencies and zero I/O (data injected). It computes apparent
+geocentric positions for
 sun, moon, mercury..pluto, chiron, mean_node, true_node (+ mean_lilith,
 true_lilith,
 ceres, pallas, juno, vesta, pholus,
@@ -13,7 +17,12 @@ systems (placidus, porphyry, equal, whole_sign, koch, regiomontanus,
 campanus, alcabitius, morinus, meridian, polich_page, vehlow); major
 aspects; pheno (phase, elongation, diameter, magnitude), equation of
 time, az/alt, refraction; 318 fixed stars (HYG catalog); Gauquelin
-sectors; event search (rise/set/meridian transits,
+sectors; SkyView (project the visible sky to image-canvas pixels for AI image
+prompts: per-body placement, apparent size, magnitude-to-brightness cues, Moon
+phase orientation, twilight and limiting magnitude, Bortle dark-sky class, a
+deep 8,920-star field, the Milky Way band, ecliptic/sign/house/constellation
+overlays, the celestial pole, and time sequences for animation); event search
+(rise/set/meridian transits,
 zodiac crossings, lunar phases, stations, solar/lunar eclipses). Higher layers: derived charts (returns, progressions, solar arc, composite, Davison, harmonics, antiscia, declination aspects, dignities, sect), electional primitives (applying/separating, combustion/cazimi, planetary hours, void-of-course Moon, house placement), the when() declarative query engine, the turbo longitude tier, and scan/rankMoments ranked time search, the 3D great-circle aspect (angularSeparation3d), astrocartography angle lines, ephemeris time series, a chart feature space with configuration search (chart-to-vector, cosine similarity, searchConfigurations), and a geometric compiler that inverts geometric constraints to a chart form and flags impossible ones. engine.chart(year,month,day,hour,min,sec,lat,lonEast,opts) takes calendar fields in UT (not a Julian Day); engine.chartAt(jdUt,lat,lonEast,opts) builds the same chart directly from a Julian Day. Supported range 1800-2149 (1850-2150 Chebyshev
 tiers). Verified per-body vs Swiss Ephemeris (1850-2150): Sun-Saturn
 <=1", Uranus <=1.9", Neptune <=4.6", Moon <=2.5", Pluto <=3.4"
@@ -27,7 +36,7 @@ Repo: https://github.com/heavyblotto/caelus
 - caelus@0.21.0 — the engine
 - caelus-birth@0.21.0 — local birth time + place -> UT (use this; see below)
 - caelus-wheel@0.21.0 — React SVG chart wheel, plus ChartSphere (3D), AstroMap (astrocartography), EphemerisGraph
-- caelus-mcp@0.21.0 — MCP server, 29 chart tools over stdio (charts, transits, synastry, find_aspect_dates, sky_events, rectification_grid, planetary_hours, void_of_course, returns, progressions, composite, dignities, lots, profections, firdaria, releasing, directions, nakshatras, dasha, vargas, yogas, aspect_patterns, chart_signature, similar_skies, electional_search, cosmic_weather, chart_facts, counterfactual_chart); also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp; listed on the official MCP Registry as io.github.heavyblotto/caelus-mcp
+- caelus-mcp@0.21.0 — MCP server, 31 chart tools over stdio (charts, transits, synastry, find_aspect_dates, sky_events, sky_view, sky_view_sequence, rectification_grid, planetary_hours, void_of_course, returns, progressions, composite, dignities, lots, profections, firdaria, releasing, directions, nakshatras, dasha, vargas, yogas, aspect_patterns, chart_signature, similar_skies, electional_search, cosmic_weather, chart_facts, counterfactual_chart); also hosted over MCP Streamable HTTP (stateless) at https://www.ephemengine.com/api/mcp; listed on the official MCP Registry as io.github.heavyblotto/caelus-mcp
 - caelus-delineations-pd@0.1.2 — public-domain interpretation corpus (334 cited passages) for interpret(); sources and publicDomainSources
 - caelus-engine (PyPI) — the Python reference engine (no numpy), https://pypi.org/project/caelus-engine/
 

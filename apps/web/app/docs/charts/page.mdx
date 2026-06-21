@@ -1,10 +1,11 @@
 import { NatalChart } from "../../../components/docs/NatalChart";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Computing Charts",
   description: "The chart object, options, and converting a local birth time to UT.",
-  alternates: { canonical: "/docs/charts" },
-};
+  path: "/docs/charts",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Getting Started</div>
 

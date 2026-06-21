@@ -1,10 +1,11 @@
 import { LotsTable, ProfectionPanel, FirdariaTimeline, ReleasingPanel, DirectionsTable } from "../../../components/docs/HellenisticDemo";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Hellenistic Time-Lords",
   description: "The traditional time-lord techniques in caelus: lots (Arabic parts), profections, firdaria, zodiacal releasing, and primary directions. Deterministic arithmetic on the validated positions, each convention documented.",
-  alternates: { canonical: "/docs/hellenistic" },
-};
+  path: "/docs/hellenistic",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

@@ -1,8 +1,10 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "Architecture",
   description: "How the four packages compose end to end: place and local time through caelus-birth, caelus, caelus-wheel, and optional caelus-mcp.",
-  alternates: { canonical: "/docs/architecture" },
-};
+  path: "/docs/architecture",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

@@ -48,6 +48,11 @@ export interface EngineData {
   keplerPack?: KeplerPack;
   /** Fixed-star catalog (HYG-derived; ICRS J2000 + proper motions). */
   fixedStars?: import("./stars.js").StarPack;
+  /** Deep naked-eye star pack (HYG to ~mag 6.5), the complete background field
+   *  for SkyView. Opt-in: node-loaded, not in the embedded web bundle. */
+  deepStars?: import("./stars.js").StarPack;
+  /** Constellation figure lines and labels for SkyView overlays. */
+  constellations?: import("./stars.js").ConstellationPack;
 }
 
 // ---------------------------------------------------------------- timescale

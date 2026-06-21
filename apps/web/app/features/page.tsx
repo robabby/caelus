@@ -15,15 +15,16 @@ import {
   formatSiderealProse,
 } from "../../lib/facts";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../../lib/wheelTheme";
+import { pageMetadata } from "../../lib/seo";
 
 const MCP_TOOLS_PROSE = formatMcpToolsProse();
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Features",
   description:
-    "What the caelus engine computes: bodies, house systems, zodiacs, aspects, events, derived charts, the Hellenistic time-lords, the Vedic layer, the query engine, the turbo tier, packages, and integration surfaces. With a factual comparison against the main astrology engines and libraries.",
-  alternates: { canonical: "/features" },
-};
+    "What the caelus engine computes: bodies, house systems, zodiacs, aspects, events, derived charts, the hellenistic time-lords, the Vedic layer, the query engine, the turbo tier, packages, and integration surfaces. With a factual comparison against the main astrology engines and libraries.",
+  path: "/features",
+});
 
 // Live engine renders for the figures below; deterministic at build time.
 const engine = new Engine(embeddedData);
@@ -368,8 +369,11 @@ export default function Features() {
           at their true ecliptic latitude, or as an astrocartography world map
           of the planetary angle lines, plus a graphic ephemeris of any value
           over time. The 3D aspect angle accounts for latitude rather than
-          longitude alone. Every view renders to SSR-safe SVG with no runtime
-          dependencies. See <A href="/docs/visualizations">Visualizations</A>.
+          longitude alone. Sky View frames the visible sky from a place and
+          moment as a pixel-precise prompt for AI image generation, with body
+          positions, magnitudes, Moon phase, twilight, the Milky Way, and
+          ecliptic, sign, house, and constellation overlays. Every view renders
+          to SSR-safe SVG with no runtime dependencies. See <A href="/docs/visualizations">Visualizations</A>.
         </Feature>
         <Feature title="Packages">
           Four npm packages: <code>caelus</code> (the engine, zero runtime

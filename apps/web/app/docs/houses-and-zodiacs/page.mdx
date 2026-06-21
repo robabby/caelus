@@ -1,10 +1,11 @@
 import { CuspComparison, ZodiacComparison } from "../../../components/docs/HousesDemo";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Houses & Zodiacs",
   description: "Twelve house systems, tropical and sidereal zodiac modes, and polar fallbacks.",
-  alternates: { canonical: "/docs/houses-and-zodiacs" },
-};
+  path: "/docs/houses-and-zodiacs",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

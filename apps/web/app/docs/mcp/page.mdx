@@ -1,8 +1,10 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "MCP Setup",
   description: "Add the caelus chart tools to Claude Desktop, Claude Code, Cursor, VS Code, and any MCP client, with verification, troubleshooting, and version pinning.",
-  alternates: { canonical: "/docs/mcp" },
-};
+  path: "/docs/mcp",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Integrations</div>
 
@@ -12,7 +14,7 @@ export const metadata = {
 computed by the engine on each call, never recalled from training data, so every
 answer is deterministic.
 
-There are two ways to connect, with the same twenty-nine tools either way:
+There are two ways to connect, with the same thirty-one tools either way:
 
 - **Hosted (Streamable HTTP)**: point your client at
   `https://www.ephemengine.com/api/mcp`. Nothing to install.
@@ -194,10 +196,14 @@ Any stdio MCP client takes the same command and arguments:
 
 ## Verify the tools appeared
 
-After the client reloads, it should list **twenty-nine** tools. Ask it to enumerate
+After the client reloads, it should list **thirty-one** tools. Ask it to enumerate
 them, or check the client's MCP panel:
 
-`natal_chart`, `current_sky`, `transits`, `synastry`, `find_aspect_dates`,
+`natal_chart`, `current_sky`, `sky_view` (frame the visible sky at a place and
+moment as a pixel-precise prompt for an AI image model: positions, sizes,
+magnitudes, Moon phase, twilight, deep star field, the Milky Way, and ecliptic
+/sign/house/constellation overlays), `sky_view_sequence` (an animation timeline
+of Sky View frames), `transits`, `synastry`, `find_aspect_dates`,
 `rectification_grid`, `sky_events` (rise/set, phases, stations, zodiac
 crossings, solar and lunar eclipses), `planetary_hours`, `void_of_course`,
 `returns` (solar/lunar return instants plus the first return chart),
@@ -240,7 +246,7 @@ eclipse, the path-of-totality width, and, given a place, local circumstances.
 (cazimi, combust, under the beams) and each aspect as applying or separating,
 with a normalized strength.
 
-If you see all twenty-nine, the server is wired correctly. The server also exposes two
+If you see all thirty-one, the server is wired correctly. The server also exposes two
 **resources**: `caelus://glossary` (aspect angles and orbs, signs, bodies,
 house systems, essential dignities) and `caelus://accuracy` (the validation
 table), plus a **prompt**, `rectification_session`, a guided flow around

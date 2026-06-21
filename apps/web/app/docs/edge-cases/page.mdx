@@ -1,8 +1,10 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "Edge Cases & Stability",
   description: "Supported date range, polar house fallback, civil-time hazards, the east-positive longitude convention, circumpolar rise/set, missing data packs, and the versioning contract.",
-  alternates: { canonical: "/docs/edge-cases" },
-};
+  path: "/docs/edge-cases",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Reference</div>
 

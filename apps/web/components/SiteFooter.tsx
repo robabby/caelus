@@ -25,8 +25,7 @@ export default function SiteFooter() {
               <span>Caelus</span>
             </Link>
             <p className="dim small" style={{ margin: "0.8rem 0 0", maxWidth: "26ch" }}>
-              A clean-room ephemeris engine, written from published sources. MIT
-              licensed, zero runtime dependencies, no ephemeris files.
+              {SITE.tagline} Clean-room, MIT, no ephemeris files.
             </p>
           </div>
           {FOOTER.map((col) => (

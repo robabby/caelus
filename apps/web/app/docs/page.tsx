@@ -2,13 +2,15 @@ import Link from "next/link";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
 import { Lead, P } from "../../components/Prose";
-import { formatMcpToolsProse } from "../../lib/site";
+import { SITE, formatMcpToolsProse } from "../../lib/site";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Documentation",
-  description: "Guides and API reference for the caelus ephemeris engine: quickstart, charts, houses and zodiacs, data tiers, MCP setup, and recipes.",
-  alternates: { canonical: "/docs" },
-};
+  description:
+    "Guides and API reference for Caelus: charts, houses and zodiacs, data tiers, MCP setup, recipes, interpretation facts, and package APIs.",
+  path: "/docs",
+});
 
 const CARDS: Array<[string, string, string]> = [
   ["/docs/quickstart", "Quickstart", "Install caelus and compute your first chart in the browser or Node."],
@@ -26,7 +28,7 @@ const CARDS: Array<[string, string, string]> = [
   ["/docs/interpretation", "Interpretation Layer", "Project validated charts into citable fact atoms: natal, transits, time-lords, synastry/composite, dignities, Vedic structure. Match, interpret, and audit LLM citations."],
   ["/docs/corpus", "Building a Corpus", "Consume and construct interpretation corpora: PassageRecords, extractors, validation, and the public-domain delineations package."],
   ["/docs/provenance", "Chart Provenance", "Declare what a chart is and how time and place are known: realms, anchors, routing to ephemeris or compiler, and honest interpretation framing."],
-  ["/docs/visualizations", "Visualizations", "Beyond the flat wheel: a 3D chart sphere, an astrocartography world map, and a graphic ephemeris, rendered live."],
+  ["/docs/visualizations", "Visualizations", "Beyond the flat wheel: a 3D chart sphere, an astrocartography world map, a graphic ephemeris, and Sky View frames for AI image prompts, rendered live."],
   ["/docs/api", "API Reference", "Generated reference for the caelus package surface."],
   ["/docs/edge-cases", "Edge Cases & Stability", "Date range, polar fallback, civil-time hazards, longitude convention, and the versioning contract."],
   ["https://github.com/heavyblotto/caelus-starter", "Starter template", "A full Next.js app: birth form, timezone handling, chart wheel. Clone and deploy."],
@@ -37,10 +39,7 @@ export default function DocsHome() {
   return (
     <>
       <PageHero eyebrow="Documentation" title="Documentation">
-        <Lead>
-          Caelus is an MIT ephemeris engine: planetary positions, houses, aspects,
-          and astronomical events, with no ephemeris files on disk.
-        </Lead>
+        <Lead>{SITE.shortDescription}</Lead>
         <P>
           New here? Start with the <Link href="/docs/quickstart">Quickstart</Link>, then
           read <Link href="/docs/charts">Computing Charts</Link>. The full package surface

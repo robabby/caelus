@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * caelus-mcp -- MCP server for the caelus ephemeris engine.
+ * caelus-mcp -- MCP server for Caelus astrology computation.
  *
  * Design (per 2026 MCP practice): one bounded context (chart computation),
  * a small curated tool surface (twenty-two outcome-level tools, not API wrappers),
@@ -41,6 +41,7 @@ import {
   dignityScore, aspectBetween,
   interpretationContext, chartBrief, realize, realmFraming, isoToJd, counterfactual,
   enrichContextOptions, enrichSynastryOptions,
+  skyView, skyViewSequence, LENS_NAMES,
 } from "caelus";
 import { loadNodeData } from "caelus/node";
 
@@ -581,9 +582,90 @@ export const cosmicWeatherOut = z.object({
   stationing: z.array(z.object({ body: z.string(), utc: z.string(), direction: z.enum(["retrograde", "direct"]) })),
   moon_void_of_course: z.boolean(),
 });
+export const skyViewBodyOut = z.object({
+  id: z.string(), name: z.string(),
+  azimuthDeg: z.number(), altitudeDeg: z.number(),
+  x: z.number(), y: z.number(), inFrame: z.boolean(),
+  sizePx: z.number(), angularDiameterDeg: z.number(),
+  magnitude: z.number().nullable(), nakedEye: z.boolean(),
+}).passthrough();
+export const skyViewOut = z.object({
+  instant: z.object({ jdUt: z.number(), utc: z.string() }),
+  observer: z.object({ lat: z.number(), lonEast: z.number(), altM: z.number().optional() }),
+  aim: z.object({ azimuthDeg: z.number(), altitudeDeg: z.number(), compass: z.string() }),
+  lens: z.object({
+    name: z.string(), focalLengthMm: z.number(), sensorWidthMm: z.number(),
+    projection: z.enum(["rectilinear", "fisheye"]), hfovDeg: z.number(), vfovDeg: z.number(),
+  }),
+  image: z.object({ width: z.number(), height: z.number() }),
+  sky: z.object({
+    twilight: z.enum(["day", "civil", "nautical", "astronomical", "night"]),
+    sunAltitudeDeg: z.number(), sunAzimuthDeg: z.number(), limitingMag: z.number(),
+    moonAltitudeDeg: z.number().nullable(), moonIllum: z.number().nullable(),
+    brightestAzimuthDeg: z.number().nullable(), horizonY: z.number().nullable(),
+  }),
+  bodies: z.array(skyViewBodyOut),
+  offFrame: z.array(z.object({
+    id: z.string(), name: z.string(), side: z.string(), deltaDeg: z.number(),
+    azimuthDeg: z.number(), altitudeDeg: z.number(), magnitude: z.number().nullable(),
+  })),
+  milkyWay: z.object({
+    visible: z.boolean(),
+    inFrame: z.boolean(),
+    entry: z.object({ x: z.number(), y: z.number() }).nullable(),
+    exit: z.object({ x: z.number(), y: z.number() }).nullable(),
+    galacticCenter: z.object({
+      x: z.number(), y: z.number(), inFrame: z.boolean(),
+      altitudeDeg: z.number(), side: z.string(),
+    }).nullable(),
+    note: z.string(),
+  }),
+  pole: z.object({
+    which: z.enum(["north", "south"]),
+    altitudeDeg: z.number(),
+    x: z.number().nullable(), y: z.number().nullable(),
+    inFrame: z.boolean(),
+  }),
+  starfield: z.object({
+    source: z.enum(["deep", "named", "none"]),
+    count: z.number(), complete: z.boolean(), limitingMag: z.number(),
+  }),
+  overlays: z.object({
+    ecliptic: z.array(z.object({ label: z.string().optional(), points: z.array(z.object({ x: z.number(), y: z.number() })) })).nullable(),
+    signs: z.array(z.object({ text: z.string(), x: z.number(), y: z.number() })).nullable(),
+    houses: z.array(z.object({ text: z.string(), x: z.number(), y: z.number() })).nullable(),
+    constellations: z.object({
+      lines: z.array(z.object({ label: z.string().optional(), points: z.array(z.object({ x: z.number(), y: z.number() })) })),
+      labels: z.array(z.object({ text: z.string(), x: z.number(), y: z.number() })),
+    }).nullable(),
+  }).nullable(),
+  renderPlan: z.object({
+    background: z.object({
+      prompt: z.string(), width: z.number(), height: z.number(),
+      constraints: z.array(z.string()),
+    }),
+    layers: z.array(z.object({
+      kind: z.enum(["bodies", "stars", "milkyWay", "overlays"]),
+      present: z.boolean(), count: z.number(), composite: z.string(),
+    })),
+    animation: z.object({
+      strategy: z.enum(["static", "sequence-composite"]),
+      rotationDegPerHour: z.number(),
+      pole: z.object({
+        which: z.enum(["north", "south"]), altitudeDeg: z.number(),
+        x: z.number().nullable(), y: z.number().nullable(), inFrame: z.boolean(),
+      }),
+      notes: z.string(),
+    }),
+    postprocess: z.array(z.string()),
+  }),
+  directives: z.array(z.string()),
+  prompt: z.string(),
+});
 export const OUTPUT_SCHEMAS = {
   natal_chart: chartOut,
   current_sky: chartOut,
+  sky_view: skyViewOut,
   transits: transitsOut,
   synastry: synastryOut,
   find_aspect_dates: findAspectDatesOut,
@@ -648,6 +730,81 @@ export function buildServer(
     _meta: CHART_TOOL_META,
   }, async ({ date, lat, lon, house_system, zodiac }) =>
     chartResult(chartPayload(engine, date ?? new Date().toISOString(), lat, lon, house_system, zodiac)));
+
+  server.registerTool("sky_view", {
+    description:
+      "Where the visible bodies land in a framed photo of the sky, for an image prompt. Give a place, a moment, an aim (compass direction and altitude), a lens, and an image size; get each in-frame body's pixel position, apparent size, brightness, the Moon's phase orientation, a sky-state summary (twilight, limiting magnitude, horizon row), the bright bodies just outside the frame, a ready-to-use prompt, and a machine-readable `renderPlan` (a body-free background-plate prompt plus the computed layers to composite locally, for a hybrid render pipeline). Caelus computes the geometry and photometry; it does NOT render the image. For \"at sunset\", first find the set time with sky_events, then pass it as date.",
+    inputSchema: {
+      date: z.string().optional().describe("UTC ISO date-time (convert from local first); omit for now"),
+      lat: latSchema,
+      lon: lonSchema,
+      elevation_m: z.number().optional().describe("Eye height above ground in meters (e.g. 9 for a third-floor window)"),
+      azimuth: z.union([z.number(), z.string()]).describe("Center compass direction: degrees from true north (east positive) or a 16-point name like \"W\" or \"WNW\""),
+      altitude: z.number().min(-10).max(90).default(5).describe("Center altitude in degrees: 0 looks at the horizon, positive tilts up"),
+      lens: z.enum(LENS_NAMES as [string, ...string[]]).default("normal").describe("Lens preset; sets field of view and projection (ultrawide is fisheye, the rest rectilinear)"),
+      width: z.number().int().positive().default(1024).describe("Output image width in pixels"),
+      height: z.number().int().positive().default(683).describe("Output image height in pixels"),
+      bortle: z.number().int().min(1).max(9).optional().describe("Dark-sky class, 1 (pristine) to 9 (inner city). Sets the night naked-eye limit and drives background star density and Milky Way visibility. Omit for a suburban default"),
+      deep_field: z.boolean().default(false).describe("Pin the complete deep naked-eye star field (thousands of stars at exact pixels) instead of the bright catalog. Larger response; great for control images"),
+      overlays: z.array(z.enum(["ecliptic", "signs", "houses", "constellations"])).optional().describe("Reference-frame overlays to project (annotations, not photoreal): the ecliptic line, the zodiac signs, house cusps and angles, and constellation figures. Exact pixels returned in `overlays`"),
+      include_stars: z.boolean().default(true).describe("Include bright catalog stars when a star catalog is loaded"),
+      max_star_mag: z.number().optional().describe("Brightest-magnitude cutoff for stars (smaller is brighter); default 2.5, or the limiting magnitude when bortle is set"),
+    },
+  }, async ({ date, lat, lon, elevation_m, azimuth, altitude, lens, width, height, bortle, deep_field, overlays, include_stars, max_star_mag }) => {
+    const jd = jdFromIso(date ?? new Date().toISOString());
+    const ov = overlays && overlays.length
+      ? Object.fromEntries(overlays.map((k) => [k, true]))
+      : undefined;
+    return text(skyView(engine, jd, {
+      observer: { lat, lonEast: lon, ...(elevation_m !== undefined ? { altM: elevation_m } : {}) },
+      aim: { azimuth, altitude },
+      lens,
+      image: { width, height },
+    }, { bortle, deepField: deep_field, overlays: ov, includeStars: include_stars, maxStarMag: max_star_mag }));
+  });
+
+  server.registerTool("sky_view_sequence", {
+    description:
+      "A time sequence of sky frames for an animation: the same place, aim, and lens stepped through time. Returns a compact per-frame timeline (instant, twilight, Sun/Moon altitude, Moon phase + bright-limb, whether the Milky Way is in frame) plus the fixed celestial pole and the sky's sidereal rotation per frame. Each frame's full pixel-accurate spec comes from calling sky_view at that instant; this tool plans the timeline. Use for sunset-to-night transitions, star-trail planning, or Moon-phase progressions.",
+    inputSchema: {
+      date: z.string().optional().describe("First frame, UTC ISO date-time; omit for now"),
+      lat: latSchema,
+      lon: lonSchema,
+      azimuth: z.union([z.number(), z.string()]).describe("Center direction: degrees from true north or a compass name like \"W\""),
+      altitude: z.number().min(-10).max(90).default(20).describe("Center altitude in degrees"),
+      lens: z.enum(LENS_NAMES as [string, ...string[]]).default("normal"),
+      frames: z.number().int().min(2).max(60).describe("Number of frames (2-60)"),
+      step_minutes: z.number().positive().describe("Minutes between frames"),
+      bortle: z.number().int().min(1).max(9).optional().describe("Dark-sky class 1-9"),
+      width: z.number().int().positive().default(1024),
+      height: z.number().int().positive().default(683),
+    },
+  }, async ({ date, lat, lon, azimuth, altitude, lens, frames, step_minutes, bortle, width, height }) => {
+    const startJdUt = jdFromIso(date ?? new Date().toISOString());
+    const seq = skyViewSequence(engine, {
+      observer: { lat, lonEast: lon }, aim: { azimuth, altitude }, lens, image: { width, height },
+    }, { startJdUt, frames, stepMinutes: step_minutes }, { bortle, includeStars: false });
+    return text({
+      count: seq.count,
+      stepMinutes: seq.stepMinutes,
+      durationMinutes: seq.durationMinutes,
+      rotationDegPerHour: seq.rotationDegPerHour,
+      rotationDegPerStep: seq.rotationDegPerStep,
+      pole: seq.frames[0].pole,
+      frames: seq.frames.map((f) => {
+        const moon = f.bodies.find((b) => b.id === "moon");
+        return {
+          utc: f.instant.utc,
+          twilight: f.sky.twilight,
+          sunAltitudeDeg: f.sky.sunAltitudeDeg,
+          moonAltitudeDeg: f.sky.moonAltitudeDeg,
+          moonIllum: f.sky.moonIllum,
+          moonBrightLimbClock: moon?.brightLimbClock ?? null,
+          milkyWayInFrame: f.milkyWay.inFrame,
+        };
+      }),
+    });
+  });
 
   server.registerTool("transits", {
     description:

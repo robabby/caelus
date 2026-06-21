@@ -18,6 +18,7 @@ import { Engine } from "caelus";
 import { embeddedData } from "caelus/data-embedded";
 import caelusPkg from "caelus/package.json";
 import accuracySwiss from "caelus/accuracy.json";
+import { SITE } from "../../../lib/site";
 
 export const runtime = "nodejs"; // caelus-mcp imports node:fs/url/module
 export const dynamic = "force-dynamic";
@@ -69,6 +70,7 @@ export function GET(): Response {
   return Response.json(
     {
       name: "caelus",
+      description: SITE.shortDescription,
       version: VERSION,
       transport: "streamable-http",
       endpoint: "https://www.ephemengine.com/api/mcp",

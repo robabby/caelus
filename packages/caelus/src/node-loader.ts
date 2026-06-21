@@ -43,6 +43,12 @@ export function loadNodeData(
   if (existsSync(join(dir, "fixed_stars.json"))) {
     data.fixedStars = j("fixed_stars.json");
   }
+  if (existsSync(join(dir, "fixed_stars_deep.json"))) {
+    data.deepStars = j("fixed_stars_deep.json");
+  }
+  if (existsSync(join(dir, "constellations.json"))) {
+    data.constellations = j("constellations.json");
+  }
   // asteroid packs (Horizons fits): loaded when present, ~380 KB total.
   // `pluto` is optional too: when a wide-range Chebyshev pack is present it
   // supersedes the embedded Meeus ch.37 series (valid 1885-2099) above, so

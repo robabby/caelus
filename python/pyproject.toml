@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "caelus-engine"
 version = "0.21.0"
-description = "Clean-room astrological ephemeris engine: planetary and lunar positions, houses, aspects, and events from published sources. The Python reference for the Caelus engine."
+description = "Python reference for Caelus' clean-room astrology computation: positions, houses, aspects, events, and golden fixtures from published sources."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

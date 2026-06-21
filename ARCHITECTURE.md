@@ -1,11 +1,12 @@
 # Architecture
 
-Caelus is a clean-room astrological ephemeris engine: planetary and lunar
-positions, houses, aspects, and astronomical events, written from published
-sources (VSOP87, ELP/DE, IAU models) rather than ported from licensed code.
-It is MIT-licensed, has zero runtime dependencies, and its core performs no
-I/O. This document describes how the system is built; it is not a roadmap or
-a product plan.
+Caelus is a clean-room TypeScript suite for validated astrology computation:
+planetary and lunar positions, charts, houses, aspects, events, hellenistic
+timing techniques, Vedic methods, and citable chart facts. The astronomical
+core is written from published sources (VSOP87, ELP/DE, IAU models) rather
+than ported from licensed code. It is MIT-licensed, has zero runtime
+dependencies, and its core performs no I/O. This document describes how the
+system is built; it is not a roadmap or a product plan.
 
 ## Repository layout
 

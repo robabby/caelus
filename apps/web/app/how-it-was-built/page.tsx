@@ -1,12 +1,13 @@
 import { A, Eyebrow, H2, P, Note } from "../../components/Prose";
 import CaelusMark from "../../components/CaelusMark";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "How this was built",
   description:
     "Caelus was written almost entirely by AI coding agents, under human direction, with a validation harness as the backstop. How the process kept an AI-built engine trustworthy.",
-  alternates: { canonical: "/how-it-was-built" },
-};
+  path: "/how-it-was-built",
+});
 
 export default function HowItWasBuilt() {
   return (

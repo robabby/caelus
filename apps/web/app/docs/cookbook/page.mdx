@@ -1,9 +1,11 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "Common Tasks",
   description:
     "Copy-paste recipes for the things people and agents ask for most: house placement, essential dignities, aspects, stations, ingresses, lunar phases, and a local birth time done right.",
-  alternates: { canonical: "/docs/cookbook" },
-};
+  path: "/docs/cookbook",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Getting Started</div>
 

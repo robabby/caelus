@@ -6,11 +6,13 @@ file is the map those issues hang off.
 
 ## What we're building
 
-A clean-room astrological ephemeris engine: planetary/lunar positions,
-houses, aspects, and astronomical events, written from published sources
-(VSOP87, ELP/DE, IAU models, JPL Horizons fits): MIT-licensed, zero runtime
-dependencies, no Swiss Ephemeris code, and a core that does no I/O so the
-same code runs in the browser, on edge runtimes, and in Node/MCP.
+A clean-room TypeScript suite for validated astrology computation: planetary
+and lunar positions, charts, houses, aspects, events, hellenistic timing
+techniques, Vedic methods, and citable chart facts. The astronomical core is
+written from published sources (VSOP87, ELP/DE, IAU models, JPL Horizons
+fits): MIT-licensed, zero runtime dependencies, no Swiss Ephemeris code, and a
+core that does no I/O so the same code runs in the browser, on edge runtimes,
+and in Node/MCP.
 
 The deliverables are the engine and the tools around it: `caelus` (engine),
 `caelus-mcp` (MCP server), `caelus-birth`, `caelus-wheel`, and the

@@ -7,7 +7,48 @@ semver (currently 0.1.x). Numbers quoted here are as measured at release time;
 current figures live in `packages/caelus/accuracy.json` and on
 [ephemengine.com/validation](https://www.ephemengine.com/validation).
 
-## Unreleased
+## Unreleased — Sky View
+
+Sky View: frame the visible sky from a place and moment as a pixel-precise
+prompt for AI image generation. Caelus computes the truth (positions, sizes,
+brightness, phase); it does not render images.
+
+### Engine (`caelus`)
+
+- **`skyView()`**: project the visible sky into image pixels for a given
+  observer, aim (azimuth + altitude), lens preset, and image size. Returns each
+  in-frame body's pixel position, apparent size, magnitude with a brightness
+  cue, the Moon's phase orientation (which way the crescent points), twilight
+  stage and limiting magnitude, the horizon row, bright bodies just outside the
+  frame, the celestial pole, and a ready-to-use image prompt.
+- **Dark sky and stars**: a `bortle` dark-sky class, the **Milky Way band**
+  (galactic plane projected through precession), and a **deep star field** of
+  8,920 naked-eye stars to magnitude 6.5 (`data/fixed_stars_deep.json`, opt-in,
+  node-loaded). The complete field is pinned at exact pixels for dark scenes.
+- **Overlays**: project the ecliptic, the zodiac signs, the house cusps and
+  angles, and the constellation figures (`data/constellations.json`) as
+  exact-pixel annotation layers.
+- **`skyViewSequence()`**: step the same frame through time for animation, with
+  the sidereal rotation per frame about the celestial pole. Each frame is a
+  complete, physically exact spec. New SkyView golden checks pin the geometry.
+- **`renderPlan`**: a machine-readable hybrid-render contract on every result. A
+  body-free background-plate prompt (for an image model) plus the computed
+  layers (bodies, stars, Milky Way, overlays) to composite locally, an animation
+  strategy, and grading notes. The model supplies atmosphere; Caelus supplies
+  the physically correct objects.
+
+### MCP (`caelus-mcp`)
+
+- **`sky_view` and `sky_view_sequence` tools** (tool count 29 → 31): frame the
+  sky and plan animation timelines over stdio and the hosted endpoint. `sky_view`
+  takes `bortle`, `deep_field`, and `overlays`.
+
+### Web
+
+- **Playground "Sky View" tab**: a live frame builder with aim, lens, and image
+  controls, a play/scrub time control, Bortle and overlay toggles, an SVG
+  preview, and a copy-to-clipboard prompt. The cited reading now sits at the
+  foot of the chart panel rather than leading it.
 
 ## v0.21.0 — per-body planet colors on ChartWheel
 
@@ -26,7 +67,7 @@ Playground wires them through CSS tokens aligned with AstroMap/EphemerisGraph.
 
 ### Web
 
-- **`WHEEL_THEME`**: `--wheel-planet-*` CSS tokens; moon and saturn reuse
+- **`WHEEL_THEME`**: `--wheel-planet-*` CSS tokens; Moon and Saturn reuse
   mode-aware line colors for light/dark legibility.
 - Playground Facts tab stays inside page margins on wide viewports.
 

@@ -29,6 +29,28 @@ speed; ASC/MC; 12 cusps; major aspects with orbs.
 ### current_sky(date?, lat?, lon?, house_system?)
 Same shape as natal_chart. Defaults to now.
 
+### sky_view(date?, lat, lon, azimuth, altitude?, lens?, width?, height?, elevation_m?, include_stars?, max_star_mag?)
+Where the visible bodies land in a framed photo of the sky, for an image
+prompt. Aim is a compass direction (azimuth, "W" or degrees) and altitude;
+lens is a preset (ultrawide is fisheye, the rest rectilinear); width/height set
+the frame. Returns each in-frame body's pixel position, apparent size, and
+magnitude, the Moon's phase orientation, a sky-state summary (twilight,
+limiting magnitude, horizon row), the bright bodies just out of frame, and a
+serialized prompt. Caelus computes the geometry and photometry; it does not
+render the image. For "at sunset", resolve the set time with sky_events first.
+`bortle` (1-9) sets the dark-sky class (night limit, star density, Milky Way
+visibility); `deep_field` pins the complete naked-eye field (thousands of stars
+at exact pixels); `overlays` projects reference frames (`ecliptic`, `signs`,
+`houses`, `constellations`) as exact-pixel annotation layers. Output also carries
+`pole`, `starfield`, `milkyWay`, and `overlays`.
+
+### sky_view_sequence(date?, lat, lon, azimuth, altitude?, lens?, frames, step_minutes, bortle?)
+The animation timeline: the same place, aim, and lens stepped through time.
+Returns the celestial pole, the sidereal rotation per frame, and a compact
+per-frame array (instant, twilight, Sun/Moon altitude, Moon bright-limb,
+Milky-Way-in-frame). Each frame's full pixel spec comes from sky_view at that
+instant; this plans the sequence. 2-60 frames.
+
 ### transits(date, lat, lon, transit_date?, orb?, house_system?)
 Natal chart + transiting positions + transit-to-natal aspects within orb
 (applying/separating), plus natal house per transiting body.

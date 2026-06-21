@@ -1,11 +1,13 @@
 # caelus-mcp
 
-MCP server for the [caelus](https://github.com/heavyblotto/caelus) ephemeris
-engine: twenty-nine chart tools over stdio. Computation only — positions, houses,
+MCP server for [Caelus](https://github.com/heavyblotto/caelus) astrology
+computation: thirty-one chart tools over stdio. Computation only — positions, houses,
 aspects with orbs, event search, electional, returns, progressions, composite,
 dignities, Hermetic lots, the Hellenistic time-lords (profections, firdaria,
 zodiacal releasing), primary directions, the Vedic layer (nakshatras,
-dashas, vargas, yogas), and a `chart_facts` interpretation projection (ranked,
+dashas, vargas, yogas), sky-view image-prompt frames (project the visible sky to
+image pixels with positions, magnitudes, Moon phase, twilight, and the Milky
+Way), and a `chart_facts` interpretation projection (ranked,
 citable fact atoms plus an LLM brief) — the model does the interpreting.
 It needs
 no API keys, ephemeris files, or network calls; the engine data ships inside
@@ -47,6 +49,8 @@ A hosted Streamable HTTP endpoint is also live at
 | `find_aspect_dates` | Exact dates a transiting body aspects a longitude or another body, retrograde re-hits included |
 | `rectification_grid` | ASC/MC sweep across a window of hours for birth-time rectification |
 | `sky_events` | Rise/set/meridian transits, lunar phases, stations, zodiac crossings in a date range (≤370 days) |
+| `sky_view` | Frame the visible sky from a place and moment: per-body pixel positions, apparent sizes, magnitudes, Moon phase orientation, twilight, limiting magnitude, deep star field, Milky Way, overlays (ecliptic/signs/houses/constellations), and a ready-to-use image prompt |
+| `sky_view_sequence` | An animation timeline of Sky View frames: the celestial pole, sidereal rotation per frame, and a per-frame summary (twilight, Sun/Moon, Milky Way) |
 | `planetary_hours` | The planetary hour in effect at a moment and place: ruler, day/night, hour number, start/end, day ruler, and the 24-hour ruler sequence |
 | `void_of_course` | Whether the Moon is void-of-course at a moment: its sign, sign-exit time, and next perfecting aspect to Sun–Saturn |
 | `returns` | Solar/lunar return instants in a window plus the first return chart, cast at the return location (defaults to the birthplace) |

@@ -1,8 +1,10 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "Quickstart",
   description: "Install caelus and compute a natal chart in the browser, on edge, or in Node.",
-  alternates: { canonical: "/docs/quickstart" },
-};
+  path: "/docs/quickstart",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Getting Started</div>
 

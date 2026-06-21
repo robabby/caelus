@@ -2,12 +2,14 @@ import { A, H2, P, Code } from "../../components/Prose";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
 import { formatGoldenChecks, formatWorstNanoProse } from "../../lib/facts";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Build Notes",
   description: "Postmortems: ΔT extrapolation, node frame error, Chiron light-time double-count, aspect-search geometry.",
-  alternates: { canonical: "/notes" },
-};
+  path: "/notes",
+  type: "article",
+});
 
 export default function Notes() {
   return (

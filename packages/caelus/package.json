@@ -1,7 +1,7 @@
 {
   "name": "caelus",
   "version": "0.21.0",
-  "description": "Astrological ephemeris engine. MIT, no AGPL, no ephemeris files. Checked against Swiss Ephemeris.",
+  "description": "Clean-room TypeScript astrology computation: ephemeris, charts, events, timing techniques, Vedic methods, and citable chart facts. MIT, no AGPL or ephemeris files.",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -15,11 +15,13 @@
     "data/pluto_meeus37.json",
     "data/chiron_cheb.json",
     "data/moon_cheb.embedded.json",
-    "data/fixed_stars.json"
+    "data/fixed_stars.json",
+    "data/fixed_stars_deep.json",
+    "data/constellations.json"
   ],
   "scripts": {
     "build": "tsc",
-    "test": "node dist/test/golden.test.js"
+    "test": "node dist/test/golden.test.js && node dist/test/skyview.test.js"
   },
   "license": "MIT",
   "publishConfig": {

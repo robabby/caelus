@@ -1,8 +1,10 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "Interpretation Layer",
   description: "Turn a validated chart into citable readings: project it into ranked fact atoms, match them with selectors, plug in a rule corpus, and hand an LLM a brief it must cite. The engine owns the facts; you own the meaning.",
-  alternates: { canonical: "/docs/interpretation" },
-};
+  path: "/docs/interpretation",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

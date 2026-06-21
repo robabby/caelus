@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { SITE } from "../lib/site";
 
-export const alt = "Caelus · MIT astrological ephemeris engine";
+export const alt = SITE.title;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -61,10 +61,10 @@ export default function OpengraphImage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ fontSize: 60, fontWeight: 700, lineHeight: 1.1, maxWidth: 900 }}>
-            MIT astrological ephemeris engine
+            Validated astrology computation
           </div>
           <div style={{ fontSize: 30, color: "#9a93b0", maxWidth: 900 }}>
-            Charts, houses, aspects, and events in TypeScript. Browser, edge, Node, MCP.
+            Ephemeris, charts, events, timing techniques, Vedic methods, and MCP tools.
           </div>
         </div>
 

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ApiMarkdown from "../../../../components/ApiMarkdown";
 import { Eyebrow } from "../../../../components/Prose";
 import { listApiDocs, readApiDoc, apiTitle } from "../../../../lib/api-docs";
+import { pageMetadata } from "../../../../lib/seo";
 
 export function generateStaticParams() {
   return listApiDocs().map((slug) => ({ slug }));
@@ -10,10 +11,12 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return {
-    title: `${apiTitle(slug)} · API`,
-    alternates: { canonical: `/docs/api/${slug}` },
-  };
+  const title = `${apiTitle(slug)} · API`;
+  return pageMetadata({
+    title,
+    description: `Generated TypeScript API reference for ${apiTitle(slug)} in the caelus package.`,
+    path: `/docs/api/${slug}`,
+  });
 }
 
 export default async function ApiSymbol({ params }: { params: Promise<{ slug: string }> }) {

@@ -1,7 +1,7 @@
 # Contributing to Caelus
 
-Thanks for your interest. Caelus is a clean-room astrological ephemeris
-engine, and the standard for changes is correctness you can demonstrate.
+Thanks for your interest. Caelus is a clean-room astrology computation suite,
+and the standard for changes is correctness you can demonstrate.
 
 ## Branching
 

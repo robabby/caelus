@@ -20,13 +20,13 @@ import {
   formatWorstNanoProse,
 } from "../lib/facts";
 import { NPM, SITE } from "../lib/site";
+import { pageMetadata } from "../lib/seo";
 
-export const metadata = {
-  title: "Caelus · MIT astrological ephemeris engine",
-  description:
-    "Free MIT TypeScript engine for natal charts, the Hellenistic time-lords, and the Vedic system of dashas, vargas, and yogas. Runs in the browser, on edge, and in Node, with MCP tools for AI clients.",
-  alternates: { canonical: "/" },
-};
+export const metadata = pageMetadata({
+  title: "Validated astrology computation",
+  description: SITE.description,
+  path: "/",
+});
 
 const PACKAGES: Array<[keyof typeof NPM, string, string]> = [
   ["caelus", "caelus", "Chart math: positions, houses, aspects. Zero dependencies, ~97 KB gzipped."],
@@ -67,8 +67,8 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <PageHero
-        eyebrow="TypeScript · browser, edge, and Node"
-        title="A free, small, and complete Western and Vedic astrology engine"
+        eyebrow="TypeScript · browser, edge, Node, and MCP"
+        title={SITE.tagline.replace(/\.$/, "")}
         cta="hero"
         after={
           <div className="feature-stats" style={{ marginBottom: "0.5rem" }}>
@@ -88,12 +88,7 @@ export default function Home() {
           </div>
         }
       >
-        <Lead>
-          Caelus computes natal charts and the classical techniques built on them,
-          each convention validated against a named authority. The same TypeScript
-          runs in the browser, on edge runtimes, and in Node, with MCP tools for AI
-          clients. No Swiss Ephemeris, no AGPL, no ephemeris files on disk.
-        </Lead>
+        <Lead>{SITE.description}</Lead>
       </PageHero>
 
       <div style={{ margin: "1.5rem 0 0.5rem" }}>
@@ -109,6 +104,7 @@ export default function Home() {
         <li><A href="/docs/hellenistic">Hellenistic time-lords</A>: lots, profections, firdaria, zodiacal releasing, and primary directions</li>
         <li><A href="/docs/vedic">Vedic &amp; Jyotish</A>: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, divisional charts, and yogas</li>
         <li><A href="/docs/interpretation">Interpretation layer</A>: ranked, citable fact atoms, a pluggable rule corpus, and LLM briefs with citation auditing</li>
+        <li><A href="/docs/visualizations">Sky View</A>: frame the visible sky from a place and moment as a pixel-precise prompt for AI image generation, with the Milky Way, deep star field, and ecliptic, sign, house, and constellation overlays</li>
         <li><A href="/docs/provenance">Chart provenance</A>: declare what a chart is (forecast, mythic, archetypal) and route to the ephemeris or the compiler</li>
         <li><A href="/docs/mcp"><code>caelus-mcp</code></A> gives Claude, Cursor, and other MCP clients {formatMcpToolsProse()} chart tools</li>
         <li>Charts can compute entirely in the browser, so an app never has to send birth data to a server</li>

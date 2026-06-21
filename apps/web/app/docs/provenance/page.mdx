@@ -1,8 +1,10 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "Chart Provenance",
   description: "Declare what a chart is and how its time and place are known: realms, temporal and spatial anchors, routing to the ephemeris or the compiler, and honest framing for interpretation.",
-  alternates: { canonical: "/docs/provenance" },
-};
+  path: "/docs/provenance",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

@@ -16,9 +16,10 @@ import moonMeeus from "../data/moon_meeus47.json" with { type: "json" };
 import pluto from "../data/pluto_meeus37.json" with { type: "json" };
 import chiron from "../data/chiron_cheb.json" with { type: "json" };
 import fixedStars from "../data/fixed_stars.json" with { type: "json" };
+import constellations from "../data/constellations.json" with { type: "json" };
 import type { EngineData } from "./core.js";
 
 export const embeddedData: EngineData = {
   vsop: { mercury, venus, earth, mars, jupiter, saturn, uranus, neptune },
-  nutation, moonMeeus, pluto, chiron, fixedStars,
+  nutation, moonMeeus, pluto, chiron, fixedStars, constellations,
 } as EngineData;

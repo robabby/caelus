@@ -32,6 +32,16 @@ export interface StarPack {
   stars: Record<string, StarEntry>;
 }
 
+/** Constellation figure lines and labels; vertices as ecliptic J2000 (lon, lat)
+ *  degrees. Built by scripts/build-constellations.mjs from d3-celestial. */
+export interface ConstellationPack {
+  provenance: string;
+  // segs: per figure, a list of polylines; each point is [eclLonDeg, eclLatDeg]
+  // (J2000). Typed loosely because static JSON imports widen tuples to number[].
+  lines: { con: string; segs: number[][][] }[];
+  labels: { name: string; con: string; lon: number; lat: number }[];
+}
+
 /** Apparent ecliptic [lon, lat] of date (rad) for a catalog entry. */
 export function starApparent(
   data: EngineData, s: StarEntry, jde: number,

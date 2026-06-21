@@ -1,10 +1,11 @@
 import { SolarReturnChart, ReturnsTimeline, DeclinationTable } from "../../../components/docs/DerivedDemo";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Derived Charts",
   description: "Returns, secondary progressions, solar arc, composite and Davison charts, harmonics, antiscia, declination aspects, out-of-bounds, dignities, and sect, built on the validated positions.",
-  alternates: { canonical: "/docs/derived" },
-};
+  path: "/docs/derived",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

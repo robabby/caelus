@@ -3,12 +3,13 @@ import ApiMarkdown from "../../../components/ApiMarkdown";
 import { Eyebrow, P } from "../../../components/Prose";
 import { readApiDoc } from "../../../lib/api-docs";
 import { SITE } from "../../../lib/site";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "API Reference",
   description: "Generated TypeScript API reference for the caelus package surface, grouped into recommended, advanced, and internal tiers.",
-  alternates: { canonical: "/docs/api" },
-};
+  path: "/docs/api",
+});
 
 type Ref = readonly [label: string, slug: string];
 

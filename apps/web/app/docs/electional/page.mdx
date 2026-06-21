@@ -1,10 +1,11 @@
 import { ElectionalResult } from "../../../components/docs/ElectionalDemo";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Electional Search",
   description: "Find a good moment: thread caelus-birth, caelus, and caelus-wheel through a real electional search that scans a local window, scores each instant with the electional primitives, and renders the winning chart.",
-  alternates: { canonical: "/docs/electional" },
-};
+  path: "/docs/electional",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

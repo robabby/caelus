@@ -20,6 +20,7 @@ import FactsTab from "./FactsTab";
 import VedicTab from "./VedicTab";
 import DeclinationTab from "./DeclinationTab";
 import StarsTab from "./StarsTab";
+import SkyViewTab from "./SkyViewTab";
 import { WHEEL_THEME, WHEEL_LINE_COLORS } from "../lib/wheelTheme";
 import { crossAspect, cell, control } from "../lib/chart-display";
 import { type Share, b64urlEncode, readUrlState } from "../lib/share";
@@ -44,7 +45,7 @@ const fmtIso = (y: number, mo: number, d: number, h: number, mi: number) =>
 const MAP_BODIES: BodyId[] = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
 
 // Tab display labels that differ from the title-cased key.
-const TAB_LABEL: Record<string, string> = { facts: "Facts", insights: "Synthesis", json: "JSON" };
+const TAB_LABEL: Record<string, string> = { facts: "Facts", insights: "Synthesis", skyview: "Sky View", json: "JSON" };
 
 const ACCURACY: Array<[string, string]> = accuracy.summary.map((s) => [s.label, s.bound]);
 const PHASE_LABEL: Record<string, string> = {
@@ -76,7 +77,7 @@ export default function SkyNow() {
   const [tzMode, setTzMode] = useState<"utc" | "local">("utc");
   const [place, setPlace] = useState("");
   const [label, setLabel] = useState("");
-  const [tab, setTab] = useState<"facts" | "positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "json">("facts");
+  const [tab, setTab] = useState<"facts" | "positions" | "aspects" | "insights" | "vedic" | "declination" | "stars" | "events" | "skyview" | "json">("facts");
   const [view, setView] = useState<"wheel" | "sphere" | "map" | "transits">("wheel");
   const [focus, setFocus] = useState<{ key: string; bodies: string[] } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -442,33 +443,6 @@ export default function SkyNow() {
                 </p>
               )}
 
-              {readingInputs && (
-                <section
-                  aria-label="Reading"
-                  style={{
-                    marginTop: "1rem",
-                    padding: "1rem 1.15rem 1.15rem",
-                    background: "var(--surface-2)",
-                    borderLeft: "3px solid var(--accent)",
-                    borderRadius: "var(--radius)",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
-                    <span className="eyebrow" style={{ margin: 0 }}>Reading</span>
-                    <span className="dim small">the chart&rsquo;s validated facts, turned into a cited public-domain interpretation</span>
-                  </div>
-                  <ReadingTab
-                    chart={chart}
-                    engine={engine()}
-                    lat={Number(lat)}
-                    lonEast={Number(lon)}
-                    zodiac={zodiac}
-                    stars={readingInputs.stars}
-                    lots={readingInputs.lots}
-                  />
-                </section>
-              )}
-
               <div className="skynow-layout" style={{ marginTop: "1.2rem" }}>
                 <div className="skynow-chart">
                   <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.6rem" }}>
@@ -502,7 +476,7 @@ export default function SkyNow() {
                 </div>
                 <div className="skynow-data">
                   <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
-                    {(["facts", "positions", "aspects", "insights", "vedic", "declination", "stars", "events", "json"] as const).map((t) => (
+                    {(["facts", "positions", "aspects", "insights", "vedic", "declination", "stars", "events", "skyview", "json"] as const).map((t) => (
                       <button key={t} type="button" className="mono" style={tabBtn(t)} onClick={() => setTab(t)}>
                         {TAB_LABEL[t] ?? t.charAt(0).toUpperCase() + t.slice(1)}
                       </button>
@@ -569,6 +543,10 @@ export default function SkyNow() {
 
                   {tab === "stars" && stars && <StarsTab stars={stars} />}
 
+                  {tab === "skyview" && (
+                    <SkyViewTab engine={engine()} jdUt={chart.jdUt} lat={Number(lat)} lonEast={Number(lon)} />
+                  )}
+
                   {tab === "events" && (
                     <>
                       <p className="dim small" style={{ marginTop: 0 }}>Lunar phases in the 120 days from this date:</p>
@@ -605,6 +583,40 @@ export default function SkyNow() {
         <tbody>{ACCURACY.map(([k, v]) => <tr key={k}><td className="mute" style={cell}>{k}</td><td style={cell}>{v}</td></tr>)}</tbody>
       </table>
       <p className="dim small">Within 1′ chart-display precision. <a href="/validation">Full table →</a></p>
+
+      {chart && readingInputs && (
+        <section
+          aria-label="Reading"
+          style={{
+            marginTop: "2rem",
+            padding: "1.1rem 1.25rem 1.25rem",
+            background: "var(--surface-2)",
+            borderLeft: "3px solid var(--accent)",
+            borderRadius: "var(--radius)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
+            <span className="eyebrow" style={{ margin: 0 }}>Reading</span>
+            <span className="dim small">the chart&rsquo;s validated facts, turned into a cited public-domain interpretation</span>
+          </div>
+          <p className="dim small" style={{ marginTop: 0, marginBottom: "0.9rem" }}>
+            The chart projects into ranked fact atoms (placements, aspects, fixed-star
+            conjunctions, the Part of Fortune, transits and time-lords active now), and a
+            public-domain delineation corpus runs over them, so every statement cites the
+            validated fact it rests on: the same grounding an LLM uses instead of
+            hallucinating positions.
+          </p>
+          <ReadingTab
+            chart={chart}
+            engine={engine()}
+            lat={Number(lat)}
+            lonEast={Number(lon)}
+            zodiac={zodiac}
+            stars={readingInputs.stars}
+            lots={readingInputs.lots}
+          />
+        </section>
+      )}
     </div>
   );
 }

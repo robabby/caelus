@@ -4,12 +4,13 @@ import ApiMarkdown from "../../components/ApiMarkdown";
 import PageClose from "../../components/PageClose";
 import PageHero from "../../components/PageHero";
 import { Lead, P } from "../../components/Prose";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Changelog",
   description: "Release notes for caelus, caelus-mcp, caelus-birth, and caelus-wheel, versioned in lockstep.",
-  alternates: { canonical: "/changelog" },
-};
+  path: "/changelog",
+});
 
 function loadChangelog(): string | null {
   const path = join(process.cwd(), "..", "..", "CHANGELOG.md");

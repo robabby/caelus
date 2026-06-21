@@ -1,10 +1,11 @@
 import { NakshatraTable, DashaTree, YogasList } from "../../../components/docs/VedicDemo";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Vedic & Jyotish",
   description: "The Vedic layer in caelus: nakshatras, the Vimshottari, Yogini, and Ashtottari dashas, the Parashari vargas, and the yogas, on the validated sidereal chart, each convention pinned to a named authority.",
-  alternates: { canonical: "/docs/vedic" },
-};
+  path: "/docs/vedic",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 

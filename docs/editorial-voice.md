@@ -1,6 +1,6 @@
 # Editorial voice — Caelus
 
-Technical writing for docs, web copy, and package READMEs. Adapted from the Mystery Schools editorial export; tuned for an ephemeris engine, not a podcast.
+Technical writing for docs, web copy, and package READMEs. Adapted from the Mystery Schools editorial export; tuned for astrology computation, not a podcast.
 
 ## Register
 

@@ -1,11 +1,12 @@
 import { A, Eyebrow, H2, P, Note } from "../../components/Prose";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Methods",
   description:
     "How the engine is built from published math and how each result is checked: reference-first ports, Swiss Ephemeris and JPL Horizons as independent yardsticks, and effects recovered by fitting.",
-  alternates: { canonical: "/methods" },
-};
+  path: "/methods",
+});
 
 export default function Methods() {
   return (

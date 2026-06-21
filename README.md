@@ -1,7 +1,10 @@
 # Caelus
 
-Astrological ephemeris monorepo. MIT, no Swiss Ephemeris code, no AGPL, no
-ephemeris files. Live at [ephemengine.com](https://www.ephemengine.com).
+Clean-room astrology computation monorepo. MIT, no Swiss Ephemeris code, no
+AGPL, no ephemeris files. Caelus computes ephemeris positions, charts, events,
+hellenistic timing techniques, Vedic methods, citable chart facts, sky-view
+image-prompt frames, and the MCP tools around them. Live at
+[ephemengine.com](https://www.ephemengine.com).
 
 ## Packages
 

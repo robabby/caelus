@@ -1,7 +1,9 @@
 # caelus
 
-Astrological ephemeris engine. MIT, no Swiss Ephemeris code, no AGPL, no
-ephemeris files. 1:1 port of the Python reference, checked by golden fixtures.
+Clean-room TypeScript astrology computation: ephemeris, charts, events,
+hellenistic timing techniques, Vedic methods, citable chart facts, and sky-view
+image-prompt frames. MIT, no Swiss Ephemeris code, no AGPL, no ephemeris files.
+1:1 port of the Python reference, checked by golden fixtures.
 
 ## Verification chain
 
@@ -101,4 +103,4 @@ test/golden.test.ts  conformance suite vs Python fixtures
 - caelus — this package
 - [caelus-birth](https://www.npmjs.com/package/caelus-birth) — local birth time + place → UT (charts take UT; use this)
 - [caelus-wheel](https://www.npmjs.com/package/caelus-wheel) — React SVG chart wheel
-- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, twenty-nine chart tools over stdio
+- [caelus-mcp](https://www.npmjs.com/package/caelus-mcp) — MCP server, thirty-one chart tools over stdio

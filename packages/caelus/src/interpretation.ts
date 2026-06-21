@@ -651,6 +651,7 @@ export function interpretationContext(
       ["l1", tl.zr.l1], ["l2", tl.zr.l2], ["l3", tl.zr.l3], ["l4", tl.zr.l4],
     ];
     for (const [level, sign] of zrLevels) {
+      if (!sign) continue; // deeper levels (l3/l4) can be absent when the period does not subdivide
       const signIdx = SIGNS.indexOf(sign);
       const lord = signIdx >= 0 ? SIGN_RULER[signIdx] : "";
       atoms.push({

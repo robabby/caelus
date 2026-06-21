@@ -1,9 +1,9 @@
 # caelus-engine
 
-The Python reference implementation of the Caelus astrological ephemeris
-engine. Clean-room, MIT-licensed, written from published sources (VSOP87D,
-ELP/Meeus, IAU models, JPL Horizons fits). No Swiss Ephemeris code, no
-bundled third-party ephemeris files.
+The Python reference implementation for Caelus astrology computation.
+Clean-room, MIT-licensed, written from published sources (VSOP87D, ELP/Meeus,
+IAU models, JPL Horizons fits). No Swiss Ephemeris code, no bundled
+third-party ephemeris files.
 
 The engine reads pre-built Chebyshev and series packs shipped with the
 package and runs on the Python standard library alone. It is also the

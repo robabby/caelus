@@ -16,27 +16,20 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Caelus · MIT astrological ephemeris engine",
+    default: SITE.title,
     template: "%s · Caelus",
   },
   description: SITE.description,
   applicationName: SITE.name,
-  keywords: [
-    "ephemeris", "astrology", "natal chart", "TypeScript", "MCP",
-    "Swiss Ephemeris alternative", "houses", "aspects", "MIT",
-  ],
   authors: [{ name: "Caelus" }],
+  creator: "Caelus",
+  publisher: "Caelus",
   openGraph: {
     type: "website",
     siteName: SITE.name,
-    url: SITE.url,
-    title: "Caelus · MIT astrological ephemeris engine",
-    description: SITE.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Caelus · MIT astrological ephemeris engine",
-    description: SITE.description,
   },
 };
 

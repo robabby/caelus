@@ -98,9 +98,9 @@
         "{value} chart tools",
         "{value} MCP tools",
         "MCP tools ({value})",
-        "twenty-nine chart tools",
-        "Twenty-nine chart tools",
-        "twenty-nine tools"
+        "thirty-one chart tools",
+        "Thirty-one chart tools",
+        "thirty-one tools"
       ],
       "appearsIn": [
         "apps/web/lib/facts-anchors.generated.ts",

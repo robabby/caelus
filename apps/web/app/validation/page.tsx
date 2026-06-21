@@ -7,12 +7,13 @@ import {
   formatHouseSystemsProse,
   formatWorstNanoProse,
 } from "../../lib/facts";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Validation",
   description: `Reference engine vs Swiss Ephemeris; TypeScript port vs ${formatGoldenChecks()} golden checks. CI on every commit.`,
-  alternates: { canonical: "/validation" },
-};
+  path: "/validation",
+});
 
 // Canonical per-body accuracy lives in packages/caelus/accuracy.json so prose,
 // SkyNow, and the MCP description derive from one source (lint:claims gate).

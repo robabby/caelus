@@ -11,6 +11,7 @@ export * from "./turbo.js";
 export * from "./electional.js";
 export * from "./scan.js";
 export * from "./spherical.js";
+export * from "./skyview.js";
 export * from "./astrocartography.js";
 export * from "./ephemeris.js";
 export * from "./features.js";

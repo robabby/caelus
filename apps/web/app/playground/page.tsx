@@ -8,13 +8,14 @@ import PlaygroundStickyBar from "../../components/PlaygroundStickyBar";
 import { WHEEL_THEME } from "../../lib/wheelTheme";
 import { b64urlEncode, type Share } from "../../lib/share";
 import { A, Lead, P, H2 } from "../../components/Prose";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Playground",
   description:
     "Compute and interpret a chart in the browser: ranked citable fact atoms (natal, transits, time-lords), a cited public-domain reading, synastry/composite compare, plus positions, aspects, fixed stars, and lots. All client-side.",
-  alternates: { canonical: "/playground" },
-};
+  path: "/playground",
+});
 
 const engine = new Engine(embeddedData);
 
@@ -55,17 +56,16 @@ export default function Playground() {
           ephemeris files, nothing invented.
         </Lead>
         <P dim>
-          The <strong>reading</strong> that leads each chart projects it into ranked
-          fact atoms (placements, aspects, fixed-star conjunctions, the Part of
-          Fortune, transits and time-lords active now) and runs a
-          public-domain delineation corpus over them, so every statement cites the
-          validated fact it rests on: the same grounding an LLM uses instead of
-          hallucinating positions. The **Facts** tab lists the same enriched atoms;
-          **Synastry** adds inter-chart and composite ids. Search a birthplace and enter the local time
-          (<code>caelus-birth</code> resolves the zone and historical DST to UT offline),
-          then <strong>Copy share link</strong> to mint a chart whose URL carries only
-          the values you typed, recomputed in the recipient&rsquo;s browser. (Switch the
-          time mode to UTC for the current sky.)
+          Search a birthplace and enter the local time (<code>caelus-birth</code> resolves
+          the zone and historical DST to UT offline), then explore the chart across tabs:
+          positions, aspects, fixed stars, and <strong>Sky View</strong>, which frames the
+          visible sky at the chart&rsquo;s moment and place as a pixel-precise prompt for an
+          AI image model. The <strong>Facts</strong> tab lists the chart&rsquo;s ranked,
+          enriched fact atoms; <strong>Synastry</strong> compares two charts. The full cited
+          <strong> reading</strong> sits at the foot of the panel, every statement grounded
+          in a validated fact. <strong>Copy share link</strong> mints a chart whose URL
+          carries only the values you typed, recomputed in the recipient&rsquo;s browser.
+          (Switch the time mode to UTC for the current sky.)
         </P>
       </PageHero>
 

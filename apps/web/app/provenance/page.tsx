@@ -1,12 +1,13 @@
 import { A, Eyebrow, H2, P } from "../../components/Prose";
 import { SITE } from "../../lib/site";
+import { pageMetadata } from "../../lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Provenance",
   description:
     "Coefficients from published sources. Swiss Ephemeris is a test oracle only. Engine-by-engine comparison.",
-  alternates: { canonical: "/provenance" },
-};
+  path: "/provenance",
+});
 
 const FIELD: Array<[string, string, string, string, string]> = [
   ["Swiss Ephemeris (sweph, WASM ports)", "https://www.astro.com/swisseph/swephinfo_e.htm",

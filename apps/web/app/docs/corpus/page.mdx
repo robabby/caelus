@@ -1,8 +1,10 @@
-export const metadata = {
+import { pageMetadata } from "../../../lib/seo";
+
+export const metadata = pageMetadata({
   title: "Building a Corpus",
   description: "Consume and construct interpretation corpora for Caelus: the caelus-delineations-pd package, PassageRecords, extractors, validation, and licensing.",
-  alternates: { canonical: "/docs/corpus" },
-};
+  path: "/docs/corpus",
+});
 
 <div className="eyebrow" style={{ marginBottom: "0.6rem" }}>Guides</div>
 
