@@ -17,7 +17,7 @@ export {
 
 export const SITE = {
   name: "Caelus",
-  version: "0.21.0",
+  version: "0.22.0",
   url: "https://www.ephemengine.com",
   title: "Caelus · Validated astrology computation",
   tagline: "Validated astrology computation in TypeScript.",

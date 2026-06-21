@@ -18,7 +18,7 @@
     "provenance": true
   },
   "dependencies": {
-    "caelus": "^0.21.0",
+    "caelus": "^0.22.0",
     "luxon": "^3.7.2",
     "tz-lookup": "^6.1.25"
   },

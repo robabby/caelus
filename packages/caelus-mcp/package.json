@@ -15,7 +15,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
     "zod": "^3.24.0",
-    "caelus": "^0.21.0"
+    "caelus": "^0.22.0"
   },
   "devDependencies": {
     "ajv": "^8.17.1"
