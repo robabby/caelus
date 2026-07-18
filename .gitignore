@@ -30,6 +30,7 @@ extracted/
 
 # python fitting caches (Horizons samples committed for Chiron reproducibility)
 python/__pycache__/
+python/.venv/
 .web-prose-extract.md
 python/astroengine/__pycache__/
 

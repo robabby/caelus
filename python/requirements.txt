@@ -1,1 +1,6 @@
 numpy>=1.24
+# The external validation oracle (validate_swiss.py, Moshier mode -- no
+# ephemeris files). Pinned exactly: the accuracy tables and the vendored
+# baseline downstream are measured against this binding, so an unpinned
+# resolve must never move the oracle silently.
+pyswisseph==2.10.3.2
