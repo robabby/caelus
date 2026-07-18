@@ -14,20 +14,20 @@ maintenance fork of [heavyblotto/caelus](https://github.com/heavyblotto/caelus).
 - **Baseline**: upstream tag `v0.23.0`, commit
   `e2a3fabbc520c1ac1e6f39373cd81fe928135ce7` (2026-06-21).
 - **Purpose**: a reviewed, pinned source for the `caelus` engine package that
-  WavePoint vendors for chart and transit computation. Fork-local changes are
-  limited to distribution boundaries (for example the `caelus/data-core`
-  export) and this status section; computation code stays upstream's.
-- **Sync policy**: WavePoint vendors from an explicit reviewed fork commit,
+  WavePoint copies into its own tree. Fork-local changes are limited to
+  distribution boundaries (the `caelus/data-core` export) and this status
+  section; the computation code itself always comes from upstream.
+- **Sync policy**: WavePoint copies from an explicit reviewed fork commit,
   never mutable `main`. Upstream updates land by merging a reviewed upstream
   tag into `main`, re-running the full `ci` workflow, and re-pinning the new
   fork commit in WavePoint's sync manifest.
 - **Validation policy**: every pinned commit must pass the fork's `ci`
-  workflow (conformance suite plus the compiled package tests) before it is
-  vendored. The `release` (npm publish) and `live-smoke` (upstream production
+  workflow (conformance suite plus the compiled package tests) before it
+  ships. The `release` (npm publish) and `live-smoke` (upstream production
   probe) workflows are disabled on this fork.
 - **Scope**: only the `packages/caelus` engine is part of the WavePoint
-  adoption. `caelus-delineations-pd` is **not** adopted — interpretation
-  content is evaluated separately and excluded from the vendored artifact.
+  adoption. `caelus-delineations-pd` is not adopted; interpretation content
+  is evaluated separately and stays out of the copied artifact.
 
 ## Packages
 
