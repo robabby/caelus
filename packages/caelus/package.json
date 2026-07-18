@@ -41,6 +41,10 @@
       "types": "./dist/src/data-embedded.d.ts",
       "default": "./dist/src/data-embedded.js"
     },
+    "./data-core": {
+      "types": "./dist/src/data-core.d.ts",
+      "default": "./dist/src/data-core.js"
+    },
     "./node": {
       "types": "./dist/src/node-loader.d.ts",
       "default": "./dist/src/node-loader.js"
