@@ -4,12 +4,21 @@
  * Pure render, SSR-safe (no client-only APIs, no hooks, no effects).
  * Zero runtime dependencies; react is a peer.
  *
+ * The geometry lives in the pure layout kernel (./layout.ts): resolved points
+ * and aspect edges in, every ring, box, connector, and chord out. ChartWheel
+ * is a compatibility adapter over it — it keeps this package's historical
+ * defaults (hide mean_node, the classic five aspect families, orb-scaled
+ * opacity) and maps the finished layout onto SVG elements.
+ *
  * Orientation follows Western convention: ASC at 9 o'clock, zodiac
  * counterclockwise. Glyphs are Unicode astrological characters embedded as
  * SVG text — if a host font lacks one, the two-letter fallback in GLYPHS
  * can be substituted via the `glyphs` prop.
  */
 import type { ReactElement } from "react";
+import { layoutChartWheel } from "./layout.js";
+
+export * from "./layout.js";
 
 // minimal structural types: accept the caelus Chart object — or a caelus-mcp
 // natal_chart / current_sky payload — as-is, without a runtime dependency on
@@ -70,8 +79,6 @@ export const GLYPHS: Record<string, string> = {
   neptune: "♆", pluto: "♇", chiron: "⚷",
   true_node: "☊", mean_node: "☊",
 };
-const SIGN_GLYPHS = ["♈", "♉", "♊", "♋", "♌", "♍",
-  "♎", "♏", "♐", "♑", "♒", "♓"];
 const HARD_ASPECTS = new Set(["conjunction", "square", "opposition"]);
 const MAX_ORB: Record<string, number> = {
   conjunction: 8, sextile: 4, square: 7, trine: 7, opposition: 8,
@@ -95,70 +102,6 @@ export interface ChartWheelProps {
   glyphs?: Record<string, string>;
 }
 
-/**
- * Fan out display angles so no two bodies sit closer than minSep degrees,
- * preserving zodiacal order. Circular: cut at the largest gap, cluster
- * linearly, spread each cluster around its midpoint, merge clusters that
- * collide after spreading, repeat until stable.
- */
-export function spreadAngles(lons: number[], minSep: number): number[] {
-  const n = lons.length;
-  if (n <= 1) return [...lons];
-  // cannot fit at all: shrink separation to what the circle allows
-  const sep = Math.min(minSep, 360 / n);
-
-  const order = lons.map((lon, i) => ({ lon: mod(lon, 360), i }))
-    .sort((a, b) => a.lon - b.lon);
-  // rotate so the largest gap is between the last and first element
-  let cut = 0;
-  let biggest = -1;
-  for (let k = 0; k < n; k++) {
-    const gap = mod(order[(k + 1) % n].lon - order[k].lon, 360);
-    if (gap > biggest) { biggest = gap; cut = (k + 1) % n; }
-  }
-  const seq = [...order.slice(cut), ...order.slice(0, cut)];
-  // unwrap to a monotonic line starting at the first element
-  const line = seq.map((e) => e.lon);
-  for (let k = 1; k < n; k++) {
-    while (line[k] < line[k - 1]) line[k] += 360;
-  }
-
-  // clusters as [start, end) index ranges; spread each evenly around the
-  // midpoint of its true positions, merge clusters that collide, repeat
-  const spread = (cl: { s: number; e: number }): number[] => {
-    const m = cl.e - cl.s;
-    const mid = (line[cl.s] + line[cl.e - 1]) / 2;
-    return Array.from({ length: m }, (_, j) => mid + (j - (m - 1) / 2) * sep);
-  };
-  let clusters = line.map((_, k) => ({ s: k, e: k + 1 }));
-  let positions = clusters.map(spread);
-  for (let pass = 0; pass < n; pass++) {
-    let merged = false;
-    const nc: typeof clusters = [];
-    const np: number[][] = [];
-    for (let k = 0; k < clusters.length; k++) {
-      const prev = np[np.length - 1];
-      if (prev && positions[k][0] - prev[prev.length - 1] < sep - 1e-9) {
-        nc[nc.length - 1].e = clusters[k].e;
-        np[np.length - 1] = spread(nc[nc.length - 1]);
-        merged = true;
-      } else {
-        nc.push({ ...clusters[k] });
-        np.push(positions[k]);
-      }
-    }
-    clusters = nc;
-    positions = np;
-    if (!merged) break;
-  }
-
-  const out = new Array<number>(n);
-  clusters.forEach((cl, k) => {
-    for (let j = cl.s; j < cl.e; j++) out[seq[j].i] = mod(positions[k][j - cl.s], 360);
-  });
-  return out;
-}
-
 export function ChartWheel({
   chart,
   size = 520,
@@ -172,121 +115,113 @@ export function ChartWheel({
     aspectColors: { ...DARK_THEME.aspectColors, ...(theme?.aspectColors ?? {}) },
     planetColors: { ...(DARK_THEME.planetColors ?? {}), ...(theme?.planetColors ?? {}) } };
   const G = { ...GLYPHS, ...glyphs };
-  const asc = chart.angles.asc;
-  const c = size / 2;
-  const R = (size / 2) * 0.96;
-  // AC/MC/DC/IC labels sit at r=1.05 outside the outer ring; pad the viewBox
-  // so they are not clipped when the SVG is rendered at exactly `size` px.
-  const pad = size * 0.07;
 
-  // ASC at 9 o'clock, longitudes counterclockwise
-  const pt = (lon: number, r: number): [number, number] => {
-    const a = ((lon - asc + 180) * Math.PI) / 180;
-    return [c + r * R * Math.cos(a), c - r * R * Math.sin(a)];
-  };
-  const fix = (v: number) => Math.round(v * 100) / 100;
-  const line = (lon: number, r0: number, r1: number, props: object, key: string) => {
-    const [x1, y1] = pt(lon, r0);
-    const [x2, y2] = pt(lon, r1);
-    return <line key={key} x1={fix(x1)} y1={fix(y1)} x2={fix(x2)} y2={fix(y2)} {...props} />;
-  };
-  const text = (
-    lon: number, r: number, content: string, fontSize: number,
-    fill: string, key: string, extra: object = {},
-  ) => {
-    const [x, y] = pt(lon, r);
-    return (
-      <text key={key} x={fix(x)} y={fix(y)} fontSize={fontSize} fill={fill}
-        textAnchor="middle" dominantBaseline="central"
-        fontFamily={T.fontFamily} {...extra}>{content}</text>
-    );
-  };
-
+  // ---- compatibility adapter: legacy chart + historical defaults -> resolved
+  // kernel input. Body policy (hide mean_node), aspect-family policy, and orb
+  // weighting are decided here, never in the layout kernel.
   const names = (bodies ?? Object.keys(chart.bodies).filter((b) => b !== "mean_node"))
     .filter((b) => chart.bodies[b] !== undefined);
-  const trueLons = names.map((b) => chart.bodies[b]!.lon);
-  const dispLons = spreadAngles(trueLons, 6.5);
+  const drawn = new Set(names);
+  const want = new Set(aspectTypes);
+  const layout = layoutChartWheel({
+    points: names.map((b) => {
+      const p = chart.bodies[b]!;
+      const signDeg = p.signDeg ?? mod(p.lon, 30);
+      const retro = p.retrograde ?? p.rx ?? false;
+      const deg = Math.floor(signDeg);
+      const min = String(Math.floor(mod(signDeg, 1) * 60)).padStart(2, "0");
+      return {
+        id: b, lon: p.lon, glyph: G[b] ?? b.slice(0, 2).toUpperCase(),
+        label: `${deg}°${min}'${retro ? "℞" : ""}`,
+      };
+    }),
+    aspects: showAspects
+      ? chart.aspects
+        .filter((a) => want.has(a.aspect) && drawn.has(a.a) && drawn.has(a.b))
+        .map((a) => ({
+          a: a.a, b: a.b, family: a.aspect,
+          tightness: Math.max(0, 1 - a.orb / (MAX_ORB[a.aspect] ?? 8)),
+        }))
+      : [],
+    angles: chart.angles,
+    cusps: chart.cusps,
+  }, { size });
+
+  // ---- thin renderer: map the finished layout onto SVG marks
+  const fix = (v: number) => Math.round(v * 100) / 100;
+  const { center: c } = layout;
+  const text = (box: { cx: number; cy: number; text: string; fontSize: number },
+    fill: string, key: string) => (
+    <text key={key} x={box.cx} y={box.cy} fontSize={box.fontSize} fill={fill}
+      textAnchor="middle" dominantBaseline="central"
+      fontFamily={T.fontFamily}>{box.text}</text>
+  );
 
   const el: ReactElement[] = [];
 
   // ring circles
-  for (const [r, key] of [[1.0, "outer"], [0.84, "zodiac-in"], [0.70, "house-in"],
-    [0.50, "aspect"]] as Array<[number, string]>) {
-    el.push(<circle key={`ring-${key}`} cx={c} cy={c} r={fix(r * R)}
-      fill="none" stroke={T.ring} strokeWidth={r === 1.0 ? 1.5 : 1} />);
+  const RING_KEYS = { outer: "outer", zodiacInner: "zodiac-in",
+    houseInner: "house-in", aspectHub: "aspect" } as const;
+  for (const ring of layout.rings) {
+    el.push(<circle key={`ring-${RING_KEYS[ring.id]}`} cx={c.x} cy={c.y} r={ring.r}
+      fill="none" stroke={T.ring} strokeWidth={ring.id === "outer" ? 1.5 : 1} />);
   }
 
   // zodiac: sign boundaries, glyphs, ticks
-  for (let s = 0; s < 12; s++) {
-    el.push(line(s * 30, 0.84, 1.0, { stroke: T.ring, strokeWidth: 1 }, `sb-${s}`));
-    el.push(text(s * 30 + 15, 0.92, SIGN_GLYPHS[s], size * 0.045, T.signText, `sg-${s}`));
-  }
-  for (let d = 0; d < 360; d++) {
-    const len = d % 10 === 0 ? 0.035 : d % 5 === 0 ? 0.028 : 0.016;
-    el.push(line(d, 0.84, 0.84 + len,
-      { stroke: T.ring, strokeWidth: d % 5 === 0 ? 1 : 0.5 }, `tick-${d}`));
-  }
+  layout.zodiac.boundaries.forEach((b, s) => {
+    el.push(<line key={`sb-${s}`} x1={b.seg.x1} y1={b.seg.y1} x2={b.seg.x2} y2={b.seg.y2}
+      stroke={T.ring} strokeWidth={1} />);
+    el.push(text(layout.zodiac.signGlyphs[s].box, T.signText, `sg-${s}`));
+  });
+  layout.zodiac.ticks.forEach((t, d) => {
+    el.push(<line key={`tick-${d}`} x1={t.seg.x1} y1={t.seg.y1} x2={t.seg.x2} y2={t.seg.y2}
+      stroke={T.ring} strokeWidth={t.kind === "unit" ? 0.5 : 1} />);
+  });
 
   // house cusps + numbers; axes emphasized
-  const cusps = chart.cusps;
-  const axes: Array<[number, string]> = [
-    [asc, "AC"], [chart.angles.mc, "MC"],
-    [mod(asc + 180, 360), "DC"], [mod(chart.angles.mc + 180, 360), "IC"],
-  ];
-  for (let i = 0; i < 12; i++) {
-    el.push(line(cusps[i], 0.50, 0.84, { stroke: T.ring, strokeWidth: 1 }, `cusp-${i}`));
-    const arc = mod(cusps[(i + 1) % 12] - cusps[i], 360);
-    el.push(text(cusps[i] + arc / 2, 0.77, String(i + 1), size * 0.026, T.houseText, `hn-${i}`));
+  if (layout.houses) {
+    layout.houses.cusps.forEach((cu, i) => {
+      el.push(<line key={`cusp-${i}`} x1={cu.seg.x1} y1={cu.seg.y1}
+        x2={cu.seg.x2} y2={cu.seg.y2} stroke={T.ring} strokeWidth={1} />);
+      el.push(text(layout.houses!.numbers[i].box, T.houseText, `hn-${i}`));
+    });
   }
-  for (const [lon, label] of axes) {
-    el.push(line(lon, 0.50, 1.0, { stroke: T.axis, strokeWidth: 2 }, `axis-${label}`));
-    el.push(text(lon, 1.045, label, size * 0.026, T.axis, `axl-${label}`));
+  if (layout.axes) {
+    for (const axis of layout.axes) {
+      el.push(<line key={`axis-${axis.id}`} x1={axis.seg.x1} y1={axis.seg.y1}
+        x2={axis.seg.x2} y2={axis.seg.y2} stroke={T.axis} strokeWidth={2} />);
+      el.push(text(axis.label, T.axis, `axl-${axis.id}`));
+    }
   }
 
   // aspect lines (under the planet layer)
-  if (showAspects) {
-    const want = new Set(aspectTypes);
-    const drawn = new Set(names);
-    for (const a of chart.aspects) {
-      if (!want.has(a.aspect) || !drawn.has(a.a) || !drawn.has(a.b)) continue;
-      const [x1, y1] = pt(chart.bodies[a.a]!.lon, 0.50);
-      const [x2, y2] = pt(chart.bodies[a.b]!.lon, 0.50);
-      const tightness = Math.max(0, 1 - a.orb / (MAX_ORB[a.aspect] ?? 8));
-      el.push(<line key={`asp-${a.a}-${a.aspect}-${a.b}`}
-        x1={fix(x1)} y1={fix(y1)} x2={fix(x2)} y2={fix(y2)}
-        stroke={T.aspectColors[a.aspect] ?? T.ring}
-        strokeWidth={1 + tightness}
-        strokeDasharray={HARD_ASPECTS.has(a.aspect) ? undefined : "4 3"}
-        opacity={fix(0.25 + 0.65 * tightness)} />);
-    }
+  for (const a of layout.aspects) {
+    el.push(<line key={`asp-${a.a}-${a.family}-${a.b}`}
+      x1={a.seg.x1} y1={a.seg.y1} x2={a.seg.x2} y2={a.seg.y2}
+      stroke={T.aspectColors[a.family] ?? T.ring}
+      strokeWidth={1 + a.tightness}
+      strokeDasharray={HARD_ASPECTS.has(a.family) ? undefined : "4 3"}
+      opacity={fix(0.25 + 0.65 * a.tightness)} />);
   }
 
   // planets: pointer tick at true longitude, glyph + label at fanned angle
-  names.forEach((b, i) => {
-    const p = chart.bodies[b]!;
-    const disp = dispLons[i];
-    const pColor = T.planetColors?.[b] ?? T.planetText;
-    el.push(line(p.lon, 0.815, 0.84, { stroke: pColor, strokeWidth: 1.2 }, `pt-${b}`));
+  for (const p of layout.points) {
+    const pColor = T.planetColors?.[p.id] ?? T.planetText;
+    el.push(<line key={`pt-${p.id}`} x1={p.tick.x1} y1={p.tick.y1}
+      x2={p.tick.x2} y2={p.tick.y2} stroke={pColor} strokeWidth={1.2} />);
     // connector when the glyph was displaced off its true longitude
-    if (Math.abs(mod(disp - p.lon + 180, 360) - 180) > 0.75) {
-      const [x1, y1] = pt(p.lon, 0.815);
-      const [x2, y2] = pt(disp, 0.71);
-      el.push(<line key={`conn-${b}`} x1={fix(x1)} y1={fix(y1)} x2={fix(x2)} y2={fix(y2)}
+    if (p.connector) {
+      el.push(<line key={`conn-${p.id}`} x1={p.connector.x1} y1={p.connector.y1}
+        x2={p.connector.x2} y2={p.connector.y2}
         stroke={T.labelText} strokeWidth={0.5} opacity={0.5} />);
     }
-    el.push(text(disp, 0.655, G[b] ?? b.slice(0, 2).toUpperCase(),
-      size * 0.05, pColor, `pg-${b}`));
-    const signDeg = p.signDeg ?? mod(p.lon, 30);
-    const retro = p.retrograde ?? p.rx ?? false;
-    const deg = Math.floor(signDeg);
-    const min = String(Math.floor(mod(signDeg, 1) * 60)).padStart(2, "0");
-    el.push(text(disp, 0.585, `${deg}°${min}'${retro ? "℞" : ""}`,
-      size * 0.024, T.labelText, `pl-${b}`));
-  });
+    el.push(text(p.glyph, pColor, `pg-${p.id}`));
+    if (p.label) el.push(text(p.label, T.labelText, `pl-${p.id}`));
+  }
 
   return (
-    <svg width={size} height={size}
-      viewBox={`${-pad} ${-pad} ${size + 2 * pad} ${size + 2 * pad}`}
+    <svg width={layout.size} height={layout.size}
+      viewBox={`${layout.viewBox.x} ${layout.viewBox.y} ${layout.viewBox.width} ${layout.viewBox.height}`}
       role="img" aria-label="astrological chart wheel"
       style={{ background: T.background, display: "block" }}>
       {el}

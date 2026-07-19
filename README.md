@@ -13,10 +13,12 @@ maintenance fork of [heavyblotto/caelus](https://github.com/heavyblotto/caelus).
 
 - **Baseline**: upstream tag `v0.23.0`, commit
   `e2a3fabbc520c1ac1e6f39373cd81fe928135ce7` (2026-06-21).
-- **Purpose**: a reviewed, pinned source for the `caelus` engine package that
-  WavePoint copies into its own tree. Fork-local changes are limited to
-  distribution boundaries (the `caelus/data-core` export) and this status
-  section; the computation code itself always comes from upstream.
+- **Purpose**: a reviewed, pinned source for the packages that WavePoint
+  copies into its own tree. The computation code in `packages/caelus` always
+  comes from upstream; fork-local engine changes are limited to distribution
+  boundaries (the `caelus/data-core` export) and this status section. The
+  chart-wheel package in `packages/wheel` is the one place the fork develops
+  beyond upstream: its layout kernel is maintained here.
 - **Sync policy**: WavePoint copies from an explicit reviewed fork commit,
   never mutable `main`. Upstream updates land by merging a reviewed upstream
   tag into `main`, re-running the full `ci` workflow, and re-pinning the new
@@ -25,9 +27,14 @@ maintenance fork of [heavyblotto/caelus](https://github.com/heavyblotto/caelus).
   workflow (conformance suite plus the compiled package tests) before it
   ships. The `release` (npm publish) and `live-smoke` (upstream production
   probe) workflows are disabled on this fork.
-- **Scope**: only the `packages/caelus` engine is part of the WavePoint
-  adoption. `caelus-delineations-pd` is not adopted; interpretation content
-  is evaluated separately and stays out of the copied artifact.
+- **Development policy**: each fork-side change lands through one
+  `sg-<issue>-<slug>` branch and one pull request into fork `main`, with the
+  `ci` workflow green before merge. Fork `main` otherwise only moves by
+  merging reviewed upstream tags.
+- **Scope**: WavePoint adopts the `packages/caelus` engine and the
+  `packages/wheel` chart wheel. `caelus-delineations-pd` is not adopted;
+  interpretation content is evaluated separately and stays out of the copied
+  artifact.
 
 ## Packages
 

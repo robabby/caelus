@@ -76,17 +76,11 @@ jobs:
       # timezone resolution: tzdb golden cases + 200-case round-trip property
       - run: npm run build -w caelus-birth
       - run: node packages/birth/dist/test/golden.test.js
-      # chart wheel: SSR render of real charts + collision-fan unit checks
+      # chart wheel: run-all discovers every compiled *.test.js suite (layout
+      # kernel, SSR render, sphere, astromap, ephemeris graph, cross-package
+      # integration), so a future suite cannot be silently left out of CI.
       - run: npm run build -w caelus-wheel
-      - run: node packages/wheel/dist/test/render.test.js
-      # 3D chart sphere: SSR render + latitude-matters check
-      - run: node packages/wheel/dist/test/sphere.test.js
-      # astrocartography map: SSR render of the relocation lines
-      - run: node packages/wheel/dist/test/astromap.test.js
-      # graphic ephemeris: SSR render of the time-series line graph
-      - run: node packages/wheel/dist/test/ephemerisgraph.test.js
-      # cross-package journey: local time -> chart -> SVG wheel, end to end
-      - run: node packages/wheel/dist/test/integration.test.js
+      - run: npm test -w caelus-wheel
       # per-entrypoint bundle sizes (esbuild): informational, prints the table
       # the data-tiers doc quotes. Per-target try/catch keeps it non-blocking.
       - run: npm run bundle-sizes
