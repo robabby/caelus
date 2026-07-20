@@ -351,12 +351,12 @@ function displayGaps(layout: ReturnType<typeof layoutChartWheel>): number[] {
   return lons.map((lon, i) => mod(lons[(i + 1) % lons.length] - lon, 360));
 }
 
-const libertyville = eng.chart(1983, 5, 27, 7, 36, 0, 42.2833, -87.95, "placidus");
+const chicago1990 = eng.chart(1990, 7, 4, 16, 20, 0, 41.88, -87.63, "placidus");
 const stellium1962 = eng.chart(1962, 2, 5, 0, 0, 0, 27.95, -82.46, "placidus");
 const southern = eng.chart(1975, 3, 15, 12, 0, 0, -33.87, 151.21, "placidus");
 
 for (const [label, chart] of [
-  ["libertyville 1983", libertyville],
+  ["chicago 1990", chicago1990],
   ["stellium 1962", stellium1962],
   ["southern 1975", southern],
 ] as const) {
@@ -398,8 +398,8 @@ for (const [label, chart] of [
 
 // house systems: cusps differ, zodiac and points do not
 {
-  const wholeSign = eng.chart(1983, 5, 27, 7, 36, 0, 42.2833, -87.95, "whole_sign");
-  const a = layoutChartWheel(toInput(libertyville));
+  const wholeSign = eng.chart(1990, 7, 4, 16, 20, 0, 41.88, -87.63, "whole_sign");
+  const a = layoutChartWheel(toInput(chicago1990));
   const b = layoutChartWheel(toInput(wholeSign));
   assert(JSON.stringify(a.zodiac) === JSON.stringify(b.zodiac),
     "house systems: zodiac ring independent of house system");
@@ -412,7 +412,7 @@ for (const [label, chart] of [
 
 // unknown time on a real chart: strip angles and cusps, anchor on Aries
 {
-  const { angles: _a, cusps: _c, ...rest } = toInput(libertyville);
+  const { angles: _a, cusps: _c, ...rest } = toInput(chicago1990);
   const layout = layoutChartWheel(rest);
   assert(layout.houses === null && layout.axes === null
     && layout.applied.anchor === "aries0",
